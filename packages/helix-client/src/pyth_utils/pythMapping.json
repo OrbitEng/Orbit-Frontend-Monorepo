@@ -1,0 +1,12 @@
+{
+    "mainnet":{
+        "USDC":"Gnt27xtC473ZT2Mw5u8wZ68Z3gULkSTb5DuxJy7eJotD",
+        "SOL":"H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG",
+        "wUST":"H8DvrfSaRfUyP1Ytse1exGf7VSinLWtmKNNaBhA4as9P"
+    },
+    "devnet":{
+        "USDC":"5SSkXsEKQepHHAewytPVwdej4epN1nxgLVM84L4KXgy7",
+        "SOL":"J83w4HKfqxwcq3BEMMkPFSppX3gqekLyLJBexebFVkix",
+        "wUST":"AUKjh1oVPZyudi3nzYSsdZxSjq42afUCvsdbKFc5CbD"
+    }
+}

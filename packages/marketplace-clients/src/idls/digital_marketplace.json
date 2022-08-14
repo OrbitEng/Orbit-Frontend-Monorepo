@@ -1,0 +1,507 @@
+{
+  "version": "0.1.0",
+  "name": "digital_marketplace",
+  "instructions": [
+    {
+      "name": "buyerCancelOrder",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "holdingAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "holdingBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "buyerCloseOrder",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "seller",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "holdingAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "digitalMarketSigner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "accountsProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "hb",
+          "type": "u8"
+        },
+        {
+          "name": "sb",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "commitPrivkeys",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "seller",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createOrder",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "holdingAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "product",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "seller",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "traceless",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "fundOrder",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "holdingAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "requestBlocks",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "submitData",
+      "accounts": [
+        {
+          "name": "transaction",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "seller",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "arweaveAddress",
+          "type": "string"
+        },
+        {
+          "name": "keys",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "createProduct",
+      "accounts": [
+        {
+          "name": "digitalProduct",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "seller",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "marketplaceProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "isService",
+          "type": "bool"
+        },
+        {
+          "name": "productType",
+          "type": {
+            "defined": "DigitalProductTypes"
+          }
+        },
+        {
+          "name": "desc",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "deleteProduct",
+      "accounts": [
+        {
+          "name": "digitalProduct",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "seller",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "marketplaceProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createMarketSigner",
+      "accounts": [
+        {
+          "name": "digitalMarketSigner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "funder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "DigitalProduct",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "seller",
+            "type": "publicKey"
+          },
+          {
+            "name": "productName",
+            "type": "string"
+          },
+          {
+            "name": "isService",
+            "type": "bool"
+          },
+          {
+            "name": "productType",
+            "type": {
+              "defined": "DigitalProductTypes"
+            }
+          },
+          {
+            "name": "description",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DigitalTransaction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "holdingAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "buyer",
+            "type": "publicKey"
+          },
+          {
+            "name": "seller",
+            "type": "publicKey"
+          },
+          {
+            "name": "sellerWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "buyerWallet",
+            "type": "publicKey"
+          },
+          {
+            "name": "product",
+            "type": "publicKey"
+          },
+          {
+            "name": "traceless",
+            "type": "bool"
+          },
+          {
+            "name": "openDate",
+            "type": "i64"
+          },
+          {
+            "name": "closeDate",
+            "type": "i64"
+          },
+          {
+            "name": "transactionState",
+            "type": {
+              "defined": "TransactionStates"
+            }
+          },
+          {
+            "name": "arweaveAddress",
+            "type": "string"
+          },
+          {
+            "name": "pubkeysForBlocks",
+            "type": {
+              "vec": "string"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "DigitalProductErrors",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "TransactionClosed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DigitalProductTypes",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Audio"
+          },
+          {
+            "name": "Video"
+          },
+          {
+            "name": "Image"
+          },
+          {
+            "name": "AccountCredentials"
+          },
+          {
+            "name": "NormalText"
+          },
+          {
+            "name": "Code"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransactionStates",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "AwaitingFunding"
+          },
+          {
+            "name": "AwaitingSellerDeliverData"
+          },
+          {
+            "name": "AwaitingBuyerRequestBlocks"
+          },
+          {
+            "name": "AwaitingSellerCommitKeys"
+          },
+          {
+            "name": "AwaitingBuyerDecision"
+          },
+          {
+            "name": "AwaitingDelivery"
+          },
+          {
+            "name": "Closed"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "51SD4jGExq2GrtGZykE1RLfeUC16RiLEjJpHxpa7Qsii"
+  }
+}

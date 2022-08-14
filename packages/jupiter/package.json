@@ -1,0 +1,13 @@
+{
+    "name": "jupiter-wrapper",
+    "private": true,
+    "version": "1.0.0",
+    "description": "wrapper for interacting with jupiter onchain",
+    "main": "src/main.js",
+    "types": "src/main.js",
+    "author": "bruh capital",
+    "dependencies": {
+  
+    }
+  }
+  

@@ -1,0 +1,184 @@
+{
+  "version": "0.1.0",
+  "name": "marketplace_accounts",
+  "instructions": [
+    {
+      "name": "changeAccountName",
+      "accounts": [
+        {
+          "name": "marketAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "walletAddress",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newName",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "createAccount",
+      "accounts": [
+        {
+          "name": "marketAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "addProduct",
+      "accounts": [
+        {
+          "name": "walletAddress",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "marketAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "id",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "addRsaPubkey",
+      "accounts": [
+        {
+          "name": "walletAddress",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "marketAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "key",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "deleteProduct",
+      "accounts": [
+        {
+          "name": "walletAddress",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "marketAccount",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "id",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "updateLastTransaction",
+      "accounts": [
+        {
+          "name": "userAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "invoker",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "MarketAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "walletAddress",
+            "type": "publicKey"
+          },
+          {
+            "name": "rating",
+            "type": "u64"
+          },
+          {
+            "name": "products",
+            "type": {
+              "vec": "publicKey"
+            }
+          },
+          {
+            "name": "rsaPubkey",
+            "type": "string"
+          },
+          {
+            "name": "lastTransaction",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "AccountErrors",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "ProductNotFound"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "Fw94AGdeanGkhzX4v4jcVSHrgiiVhKjqZ8mbgPFUkXeq"
+  }
+}

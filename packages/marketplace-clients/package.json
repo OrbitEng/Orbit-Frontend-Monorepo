@@ -1,0 +1,14 @@
+{
+    "name": "marketplace-clients",
+    "private": true,
+    "version": "1.0.0",
+    "description": "helix clients for marketplace",
+    "main": "src/index.js",
+    "types": "src/index.js",
+    "author": "bruh capital",
+    "dependencies": {
+        "@project-serum/anchor": "^0.24.2",
+        "borsh": "^0.7.0",
+        "react": "^17.x"
+    }
+}
