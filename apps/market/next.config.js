@@ -21,8 +21,9 @@ module.exports = withPWA(withTM({
   },
   pwa: {
     disable: process.env.NODE_ENV === 'development',
-    dest: 'public',
-    runtimeCaching,
+    register: true,
+    scope: '/app',
+    sw: 'service-worker.js', 
   },
   images: {
     domains: ['raw.githubusercontent.com'],
