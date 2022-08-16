@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { WalletInteractionsButton } from '@includes/components/WalletButton'
 
 import OrbitLogo from '../public/OrbitLogo.png'
+import { HeaderSearchBar } from '@includes/components/SearchBar'
 
 export const HomeHeader: FC = ({}) => {
 	return(
@@ -18,8 +19,8 @@ export const HomeHeader: FC = ({}) => {
 						objectFit="contain"
 					/>
 				</div>
-				<div className="basis-1/2">
-					searchbar
+				<div className="flex basis-1/2 align-middle content-center">
+					<HeaderSearchBar />
 				</div>
 				<div className="flex basis-1/4 align-middle content-center">
 					<WalletInteractionsButton />
