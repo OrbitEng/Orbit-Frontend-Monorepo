@@ -4,7 +4,7 @@ import { FC } from 'react'
 
 export const Home: FC = ({}) => {
 	return(
-		<div className="bg-[rgb(7,5,19)] w-full min-h-screen">
+		<div className="bg-[#070513] w-full min-h-screen">
 			<Head>
 				<title>Market Home</title>
 				<link rel="icon" href="favicon.ico" />
