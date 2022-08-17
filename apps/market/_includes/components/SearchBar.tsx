@@ -11,8 +11,8 @@ export const HeaderSearchBar: FC = () => {
 			<div className="hidden sm:flex flex-row rounded-lg bg-transparent border-2 border-[#1A1A23] p-auto w-full mx-auto py-auto align-middle">
 				<Combobox value={selected} onChange={setSelected} >
 					<div className="bg-transparent mr-1 h-full flex">
-						<select className="bg-[#1A1A23] text-white h-full py-2 font-bold">
-							<option selected value="all">All</option>
+						<select className="bg-[#1A1A23] text-white h-full py-2 font-bold" defaultValue={"All"}>
+							<option value="all">All</option>
 							<option value="digital">Digital</option>
 							<option value="physical">Physical</option>
 						</select>
