@@ -1,3 +1,4 @@
+import { HomeBanner } from '@includes/CardCarousel'
 import { HomeHeader } from '@includes/MarketHeader'
 import Head from 'next/head'
 import { FC } from 'react'
