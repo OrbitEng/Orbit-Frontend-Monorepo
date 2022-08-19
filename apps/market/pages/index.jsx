@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 import { Home } from '@layouts/MarketHome'
 
-const Index: NextPage = () => {
+export default function AppPage() {
   return (
     <Home/>
   )

@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const withTM = require('next-transpile-modules')([
-  '@solana/wallet-adapter-base'
-])
+  '@solana/wallet-adapter-base',
+  '@solana/wallet-adapter-react-ui',
+  '@solana/wallet-adapter-wallets',
+]);
 
 const withPWA = require('next-pwa');
 const runtimeCaching = require('next-pwa/cache');

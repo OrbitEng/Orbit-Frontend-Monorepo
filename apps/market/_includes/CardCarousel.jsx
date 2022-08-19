@@ -1,8 +1,8 @@
-import { FC, useRef } from 'react'
+import { useRef } from 'react'
 import { Rerousel } from 'rerousel'
 import { BetaCard } from '@includes/components/Cards'
 
-export const HomeBanner: FC = () => {
+export function HomeBanner(props) {
     //@ts-ignore
 	const [ref, setRef] = useRef(undefined);
 

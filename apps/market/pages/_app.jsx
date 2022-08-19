@@ -1,5 +1,4 @@
 import '../styles/globals.css'
-import type { AppProps } from 'next/app'
 import { useMemo } from 'react';
 
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
@@ -27,9 +26,11 @@ import {
   SolanaMobileWalletAdapter,
 } from '@solana-mobile/wallet-adapter-mobile';
 
+require('@solana/wallet-adapter-react-ui/styles.css');
+
 // TODO: init redux here too
 // App wrapper that has all these providers
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }) {
 
   const network = WalletAdapterNetwork.Devnet;
 

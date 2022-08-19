@@ -1,0 +1,10 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"@includes/*": ["_includes/*"],
+			"@layouts/*": ["_layouts/*"],
+			"@app/*": ["pages/_app.js"],
+		}
+	}
+}

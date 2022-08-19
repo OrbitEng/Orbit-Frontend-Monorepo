@@ -2,7 +2,7 @@ import { FC, useState, Fragment } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 import { SearchIcon } from '@heroicons/react/outline'
 
-export const HeaderSearchBar: FC = () => {
+export function HeaderSearchBar() {
 	const [ selected, setSelected ] = useState({})
 	const [ query, setQuery ] = useState({})
 
@@ -32,7 +32,7 @@ export const HeaderSearchBar: FC = () => {
 
 // Search bar that lives on the body of the page
 // used for mobile since small header
-export const PageSearchBar: FC = () => {
+export function PageSearchBar() {
 	return(
 		<div>
 			coming soon

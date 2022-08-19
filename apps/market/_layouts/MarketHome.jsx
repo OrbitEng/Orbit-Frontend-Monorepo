@@ -1,9 +1,8 @@
 import { HomeBanner } from '@includes/CardCarousel'
 import { HomeHeader } from '@includes/MarketHeader'
 import Head from 'next/head'
-import { FC } from 'react'
 
-export const Home: FC = ({}) => {
+export function Home(props) {
 	return(
 		<div className="bg-[#070513] w-full min-h-screen">
 			<Head>

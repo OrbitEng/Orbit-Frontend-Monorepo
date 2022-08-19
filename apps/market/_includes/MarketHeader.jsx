@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import Image from 'next/image'
 
 import OrbitLogo from '../public/OrbitLogo.png'
@@ -7,7 +6,7 @@ import { WalletInteractionsButton } from '@includes/components/WalletButton'
 import { HeaderSearchBar } from '@includes/components/SearchBar'
 import { CartHeaderButton } from '@includes/components/CartHeaderButton'
 
-export const HomeHeader: FC = ({}) => {
+export function HomeHeader(props) {
 	return(
 		<header className="top-0 w-full h-14 sm:h-20 sticky flex">
 			<div className="bg-gradient-to-r from-homeheadergray to-homeheaderpurple w-full h-full flex flex-row justify-around border-[#1A1A23] border-b-2 align-middle">
