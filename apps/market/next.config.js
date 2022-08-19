@@ -14,9 +14,10 @@ module.exports = withPWA(withTM({
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
-      os: false,
+      os: require.resolve("os-browserify/browser"),
+      stream: require.resolve("stream-browserify"),
       path: false,
-      crypto: false,
+      crypto: require.resolve("crypto-browserify"),
     };
 
     return config;
