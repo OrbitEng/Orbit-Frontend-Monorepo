@@ -13,7 +13,6 @@ export function HomeHeader(props) {
 				<div className="relative basis-1/4 py-auto align-middle my-2 sm:my-5 ml-2">
 					<Image
 						src={OrbitLogo}
-						width={22}
 						layout="fill"
 						alt="The Name and Logo for the Orbit market"
 						objectFit="contain"
