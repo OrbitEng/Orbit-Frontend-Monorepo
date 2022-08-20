@@ -6,19 +6,21 @@
 
 .wallet-adapter-button {
     background-color: transparent;
-	border: #1A1A23;
-	border-radius: 9999px;
-	border-width: 2px;
-	border-style: solid;
     color: #fff;
     cursor: pointer;
     display: flex;
     align-items: center;
-    font-family: 'DM Sans', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-weight: 700;
     height: 36px;
     padding: 0 24px;
+}
+
+.wallet-adapter-button-trigger{
+	border-radius: 9999px;
+	border-style: solid;
+	border-width: 20px;
+	border: #1A1A23;
 }
 
 .wallet-adapter-button:not([disabled]):focus-visible {

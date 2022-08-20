@@ -22,7 +22,7 @@ export function HeaderSearchBar() {
 				</Combobox>
 			</div>
 			<div className="flex flex-row ml-4 gap-3 text-sm sm:text-base">
-				<button className="font-bold text-transparent bg-gradient-to-r from-[#00E3D6] to-[#C000AD] bg-clip-text">Referral</button>
+				<button className="font-bold transition-all text-transparent bg-clip-text bg-[#C000AD]">Referral</button>
 				<button className="font-bold text-[#606060]">Explore</button>
 				<button className="font-bold text-[#606060]">Profile</button>
 			</div>
