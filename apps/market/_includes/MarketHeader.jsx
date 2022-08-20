@@ -23,7 +23,7 @@ export function HomeHeader(props) {
 					<HeaderSearchBar />
 				</div>
 				<div className="flex flex-row basis-1/4 align-middle my-auto justify-center gap-4">
-					<div className="border-2 border-[#1A1A23] rounded-full">
+					<div className="border-2 border-[#1A1A23] rounded-full p-0">
 						<WalletMultiButton />
 					</div>
 					<button className="rounded-full bg-transparent border-[#1A1A23] border-2 text-white align-middle flex my-auto p-2">
