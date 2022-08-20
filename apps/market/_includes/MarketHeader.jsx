@@ -2,9 +2,9 @@ import Image from 'next/image'
 
 import OrbitLogo from '../public/OrbitLogo.png'
 
-import { WalletInteractionsButton } from '@includes/components/WalletButton'
 import { HeaderSearchBar } from '@includes/components/SearchBar'
-import { CartHeaderButton } from '@includes/components/CartHeaderButton'
+import { ShoppingCartIcon } from '@heroicons/react/outline'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 
 export function HomeHeader(props) {
 	return(
@@ -22,8 +22,10 @@ export function HomeHeader(props) {
 					<HeaderSearchBar />
 				</div>
 				<div className="flex flex-row basis-1/4 align-middle my-auto justify-center">
-					<WalletInteractionsButton />
-					<CartHeaderButton />
+					<WalletMultiButton />
+					<button className="rounded-full bg-transparent border-[#1A1A23] border-2 text-white align-middle flex my-auto p-2">
+						<ShoppingCartIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+					</button>
 				</div>
 			</div>
 		</header>
