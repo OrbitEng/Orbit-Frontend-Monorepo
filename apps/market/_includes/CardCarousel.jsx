@@ -7,9 +7,10 @@ export function HomeBanner(props) {
 	const [ref, setRef] = useRef(undefined);
 
     return(
-        //@ts-ignore
-        <Rerousel itemRef={ref} interval={7000}>
-            <BetaCard passedRef={ref} />
-        </Rerousel>
+        <div className="w-full h-auto container content-center align-middle mx-auto">
+            <Rerousel itemRef={ref} interval={7000}>
+                <BetaCard passedRef={ref} />
+            </Rerousel>
+        </div>
     )
 }

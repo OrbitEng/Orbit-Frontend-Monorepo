@@ -11,6 +11,9 @@ export function Home(props) {
 			</Head>
 			<main className="">
 				<HomeHeader/>
+				<div className="max-w-7xl align-center mx-auto">
+					<HomeBanner />
+				</div>
 			</main>
 		</div>
 	)

@@ -10,7 +10,7 @@ export function HomeHeader(props) {
 	return(
 		<header className="top-0 w-full h-14 sm:h-20 sticky flex">
 			<div className="bg-gradient-to-r from-homeheadergray to-homeheaderpurple w-full h-full flex flex-row justify-around border-[#1A1A23] border-b-2 align-middle">
-				<div className="relative basis-1/4 py-auto align-middle my-2 sm:my-5 ml-2">
+				<div className="relative basis-1/4 py-auto align-middle content-center my-2 sm:my-5 ml-2">
 					<Image
 						src={OrbitLogo}
 						layout="fill"
