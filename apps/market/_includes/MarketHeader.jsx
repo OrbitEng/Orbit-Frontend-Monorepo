@@ -16,6 +16,7 @@ export function HomeHeader(props) {
 						layout="fill"
 						alt="The Name and Logo for the Orbit market"
 						objectFit="contain"
+						priority={true}
 					/>
 				</div>
 				<div className="flex basis-1/2 align-middle content-center my-auto">
