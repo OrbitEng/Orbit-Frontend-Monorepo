@@ -21,7 +21,7 @@ export function HeaderSearchBar() {
 					<Combobox.Input className="flex w-full bg-transparent text-[#4A4A4A] font-semibold" placeholder="Search in marketplace" onChange={(e) => setQuery(e.target.value)} />
 				</Combobox>
 			</div>
-			<div className="flex flex-row ml-4 gap-3 text-sm sm:text-base">
+			<div className="flex flex-row ml-4 gap-3 text-xs sm:text-base">
 				<button className="font-bold transition-all text-transparent bg-clip-text bg-[#C000AD]">Referral</button>
 				<button className="font-bold text-[#606060]">Explore</button>
 				<button className="font-bold text-[#606060]">Profile</button>
