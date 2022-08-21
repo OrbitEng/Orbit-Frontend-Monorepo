@@ -5,11 +5,17 @@ import OrbitLogo from '../public/OrbitLogo.png'
 import { HeaderSearchBar } from '@includes/components/SearchBar'
 import { ShoppingCartIcon } from '@heroicons/react/outline'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { useCallback } from 'react'
 
 export function HomeHeader(props) {
+
+	const SetWallet = useCallback(()=>{
+
+	})
+
 	return(
 		<header className="top-0 w-full h-14 sm:h-20 sticky flex">
-			<div className="bg-gradient-to-r from-homeheadergray to-homeheaderpurple w-full h-full flex flex-row justify-around border-[#1A1A23] border-b-2 align-middle">
+			<div className="bg-gradient-r from-homeheadergray to-homeheaderpurple w-full h-full flex flex-row justify-around border-[#1A1A23] border-b-2 align-middle">
 				<div className="relative basis-1/4 py-auto align-middle content-center my-2 sm:my-5 ml-2">
 					<Image
 						src={OrbitLogo}
@@ -24,7 +30,9 @@ export function HomeHeader(props) {
 				</div>
 				<div className="flex flex-row basis-1/4 align-middle my-auto justify-center gap-4">
 					<div className="border-2 border-[#1A1A23] rounded-full p-0">
-						<WalletMultiButton />
+						<WalletMultiButton 
+							// onClick={}
+						/>
 					</div>
 					<button className="rounded-full bg-transparent border-[#1A1A23] border-2 text-white align-middle flex my-auto p-2">
 						<ShoppingCartIcon className="w-3 h-3 sm:w-4 sm:h-4" />
