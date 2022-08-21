@@ -19,16 +19,14 @@ export function HomeProductExplorer(props) {
 						<ProductDisplayCard product={c} />
 					)
 				})}
+
 				<ProductDisplayCard 
-					
+				/>
+				<ProductDisplayCard 
 				/>
 				<ProductDisplayCard 
 				/>
 				<ProductDisplayCard 
-					name="Bruh"
-				/>
-				<ProductDisplayCard 
-					name="Bruh"
 				/>
 			</div>
 
