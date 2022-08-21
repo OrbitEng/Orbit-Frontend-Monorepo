@@ -13,7 +13,7 @@ export function HomeProductExplorer(props) {
 				<button className="rounded-full px-4 py-2 bg-[#8431D7]">Digital</button>
 				<button className="rounded-full px-4 py-2 bg-[#8431D7]">NFT</button>
 			</div>
-			<div className="my-6 grid grid-flow-row overflow-visible grid-cols-4 grid-rows-4 gap-6">
+			<div className="my-6 grid grid-flow-row overflow-visible grid-cols-4 grid-rows-4 gap-x-16">
 				{products?.map(c => {
 					return(
 						<ProductDisplayCard product={c} />
