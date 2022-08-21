@@ -15,5 +15,8 @@
   "devDependencies": {
     "prettier": "latest",
     "turbo": "^1.4.3"
+  },
+  "dependencies": {
+    "market-clients":"file:../packages/market-clients"
   }
 }
