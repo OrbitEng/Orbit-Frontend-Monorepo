@@ -1,4 +1,4 @@
-import '../styles/globals.css'
+import 'styles/globals.css'
 import { useMemo } from 'react';
 
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
