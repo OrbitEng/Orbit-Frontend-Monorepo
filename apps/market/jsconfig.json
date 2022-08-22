@@ -3,6 +3,7 @@
 		"baseUrl": "./",
 		"paths": {
 			"@includes/*": ["_includes/*"],
+			"@contexts/*": ["_contexts/*"],
 			"@layouts/*": ["_layouts/*"],
 			"@app/*": ["pages/_app.js"],
 		}
