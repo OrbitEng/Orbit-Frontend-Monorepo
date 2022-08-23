@@ -1,41 +1,44 @@
 import Image from 'next/image'
-
 import OrbitLogo from '../public/OrbitLogo.png'
+
+import * as anchor from "@project-serum/anchor";
 
 import { HeaderSearchBar } from '@includes/components/SearchBar'
 import { ShoppingCartIcon } from '@heroicons/react/outline'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 
-// import {OrbitProgramClients} from "orbit-clients";
-// import * as orbitclients from "orbit-clients";
+const {DigitalMarketClient, PhysicalMarketClient, DisputeClient, MarketAccountsClient} = require("orbit-clients")
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react'
 
 
 export function HomeHeader(props) {
 
-	// let connection = useConnection();
-	// let wallet = useWallet();
+	let connection = useConnection();
+	let wallet = useWallet();
 
-	// const [digitalMarketClient, setDigitalMarketClient] = useContext(DigitalMarketCtx);
-	// const [disputeProgramClient, setDisputeProgramClient] = useContext(DisputeProgramCtx);
-	// const [physicalMarketClient, setPhysicalMarketClient] = useContext(PhysicalMarketCtx);
-	// const [marketAccountsClient, setMarketAccountsClient] = useContext(MarketAccountsCtx);
+	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
+	const {disputeProgramClient, setDisputeProgramClient} = useContext(DisputeProgramCtx);
+	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 
-	// const SetClients = useCallback(()=>{
-	// 	if(!wallet)return;
+	const SetClients = useEffect(()=>{
+		if(!wallet) return;
 
-	// 	// setDigitalMarketClient(new )
-	// 	// setDisputeProgramClient(new )
-	// 	// setPhysicalMarketClient(new )
-	// 	// setMarketAccountsClient(new )
+		const provider =  new anchor.Provider(connection, wallet, anchor.Provider.defaultOptions());
 
-	// }, [wallet])
+		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
+		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
+		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
+		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
+
+		console.log("here", digitalMarketClient, disputeProgramClient, physicalMarketClient, marketAccountsClient);
+	}, [wallet])
 
 	return(
 		<header className="top-0 w-full h-14 sm:h-20 sticky flex">
