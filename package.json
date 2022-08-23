@@ -17,6 +17,6 @@
     "turbo": "^1.4.3"
   },
   "dependencies": {
-    "market-clients":"file:../packages/market-clients"
+    "orbit-clients":"file:../packages/orbit-clients"
   }
 }

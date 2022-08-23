@@ -5,13 +5,37 @@ import OrbitLogo from '../public/OrbitLogo.png'
 import { HeaderSearchBar } from '@includes/components/SearchBar'
 import { ShoppingCartIcon } from '@heroicons/react/outline'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { useCallback } from 'react'
+import { useCallback, useContext } from 'react';
+
+// import {OrbitProgramClients} from "orbit-clients";
+// import * as orbitclients from "orbit-clients";
+
+import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
+import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
+import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
+import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+
 
 export function HomeHeader(props) {
 
-	const SetWallet = useCallback(()=>{
+	// let connection = useConnection();
+	// let wallet = useWallet();
 
-	})
+	// const [digitalMarketClient, setDigitalMarketClient] = useContext(DigitalMarketCtx);
+	// const [disputeProgramClient, setDisputeProgramClient] = useContext(DisputeProgramCtx);
+	// const [physicalMarketClient, setPhysicalMarketClient] = useContext(PhysicalMarketCtx);
+	// const [marketAccountsClient, setMarketAccountsClient] = useContext(MarketAccountsCtx);
+
+	// const SetClients = useCallback(()=>{
+	// 	if(!wallet)return;
+
+	// 	// setDigitalMarketClient(new )
+	// 	// setDisputeProgramClient(new )
+	// 	// setPhysicalMarketClient(new )
+	// 	// setMarketAccountsClient(new )
+
+	// }, [wallet])
 
 	return(
 		<header className="top-0 w-full h-14 sm:h-20 sticky flex">

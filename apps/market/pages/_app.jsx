@@ -1,5 +1,5 @@
 import 'styles/globals.css'
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -26,9 +26,19 @@ import {
   SolanaMobileWalletAdapter,
 } from '@solana-mobile/wallet-adapter-mobile';
 
+import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
+import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
+import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
+
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
+  
+  const [digitalMarketClient, setDigitalMarketClient] = useState();
+  const [disputeProgramClient, setDisputeProgramClient] = useState();
+  const [physicalMarketClient, setPhysicalMarketClient] = useState();
+  const [marketAccountsClient, setMarketAccountsClient] = useState();
 
   const network = WalletAdapterNetwork.Devnet;
 
@@ -61,7 +71,19 @@ function MyApp({ Component, pageProps }) {
     <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                    <Component {...pageProps} />
+                
+                <PhysicalMarketCtx.Provider value={{physicalMarketClient, setPhysicalMarketClient}}>
+                  <DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
+                    <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
+                      <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
+
+                        <Component {...pageProps} />
+
+                      </DisputeProgramCtx.Provider>
+                    </MarketAccountsCtx.Provider>
+                  </DigitalMarketCtx.Provider>
+                </PhysicalMarketCtx.Provider>
+                
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>
