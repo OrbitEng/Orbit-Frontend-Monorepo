@@ -6,6 +6,9 @@
     "apps/*",
     "packages/*"
   ],
+  "bundledDependencies": [
+    "orbit-clients"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
@@ -17,6 +20,6 @@
     "turbo": "^1.4.3"
   },
   "dependencies": {
-    "orbit-clients":"file:../packages/orbit-clients"
+    "orbit-clients":"file:packages/orbit-clients"
   }
 }
