@@ -1,6 +1,6 @@
-import { FC, useState, Fragment } from 'react'
-import { Combobox, Transition } from '@headlessui/react'
-import { SearchIcon } from '@heroicons/react/outline'
+import { FC, useState, Fragment } from 'react';
+import { Combobox, Transition } from '@headlessui/react';
+import { SearchIcon } from '@heroicons/react/outline';
 
 export function HeaderSearchBar() {
 	const [ selected, setSelected ] = useState({})
@@ -18,7 +18,10 @@ export function HeaderSearchBar() {
 						</select>
 					</div>
 					<SearchIcon className="h-5 w-5 text-[#4A4A4A] my-auto mr-1"/>
-					<Combobox.Input className="flex w-full bg-transparent text-[#4A4A4A] font-semibold" placeholder="Search in marketplace" onChange={(e) => setQuery(e.target.value)} />
+					<Combobox.Input
+					className="flex w-full bg-transparent text-[#4A4A4A] font-semibold"
+					placeholder="Search in marketplace"
+					onChange={(e) => setQuery(e.target.value)} />
 				</Combobox>
 			</div>
 			<div className="flex flex-row ml-4 gap-3 text-xs sm:text-base">

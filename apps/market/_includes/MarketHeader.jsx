@@ -8,13 +8,14 @@ import { ShoppingCartIcon } from '@heroicons/react/outline'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useCallback, useContext, useEffect } from 'react';
 
-const {DigitalMarketClient, PhysicalMarketClient, DisputeClient, MarketAccountsClient} = require("orbit-clients")
+const {DigitalMarketClient, PhysicalMarketClient, DisputeClient, MarketAccountsClient, CatalogClient} = require("orbit-clients")
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
-import { useAnchorWallet, useConnection, useWallet } from '@solana/wallet-adapter-react'
+import CatalogCtx from '@contexts/CatalogCtx';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 
 
 export function HomeHeader(props) {
@@ -26,6 +27,7 @@ export function HomeHeader(props) {
 	const {disputeProgramClient, setDisputeProgramClient} = useContext(DisputeProgramCtx);
 	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
+	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
 
 	const SetClients = useEffect(()=>{
 		if(!wallet) return;
@@ -36,8 +38,9 @@ export function HomeHeader(props) {
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
 		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
 		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
+		setCatalogClient(new CatalogClient(wallet, connection, provider));
 
-		console.log("here", digitalMarketClient, disputeProgramClient, physicalMarketClient, marketAccountsClient);
+		// console.log("here", digitalMarketClient, disputeProgramClient, physicalMarketClient, marketAccountsClient, catalogClient);
 	}, [wallet])
 
 	return(

@@ -30,6 +30,7 @@ import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
+import CatalogCtx from "@contexts/CatalogCtx";
 
 // TODO: init redux here too
 // App wrapper that has all these providers
@@ -39,6 +40,7 @@ function MyApp({ Component, pageProps }) {
   const [disputeProgramClient, setDisputeProgramClient] = useState();
   const [physicalMarketClient, setPhysicalMarketClient] = useState();
   const [marketAccountsClient, setMarketAccountsClient] = useState();
+  const [catalogClient, setCatalogClient] = useState();
 
   const network = WalletAdapterNetwork.Devnet;
 
@@ -76,9 +78,11 @@ function MyApp({ Component, pageProps }) {
                   <DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
                     <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
                       <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
-
-                        <Component {...pageProps} />
-
+                        <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
+                        
+                          <Component {...pageProps} />
+                        
+                        </CatalogCtx.Provider>
                       </DisputeProgramCtx.Provider>
                     </MarketAccountsCtx.Provider>
                   </DigitalMarketCtx.Provider>

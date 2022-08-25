@@ -1,8 +1,43 @@
-import { useState } from "react"
-import { ProductDisplayCard } from "./components/ProductDisplayCards"
+import { useCallback, useEffect, useState } from "react";
+import { ProductDisplayCard } from "./components/ProductDisplayCards";
+
+import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
+import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
+import CatalogCtx from '@contexts/CatalogCtx';
 
 export function HomeProductExplorer(props) {
-	const [ products, setProducts ] = useState(undefined) 
+	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
+	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
+
+	const [ digitalProducts, setDigitalProducts ] = useState({});
+
+	const [ physicalProducts, setPhysicalProducts ] = useState({});
+
+	const updateDigitalProducts = useCallback(async ()=>{
+		setDigitalProducts(
+			await digitalMarketClient.GetMultipleDigitalProducts(
+				await catalogClient.GetCatalog(
+					(await digitalMarketClient.GenRecentCatalog())[0]
+				)
+			)
+		)
+	},[]);
+
+	const updatePhysicalProducts = useCallback(async ()=>{
+		setPhysicalProducts(
+			await physicalMarketClient.GetMultiplePhysicalProducts(
+				await catalogClient.GetCatalog(
+					(await physicalMarketClient.GenRecentCatalog())[0]
+				)
+			)
+		)
+	},[]);
+
+	useEffect(async ()=>{
+		await updateDigitalProducts();
+		await updatePhysicalProducts();
+	},[])
 
 	return(
 		<div className="container mx-auto flex flex-col overflow-visible">
