@@ -41,7 +41,7 @@ export function HomeHeader(props) {
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 
 		// console.log("here", digitalMarketClient, disputeProgramClient, physicalMarketClient, marketAccountsClient, catalogClient);
-	}, [setCatalogClient])
+	}, [])
 
 	return(
 		<header className="top-0 w-full h-14 sm:h-20 sticky flex">
