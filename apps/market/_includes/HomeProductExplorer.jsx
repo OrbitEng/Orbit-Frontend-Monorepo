@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useContext } from "react";
 import { ProductDisplayCard } from "./components/ProductDisplayCards";
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
@@ -10,11 +10,12 @@ export function HomeProductExplorer(props) {
 	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
 
-	const [ digitalProducts, setDigitalProducts ] = useState({});
+	const [ digitalProducts, setDigitalProducts ] = useState();
 
-	const [ physicalProducts, setPhysicalProducts ] = useState({});
+	const [ physicalProducts, setPhysicalProducts ] = useState();
 
 	const updateDigitalProducts = useCallback(async ()=>{
+		if(!digitalMarketClient)return;
 		setDigitalProducts(
 			await digitalMarketClient.GetMultipleDigitalProducts(
 				await catalogClient.GetCatalog(
@@ -22,9 +23,10 @@ export function HomeProductExplorer(props) {
 				)
 			)
 		)
-	},[]);
+	},[digitalMarketClient]);
 
 	const updatePhysicalProducts = useCallback(async ()=>{
+		if(!physicalMarketClient)return;
 		setPhysicalProducts(
 			await physicalMarketClient.GetMultiplePhysicalProducts(
 				await catalogClient.GetCatalog(
@@ -32,12 +34,12 @@ export function HomeProductExplorer(props) {
 				)
 			)
 		)
-	},[]);
+	},[physicalMarketClient]);
 
 	useEffect(async ()=>{
 		await updateDigitalProducts();
 		await updatePhysicalProducts();
-	},[])
+	},[updateDigitalProducts, updatePhysicalProducts])
 
 	return(
 		<div className="container mx-auto flex flex-col overflow-visible">
@@ -49,7 +51,13 @@ export function HomeProductExplorer(props) {
 				<button className="rounded-full px-4 py-2 bg-[#8431D7]">NFT</button>
 			</div>
 			<div className="my-6 grid grid-flow-row overflow-visible grid-cols-4 grid-rows-4 gap-x-16">
-				{products?.map(c => {
+				{digitalProducts?.map(c => {
+					return(
+						<ProductDisplayCard product={c} />
+					)
+				})}
+
+				{physicalProducts?.map(c => {
 					return(
 						<ProductDisplayCard product={c} />
 					)

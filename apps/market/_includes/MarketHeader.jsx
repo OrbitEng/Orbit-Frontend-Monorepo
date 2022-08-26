@@ -20,7 +20,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 
 export function HomeHeader(props) {
 
-	let connection = useConnection();
+	let {connection} = useConnection();
 	let wallet = useWallet();
 
 	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
@@ -41,7 +41,7 @@ export function HomeHeader(props) {
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 
 		// console.log("here", digitalMarketClient, disputeProgramClient, physicalMarketClient, marketAccountsClient, catalogClient);
-	}, [wallet])
+	}, [setCatalogClient])
 
 	return(
 		<header className="top-0 w-full h-14 sm:h-20 sticky flex">
