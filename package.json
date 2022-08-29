@@ -22,5 +22,12 @@
   "dependencies": {
     "@project-serum/anchor": "^0.25.0",
     "orbit-clients": "file:packages/orbit-clients"
+<<<<<<< HEAD
   }
+=======
+  },
+  "bundleDependencies": [
+    "orbit-clients"
+  ]
+>>>>>>> 27a1081775bbde7fa46090efb50ddaaf762b3997
 }
