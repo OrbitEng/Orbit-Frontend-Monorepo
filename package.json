@@ -20,6 +20,10 @@
     "turbo": "^1.4.3"
   },
   "dependencies": {
-    "orbit-clients":"file:packages/orbit-clients"
-  }
+    "@project-serum/anchor": "^0.25.0",
+    "orbit-clients": "file:packages/orbit-clients"
+  },
+  "bundleDependencies": [
+    "orbit-clients"
+  ]
 }
