@@ -29,8 +29,9 @@ export function HomeHeader(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
 
-	const SetClients = useEffect(()=>{
+	useEffect(()=>{
 		if(!wallet) return;
+		console.log(wallet)
 
 		const provider =  new anchor.Provider(connection, wallet, anchor.Provider.defaultOptions());
 
