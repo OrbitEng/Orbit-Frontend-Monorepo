@@ -31,9 +31,8 @@ export function HomeHeader(props) {
 
 	useEffect(()=>{
 		if(!wallet) return;
-		console.log(wallet)
 
-		const provider =  new anchor.Provider(connection, wallet, anchor.Provider.defaultOptions());
+		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
 
 		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));

@@ -73,21 +73,17 @@ function MyApp({ Component, pageProps }) {
     <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                
-                <PhysicalMarketCtx.Provider value={{physicalMarketClient, setPhysicalMarketClient}}>
-                  <DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
-                    <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
-                      <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
-                        <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
-                        
-                          <Component {...pageProps} />
-                        
-                        </CatalogCtx.Provider>
-                      </DisputeProgramCtx.Provider>
-                    </MarketAccountsCtx.Provider>
-                  </DigitalMarketCtx.Provider>
-                </PhysicalMarketCtx.Provider>
-                
+					<PhysicalMarketCtx.Provider value={{physicalMarketClient, setPhysicalMarketClient}}>
+						<DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
+							<MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
+								<DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
+									<CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
+										<Component {...pageProps} />
+									</CatalogCtx.Provider>
+								</DisputeProgramCtx.Provider>
+							</MarketAccountsCtx.Provider>
+						</DigitalMarketCtx.Provider>
+					</PhysicalMarketCtx.Provider>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>
