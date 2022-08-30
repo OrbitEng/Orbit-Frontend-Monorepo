@@ -2,11 +2,13 @@ import { useContext, useState } from 'react'
 import sdk from 'matrix-js-sdk'
 import MatrixClientCtx from "@contexts/MatrixClientCtx"
 
+const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
+
 async function sendMessage(client, msg, roomid) {
 	await client.sendEvent(roomid, "m.room.message", {
 		"body": msg + "",
 		"msgtype": "m.text"
-	}, "")
+	})
 }
 
 async function login(client, user, pass) {
@@ -16,13 +18,42 @@ async function login(client, user, pass) {
 		}).then((res) => {
 			console.log(res);
 		})
-
+		await client.initCrypto();
 		await client.startClient();
 
 		await client.once('sync', function(state, prevState, res) {
 			console.log(state);
 		})
 }
+
+async function makeEncRoom(client, usersToInvite) {
+	const {
+	  room_id: roomId,
+	} = await client.createRoom({
+	  visibility: 'private',
+	  invite: usersToInvite,
+	});
+
+	// (see https://github.com/matrix-org/matrix-js-sdk/issues/905)
+	await this.sendStateEvent(
+	  roomId, 'm.room.encryption', ROOM_CRYPTO_CONFIG,
+	);
+	await this.setRoomEncryption(
+	  roomId, ROOM_CRYPTO_CONFIG,
+	);
+
+	let room = this.getRoom(roomId);
+	let members = (await room.getEncryptionTargetMembers()).map(x => x["userId"])
+	let memberkeys = await this.downloadKeys(members);
+	for (const userId in memberkeys) {
+	  for (const deviceId in memberkeys[userId]) {
+		await this.setDeviceVerified(userId, deviceId);
+	  }
+	}
+
+	return roomId;
+}
+
 
 export default function chat() {
 	const matrixClient = useContext(MatrixClientCtx)
