@@ -1,7 +1,8 @@
 import 'styles/globals.css'
 import { useMemo, useState } from 'react';
+import * as sdk from 'matrix-js-sdk';
 
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
   CoinbaseWalletAdapter,
@@ -14,34 +15,41 @@ import {
   TorusWalletAdapter,
   TokenaryWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
+
 import {
   WalletModalProvider,
   WalletDisconnectButton,
   WalletMultiButton
 } from '@solana/wallet-adapter-react-ui';
-import { clusterApiUrl } from '@solana/web3.js';
+
 import { 
   createDefaultAddressSelector,
   createDefaultAuthorizationResultCache,
   SolanaMobileWalletAdapter,
 } from '@solana-mobile/wallet-adapter-mobile';
 
+import { clusterApiUrl } from '@solana/web3.js';
+
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 import CatalogCtx from "@contexts/CatalogCtx";
+import MatrixClientCtx from '@contexts/MatrixClientCtx';
 
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
-  
+  ///////////////////////////////////////////////////////////////////////////////////////////////////  
+  // marketplace clients
   const [digitalMarketClient, setDigitalMarketClient] = useState();
   const [disputeProgramClient, setDisputeProgramClient] = useState();
   const [physicalMarketClient, setPhysicalMarketClient] = useState();
   const [marketAccountsClient, setMarketAccountsClient] = useState();
   const [catalogClient, setCatalogClient] = useState();
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////  
+  // Solana wallet
   const network = WalletAdapterNetwork.Devnet;
 
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
@@ -69,21 +77,26 @@ function MyApp({ Component, pageProps }) {
       []
   );
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////  
+  // Chat Client
+  const matrixClient = sdk.createClient('https://matrix.org')
   return (
-    <ConnectionProvider endpoint={endpoint}>
+          <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-					<PhysicalMarketCtx.Provider value={{physicalMarketClient, setPhysicalMarketClient}}>
-						<DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
-							<MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
-								<DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
-									<CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
-										<Component {...pageProps} />
-									</CatalogCtx.Provider>
-								</DisputeProgramCtx.Provider>
-							</MarketAccountsCtx.Provider>
-						</DigitalMarketCtx.Provider>
-					</PhysicalMarketCtx.Provider>
+                  <MatrixClientCtx.Provider value={matrixClient}>
+                    <PhysicalMarketCtx.Provider value={{physicalMarketClient, setPhysicalMarketClient}}>
+                      <DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
+                        <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
+                          <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
+                            <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
+                              <Component {...pageProps} />
+                            </CatalogCtx.Provider>
+                          </DisputeProgramCtx.Provider>
+                        </MarketAccountsCtx.Provider>
+                      </DigitalMarketCtx.Provider>
+                    </PhysicalMarketCtx.Provider>
+                  </MatrixClientCtx.Provider>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>
