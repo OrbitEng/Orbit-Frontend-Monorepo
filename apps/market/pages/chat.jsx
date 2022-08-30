@@ -5,10 +5,12 @@ import MatrixClientCtx from "@contexts/MatrixClientCtx"
 const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
 
 async function sendMessage(client, msg, roomid) {
-	await client.sendEvent(roomid, "m.room.message", {
-		"body": msg + "",
-		"msgtype": "m.text"
-	})
+	await client.sendMessage(roomid,
+		{
+			"body": msg + "",
+			"msgtype": "m.text"
+		}
+	)
 }
 
 // So what we are going to do for login is
