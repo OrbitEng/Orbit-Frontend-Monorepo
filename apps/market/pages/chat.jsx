@@ -11,6 +11,9 @@ async function sendMessage(client, msg, roomid) {
 	})
 }
 
+// So what we are going to do for login is
+// user: wallet pubkey
+// pass: the phrase "chatpassword" signed by the wallet
 async function login(client, user, pass) {
 	await client.login("m.login.password", {
 			"user": user + "",
@@ -35,19 +38,19 @@ async function makeEncRoom(client, usersToInvite) {
 	});
 
 	// (see https://github.com/matrix-org/matrix-js-sdk/issues/905)
-	await this.sendStateEvent(
+	await client.sendStateEvent(
 	  roomId, 'm.room.encryption', ROOM_CRYPTO_CONFIG,
 	);
-	await this.setRoomEncryption(
+	await client.setRoomEncryption(
 	  roomId, ROOM_CRYPTO_CONFIG,
 	);
 
-	let room = this.getRoom(roomId);
+	let room = client.getRoom(roomId);
 	let members = (await room.getEncryptionTargetMembers()).map(x => x["userId"])
-	let memberkeys = await this.downloadKeys(members);
+	let memberkeys = await client.downloadKeys(members);
 	for (const userId in memberkeys) {
 	  for (const deviceId in memberkeys[userId]) {
-		await this.setDeviceVerified(userId, deviceId);
+		await client.setDeviceVerified(userId, deviceId);
 	  }
 	}
 
