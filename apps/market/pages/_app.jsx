@@ -38,6 +38,7 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 import CatalogCtx from "@contexts/CatalogCtx";
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
+import BundlrCtx from '@contexts/BundlrCtx';
 
 // TODO: init redux here too
 // App wrapper that has all these providers
@@ -49,6 +50,7 @@ function MyApp({ Component, pageProps }) {
   const [physicalMarketClient, setPhysicalMarketClient] = useState();
   const [marketAccountsClient, setMarketAccountsClient] = useState();
   const [catalogClient, setCatalogClient] = useState();
+  const [bundlrClient, setBundlrClient] = useState();
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet
@@ -131,7 +133,9 @@ function MyApp({ Component, pageProps }) {
                         <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
                           <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
                             <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
-                              <Component {...pageProps} />
+                              <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
+                                <Component {...pageProps} />
+                              </BundlrCtx.Provider>
                             </CatalogCtx.Provider>
                           </DisputeProgramCtx.Provider>
                         </MarketAccountsCtx.Provider>
