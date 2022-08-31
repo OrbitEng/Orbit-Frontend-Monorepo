@@ -19,10 +19,39 @@ async function sendMessage(client, msg, roomid) {
 async function login(client, user, pass) {
 	await client.login("m.login.password", {
 			"user": user + "",
-			"password": pass + ""
-		}).then((res) => {
+			"password": "Epicstyle03!"
+		}).then(async (res) => {
 			console.log(res);
-		})
+			client = await sdk.createClient({
+				baseUrl: 'https://matrix.org',
+				userId: res.user_id,
+				accessToken: res.access_token,
+				deviceId: res.device_id,
+				sessionStore: window.localStorage,
+				cryptoStore: new sdk.MemoryCryptoStore(),
+			})
+		})/* this gets hung up on some typeError
+		.catch(async (e) => {
+			console.log(e.name)
+			if (e.name == 'RuntimeError') {
+				const res = await client.register(
+					user,
+					pass,
+					null,
+					{ type: 'm.login.dummy' }
+				)
+
+				client = await sdk.register({
+					baseUrl: 'https://matrix.org',
+					userId: res.user_id,
+					accessToken: res.access_token,
+					deviceId: res.device_id,
+					sessionStore: new sdk.WebStorageSessionStore(window.localStorage),
+					cryptoStore: new sdk.MemoryCryptoStore(),
+				})
+			}
+		})*/
+
 		await client.initCrypto();
 		await client.startClient();
 
@@ -56,7 +85,7 @@ async function makeEncRoom(client, usersToInvite) {
 	  }
 	}
 
-	return roomId;
+	return (roomId);
 }
 
 
@@ -64,20 +93,29 @@ export default function chat() {
 	const matrixClient = useContext(MatrixClientCtx)
 	const [ chatText, setChatText ] = useState()
 	const [ roomId, setRoomId ] = useState()
+	const [ inviteUser, setInviteUser ] = useState()
 	const [ userName, setUserName ] = useState()
 	const [ password, setPassword ] = useState()
 
 	return(
 		<div className="bg-[#070513] w-full min-h-screen flex flex-col m-auto">
 			<div className="m-10 flex flex-col">
-				<input type="text" value={userName || ''} onChange={e => {setUserName(e.target.value)}} className="m-10"/>
-				<input type="text" value={password || ''} onChange={e => {setPassword(e.target.value)}} className="m-10"/>
-				<button className="bg-white m-10" onClick={e => {login(matrixClient, userName, password)}}>LOGIN</button>
+				<input type="text" placeholder="username" value={userName || ''} onChange={e => {setUserName(e.target.value)}} className="m-2"/>
+				<input type="text" placeholder="password" value={password || ''} onChange={e => {setPassword(e.target.value)}} className="m-2"/>
+				<button className="bg-white m-2" onClick={e => {login(matrixClient, userName, password)}}>LOGIN</button>
 			</div>
 			<div className="m-10 flex flex-col">
-				<input type="text" value={chatText || ''} onChange={(e) => {setChatText(e.target.value)}} className="m-10"/>
-				<input type="text" value={roomId || ''} onChange={(e) => {setRoomId(e.target.value)}} className="m-10"/>
-				<button className="bg-white m-10" onClick={e => {sendMessage(matrixClient, chatText)}}>Send Message</button>
+				<input type="text" value={chatText || ''} placeholder="chat message" onChange={(e) => {setChatText(e.target.value)}} className="m-2"/>
+				<input type="text" value={roomId || ''} placeholder="message target roomid" onChange={(e) => {setRoomId(e.target.value)}} className="m-2"/>
+				<button className="bg-white m-2" onClick={e => {sendMessage(matrixClient, chatText)}}>Send Message</button>
+			</div>
+			<div className="m-10 flex flex-col">
+				<input type="text" value={inviteUser || ''} placeholder="invite userid" onChange={(e) => {setInviteUser(e.target.value)}} className="m-2"/>
+				<button className="bg-white m-2" onClick={e => {makeEncRoom(matrixClient, [inviteUser])}}>Make Room</button>
+			</div>
+			<div className="m-10 flex flex-col">
+				<button className="bg-white m-2" onClick={e => {sendMessage(matrixClient, chatText)}}>idk</button>
+				<button className="bg-white m-10" onClick={e => {sendMessage(matrixClient, chatText)}}>idk#2</button>
 			</div>
 		</div>
 	)

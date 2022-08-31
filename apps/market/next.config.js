@@ -11,6 +11,7 @@ const runtimeCaching = require('next-pwa/cache');
 module.exports = withTM({
   reactStrictMode: true,
   webpack5: true,
+  productionBrowserSourceMaps: true,
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
@@ -19,6 +20,16 @@ module.exports = withTM({
       path: false,
       crypto: require.resolve("crypto-browserify"),
     };
+    config.module.rules.push({
+      test: /\.wasm$/,
+      type: 'asset/resource',
+      loader: 'file-loader',
+      generator: {
+        filename: 'static/[hash][ext][query]'
+      }
+    })
+    const experiments = config.experiments || {};
+    config.experiments = {...experiments, asyncWebAssembly: true};
 
     return config;
   },
