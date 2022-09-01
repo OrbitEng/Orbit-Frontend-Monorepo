@@ -1,5 +1,5 @@
-import olmWasmPath from 'olm/olm.wasm'
-import Olm from 'olm'
+import olmWasmPath from '@matrix-org/olm/olm.wasm'
+import Olm from '@matrix-org/olm'
 import 'styles/globals.css'
 import { useMemo, useState } from 'react';
 import * as sdk from 'matrix-js-sdk';
@@ -31,6 +31,8 @@ import {
 } from '@solana-mobile/wallet-adapter-mobile';
 
 import { clusterApiUrl } from '@solana/web3.js';
+
+const fs = require("fs");
 
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
@@ -97,8 +99,9 @@ function MyApp({ Component, pageProps }) {
      * completely impossible with webpack. We do, however, use a hashed
      * filename to avoid caching issues.
      */
+
     return Olm.init({
-        locateFile: () => olmWasmPath,
+        locateFile: () => window.location.href + olmWasmPath.replace("/_next",""),
     }).then(() => {
         console.log("Using WebAssembly Olm");
     }).catch((wasmLoadError) => {

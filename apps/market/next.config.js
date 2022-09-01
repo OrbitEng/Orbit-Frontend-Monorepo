@@ -19,15 +19,18 @@ module.exports = withTM({
       stream: require.resolve("stream-browserify"),
       path: false,
       crypto: require.resolve("crypto-browserify"),
+      zlib: require.resolve("browserify-zlib"),
     };
     config.module.rules.push({
-      test: /\.wasm$/,
-      type: 'asset/resource',
-      loader: 'file-loader',
-      generator: {
-        filename: 'static/[hash][ext][query]'
-      }
-    })
+        test: /\.wasm$/,
+        type: 'javascript/auto',
+        loader: 'file-loader',
+        options: {
+          name: '[name].[hash:7].[ext]',
+          outputPath: '.',
+        },
+      });
+    config.module.noParse = [/olm[\\/](javascript[\\/])?olm\.js$/];
     const experiments = config.experiments || {};
     config.experiments = {...experiments, asyncWebAssembly: true};
 
