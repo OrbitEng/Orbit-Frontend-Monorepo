@@ -101,7 +101,7 @@ function MyApp({ Component, pageProps }) {
      */
 
     return Olm.init({
-        locateFile: () => window.location.href + olmWasmPath.replace("/_next",""),
+        locateFile: () => process.env.NEXT_PUBLIC_URL + olmWasmPath.replace("/_next",""),
     }).then(() => {
         console.log("Using WebAssembly Olm");
     }).catch((wasmLoadError) => {
