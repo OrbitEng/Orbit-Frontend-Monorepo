@@ -1,7 +1,7 @@
 import olmWasmPath from '@matrix-org/olm/olm.wasm'
 import Olm from '@matrix-org/olm'
 import 'styles/globals.css'
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as sdk from 'matrix-js-sdk';
 
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
@@ -86,7 +86,7 @@ function MyApp({ Component, pageProps }) {
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Chat Client (this init one is just used for login)
   const matrixClient = sdk.createClient('https://matrix.org')
-  function loadOlm() {
+  const loadOlm = useEffect(()=>{
     /* Load Olm. We try the WebAssembly version first, and then the legacy,
      * asm.js version if that fails. For this reason we need to wait for this
      * to finish before continuing to load the rest of the app. In future
@@ -122,8 +122,7 @@ function MyApp({ Component, pageProps }) {
             console.log("Both WebAssembly and asm.js Olm failed!", legacyLoadError);
         });
     });
-  };
-  loadOlm();
+  }, [])
   
 
   return (
