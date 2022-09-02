@@ -10,10 +10,14 @@ module.exports = {
     extend: {
       colors: {
         homeheaderpurple: 'rgba(49,48,113,0.22)',
-        homeheadergray: 'rgba(26,25,25,0.22)'
+        homeheadergray: 'rgba(26,25,25,0.22)',
+        buttontransparent: 'rgba(24,20,36,0.82)',
+        buttontransparent2: 'rgba(45,42,53,0.95)',
+        searchbartransparent: 'rgba(10,10,10,0.66)',
+        searchbuttontrans: 'rgba(45,42,53,0.7)',
+        searchbuttontrans2: 'rgba(45,42,53,0.1)'
       }
     },
-
   },
   plugins: [],
 }
