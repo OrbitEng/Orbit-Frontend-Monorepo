@@ -10,7 +10,6 @@
   "dependencies": {
     "@headlessui/react": "^1.6.6",
     "@heroicons/react": "^1.0.6",
-    "@matrix-org/olm": "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.12.tgz",
     "@reduxjs/toolkit": "^1.8.4",
     "@solana-mobile/wallet-adapter-mobile": "^0.9.0",
     "@solana/wallet-adapter-base": "^0.9.11",

@@ -9,7 +9,7 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useCallback, useContext, useEffect } from 'react';
 
 const {DigitalMarketClient, PhysicalMarketClient, DisputeClient, MarketAccountsClient, CatalogClient} = require("orbit-clients");
-const {BundlrClient} = require("data-transfer-clients");
+const {BundlrClient, ChatClient} = require("data-transfer-clients");
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
@@ -17,6 +17,7 @@ import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import CatalogCtx from '@contexts/CatalogCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
+import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 
 
@@ -31,11 +32,13 @@ export function HomeHeader(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
+	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 
 	useEffect(()=>{
 		if(!wallet) return;
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
+		console.log(provider);
 
 		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
@@ -43,6 +46,7 @@ export function HomeHeader(props) {
 		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(provider));
+		// setMatrixClient(new ChatClient(provider));
 
 		// console.log("here", digitalMarketClient, disputeProgramClient, physicalMarketClient, marketAccountsClient, catalogClient);
 	}, [])
