@@ -17,7 +17,7 @@ export default function TopVendorsDisplay(props) {
 
 	// fetch the top 8 vendors and display here
 	return(
-		<div className="flex flex-col justify-center mx-auto w-full mt-28">
+		<div className="flex flex-col justify-center mx-auto w-full m-28">
 			<div className="text-white w-full font-bold text-4xl text-center mb-10">Top Vendor Profiles 🛍️</div>
 			<div className="grid grid-flow-row grid-rows-2 grid-cols-3 gap-x-5 gap-y-8 w-full">
 			{
@@ -32,7 +32,7 @@ export default function TopVendorsDisplay(props) {
 
 function Vendor(props) {
 	return(
-		<div className="flex flex-row bg-[#171717] rounded-xl px-auto py-5 justify-around">
+		<div className="flex flex-row bg-[#171717] rounded-xl px-auto py-5 justify-around" key={props.rank}>
 			<span className="text-white text-xl align-middle my-auto font-bold">{props.rank}</span>
 			<div className="relative h-12 w-12 rounded-full overflow-hidden">
 				<Image 
