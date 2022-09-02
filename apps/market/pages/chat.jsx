@@ -3,7 +3,7 @@ import MatrixClientCtx from "@contexts/MatrixClientCtx"
 
 
 export default function chat() {
-	const matrixClient = useContext(MatrixClientCtx)
+	const {matrixClient} = useContext(MatrixClientCtx)
 	const [ chatText, setChatText ] = useState()
 	const [ roomId, setRoomId ] = useState()
 	const [ inviteUser, setInviteUser ] = useState()

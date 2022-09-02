@@ -38,17 +38,13 @@ export function HomeHeader(props) {
 		if(!wallet) return;
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
-		console.log(provider);
-
 		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
 		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
 		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
-		setBundlrClient(new BundlrClient(provider));
-		// setMatrixClient(new ChatClient(provider));
-
-		// console.log("here", digitalMarketClient, disputeProgramClient, physicalMarketClient, marketAccountsClient, catalogClient);
+		setBundlrClient(new BundlrClient(wallet));
+		setMatrixClient(new ChatClient(wallet));
 	}, [])
 
 	return(
