@@ -51,10 +51,10 @@ export default function TopVendorsDisplay(props) {
 		profilepic: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y",
 	}
 
-	// let topVendors = []
-	// for(let i=1; i<7; i++) {
-	// 	topVendors.push(dummyVendor)
-	// }
+	let undefVendorsArr = []
+	for(let i=1; i<7; i++) {
+		undefVendorsArr.push(i)
+	}
 
 	// fetch the top 8 vendors and display here
 	return(
@@ -62,9 +62,13 @@ export default function TopVendorsDisplay(props) {
 			<div className="text-white w-full font-bold text-4xl text-center mb-10">Top Vendor Profiles 🛍️</div>
 			<div className="grid grid-flow-row grid-rows-2 grid-cols-3 gap-x-5 gap-y-8 w-full">
 			{
-				topVendors?.map((vendor, index) => {
-					return(<Vendor vendor={vendor} rank={index + 1} />)
-				})	
+				topVendors == undefined ? 
+					undefVendorsArr.map((number, index) => {
+						return(<Vendor vendor={dummyVendor} rank={number} />)
+					})
+					: topVendors?.map((vendor, index) => {
+						return(<Vendor vendor={vendor} rank={index + 1} />)
+					})
 			}
 			</div>
 		</div>
