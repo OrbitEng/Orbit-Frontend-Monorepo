@@ -12,7 +12,7 @@ export default function TopVendorsDisplay(props) {
 
 	const [topVendors, setTopVendors] = useState();
 
-	useEffect(()=>{
+	useEffect(async ()=>{
 		if(!(marketAccountsClient && catalogClient)){
 			return
 		}
@@ -33,7 +33,7 @@ export default function TopVendorsDisplay(props) {
 		}));
 
 		// idk what metadata looks like yet in terms of json struct
-		setTopVendors(top_vendors.map((vendor, index) =>{
+		setTopVendors(top_vendors?.map((vendor, index) =>{
 			return {
 				name: JSON.parse(metadatas[index]).nickname,
 				address: top_vendors_addrs[index].toString(),
@@ -62,7 +62,7 @@ export default function TopVendorsDisplay(props) {
 			<div className="text-white w-full font-bold text-4xl text-center mb-10">Top Vendor Profiles 🛍️</div>
 			<div className="grid grid-flow-row grid-rows-2 grid-cols-3 gap-x-5 gap-y-8 w-full">
 			{
-				topVendors.map((vendor, index) => {
+				topVendors?.map((vendor, index) => {
 					return(<Vendor vendor={vendor} rank={index + 1} />)
 				})	
 			}
