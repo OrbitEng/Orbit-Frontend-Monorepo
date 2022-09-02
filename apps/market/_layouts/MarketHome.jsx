@@ -1,4 +1,5 @@
 import { HomeBanner } from '@includes/CardCarousel'
+import { PageSearchBar } from '@includes/components/SearchBar'
 import { HomeProductExplorer } from '@includes/HomeProductExplorer'
 import { HomeHeader } from '@includes/MarketHeader'
 import Head from 'next/head'
@@ -14,6 +15,7 @@ export function Home(props) {
 				<HomeHeader/>
 				<div className="max-w-5xl align-center mx-auto">
 					<HomeBanner />
+					<PageSearchBar />
 					<HomeProductExplorer />
 				</div>
 			</main>

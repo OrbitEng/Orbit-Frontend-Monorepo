@@ -49,7 +49,7 @@ export function HomeHeader(props) {
 
 	return(
 		<header className="mx-auto max-w-7xl h-14 sm:h-32 sticky flex flex-row justify-between bg-transparent">
-			<div className="relative py-auto w-40 align-middle content-start">
+			<div className="relative py-auto w-40 align-middle content-start mr-36">
 				<Image
 					src={OrbitLogo}
 					layout="fill"
