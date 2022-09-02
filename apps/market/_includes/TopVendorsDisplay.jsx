@@ -1,6 +1,47 @@
-import Image from "next/image"
+import Image from "next/image";
+import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+import CatalogCtx from "@contexts/CatalogCtx";
+import { useContext, useEffect, useState } from "react";
+import { ArQueryClient } from "data-transfer-clients";
+import { enc_common } from "browser-clients";
 
 export default function TopVendorsDisplay(props) {
+
+	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {catalogClient} = useContext(CatalogCtx);
+
+	const [topVendors, setTopVendors] = useState();
+
+	useEffect(()=>{
+		if(!(marketAccountsClient && catalogClient)){
+			return
+		}
+
+		// add temp logic here 
+		setTopVendors([]);
+
+		let top_vendors_addrs = await catalogClient.GetParty(
+			await marketAccountsClient.GetTopVendorsAddress()
+		);
+
+		let top_vendors = await marketAccountsClient.GetMultipleMarketAccounts(
+			top_vendors_addrs
+		);
+
+		let metadatas = await Promise.all(top_vendors.map((vendor) =>{
+			return ArQueryClient.FetchData(enc_common.utos(vendor.metadata));
+		}));
+
+		// idk what metadata looks like yet in terms of json struct
+		setTopVendors(top_vendors.map((vendor, index) =>{
+			return {
+				name: JSON.parse(metadatas[index]).nickname,
+				address: top_vendors_addrs[index].toString(),
+				sales: vendor.transactions.toNumber(),
+				profilepic: enc_common.utos(vendor.profilePic)
+			}
+		}))
+	}, []);
 
 	// this is just to show how I want to fetch vendors
 	const dummyVendor = {
@@ -10,10 +51,10 @@ export default function TopVendorsDisplay(props) {
 		profilepic: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y",
 	}
 
-	let topVendors = []
-	for(let i=1; i<7; i++) {
-		topVendors.push(dummyVendor)
-	}
+	// let topVendors = []
+	// for(let i=1; i<7; i++) {
+	// 	topVendors.push(dummyVendor)
+	// }
 
 	// fetch the top 8 vendors and display here
 	return(
