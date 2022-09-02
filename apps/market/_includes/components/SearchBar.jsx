@@ -40,7 +40,7 @@ export function PageSearchBar() {
 	const [ query, setQuery ] = useState({})
 
 	return(
-		<div className="flex flex-col rounded-lg p-auto w-fill mx-10 py-auto align-middle justify-center">
+		<div className="flex flex-col rounded-lg p-auto w-fill mx-10 mt-28 py-auto align-middle justify-center">
 			<div className="flex gap-3 flex-row rounded-full bg-searchbartransparent border-2 border-[#474747] p-4 w-full mx-auto py-auto align-middle">
 				<Combobox value={selected} onChange={setSelected} >
 					<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px]"/>
