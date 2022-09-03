@@ -29,8 +29,6 @@ import {
 
 import { clusterApiUrl } from '@solana/web3.js';
 
-const fs = require("fs");
-
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";

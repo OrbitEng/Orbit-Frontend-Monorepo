@@ -7,6 +7,7 @@ import ProductShowcaseRow from '@includes/ProductShowcaseRow'
 import TopVendorsDisplay from '@includes/TopVendorsDisplay'
 import NewsStand from '@includes/NewsStand'
 import Head from 'next/head'
+import { NavBar } from '@includes/components/NavBar'
 
 export function Home(props) {
 	return(
@@ -16,7 +17,7 @@ export function Home(props) {
 				<link rel="icon" href="favicon.ico" />
 			</Head>
 			<main className="bg-[url('/bgWallpaper.png')] bg-cover">
-				<HomeHeader/>
+				<HomeHeader headerMiddle={NavBar}/>
 				<div className="max-w-5xl align-center mx-auto">
 					<HomeBanner />
 					<PageSearchBar />

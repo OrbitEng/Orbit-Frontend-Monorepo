@@ -11,7 +11,6 @@ export function HomeProductExplorer(props) {
 	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
 
 	const [ digitalProducts, setDigitalProducts ] = useState();
-
 	const [ physicalProducts, setPhysicalProducts ] = useState();
 
 	const updateDigitalProducts = useCallback(async ()=>{
