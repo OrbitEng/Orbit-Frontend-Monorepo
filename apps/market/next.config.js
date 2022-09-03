@@ -3,6 +3,9 @@ const withTM = require('next-transpile-modules')([
   '@solana/wallet-adapter-base',
   '@solana/wallet-adapter-react-ui',
   '@solana/wallet-adapter-wallets',
+  'orbit-clients',
+  'browser-clients',
+  'data-transfer-clients',
 ]);
 
 const withPWA = require('next-pwa');
