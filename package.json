@@ -25,8 +25,5 @@
     "browser-clients": "file:packages/browser-clients",
     "data-transfer-clients": "file:packages/data-transfer-clients",
     "orbit-clients": "file:packages/orbit-clients"
-  },
-  "bundleDependencies": [
-    "orbit-clients"
-  ]
+  }
 }
