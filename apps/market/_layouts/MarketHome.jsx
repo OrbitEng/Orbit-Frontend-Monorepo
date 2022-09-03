@@ -8,7 +8,7 @@ import TopVendorsDisplay from '@includes/TopVendorsDisplay'
 import NewsStand from '@includes/NewsStand'
 import Head from 'next/head'
 import { NavBar } from '@includes/components/NavBar'
-import { MarketFooter } from '@includes/Footer';
+import { MainFooter } from '@includes/Footer';
 
 export function Home(props) {
 	return(
@@ -28,7 +28,7 @@ export function Home(props) {
 					<ProductShowcaseRow title="Services" searchable/>
 					<NewsStand />
 				</div>
-				<MarketFooter />
+				<MainFooter />
 			</main>
 		</div>
 	)
