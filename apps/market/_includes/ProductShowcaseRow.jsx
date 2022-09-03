@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { ProductDisplayCard } from "@includes/components/ProductDisplayCards";
+import { ProductDisplayCardHome } from "@includes/components/ProductDisplayCards";
 
 import Carousel from "react-multi-carousel";
 import 'react-multi-carousel/lib/styles.css'
@@ -67,13 +67,13 @@ export default function ProductShowcaseRow(props) {
 					dotListClass="custom-dot-list-style"
 					itemClass="carousel-item-padding-40px"
 				>
-					<ProductDisplayCard />
-					<ProductDisplayCard />
-					<ProductDisplayCard />
-					<ProductDisplayCard />
-					<ProductDisplayCard />
-					<ProductDisplayCard />
-					<ProductDisplayCard />
+					<ProductDisplayCardHome />
+					<ProductDisplayCardHome />
+					<ProductDisplayCardHome />
+					<ProductDisplayCardHome />
+					<ProductDisplayCardHome />
+					<ProductDisplayCardHome />
+					<ProductDisplayCardHome />
 				</Carousel>
 		</div>
 	)

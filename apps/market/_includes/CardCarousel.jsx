@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { Rerousel } from 'rerousel'
-import { BetaCard } from '@includes/components/NewsCards'
+import { BetaCard } from '@includes/components/LargeCards'
 
 export function HomeBanner(props) {
     //@ts-ignore
