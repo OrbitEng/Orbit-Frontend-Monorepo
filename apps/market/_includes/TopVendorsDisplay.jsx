@@ -64,10 +64,10 @@ export default function TopVendorsDisplay(props) {
 			{
 				topVendors == undefined ? 
 					undefVendorsArr.map((number, index) => {
-						return(<Vendor vendor={dummyVendor} rank={number} />)
+						return(<Vendor vendor={dummyVendor} rank={number} key={number} />)
 					})
 					: topVendors?.map((vendor, index) => {
-						return(<Vendor vendor={vendor} rank={index + 1} />)
+						return(<Vendor vendor={vendor} rank={index + 1} key={index + 1}/>)
 					})
 			}
 			</div>
