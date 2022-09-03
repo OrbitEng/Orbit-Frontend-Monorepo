@@ -1,8 +1,11 @@
 import { HomeBanner } from '@includes/CardCarousel'
+import { ProductDisplayCard } from '@includes/components/ProductDisplayCards'
 import { PageSearchBar } from '@includes/components/SearchBar'
 import { HomeProductExplorer } from '@includes/HomeProductExplorer'
 import { HomeHeader } from '@includes/MarketHeader'
+import ProductShowcaseRow from '@includes/ProductShowcaseRow'
 import TopVendorsDisplay from '@includes/TopVendorsDisplay'
+import NewsStand from '@includes/NewsStand'
 import Head from 'next/head'
 
 export function Home(props) {
@@ -18,7 +21,10 @@ export function Home(props) {
 					<HomeBanner />
 					<PageSearchBar />
 					<TopVendorsDisplay />
-					<HomeProductExplorer />
+					<ProductShowcaseRow title="Most Popular Items" />
+					<ProductShowcaseRow title="Digital Products" searchable />
+					<ProductShowcaseRow title="Services" searchable/>
+					<NewsStand />
 				</div>
 			</main>
 		</div>
