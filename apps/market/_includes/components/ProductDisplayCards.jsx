@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-export function ProductDisplayCard(props) {
+export function ProductDisplayCardHome(props) {
 	return(
 		<div className="row-span-1 col-span-1">
 			<div className="relative group">

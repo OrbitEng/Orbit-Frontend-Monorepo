@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useContext } from "react";
-import { ProductDisplayCard } from "./components/ProductDisplayCards";
+import { ProductDisplayCardHome } from "./components/ProductDisplayCards";
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
@@ -52,23 +52,23 @@ export function HomeProductExplorer(props) {
 			<div className="my-6 grid grid-flow-row overflow-visible grid-cols-4 grid-rows-4 gap-x-16">
 				{digitalProducts?.map(c => {
 					return(
-						<ProductDisplayCard product={c} />
+						<ProductDisplayCardHome product={c} />
 					)
 				})}
 
 				{physicalProducts?.map(c => {
 					return(
-						<ProductDisplayCard product={c} />
+						<ProductDisplayCardHome product={c} />
 					)
 				})}
 
-				<ProductDisplayCard 
+				<ProductDisplayCardHome 
 				/>
-				<ProductDisplayCard 
+				<ProductDisplayCardHome 
 				/>
-				<ProductDisplayCard 
+				<ProductDisplayCardHome 
 				/>
-				<ProductDisplayCard 
+				<ProductDisplayCardHome 
 				/>
 			</div>
 
