@@ -4,6 +4,16 @@
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
 
+@layer components{
+    .card-service-bg{
+        @apply bg-gradient-to-tr from-[#161221] via-[#110E1A] to-[#180B2E]
+    }
+
+    .card-digital-bg{
+        @apply bg-gradient-to-tr from-[#161221] via-[#110E1A] to-[#1A0A20]
+    }
+}
+
 .wallet-adapter-button {
     background-color: transparent;
     color: #fff;
