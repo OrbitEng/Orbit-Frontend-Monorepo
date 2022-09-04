@@ -71,6 +71,9 @@ export default function ProductShowcaseRow(props) {
 						//TODO: make this populate with the actual products
 						props?.products?.map((product, index) => {
 							<ProductDisplayCardHome 
+								sellerImg={product.sellerImg} // profile picture
+								sellerName={product.sellerName} // seller name/nickname
+								sellerAddr={product.sellerAddr} // wallet addr of seller
 								name={product.name} // name of product string
 								type={product.type} // "physical", "digital", "service", "nft", ...
 								price={product.price} // price string (in usd)
@@ -81,6 +84,8 @@ export default function ProductShowcaseRow(props) {
 						})
 					}
 					<ProductDisplayCardHome
+						sellerName="Marketplaceseller"
+						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="Logo Designs"
 						type="service"
 						price="$119.99"
@@ -89,6 +94,8 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						sellerName="Marketplaceseller"
+						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
 						type="digital"
 						price="$9.99"
@@ -97,6 +104,8 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						sellerName="Marketplaceseller"
+						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="Logo Designs"
 						type="service"
 						price="$119.99"
@@ -105,6 +114,8 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						sellerName="Marketplaceseller"
+						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
 						type="digital"
 						price="$9.99"

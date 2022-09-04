@@ -40,16 +40,17 @@ export function ProductDisplayCardHome(props) {
 				<div className={glowColor + " absolute -inset-0 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-100 animate-tilt"} />
 				<div className={bgColor + " relative py-4 rounded-lg leading-none flex flex-col items-center overflow-hidden"}>
 					<div className="flex items-center content-center border-[#4F4F4F] border-2 border-opacity-30 rounded-full shadow bg-gradient-to-r to-[#120D20] from-[#19112E]">
-						<div className="flex content-start rounded-full mx-2 py-1 pr-4">
+						<div className="flex content-start rounded-full mx-2 py-1 pr-4 gap-2">
 							<Image 
+								className="rounded-full flex"
 								alt="market profile picture"
-								src="/profile.png"
+								src={props.sellerImg || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 								height={10}
 								width={30}
 							/>
-							<div className="flex flex-col">
-								<span className="flex text-gray-100 leading-none text-sm font-bold">MarketplaceSeller</span>
-								<span className="flex text-gray-300 text-xs">@MarketplaceSeller</span>
+							<div className="flex flex-col w-5/6 mx-auto">
+								<span className="flex text-gray-100 leading-none text-sm font-bold">{props.sellerName}</span>
+								<span className="flex text-gray-300 text-xs">{props.sellerAddr?.slice(0,10) + "..."}</span>
 							</div>
 						</div>
 					</div>
