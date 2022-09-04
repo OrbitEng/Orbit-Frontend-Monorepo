@@ -30,6 +30,14 @@ export function DigitalProductLayout(props){
 				product.address,
 				marketAccountsClient.LoadAccountAddress(),
 				marketAccountsClient.LoadMasterAuth(),
+				product.price.toNumber()
+			)
+		}else{
+			await digitalMarketClient.OpenTransactionSpl(
+				product.address,
+				marketAccountsClient.LoadAccountAddress(),
+				marketAccountsClient.LoadMasterAuth(),
+				product.price.toNumber()
 			)
 		}
 
