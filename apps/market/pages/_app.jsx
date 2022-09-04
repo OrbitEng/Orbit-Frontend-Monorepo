@@ -37,19 +37,22 @@ import CatalogCtx from "@contexts/CatalogCtx";
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 
+import {DigitalMarketClient, DisputeClient, PhysicalMarketClient, MarketAccountsClient, CatalogClient } from "orbit-clients";
+import {BundlrClient, ChatClient} from "data-transfer-clients";
+
 
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // marketplace clients
-  const [digitalMarketClient, setDigitalMarketClient] = useState();
-  const [disputeProgramClient, setDisputeProgramClient] = useState();
-  const [physicalMarketClient, setPhysicalMarketClient] = useState();
-  const [marketAccountsClient, setMarketAccountsClient] = useState();
-  const [catalogClient, setCatalogClient] = useState();
-  const [bundlrClient, setBundlrClient] = useState();
-  const [matrixClient, setMatrixClient] = useState();
+  const [digitalMarketClient, setDigitalMarketClient] = useState(new DigitalMarketClient());
+  const [disputeProgramClient, setDisputeProgramClient] = useState(new DisputeClient());
+  const [physicalMarketClient, setPhysicalMarketClient] = useState(new PhysicalMarketClient());
+  const [marketAccountsClient, setMarketAccountsClient] = useState(new MarketAccountsClient());
+  const [catalogClient, setCatalogClient] = useState(new CatalogClient());
+  const [bundlrClient, setBundlrClient] = useState(new BundlrClient());
+  const [matrixClient, setMatrixClient] = useState(new ChatClient());
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet

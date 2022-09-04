@@ -28,7 +28,8 @@
     "react-dom": "^17.0.2",
     "react-multi-carousel": "^2.8.2",
     "rerousel": "^0.1.9",
-    "sharp": "^0.30.7"
+    "sharp": "^0.30.7",
+    "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
     "@types/node": "17.0.35",

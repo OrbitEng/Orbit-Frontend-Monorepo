@@ -34,17 +34,33 @@ export function HomeHeader(props) {
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 
-	useEffect(()=>{
+	useEffect(async ()=>{
 		if(!wallet) return;
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
+
+		const acc_client = new MarketAccountsClient(wallet, connection, provider);
+		setMarketAccountsClient(acc_client);
+		let load_acc_addr = acc_client.LoadAccountAddress();
+		let load_auth = acc_client.LoadMasterAuth();
 		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
 		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
-		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
+		
+
+		acc_addr = await load_acc_addr;
+		auth = await load_auth;
+
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
-		setMatrixClient(new ChatClient(wallet));
+
+		if(auth){
+			let chat_client = new ChatClient(auth);
+			setMatrixClient(chat_client);
+			await chat_client.Login();
+			await chat_client.Sync();
+		}
+		
 	}, [])
 
 	return(
