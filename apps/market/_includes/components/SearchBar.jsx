@@ -1,8 +1,8 @@
-import { FC, useState, Fragment } from 'react';
+import React, { FC, useState, Fragment } from 'react';
 import { Combobox, Transition } from '@headlessui/react';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
-export function HeaderSearchBar() {
+export function HeaderSearchBar(props) {
 	const [ selected, setSelected ] = useState()
 	const [ query, setQuery ] = useState()
 
@@ -27,14 +27,15 @@ export function HeaderSearchBar() {
 	)
 }
 
+
 // Search bar that lives on the body of the page
 // used for mobile since small header
-export function PageSearchBar() {
+export const PageSearchBar = React.forwardRef((props, ref) => {
 	const [ selected, setSelected ] = useState({})
 	const [ query, setQuery ] = useState({})
 
 	return(
-		<div className="flex flex-col rounded-lg p-auto w-fill mx-10 mt-28 py-auto align-middle justify-center">
+		<div ref={ref} className="flex flex-col rounded-lg p-auto w-fill mx-10 mt-28 py-auto align-middle justify-center">
 			<div className="flex gap-3 flex-row rounded-full bg-searchbartransparent border-2 border-[#474747] p-4 w-full mx-auto py-auto align-middle">
 				<Combobox value={selected} onChange={setSelected} >
 					<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px]"/>
@@ -52,4 +53,4 @@ export function PageSearchBar() {
 			</div>
 		</div>
 	)
-}
+})

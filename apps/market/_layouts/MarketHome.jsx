@@ -14,7 +14,7 @@ import useOnScreen from '@hooks/useOnScreen'
 
 
 export function Home(props) {
-	const ref = useRef(null);
+	const ref = useRef();
 	const searchBarVisible = useOnScreen(ref);
 
 	const [ headerMiddle, setHeaderMiddle ] = useState(NavBar);

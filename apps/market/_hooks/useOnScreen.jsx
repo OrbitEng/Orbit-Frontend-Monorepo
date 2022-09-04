@@ -8,11 +8,8 @@ export default function useOnScreen(ref) {
 			([entry]) => setIntersecting(entry.isIntersecting)
 		)
 
-		try {
-			observer.observe(ref.current)
-		} catch(e) {
-			console.log(e)
-		}
+		console.log(ref)
+		ref.current && observer.observe(ref.current)
 		return () => { observer.disconnect() }
 	}, [])
   
