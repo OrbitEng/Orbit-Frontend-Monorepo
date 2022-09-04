@@ -79,7 +79,7 @@ function Vendor(props) {
 	return(
 		<div className="flex flex-row bg-[#171717] rounded-xl px-auto py-5 justify-around" key={props.rank}>
 			<span className="text-white text-xl align-middle my-auto font-bold">{props.rank}</span>
-			<div className="relative h-12 w-12 rounded-full overflow-hidden">
+			<div className="relative h-12 w-12 rounded-full overflow-hidden z-10">
 				<Image 
 					layout="fill"
 					src={props.vendor.profilepic}
