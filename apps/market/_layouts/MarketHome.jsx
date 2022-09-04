@@ -35,7 +35,7 @@ export function Home(props) {
 			</Head>
 			<main className="bg-[url('/bgWallpaper.png')] bg-cover">
 				<HomeHeader headerMiddle={headerMiddle} />
-				<div className="max-w-5xl align-center mx-auto">
+				<div className="max-w-6xl align-center mx-auto">
 					<HomeBanner />
 					<PageSearchBar ref={ref}/>
 					<TopVendorsDisplay />
