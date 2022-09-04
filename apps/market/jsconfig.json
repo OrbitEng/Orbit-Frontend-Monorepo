@@ -5,6 +5,7 @@
 			"@includes/*": ["_includes/*"],
 			"@contexts/*": ["_contexts/*"],
 			"@layouts/*": ["_layouts/*"],
+			"@hooks/*": ["_hooks/*"],
 			"@app/*": ["pages/_app.js"],
 		}
 	}
