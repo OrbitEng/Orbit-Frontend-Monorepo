@@ -24,21 +24,22 @@ export function DigitalProductLayout(props){
 		let seller_nickname = vendor.metadata.nickname;
 		let seller_account_addrss = new PublicKey(product.metadata.seller);
 
-		await this.matrixClient.StartConvo(seller_nickname, seller_chat_id.toString(), seller_account_addrss);
 		if(product.currency.toString() == "11111111111111111111111111111111"){
-			await digitalMarketClient.OpenTransactionSol(
+			let tx_addr = await digitalMarketClient.OpenTransactionSol(
 				product.address,
 				marketAccountsClient.LoadAccountAddress(),
 				marketAccountsClient.LoadMasterAuth(),
 				product.price.toNumber()
 			)
+			await this.matrixClient.StartConvo(seller_nickname, seller_chat_id.toString(), seller_account_addrss.toString(), tx_addr);
 		}else{
-			await digitalMarketClient.OpenTransactionSpl(
+			let tx_addr = await digitalMarketClient.OpenTransactionSpl(
 				product.address,
 				marketAccountsClient.LoadAccountAddress(),
 				marketAccountsClient.LoadMasterAuth(),
 				product.price.toNumber()
 			)
+			await this.matrixClient.StartConvo(seller_nickname, seller_chat_id.toString(), seller_account_addrss.toString(), tx_addr);
 		}
 
 	},[])
