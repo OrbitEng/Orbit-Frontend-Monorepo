@@ -5,9 +5,11 @@ import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { PageSearchBar } from "@includes/components/SearchBar";
 import { MarketFooter } from "@includes/Footer";
+import { useCallback } from "react";
 
 export function DigitalProductLayout(props){
-
+	const addToCart = useCallback(()=>{},[])
+	const buyNow = useCallback(()=>{},[])
 
     return(
 		<div className="w-full min-h-screen bg-transparent">

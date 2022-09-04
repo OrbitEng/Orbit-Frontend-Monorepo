@@ -37,6 +37,7 @@ import CatalogCtx from "@contexts/CatalogCtx";
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 
+
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {

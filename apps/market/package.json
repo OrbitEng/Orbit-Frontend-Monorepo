@@ -17,6 +17,7 @@
     "@solana/wallet-adapter-react-ui": "^0.9.12",
     "@solana/wallet-adapter-wallets": "^0.18.0",
     "@solana/web3.js": "^1.53.0",
+    "cookies-next": "^2.1.1",
     "eslint": "^8.23.0",
     "file-loader": "^6.2.0",
     "matrix-js-sdk": "^19.4.0",
