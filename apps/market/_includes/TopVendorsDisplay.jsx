@@ -28,8 +28,10 @@ export default function TopVendorsDisplay(props) {
 			top_vendors_addrs
 		);
 
+		let aqc = new ArQueryClient();
+
 		let metadatas = await Promise.all(top_vendors.map((vendor) =>{
-			return ArQueryClient.FetchData(enc_common.utos(vendor.metadata));
+			return aqc.FetchData(enc_common.utos(vendor.metadata));
 		}));
 
 		// idk what metadata looks like yet in terms of json struct

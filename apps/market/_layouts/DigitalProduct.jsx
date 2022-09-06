@@ -15,7 +15,7 @@ export function DigitalProductLayout(props){
 	const {buyDigitalProd} = DigitalPurchasing();
 
 	const addToCart = useCallback(()=>{
-		setCookie(product.address.toString(), JSON.stringify({product: product, vendor: vendor}));
+		setCookie(product.address.toString(), JSON.stringify({type: "digital", product: product, vendor: vendor}));
 	},[]);
 
 
