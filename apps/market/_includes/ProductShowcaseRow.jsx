@@ -26,10 +26,10 @@ const responsive = {
 
 export default function ProductShowcaseRow(props) {
 	const [ query, setQuery ] = useState()
-	const [ selected, setSelected] = useState()
+	const [ selected, setSelected ] = useState()
 
 	return(
-		<div className="flex flex-col my-28">
+		<div className="flex flex-col my-14">
 			<div className="flex flex-row justify-between align-middle mb-3">
 				<h1 className="text-4xl text-white font-bold align-middle">{props.title}</h1>
 				<div className="flex flex-row gap-2 justify-end">
