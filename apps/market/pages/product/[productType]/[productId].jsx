@@ -6,9 +6,9 @@ import {
 } from "@layouts/ProductDisplays";
 
 //dummy products
-const dummyPhys
+const dummyPhys = {}
 
-const dummyService
+const dummyService = {}
 
 const dummyDigital = {
 
