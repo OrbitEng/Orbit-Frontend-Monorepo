@@ -4,40 +4,43 @@ import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import { prototype } from "events";
 import { useState } from "react";
 import { Transition } from "@headlessui/react";
+import 'react-multi-carousel/lib/styles.css'
 
 const responsive = {
 	desktop: {
 	  breakpoint: { max: 3000, min: 1024 },
-	  items: 4,
-	  slidesToSlide: 4
+	  items: 1,
+	  slidesToSlide: 1
 	},
 	tablet: {
 	  breakpoint: { max: 1024, min: 464 },
-	  items: 3,
-	  slidesToSlide: 3
+	  items: 1,
+	  slidesToSlide: 1
 	},
 	mobile: {
 	  breakpoint: { max: 464, min: 0 },
-	  items: 2,
-	  slidesToSlide: 2
+	  items: 1,
+	  slidesToSlide: 1
 	}
 };
 
+// TODO(milly): after using the carousel I really don't like how it looks
+// come back and change it afterwards
 export function ProductDisplay(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">
-			<div className="bg-white rounded-3xl bg-opacity-5 h-full w-full content-center align-middle p-10">
+			<div className="bg-white flex rounded-3xl bg-opacity-5 h-full w-1/2 p-10">
 				<Carousel 
+					className="w-full"
 					responsive={responsive} 
-					arrows={false}
-					swipeable={false}
+					arrows={true}
+					swipeable={true}
 					draggable={true}
-					showDots={false}
+					showDots={true}
 					infinite={false}
-					autoPlay={props.deviceType !== "mobile" ? true : false}
-					autoPlaySpeed={1000}
+					autoPlay={false}
 					keyBoardControl={true}
 					transitionDuration={500}
 					removeArrowOnDeviceType={["tablet", "mobile"]}
@@ -45,20 +48,55 @@ export function ProductDisplay(props) {
 					dotListClass="custom-dot-list-style"
 					itemClass="carousel-item-padding-40px"
 				>
-					<div>bruh</div>		
-					<div>bruh</div>		
-					<div>bruh</div>		
-					<div>bruh</div>		
+					<div className="flex mx-auto justify-center">
+						<Image 
+							className="mx-auto"
+							src="/productimg.png"
+							layout="fixed"
+							width={400}
+							height={400}
+						/>
+					</div>
+					<div className="flex mx-auto justify-center">
+						<Image 
+							src="/productimg.png"
+							layout="fixed"
+							width={400}
+							height={400}
+						/>
+					</div>
+					<div className="flex mx-auto justify-center">
+						<Image 
+							src="/productimg.png"
+							layout="fixed"
+							width={400}
+							height={400}
+						/>
+					</div>
+					{
+						!props.imageUrls || props.imageUrls?.map((url, index) => {
+							return(
+								<div className="flex mx-auto justify-center">
+									<Image 
+										src={url}
+										layout="fixed"
+										width={400}
+										height={400}
+									/>
+								</div>	
+							)
+						})
+					}
 				</Carousel>
 			</div>
-			<div className={"bg-white rounded-3xl bg-opacity-5 h-full w-full p-10 flex flex-col gap-y-5 text-ellipsis" + (descriptionOpen ? " overflow-scroll" : " overflow-hidden")}>
+			<div className={"bg-white rounded-3xl bg-opacity-5 h-full w-1/2 p-10 flex flex-col gap-y-5 text-ellipsis" + (descriptionOpen ? " overflow-scroll" : " overflow-hidden")}>
 				<div className="flex w-56 items-center content-center rounded-full shadow-lg bg-gradient-to-r from-[#222222] to-selleridproductpagetrans">
 					<div className="flex content-start rounded-full mx-2 py-1 pr-4 gap-2">
 						<Image 
 							className="rounded-full"
 							alt="market profile picture"
 							layout="fixed"
-							src={props.sellerImg || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+							src={props.seller?.sellerImg || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 							height={48}
 							width={64}
 						/>

@@ -22,7 +22,7 @@ export function DigitalProductLayout(props){
 		<div className="w-full min-h-screen bg-transparent">
 			<Head>
 				<title>Market Home</title>
-				<link rel="icon" href="favicon.ico" />
+				<link rel="icon" href="orbit.png" />
 			</Head>
 			<main className="bg-[url('/bgWallpaper.png')] bg-cover">
 				<HomeHeader headerMiddle={searchBar}/>
@@ -33,6 +33,22 @@ export function DigitalProductLayout(props){
 				</div>
                 <MainFooter />
 			</main>
+		</div>
+	)
+}
+
+export function PhysicalProductLayout(props) {
+	return(
+		<div>
+			coming soon
+		</div>
+	)
+}
+
+export function DigitalServiceLayout(props) {
+	return(
+		<div>
+			coming soon
 		</div>
 	)
 }
