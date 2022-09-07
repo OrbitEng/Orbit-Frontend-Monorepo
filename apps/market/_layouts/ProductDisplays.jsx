@@ -9,12 +9,6 @@ import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
 import { ProductDisplay } from "@includes/ProductPageDisplay";
 
-const dummyDescription = `We are a professional team of icon design specialists. We promise to deliver high-quality icons for whatever the required concepts are:\n\n
-1. You will get professional and beautiful icons (consistent in size and style).\n
-2. Icons will be purely made with original and creative ideas.\n
-3. In case You are not satisfied. We provide multiple revisions with full support for our clients.\n
-Order now! and get your beautiful icons designed. If you have any other questions, We are available 24/7, don't hesitate to contact us.`
-
 export function DigitalProductLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
 
@@ -28,7 +22,7 @@ export function DigitalProductLayout(props){
 				<HomeHeader headerMiddle={searchBar}/>
 				<div className="max-w-7xl align-center mx-auto">
 					<ProductDisplay
-						description={dummyDescription}
+						prodInfo={props.product}
 					/>
 				</div>
                 <MainFooter />

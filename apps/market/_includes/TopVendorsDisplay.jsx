@@ -46,7 +46,7 @@ export default function TopVendorsDisplay(props) {
 	// this is just to show how I want to fetch vendors
 	const dummyVendor = {
 		nickname: "Name",
-		address: "walletAddr....",
+		address: "E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM",
 		sales: "123456789",
 		profilepic: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y",
 	}
@@ -88,7 +88,7 @@ function Vendor(props) {
 			</div>
 			<div className="text-white font-bold text-xl align-middle my-auto flex flex-col justify-start">
 				<span className="-mb-[6px]">{props.vendor.nickname}</span>
-				<span className="text-[#535353] text-sm font-normal">{props.vendor.address}</span>
+				<span className="text-[#535353] text-sm font-normal">{props.sellerAddr?.slice(0,10) + "..."}</span>
 			</div>
 			<div className="text-white text-sm align-middle my-auto flex flex-col justify-start">
 				<span className="-mb-[3px]">Total Sales</span>

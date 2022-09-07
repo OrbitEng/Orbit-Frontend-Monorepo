@@ -24,10 +24,43 @@ const responsive = {
 	}
 };
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Misc Functions
+/**
+ * how we fetch the decimals for the token and what it is
+ * @param {string} address mint address for the SPL token
+ * @param {num} value how many tokens is this product worth
+ */
+const handleCurrency = (priceStruct) => {
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Components
+
 // TODO(milly): after using the carousel I really don't like how it looks
 // come back and change it afterwards
+/* 
+Props: {
+	imageUrls: [ string... ],
+	itemName: string
+	currency: string
+	stock: string, (can be left blank)
+	type: string, (Maybe should make enum?)
+	price: {
+		value: num (this is the number of tokens)
+		addr: string (this is the mint address for a token)
+	}, 
+	description: string,
+	seller: {
+		sellerImg: string, (can be left blank)
+		sellerName: string,
+		sellerAddr: string
+	}
+}
+*/
 export function ProductDisplay(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
+	console.log(props);
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">
@@ -48,33 +81,8 @@ export function ProductDisplay(props) {
 					dotListClass="custom-dot-list-style"
 					itemClass="carousel-item-padding-40px"
 				>
-					<div className="flex mx-auto justify-center">
-						<Image 
-							className="mx-auto"
-							src="/productimg.png"
-							layout="fixed"
-							width={400}
-							height={400}
-						/>
-					</div>
-					<div className="flex mx-auto justify-center">
-						<Image 
-							src="/productimg.png"
-							layout="fixed"
-							width={400}
-							height={400}
-						/>
-					</div>
-					<div className="flex mx-auto justify-center">
-						<Image 
-							src="/productimg.png"
-							layout="fixed"
-							width={400}
-							height={400}
-						/>
-					</div>
 					{
-						!props.imageUrls || props.imageUrls?.map((url, index) => {
+						!props.prodInfo?.imageUrls || props.prodInfo?.imageUrls?.map((url, index) => {
 							return(
 								<div className="flex mx-auto justify-center">
 									<Image 
@@ -96,34 +104,43 @@ export function ProductDisplay(props) {
 							className="rounded-full"
 							alt="market profile picture"
 							layout="fixed"
-							src={props.seller?.sellerImg || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+							src={props.prodInfo?.seller?.sellerImg || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 							height={48}
 							width={64}
 						/>
 						<div className="flex flex-col w-5/6 mx-auto align-middle my-auto">
-							<span className="flex text-gray-100 leading-none font-bold">{props.seller?.sellerName || "NULL"}</span>
-							<span className="flex text-gray-300 text-sm">{props.seller?.sellerAddr?.slice(0,10) + "..."}</span>
+							<span className="flex text-gray-100 leading-none font-bold">{props.prodInfo?.seller?.sellerName || "NULL"}</span>
+							<span className="flex text-gray-300 text-sm">{props.prodInfo?.seller?.sellerAddr?.slice(0,10) + "..."}</span>
 						</div>
 					</div>
 				</div>	
 				<div className="flex flex-col mt-10 gap-y-2" >
-					<h1 className="font-bold text-4xl text-white ml-3">{props.itemName || "NULL PRODUCT" }</h1>
+					<h1 className="font-bold text-4xl text-white ml-3">{props.prodInfo?.itemName || "NULL PRODUCT" }</h1>
 					<div className="flex flex-row gap-3">
 						<div className="rounded-full font-bold bg-[#261832] text-[#72478C] px-3 py-2">
-							{"availability " + (props.stock?.toString() || "∞") }
+							{"availability " + (props.prodInfo?.stock?.toString() || "∞") }
 						</div>
 						<div className="rounded-full font-bold bg-[#311132] text-[#7D348F] px-3 py-2">
-							{props.type ? (props.type?.charAt(0)?.toUpperCase() + "" +props.type?.slice(1)) : "Custom Product Type"}
+							{
+								props.prodInfo?.type ?
+									(props.prodInfo?.type?.charAt(0)?.toUpperCase() + "" +props.prodInfo?.type?.slice(1))
+									: "Custom Product Type"
+							}
 						</div>
 					</div>
 					<div className="font-semibold align-top ml-3">
 						<span className="text-white text-lg align-top mr-2">Price:{' '}</span>
-						<span className="text-[#5a5a5a] text-4xl align-top">{(props.price || "Custom")}</span>
+						<span className="text-[#5a5a5a] text-4xl align-top">
+							{
+								(props.prodInfo?.price?.value || "Custom")
+							}
+						</span>
 					</div>
 				</div>
 				<div className="flex flex-row w-full justify-center mt-6">
 					{
-						props.type === "service" ? (
+						// FIXME(millionz): eventually more types will come along and break this
+						props.prodInfo?.type === "service" ? (
 							<div className="flex flex-row justify-center">
 								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]">✉️ Request</button>
 							</div> 
@@ -146,7 +163,7 @@ export function ProductDisplay(props) {
 					<p className="text-[#838383] whitespace-pre-line">
 						{
 							// this is super scuffed
-							descriptionOpen ? props.description : props.description.slice(0,218) + "..." 
+							descriptionOpen ? props.prodInfo?.description : props.prodInfo?.description?.slice(0,218) + "..." 
 						}
 					</p>
 				</div>
