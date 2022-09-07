@@ -7,11 +7,10 @@ import BundlrCtx from "@contexts/BundlrCtx";
 
 import {file_client, file_common, enc_common} from "browser-clients";
 import { ArQueryClient } from "data-transfer-clients";
-import { useEffect } from "react";
 import { PublicKey } from "@solana/web3.js";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 
-export function TransactionsPage(){
+export function TransactionsGeneralFunctionalities(){
     const {physicalMarketClient} = useContext(PhysicalMarketCtx);
     const {digitalMarketClient} = useContext(DigitalMarketCtx);
 
@@ -141,7 +140,7 @@ export function DigitalFunctionalities(){
             market_auth
         );
 
-        await matrixClient.sendMessage(await digitalMarketClient.GetRoomId(tx_addr), "link set");
+        await matrixClient.SendNotice(await digitalMarketClient.GetRoomId(tx_addr), "link set");
     },[])
 
     const UploadImage = useCallback(async(tx_addr) =>{
@@ -189,8 +188,8 @@ export function DigitalFunctionalities(){
 
 
     const CommitAllKeys = useCallback(async (tx_addr)=>{
-        let market_auth = await marketAccountsClient.LoadMasterAuth();
-        let market_acc = await marketAccountsClient.LoadAccountAddress();
+        let market_auth = marketAccountsClient.master_auth;
+        let market_acc = marketAccountsClient.market_account;
 
         let missing_keys = await digitalMarketClient.CommitSubkeys(tx_addr);
 
@@ -218,7 +217,7 @@ export function DigitalFunctionalities(){
      * @param {string} roomid 
      */
     const ChooseBlocks = async(blocks, roomid) =>{
-        await matrixClient.SendMessage(roomid, blocks.toString())
+        await matrixClient.SendNotice(roomid, "choose blocks" + blocks.join(","))
     }
 
     /**
@@ -256,7 +255,7 @@ export function ServiceFunctionalities(){
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
 
-    const UploadPreview = useEffect(async(tx_addr) =>{
+    const UploadPreview = useCallback(async(tx_addr) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
@@ -276,7 +275,7 @@ export function ServiceFunctionalities(){
         //     )
         // )
 
-        let ar_addr = await bundlrClient.UploadPreview(
+        let ar_addr = await bundlrClient.UploadBuffer(
             Buffer.from(
                 await file_common.GetFile()
             ).toString()
