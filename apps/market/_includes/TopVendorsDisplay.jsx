@@ -4,6 +4,7 @@ import CatalogCtx from "@contexts/CatalogCtx";
 import { useContext, useEffect, useState } from "react";
 import { ArQueryClient } from "data-transfer-clients";
 import { enc_common } from "browser-clients";
+import { verifySignature } from "matrix-js-sdk/lib/crypto/olmlib";
 
 export default function TopVendorsDisplay(props) {
 
@@ -63,11 +64,14 @@ export default function TopVendorsDisplay(props) {
 			<div className="grid grid-flow-row grid-rows-2 grid-cols-3 gap-x-5 gap-y-8 w-full">
 			{
 				topVendors == undefined ? 
-					undefVendorsArr.map((number, index) => {
+					undefVendorsArr?.map((number, index) => {
 						return(<Vendor vendor={dummyVendor} rank={number} key={number} />)
 					})
 					: topVendors?.map((vendor, index) => {
-						return(<Vendor vendor={vendor} rank={index + 1} key={index + 1}/>)
+						return(vendor ?
+							<Vendor vendor={vendor} rank={index + 1} key={index + 1}/>: 
+							<Vendor vendor={dummyVendor} rank={number} key={number} />
+						) 
 					})
 			}
 			</div>

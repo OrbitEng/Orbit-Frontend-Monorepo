@@ -43,8 +43,8 @@ export function Home(props) {
 					<ProductShowcaseRow title="Digital Products" searchable />
 					<ProductShowcaseRow title="Services" searchable/>
 					<NewsStand />
+					<MainFooter />
 				</div>
-				<MainFooter />
 			</main>
 		</div>
 	)

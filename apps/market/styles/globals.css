@@ -14,6 +14,10 @@
     }
 }
 
+body {
+    background-color: #1A1A23;
+}
+
 .wallet-adapter-button {
     background-color: transparent;
     color: #fff;
@@ -156,7 +160,6 @@
     right: 18px;
     padding: 12px;
     cursor: pointer;
-    background: #1a1f2e;
     border: none;
     border-radius: 50%;
 }
@@ -207,7 +210,7 @@
     z-index: 1050;
     max-width: 400px;
     border-radius: 10px;
-    background: #10141f;
+    background: #101012;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
     font-family: 'DM Sans', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
     flex: 1;

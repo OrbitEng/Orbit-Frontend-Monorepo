@@ -71,6 +71,7 @@ export default function ProductShowcaseRow(props) {
 						//TODO: make this populate with the actual products
 						props?.products?.map((product, index) => {
 							<ProductDisplayCardHome 
+								address={product.address} // address of prod listing
 								sellerImg={product.sellerImg} // profile picture
 								sellerName={product.sellerName} // seller name/nickname
 								sellerAddr={product.sellerAddr} // wallet addr of seller
@@ -84,6 +85,7 @@ export default function ProductShowcaseRow(props) {
 						})
 					}
 					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="Logo Designs"
@@ -94,6 +96,7 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
@@ -104,6 +107,7 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="Logo Designs"
@@ -114,6 +118,7 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"

@@ -22,9 +22,10 @@ export function MainFooter(){
                         Products
                     </div>
                     <div className='flex flex-col gap-y-3 text-[#8A8A8A] align-top'>
-                        <Link href={"./"}>Physical</Link>
-                        <Link href={"./"}>Marketplace</Link>
-                        <Link href={"./"}>Digital</Link>
+                        <Link href={"/"}>Home</Link>
+                        <Link href={"/explore/physical"}>Physical</Link>
+                        <Link href={"/explore/digital"}>Digital</Link>
+                        <Link href={"/explore/services"}>Services</Link>
                     </div>
                 </div>
                 <div className='grid grid-col grow justify-center text-center align-top mb-auto'>
@@ -32,8 +33,8 @@ export function MainFooter(){
                         Learn
                     </div>
                     <div className='flex flex-col gap-y-3 text-[#8A8A8A] align-top'>
-                        <Link href={"./"}>Blog</Link>
-                        <Link href={"./"}>Docs</Link>
+                        <Link href={"/blog"}>Blog</Link>
+                        <Link href={"/docs"}>Docs</Link>
                     </div>
                 </div>
                 <div className='grid grid-col grow justify-center text-center align-top mb-auto'>
@@ -45,12 +46,23 @@ export function MainFooter(){
                         <Link href={"./"}>Stuff</Link>
                     </div>
                 </div>
-                <div className='grid grid-col grow justify-center text-center'>
+                <div className='grid grid-col justify-center grow text-center'>
                     <div className="text-2xl font-bold">
                         Community
                     </div>
-                    <div className='flex flex-row text-[#8A8A8A]'>
-
+                    <div className='flex flex-row text-[#8A8A8A] justify-center -mt-12'>
+                        <Image
+                            src="/discordicon.png"
+                            layout='fixed'
+                            width={36}
+                            height={36}
+                        />
+                        <Image
+                            src="/mediumicon.png"
+                            layout='fixed'
+                            width={36}
+                            height={36}
+                        />
                     </div>
                 </div>
             </nav>

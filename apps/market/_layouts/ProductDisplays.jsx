@@ -18,14 +18,14 @@ export function DigitalProductLayout(props){
 				<title>Market Home</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
-			<main className="bg-[url('/bgWallpaper.png')] bg-cover">
+			<main className="bg-[url('/bgWallpaper.png')]">
 				<HomeHeader headerMiddle={searchBar}/>
 				<div className="max-w-7xl align-center mx-auto">
 					<ProductDisplay
 						prodInfo={props.product}
 					/>
+					<MainFooter />
 				</div>
-                <MainFooter />
 			</main>
 		</div>
 	)
