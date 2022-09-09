@@ -19,6 +19,7 @@ import CatalogCtx from '@contexts/CatalogCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import Link from 'next/link';
 
 
 export function HomeHeader(props) {
@@ -50,13 +51,15 @@ export function HomeHeader(props) {
 	return(
 		<header className="mx-auto max-w-7xl h-14 sm:h-32 top-0 sticky flex flex-row justify-between bg-transparent backdrop-blur-lg z-50">
 			<div className="relative py-auto w-40 align-middle content-start mr-36">
-				<Image
-					src={OrbitLogo}
-					layout="fill"
-					alt="The Name and Logo for the Orbit market"
-					objectFit="contain"
-					priority={true}
-				/>
+				<Link href="/">
+					<Image
+						src={OrbitLogo}
+						layout="fill"
+						alt="The Name and Logo for the Orbit market"
+						objectFit="contain"
+						priority={true}
+					/>
+				</Link>
 			</div>
 			{props.headerMiddle}
 			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E]">

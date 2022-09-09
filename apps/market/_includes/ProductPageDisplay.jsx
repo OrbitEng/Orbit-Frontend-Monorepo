@@ -32,6 +32,7 @@ const responsive = {
  * @param {num} value how many tokens is this product worth
  */
 const handleCurrency = (priceStruct) => {
+	
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,6 +42,7 @@ const handleCurrency = (priceStruct) => {
 // come back and change it afterwards
 /* 
 Props: {
+	address: Pubkey, (address of the product account)
 	imageUrls: [ string... ],
 	itemName: string
 	currency: string
@@ -160,7 +162,7 @@ export function ProductDisplay(props) {
 						Description
 						<ChevronUpIcon className={"h-4 w-4 my-auto ml-auto justify-self-end stroke-[2px] transition translate" + (descriptionOpen ? " rotate-180" : " rotate-0") } />
 					</button>
-					<p className="text-[#838383] whitespace-pre-line">
+					<p className="text-[#838383] whitespace-pre-line transition transform">
 						{
 							// this is super scuffed
 							descriptionOpen ? props.prodInfo?.description : props.prodInfo?.description?.slice(0,218) + "..." 
