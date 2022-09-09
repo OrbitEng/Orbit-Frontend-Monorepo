@@ -50,7 +50,7 @@ export function MainFooter(){
                     <div className="text-2xl font-bold">
                         Community
                     </div>
-                    <div className='flex flex-row text-[#8A8A8A] justify-center -mt-12'>
+                    <div className='flex flex-row text-[#8A8A8A] justify-center -mt-12 gap-x-2'>
                         <Image
                             src="/discordicon.png"
                             layout='fixed'
