@@ -46,10 +46,10 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 				</Combobox>
 			</div>
 			<div className="flex flex-row ml-4 gap-x-3 justify-center text-xs sm:text-base mt-4">
-				<button className="font-bold rounded-full p-2 text-lg text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">🔮 Services</button>
-				<button className="font-bold rounded-full p-2 text-lg text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">👾 Digital Products</button>
-				<button className="font-bold rounded-full p-2 text-lg text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">📦 Physical Products</button>
-				<button className="font-bold rounded-full p-2 text-lg text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">🎨 NFTs</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">🔮 Services</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">👾 Digital Products</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">📦 Physical Products</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">🎨 NFTs</button>
 			</div>
 		</div>
 	)

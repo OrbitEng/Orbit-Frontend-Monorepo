@@ -1,7 +1,7 @@
 export default function NewsCard(props) {
 	return(
 		<div
-			className="group flex rounded-xl h-56 bg-cover p-10"
+			className="group flex rounded-xl h-56 bg-cover p-10 hover:scale-[102%] transition duration-200"
 			style={{backgroundImage: `url('/NewsCardImages/${props.imgSrc}')`}}
 		>
 			<div className="bottom-5 absolute">

@@ -15,7 +15,7 @@ module.exports = {
         buttontransparent2: 'rgba(45,42,53,0.95)',
         searchbartransparent: 'rgba(10,10,10,0.66)',
         searchbuttontrans: 'rgba(45,42,53,0.7)',
-        searchbuttontrans2: 'rgba(45,42,53,0.1)',
+        searchbuttontrans2: 'rgba(45,42,53,0.4)',
         selleridproductpagetrans: 'rgba(12,12,12,.58)'
       }
     },

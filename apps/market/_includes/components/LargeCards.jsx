@@ -13,7 +13,7 @@ export function BetaCard(props) {
 					<p className="text-[#4A4A4A] text-lg font-bold mt-2 mb-2">ENDS 2022 Q4</p>
 					<div className="font-bold text-white text-3xl">Beta is now available for all users!</div>
 					<p className="font-bold text-[#4A4A4A]">Thank you for using orbit, beta is only available for a short period.</p>
-					<button className="flex font-bold text-white bg-[#474747] bg-opacity-50 py-2 px-4 rounded-lg mr-auto mt-4">
+					<button className="flex font-bold text-white bg-[#474747] bg-opacity-50 py-2 px-4 rounded-lg mr-auto mt-4 hover:scale-[103%] transition duration-200">
 						Learn More
 					</button>
 				</div>
