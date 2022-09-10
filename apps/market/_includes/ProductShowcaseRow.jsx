@@ -26,11 +26,11 @@ const responsive = {
 
 export default function ProductShowcaseRow(props) {
 	const [ query, setQuery ] = useState()
-	const [ selected, setSelected] = useState()
+	const [ selected, setSelected ] = useState()
 
 	return(
-		<div className="flex flex-col my-28">
-			<div className="flex flex-row justify-between align-middle mb-10">
+		<div className="flex flex-col my-14">
+			<div className="flex flex-row justify-between align-middle mb-3">
 				<h1 className="text-4xl text-white font-bold align-middle">{props.title}</h1>
 				<div className="flex flex-row gap-2 justify-end">
 					{ 
@@ -56,9 +56,9 @@ export default function ProductShowcaseRow(props) {
 					arrows={true}
 					swipeable={false}
 					draggable={false}
-					showDots={true}
+					showDots={false}
 					infinite={false}
-					autoPlay={props.deviceType !== "mobile" ? true : false}
+					autoPlay={false}
 					autoPlaySpeed={1000}
 					keyBoardControl={true}
 					transitionDuration={500}
@@ -67,13 +67,67 @@ export default function ProductShowcaseRow(props) {
 					dotListClass="custom-dot-list-style"
 					itemClass="carousel-item-padding-40px"
 				>
-					<ProductDisplayCardHome />
-					<ProductDisplayCardHome />
-					<ProductDisplayCardHome />
-					<ProductDisplayCardHome />
-					<ProductDisplayCardHome />
-					<ProductDisplayCardHome />
-					<ProductDisplayCardHome />
+					{
+						//TODO: make this populate with the actual products
+						props?.products?.map((product, index) => {
+							<ProductDisplayCardHome 
+								address={product.address} // address of prod listing
+								sellerImg={product.sellerImg} // profile picture
+								sellerName={product.sellerName} // seller name/nickname
+								sellerAddr={product.sellerAddr} // wallet addr of seller
+								name={product.name} // name of product string
+								type={product.type} // "physical", "digital", "service", "nft", ...
+								price={product.price} // price string (in usd)
+								imgUrl={product.imageUrl} // imageUrl (arweave)
+								paymentList={product.paymentTypes} // array ["solana", "usdc", ...]
+								productId={product.accountId} // the solana account Id of the product account
+							/>
+						})
+					}
+					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
+						sellerName="Marketplaceseller"
+						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
+						name="Logo Designs"
+						type="service"
+						price="$119.99"
+						imgUrl="/demologos.png"
+						paymentList={["solana", "usdc"]}
+						productId="123456789"
+					/>
+					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
+						sellerName="Marketplaceseller"
+						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
+						name="10ct Background Pack"
+						type="digital"
+						price="$9.99"
+						imgUrl="/demobgpack.png"
+						paymentList={["solana", "usdc"]}
+						productId="123456789"
+					/>
+					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
+						sellerName="Marketplaceseller"
+						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
+						name="Logo Designs"
+						type="service"
+						price="$119.99"
+						imgUrl="/demologos.png"
+						paymentList={["solana", "usdc"]}
+						productId="123456789"
+					/>
+					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
+						sellerName="Marketplaceseller"
+						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
+						name="10ct Background Pack"
+						type="digital"
+						price="$9.99"
+						imgUrl="/demobgpack.png"
+						paymentList={["solana", "usdc"]}
+						productId="123456789"
+					/>
 				</Carousel>
 		</div>
 	)

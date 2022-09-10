@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
 	"compilerOptions": {
 		"baseUrl": "./",
@@ -9,4 +10,17 @@
 			"@app/*": ["pages/_app.js"],
 		}
 	}
+=======
+{
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"@includes/*": ["_includes/*"],
+			"@contexts/*": ["_contexts/*"],
+			"@layouts/*": ["_layouts/*"],
+			"@hooks/*": ["_hooks/*"],
+			"@app/*": ["pages/_app.js"],
+		}
+	}
+>>>>>>> master
 }
