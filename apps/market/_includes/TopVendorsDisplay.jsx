@@ -3,7 +3,7 @@ import CatalogCtx from "@contexts/CatalogCtx";
 import { useContext, useEffect, useState } from "react";
 import { ArQueryClient } from "data-transfer-clients";
 import { enc_common } from "browser-clients";
-import { Vendor } from "./components/VendorDisplayCards";
+import { verifySignature } from "matrix-js-sdk/lib/crypto/olmlib";
 
 export default function TopVendorsDisplay(props) {
 
@@ -46,7 +46,7 @@ export default function TopVendorsDisplay(props) {
 	// this is just to show how I want to fetch vendors
 	const dummyVendor = {
 		nickname: "Name",
-		address: "walletAddr....",
+		address: "E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM",
 		sales: "123456789",
 		profilepic: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y",
 	}
@@ -63,11 +63,14 @@ export default function TopVendorsDisplay(props) {
 			<div className="grid grid-flow-row grid-rows-2 grid-cols-3 gap-x-5 gap-y-8 w-full">
 			{
 				topVendors == undefined ? 
-					undefVendorsArr.map((number, index) => {
+					undefVendorsArr?.map((number, index) => {
 						return(<Vendor vendor={dummyVendor} rank={number} key={number} />)
 					})
 					: topVendors?.map((vendor, index) => {
-						return(<Vendor vendor={vendor} rank={index + 1} key={index + 1}/>)
+						return(vendor ?
+							<Vendor vendor={vendor} rank={index + 1} key={index + 1}/>: 
+							<Vendor vendor={dummyVendor} rank={number} key={number} />
+						) 
 					})
 			}
 			</div>
@@ -78,7 +81,7 @@ export default function TopVendorsDisplay(props) {
 function Vendor(props) {
 	return(
 		<div className="flex flex-row bg-[#171717] rounded-xl px-auto py-5 justify-around" key={props.rank}>
-			<span className="text-white text-xl align-middle my-auto font-bold">{props.rank}</span>
+			<span className="text-white text-xl align-middle my-auto font-bold">{"#" + props.rank}</span>
 			<div className="relative h-12 w-12 rounded-full overflow-hidden z-10">
 				<Image 
 					layout="fill"
@@ -88,7 +91,7 @@ function Vendor(props) {
 			</div>
 			<div className="text-white font-bold text-xl align-middle my-auto flex flex-col justify-start">
 				<span className="-mb-[6px]">{props.vendor.nickname}</span>
-				<span className="text-[#535353] text-sm font-normal">{props.vendor.address}</span>
+				<span className="text-[#535353] text-sm font-normal">{props.sellerAddr?.slice(0,10) + "..."}</span>
 			</div>
 			<div className="text-white text-sm align-middle my-auto flex flex-col justify-start">
 				<span className="-mb-[3px]">Total Sales</span>

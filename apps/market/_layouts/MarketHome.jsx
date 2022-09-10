@@ -31,7 +31,7 @@ export function Home(props) {
 		<div className="w-full min-h-screen bg-transparent">
 			<Head>
 				<title>Market Home</title>
-				<link rel="icon" href="favicon.ico" />
+				<link rel="icon" href="orbit.png" />
 			</Head>
 			<main className="bg-[url('/bgWallpaper.png')] bg-cover">
 				<HomeHeader headerMiddle={headerMiddle} />
@@ -43,8 +43,8 @@ export function Home(props) {
 					<ProductShowcaseRow title="Digital Products" searchable />
 					<ProductShowcaseRow title="Services" searchable/>
 					<NewsStand />
+					<MainFooter />
 				</div>
-				<MainFooter />
 			</main>
 		</div>
 	)

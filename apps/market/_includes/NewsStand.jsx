@@ -34,7 +34,7 @@ export default function NewsStand(props) {
 
 	return(
 		<div className="flex flex-col my-28">
-			<div className="flex flex-col justify-start align-middle mb-8">
+			<div className="flex flex-col justify-start align-middle mb-6">
 				<h1 className="text-4xl text-white font-bold align-middle">News and Blogs</h1>
 				<p className="font-bold text-[#797979]">Learn and discover more about OrbitLabs</p>
 			</div>
@@ -52,9 +52,11 @@ export default function NewsStand(props) {
 					removeArrowOnDeviceType={["tablet", "mobile"]}
 					deviceType={"desktop"}
 					dotListClass="custom-dot-list-style"
-					itemClass="carousel-item-padding-40px"
+					itemClass="mx-2"
 				>
-					<NewsCard imgSrc={"./bgWallpaper"} title={"Bruh"} detail={"Yeahhhh buddy"} />
+					<NewsCard imgSrc={"/orbitLogoTessbg.png"} title={"Cryptography"} detail={"Behind the scenes"} />
+					<NewsCard imgSrc={"/orbitMultiColorbg.png"} title={"Raising Funds"} detail={"Fuck it we ball"} />
+					<NewsCard imgSrc={"/orbitLogoTessbg.png"} title={"Bruh"} detail={"Yeahhhh buddy"} />
 				</Carousel>
 		</div>
 	)

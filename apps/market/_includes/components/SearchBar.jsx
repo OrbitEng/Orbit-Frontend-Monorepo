@@ -10,9 +10,9 @@ export function HeaderSearchBar(props) {
 		<div className="flex flex-col rounded-lg p-auto my-auto py-auto align-middle justify-center w-2/5 mx-auto">
 			<div className="flex gap-3 flex-row rounded-full bg-searchbartransparent border-2 border-[#474747] p-1 w-full mx-auto py-auto align-middle">
 				<Combobox value={selected} onChange={setSelected} >
-					<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px]"/>
+					<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px] ml-2"/>
 					<Combobox.Input
-					className="flex w-full bg-transparent text-[#888888] placeholder:text-[#4A4A4A] text-2xl font-semibold focus:outline-none"
+					className="flex w-full bg-transparent text-[#777777] placeholder:text-[#4A4A4A] text-lg font-semibold focus:outline-none"
 					placeholder="Search in marketplace"
 					onChange={(e) => setQuery(e.target.value)} />
 				</Combobox>
@@ -40,16 +40,16 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 				<Combobox value={selected} onChange={setSelected} >
 					<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px]"/>
 					<Combobox.Input
-					className="flex w-full bg-transparent text-[#888888] placeholder:text-[#4A4A4A] text-2xl font-semibold focus:outline-none"
+					className="flex w-full bg-transparent text-[#777777] placeholder:text-[#4A4A4A] text-2xl font-semibold focus:outline-none"
 					placeholder="Search in marketplace"
 					onChange={(e) => setQuery(e.target.value)} />
 				</Combobox>
 			</div>
 			<div className="flex flex-row ml-4 gap-x-3 justify-center text-xs sm:text-base mt-4">
-				<button className="font-bold rounded-full p-2 text-lg text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">🔮 Services</button>
-				<button className="font-bold rounded-full p-2 text-lg text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">👾 Digital Products</button>
-				<button className="font-bold rounded-full p-2 text-lg text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">📦 Physical Products</button>
-				<button className="font-bold rounded-full p-2 text-lg text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">🎨 NFTs</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">🔮 Services</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">👾 Digital Products</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">📦 Physical Products</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 ">🎨 NFTs</button>
 			</div>
 		</div>
 	)

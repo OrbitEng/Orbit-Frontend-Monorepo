@@ -26,10 +26,10 @@ const responsive = {
 
 export default function ProductShowcaseRow(props) {
 	const [ query, setQuery ] = useState()
-	const [ selected, setSelected] = useState()
+	const [ selected, setSelected ] = useState()
 
 	return(
-		<div className="flex flex-col my-28">
+		<div className="flex flex-col my-14">
 			<div className="flex flex-row justify-between align-middle mb-3">
 				<h1 className="text-4xl text-white font-bold align-middle">{props.title}</h1>
 				<div className="flex flex-row gap-2 justify-end">
@@ -71,6 +71,7 @@ export default function ProductShowcaseRow(props) {
 						//TODO: make this populate with the actual products
 						props?.products?.map((product, index) => {
 							<ProductDisplayCardHome 
+								address={product.address} // address of prod listing
 								sellerImg={product.sellerImg} // profile picture
 								sellerName={product.sellerName} // seller name/nickname
 								sellerAddr={product.sellerAddr} // wallet addr of seller
@@ -84,6 +85,7 @@ export default function ProductShowcaseRow(props) {
 						})
 					}
 					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="Logo Designs"
@@ -94,6 +96,7 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
@@ -104,6 +107,7 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="Logo Designs"
@@ -114,6 +118,7 @@ export default function ProductShowcaseRow(props) {
 						productId="123456789"
 					/>
 					<ProductDisplayCardHome
+						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
