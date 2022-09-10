@@ -48,14 +48,14 @@ export function HomeHeader(props) {
 		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
 		
 
-		acc_addr = await load_acc_addr;
-		auth = await load_auth;
+		load_acc_addr = await load_acc_addr;
+		load_auth = await load_auth;
 
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
 
-		if(auth){
-			let chat_client = new ChatClient(auth);
+		if(load_auth){
+			let chat_client = new ChatClient(load_auth);
 			setMatrixClient(chat_client);
 			await chat_client.Login();
 			await chat_client.Sync();
