@@ -7,6 +7,7 @@
 			"@layouts/*": ["_layouts/*"],
 			"@functionalities/*": ["_functionalities/*"],
 			"@app/*": ["pages/_app.js"],
+			"@hooks/*": ["_hooks/*"]
 		}
 	}
 }
