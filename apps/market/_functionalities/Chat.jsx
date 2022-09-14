@@ -3,6 +3,7 @@ import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import Image from "next/image";
 
+
 export function ChatFunctionalities(props){
     const [txAddr, setTxAddr] = useState(props.tx_addr)
     const [roomId, setRoomId] = useState(props.roomid);
