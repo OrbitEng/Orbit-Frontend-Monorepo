@@ -45,7 +45,7 @@ export function HomeHeader(props) {
 		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
-		setMatrixClient(new ChatClient(wallet));
+		setMatrixClient(new ChatClient());
 	}, [])
 
 	return(
