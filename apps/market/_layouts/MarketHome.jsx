@@ -17,7 +17,7 @@ export function Home(props) {
 	const ref = useRef();
 	const searchBarVisible = useOnScreen(ref);
 
-	const [ headerMiddle, setHeaderMiddle ] = useState(NavBar);
+	const [ headerMiddle, setHeaderMiddle ] = useState(<NavBar />);
 
 	useEffect(() => {
 			console.log(searchBarVisible)

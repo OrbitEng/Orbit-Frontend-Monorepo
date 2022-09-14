@@ -2953,6 +2953,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/cookie@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.4.1.tgz#bfd02c1f2224567676c1545199f87c3a861d878d"
+  integrity sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==
+
 "@types/estree@0.0.39":
   version "0.0.39"
   resolved "https://registry.npmjs.org/@types/estree/-/estree-0.0.39.tgz"
@@ -3021,6 +3026,11 @@
   version "12.20.55"
   resolved "https://registry.npmjs.org/@types/node/-/node-12.20.55.tgz"
   integrity sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==
+
+"@types/node@^16.10.2":
+  version "16.11.56"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.11.56.tgz#dcbb617669481e158e0f1c6204d1c768cd675901"
+  integrity sha512-aFcUkv7EddxxOa/9f74DINReQ/celqH8DiB3fRYgVDM2Xm5QJL8sl80QKuAnGvwAsMn+H3IFA6WCrQh1CY7m1A==
 
 "@types/pbkdf2@^3.0.0":
   version "3.1.0"
@@ -4717,10 +4727,24 @@ convert-source-map@^1.7.0:
   dependencies:
     safe-buffer "~5.1.1"
 
+cookie@^0.4.0:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.2.tgz#0e41f24de5ecf317947c82fc789e06a884824432"
+  integrity sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==
+
 cookiejar@^2.1.2:
   version "2.1.3"
   resolved "https://registry.npmjs.org/cookiejar/-/cookiejar-2.1.3.tgz"
   integrity sha512-JxbCBUdrfr6AQjOXrxoTvAMJO4HBTUIlBzslcJPAz+/KT8yk53fXun51u+RenNYvad/+Vc2DIz5o9UxlCDymFQ==
+
+cookies-next@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/cookies-next/-/cookies-next-2.1.1.tgz#8d82f1b78fccfb19d9d7c26766fa5707a3ec4695"
+  integrity sha512-AZGZPdL1hU3jCjN2UMJTGhLOYzNUN9Gm+v8BdptYIHUdwz397Et1p+sZRfvAl8pKnnmMdX2Pk9xDRKCGBum6GA==
+  dependencies:
+    "@types/cookie" "^0.4.1"
+    "@types/node" "^16.10.2"
+    cookie "^0.4.0"
 
 copy-descriptor@^0.1.0:
   version "0.1.1"
@@ -4930,8 +4954,9 @@ dashdash@^1.12.0:
   dependencies:
     "@bundlr-network/client" "^0.8.1"
     "@matrix-org/olm" "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.12.tgz"
-    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-data-transfer-clients-1.0.0-e4a988e7-0976-4788-aee8-eb7bef5c8590-1662176989852/node_modules/browser-clients"
+    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-data-transfer-clients-1.0.0-97e48d3b-bdc4-4307-94d8-f008b7afdb55-1662765349426/node_modules/browser-clients"
     matrix-js-sdk "^19.4.0"
+    tweetnacl "^1.0.3"
 
 data-uri-to-buffer@3.0.1:
   version "3.0.1"
@@ -8357,12 +8382,12 @@ ora@^5.4.1:
   dependencies:
     "@bundlr-network/client" "^0.8.0"
     "@project-serum/anchor" "^0.25.0"
-    accounts-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-bf258e45-c103-44c9-8f30-81c58b4f8442-1662176989944/node_modules/orbit-clients/accounts-program"
-    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-bf258e45-c103-44c9-8f30-81c58b4f8442-1662176989944/node_modules/browser-clients"
-    catalog-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-bf258e45-c103-44c9-8f30-81c58b4f8442-1662176989944/node_modules/orbit-clients/catalog-program"
-    digital-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-bf258e45-c103-44c9-8f30-81c58b4f8442-1662176989944/node_modules/orbit-clients/digital-market"
-    dispute-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-bf258e45-c103-44c9-8f30-81c58b4f8442-1662176989944/node_modules/orbit-clients/dispute-program"
-    physical-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-bf258e45-c103-44c9-8f30-81c58b4f8442-1662176989944/node_modules/orbit-clients/physical-market"
+    accounts-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/accounts-program"
+    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/browser-clients"
+    catalog-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/catalog-program"
+    digital-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/digital-market"
+    dispute-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/dispute-program"
+    physical-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/physical-market"
 
 os-browserify@0.3.0:
   version "0.3.0"
