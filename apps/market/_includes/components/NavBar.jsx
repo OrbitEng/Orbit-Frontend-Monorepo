@@ -14,11 +14,11 @@ export function NavBar(props){
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <nav className="flex flex-row align-middle gap-10 text-lg justify-self-center">
-            <button className="bg-transparent font-bold text-[#BBBBBB]">Home</button>
-            <button className="bg-transparent font-bold text-[#606060]">Explore</button>
-            <button className="bg-transparent font-bold text-[#606060]">Learn</button>
-            <button className="bg-transparent font-bold text-[#606060]">Referral</button>
+        <nav className="relative flex flex-row align-middle gap-10 text-lg justify-self-center">
+            <button className="relative bg-transparent font-bold text-[#BBBBBB]">Home</button>
+            <button className="relative bg-transparent font-bold text-[#606060]">Explore</button>
+            <button className="relative bg-transparent font-bold text-[#606060]">Learn</button>
+            <button className="relative bg-transparent font-bold text-[#606060]">Referral</button>
         </nav>
     </Transition>
     )

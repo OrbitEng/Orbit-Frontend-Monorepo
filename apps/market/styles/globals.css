@@ -14,8 +14,14 @@
     }
 }
 
+
 body {
     background-color: #101010;
+}
+
+.bgblur{
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .wallet-adapter-button {
