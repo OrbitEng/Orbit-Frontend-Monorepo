@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { ArQueryClient } from "data-transfer-clients";
 import { enc_common } from "browser-clients";
 import { verifySignature } from "matrix-js-sdk/lib/crypto/olmlib";
+import Image from 'next/image';
 
 export default function TopVendorsDisplay(props) {
 
