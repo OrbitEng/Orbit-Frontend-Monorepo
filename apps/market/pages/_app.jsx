@@ -1,5 +1,4 @@
 import 'styles/globals.css'
-import * as anchor from "@project-serum/anchor"
 import { useMemo, useState } from 'react';
 
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
@@ -28,9 +27,7 @@ import {
   SolanaMobileWalletAdapter,
 } from '@solana-mobile/wallet-adapter-mobile';
 
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-
-import { clusterApiUrl, Connection } from '@solana/web3.js';
+import { clusterApiUrl } from '@solana/web3.js';
 
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
@@ -40,21 +37,9 @@ import CatalogCtx from "@contexts/CatalogCtx";
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 
-import {DigitalMarketClient, DisputeClient, PhysicalMarketClient, MarketAccountsClient, CatalogClient } from "orbit-clients";
-import {BundlrClient, ChatClient} from "data-transfer-clients";
-import { useEffect } from 'react';
-
-
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
-  
-  const [connection, setConnection] = useState(new Connection( "https://api.devnet.solana.com"));
-  const [defaultProvider, setProvider] = useState(new anchor.AnchorProvider(
-      connection,
-      {}
-  ));
-
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // marketplace clients
   const [digitalMarketClient, setDigitalMarketClient] = useState();
@@ -64,16 +49,6 @@ function MyApp({ Component, pageProps }) {
   const [catalogClient, setCatalogClient] = useState();
   const [bundlrClient, setBundlrClient] = useState();
   const [matrixClient, setMatrixClient] = useState();
-
-  useEffect(()=>{
-      setDigitalMarketClient(new DigitalMarketClient(undefined, connection, defaultProvider));
-      setDisputeProgramClient(new DisputeClient(undefined, connection, defaultProvider));
-      setPhysicalMarketClient(new PhysicalMarketClient(undefined, connection, defaultProvider));
-      setMarketAccountsClient(new MarketAccountsClient(undefined, connection, defaultProvider));
-      setCatalogClient(new CatalogClient(undefined, connection, defaultProvider));
-      setBundlrClient(new BundlrClient(undefined, connection, defaultProvider));
-      setMatrixClient(new ChatClient(undefined, connection, defaultProvider));
-  }, [])
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet

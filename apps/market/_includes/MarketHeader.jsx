@@ -19,6 +19,7 @@ import CatalogCtx from '@contexts/CatalogCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import Link from 'next/link';
 
 
 export function HomeHeader(props) {
@@ -34,45 +35,31 @@ export function HomeHeader(props) {
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 
-	useEffect(async ()=>{
+	useEffect(()=>{
 		if(!wallet) return;
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
-
-		const acc_client = new MarketAccountsClient(wallet, connection, provider);
-		setMarketAccountsClient(acc_client);
-		let load_acc_addr = acc_client.LoadAccountAddress();
-		let load_auth = acc_client.LoadMasterAuth();
 		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
 		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
-		
-
-		load_acc_addr = await load_acc_addr;
-		load_auth = await load_auth;
-
+		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
-
-		if(load_auth){
-			let chat_client = new ChatClient(load_auth);
-			setMatrixClient(chat_client);
-			await chat_client.Login();
-			await chat_client.Sync();
-		}
-		
+		setMatrixClient(new ChatClient(wallet));
 	}, [])
 
 	return(
-		<header className="mx-auto max-w-7xl h-14 sm:h-32 top-0 sticky flex flex-row justify-between bg-transparent">
+		<header className="mx-auto max-w-7xl h-14 sm:h-32 top-0 sticky flex flex-row justify-between bg-transparent backdrop-blur z-50">
 			<div className="relative py-auto w-40 align-middle content-start mr-36">
-				<Image
-					src={OrbitLogo}
-					layout="fill"
-					alt="The Name and Logo for the Orbit market"
-					objectFit="contain"
-					priority={true}
-				/>
+				<Link href="/">
+					<Image
+						src={OrbitLogo}
+						layout="fill"
+						alt="The Name and Logo for the Orbit market"
+						objectFit="contain"
+						priority={true}
+					/>
+				</Link>
 			</div>
 			{props.headerMiddle}
 			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E]">
@@ -80,8 +67,12 @@ export function HomeHeader(props) {
 					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2">
 						<PlusCircleIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
-					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2">
+					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2">
 						<EnvelopeIcon className="w-3 h-3 sm:w-5 sm:h-5" />
+						{
+							(props.notifications || props.notifications > 0) &&
+							<div className="inline-flex absolute font-serif bg-red-500 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">{props.notifications > 999 ? "+999" : props.notifications}</div>
+						}
 					</button>
 				</div>
 				<div className="flex flex-row px-2 gap-3">
