@@ -67,8 +67,12 @@ export function HomeHeader(props) {
 					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2">
 						<PlusCircleIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
-					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2">
+					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2">
 						<EnvelopeIcon className="w-3 h-3 sm:w-5 sm:h-5" />
+						{
+							(props.notifications || props.notifications > 0) &&
+							<div className="inline-flex absolute font-serif bg-red-500 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">{props.notifications > 999 ? "+999" : props.notifications}</div>
+						}
 					</button>
 				</div>
 				<div className="flex flex-row px-2 gap-3">
