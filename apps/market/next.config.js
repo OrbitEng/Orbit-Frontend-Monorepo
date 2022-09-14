@@ -7,7 +7,8 @@ const withTM = require('next-transpile-modules')([
   'browser-clients',
   'data-transfer-clients',
   "accounts-program",
-  "catalog-program"
+  "catalog-program",
+  "multisig"
 ]);
 
 const withPWA = require('next-pwa');

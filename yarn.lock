@@ -4954,7 +4954,7 @@ dashdash@^1.12.0:
   dependencies:
     "@bundlr-network/client" "^0.8.1"
     "@matrix-org/olm" "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.12.tgz"
-    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-data-transfer-clients-1.0.0-97e48d3b-bdc4-4307-94d8-f008b7afdb55-1662765349426/node_modules/browser-clients"
+    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-data-transfer-clients-1.0.0-097ed6ce-8546-4539-8704-17ea1f11ef78-1663180180183/node_modules/browser-clients"
     matrix-js-sdk "^19.4.0"
     tweetnacl "^1.0.3"
 
@@ -7931,6 +7931,9 @@ multiformats@^9.4.2:
   resolved "https://registry.npmjs.org/multiformats/-/multiformats-9.7.1.tgz"
   integrity sha512-TaVmGEBt0fhxiNJMGphBfB+oGvUxFs8KgGvgl8d3C+GWtrFcvXdJ2196eg+dYhmSFClmgFfSfJEklo+SZzdNuw==
 
+"multisig@file:./packages/orbit-clients/multisig":
+  version "1.0.0"
+
 multistream@^4.1.0:
   version "4.1.0"
   resolved "https://registry.npmjs.org/multistream/-/multistream-4.1.0.tgz"
@@ -8376,18 +8379,6 @@ ora@^5.4.1:
     log-symbols "^4.1.0"
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
-
-"orbit-clients@file:packages/orbit-clients":
-  version "1.0.0"
-  dependencies:
-    "@bundlr-network/client" "^0.8.0"
-    "@project-serum/anchor" "^0.25.0"
-    accounts-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/accounts-program"
-    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/browser-clients"
-    catalog-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/catalog-program"
-    digital-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/digital-market"
-    dispute-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/dispute-program"
-    physical-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-a1ec02b8-08f1-46fa-8fad-587c13b192df-1662765349512/node_modules/orbit-clients/physical-market"
 
 os-browserify@0.3.0:
   version "0.3.0"

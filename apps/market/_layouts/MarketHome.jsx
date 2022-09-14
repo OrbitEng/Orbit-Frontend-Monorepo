@@ -20,7 +20,7 @@ export function Home(props) {
 	const [ headerMiddle, setHeaderMiddle ] = useState(<NavBar />);
 
 	useEffect(() => {
-			console.log(searchBarVisible)
+			// console.log(searchBarVisible)
 			searchBarVisible ?
 				setHeaderMiddle(<NavBar />) : setHeaderMiddle(<HeaderSearchBar />)
 		},
