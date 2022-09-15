@@ -4,12 +4,15 @@ import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
+import CatalogCtx from "@contexts/CatalogCtx";
 
+// check if catalog.index == 24
 
 export function DigitalProductFunctionalities(props){
     const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
+    const {catalogClient} = useContext(CatalogCtx);
 
     ListProduct = async(
         currency = "11111111111111111111111111111111",
@@ -109,6 +112,7 @@ export function PhysicalProductFunctionalities(props){
     const {physicalMarketClient} = useContext(PhysicalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
+    const {catalogClient} = useContext(CatalogCtx);
 
     ListProduct = async(
         currency = "11111111111111111111111111111111",
