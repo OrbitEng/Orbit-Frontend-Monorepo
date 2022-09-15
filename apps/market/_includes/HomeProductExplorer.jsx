@@ -17,9 +17,9 @@ export function HomeProductExplorer(props) {
 		if(!digitalMarketClient)return;
 		setDigitalProducts(
 			await digitalMarketClient.GetMultipleDigitalProducts(
-				await catalogClient.GetCatalog(
+				(await catalogClient.GetCatalog(
 					(await digitalMarketClient.GenRecentCatalog())[0]
-				)
+				)).data.pubkeys
 			)
 		)
 	},[digitalMarketClient]);
@@ -28,9 +28,9 @@ export function HomeProductExplorer(props) {
 		if(!physicalMarketClient)return;
 		setPhysicalProducts(
 			await physicalMarketClient.GetMultiplePhysicalProducts(
-				await catalogClient.GetCatalog(
+				(await catalogClient.GetCatalog(
 					(await physicalMarketClient.GenRecentCatalog())[0]
-				)
+				)).data.pubkeys
 			)
 		)
 	},[physicalMarketClient]);
