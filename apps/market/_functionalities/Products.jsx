@@ -31,6 +31,28 @@ export function DigitalProductFunctionalities(props){
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
+        let [addrs, bumps] = catalogClient.GenVendorChain(
+            [
+                Buffer.from("listings_catalog"),
+                market_acc.toBuffer()
+            ]
+        );
+        
+        let cata;
+        for(let ind = 0; ind < addrs.length; ind++){
+            cata = await catalogClient.GetCatalog(addrs[ind]);
+            if(!cata){
+                await catalogClient.createCatalog(`vendor_catalog${ind}`);
+                cata = addrs
+                break;
+            };
+            if(cata.data.index == 24){
+                await catalogClient.createCatalog(`vendor_catalog${ind+1}`, );
+                cata = addrs
+                break;
+            }
+        }
+
         await digitalMarketClient.ListDigitalProduct(
             market_acc,
             currency,
