@@ -175,7 +175,7 @@ export function DigitalProductFunctionalities(props){
         )
     }
 
-    SetMedia = async(prod_addr, files) =>{
+    SetMedia = async(prod_addr, files, desc) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
@@ -183,7 +183,8 @@ export function DigitalProductFunctionalities(props){
             files.map((fil)=>{
                 return fil.arrayBuffer();
             })
-        )).map(buff => utos(new Uint8Array.from(buff)));
+        )).map(buff => utos(new Uint8Array.from(buff))).join("||");
+        buffers += "~~" + desc;
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -214,7 +215,36 @@ export function DigitalProductFunctionalities(props){
             cache.push(...(await arclient.FetchData(link)).split("||"));
         }
 
-        let digi_prods = (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
+        return (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
+    }
+
+    ResolveProductMedia = async(product) => {
+        if((typeof product == "string") || product.toBase58){
+            product = await digitalMarketClient.GetDigitalProduct(product);
+        }
+        if(product.data){
+            let arclient = new ArQueryClient();
+            let media = (await arclient.FetchData(product.data.metadata.media)).split("~~");
+            let desc = "";
+            if(media.length == 2){
+                desc = media[1];
+            }
+            media = media[0].split("||");
+            
+
+            return [(
+                await Promise.all(
+                    media.map((block)=>{
+                        return new Promise((fulfill, reject) => {
+                            let reader = new FileReader();
+                            reader.onerror = reject;
+                            reader.onload = (e) => fulfill(reader.result);
+                            reader.readAsDataURL(new Blob([Buffer.from(stou(block))]));
+                        })
+                    })
+                )
+            ), desc];
+        }
     }
 }
 
@@ -345,7 +375,7 @@ export function PhysicalProductFunctionalities(props){
             new_currency
         )
     }
-    SetMedia = async(prod_addr, files) =>{
+    SetMedia = async(prod_addr, files, desc) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
@@ -353,7 +383,8 @@ export function PhysicalProductFunctionalities(props){
             files.map((fil)=>{
                 return fil.arrayBuffer();
             })
-        )).map(buff => utos(new Uint8Array.from(buff)));
+        )).map(buff => utos(new Uint8Array.from(buff))).join("||");
+        buffers += "~~" + desc;
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -385,26 +416,35 @@ export function PhysicalProductFunctionalities(props){
             cache.push(...(await arclient.FetchData(link)).split("||"));
         }
 
-        let digi_prods = (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
+        return (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
     }
 
-    ResolveProductImages = async(product) => {
+    ResolveProductMedia = async(product) => {
         if((typeof product == "string") || product.toBase58){
             product = await physicalMarketClient.GetPhysicalProduct(product);
         }
         if(product.data){
             let arclient = new ArQueryClient();
-            return (await Promise.all(
-                (await arclient.FetchData(product.data.metadata.media)).split("||").map((block)=>{
-                    return new Promise((fulfill, reject) => {
-                        let reader = new FileReader();
-                        reader.onerror = reject;
-                        reader.onload = (e) => fulfill(reader.result);
-                        reader.readAsDataURL(new Blob([Buffer.from(stou(data))]));
-                    })
-                })
-            ));
-        }
+            let media = (await arclient.FetchData(product.data.metadata.media)).split("~~");
+            let desc = "";
+            if(media.length == 2){
+                desc = media[1];
+            }
+            media = media[0].split("||");
+            
 
+            return [(
+                await Promise.all(
+                    media.map((block)=>{
+                        return new Promise((fulfill, reject) => {
+                            let reader = new FileReader();
+                            reader.onerror = reject;
+                            reader.onload = (e) => fulfill(reader.result);
+                            reader.readAsDataURL(new Blob([Buffer.from(stou(block))]));
+                        })
+                    })
+                )
+            ), desc];
+        }
     }
 }
