@@ -25,7 +25,7 @@ export function SellLayout(props){
 							<div className="flex flex-row justify-around w-full mx-auto h-[100vh] gap-24 content-center my-auto">
 								<div className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700">
 									<div className="bg-[#26308F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 transition duration-700" />
-									<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2c] to-[#4a4a4a] w-full h-full rounded-2xl">
+									<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-2xl">
 										<div className="relative flex w-1/2 h-1/2 mx-auto">
 											<Image
 												src="/emojis/globeEmojiImage.png"
@@ -45,7 +45,7 @@ export function SellLayout(props){
 								</div>
 								<div className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700">
 									<div className="bg-[#4E268F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 transition duration-700" />
-									<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2c] to-[#4a4a4a] w-full h-full rounded-2xl">
+									<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-2xl">
 										<div className="relative flex w-1/2 h-1/2 mx-auto">
 											<Image
 												src="/emojis/filesEmojiImage.png"
@@ -65,7 +65,7 @@ export function SellLayout(props){
 								</div>
 								<div className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700">
 									<div className="bg-[#81268F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 duration-700 transition" />
-									<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2c] to-[#4a4a4a] w-full h-full rounded-2xl">
+									<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-2xl">
 										<div className="relative flex w-1/2 h-1/2 mx-auto">
 											<Image
 												src="/emojis/wrenchEmojiImage.png"
