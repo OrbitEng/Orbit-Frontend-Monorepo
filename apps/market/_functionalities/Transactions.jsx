@@ -266,20 +266,8 @@ export function ServiceFunctionalities(){
             return
         }
 
-        // btoa(
-        //     enc_common.utos(
-        //         new Uint8Array(
-        //             Buffer.from(
-        //                 await file_common.GetFile()
-        //             )
-        //         )
-        //     )
-        // )
-
         let ar_addr = await bundlrClient.UploadBuffer(
-            Buffer.from(
-                await file_common.GetFile()
-            ).toString()
+            utos(new Uint8Array((await file_common.GetFile()).arrayBuffer()))
         );
 
         await digitalMarketClient.CommitPreview(
@@ -301,7 +289,13 @@ export function ServiceFunctionalities(){
         let ar_addr = enc_common.utos(comish_data.data.previewAddress);
 
         let data = (new ArQueryClient()).FetchData(ar_addr);
-        return new Blob([Buffer.from(data)]);
+
+        return new Promise((fulfill, reject) => {
+            let reader = new FileReader();
+            reader.onerror = reject;
+            reader.onload = (e) => fulfill(reader.result);
+            reader.readAsDataURL(new Blob([Buffer.from(stou(data))]));
+        })
     }
 
 }

@@ -6,6 +6,9 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 import CatalogCtx from "@contexts/CatalogCtx";
 
+import { ArQueryClient } from "data-transfer-clients";
+import { utos } from "browser-clients/src/encryption/enc-common";
+
 // check if catalog.index == 24
 
 export function DigitalProductFunctionalities(props){
@@ -13,6 +16,51 @@ export function DigitalProductFunctionalities(props){
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {catalogClient} = useContext(CatalogCtx);
+
+    const {physicalMarketClient} = useContext(PhysicalMarketCtx);
+
+    /// SELLER UTILS
+    MfreeVendorListings = async() => {
+        let vendor_catalog = await catalogClient.GetCacheCatalog(
+            catalogClient.GenVendorListingsAddress(
+                marketAccountsClient.market_account
+            )
+        )
+        if(!(vendor_catalog.data)){
+            return ""
+        }
+
+        let arclient = new ArQueryClient();
+        let cache = vendor_catalog.data.cache;
+
+        if(vendor_catalog.data.full){
+            for(let link of vendor_catalog.data.memory){
+                cache.push(...(await arclient.FetchData(link)).split("||"));
+            }
+
+            let phys_prods = (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
+            let digi_prods = (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
+            let prods = [...phys_prods, ...digi_prods];
+
+            let buff = prods.map(pk => pk.toString()).join("||");
+            let link = await bundlrClient.UploadBuffer(buff);
+
+            return catalogClient.RemapVendorCatalog(
+                marketAccountsClient.market_account,
+                marketAccountsClient.master_auth,
+                link
+            )
+        }else if(vendor_catalog.data.flag){
+            let buff = cache.map(pk => pk.toString()).join("||");
+            
+            return catalogClient.DrainVendorCatalog(
+                marketAccountsClient.market_account,
+                marketAccountsClient.master_auth,
+                await bundlrClient.UploadBuffer(buff)
+            );   
+        }
+    }
+
 
     ListProduct = async(
         currency = "11111111111111111111111111111111",
@@ -22,6 +70,7 @@ export function DigitalProductFunctionalities(props){
         files
     ) => {
         let market_acc = marketAccountsClient.market_account;
+        let market_auth = marketAccountsClient.master_auth;
 
         let buffers = await Promise.all(
             files.map((fil)=>{
@@ -31,29 +80,7 @@ export function DigitalProductFunctionalities(props){
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
-        let [addrs, bumps] = catalogClient.GenVendorChain(
-            [
-                Buffer.from("listings_catalog"),
-                market_acc.toBuffer()
-            ]
-        );
-        
-        let cata;
-        for(let ind = 0; ind < addrs.length; ind++){
-            cata = await catalogClient.GetCatalog(addrs[ind]);
-            if(!cata){
-                await catalogClient.createCatalog(`vendor_catalog${ind}`);
-                cata = addrs
-                break;
-            };
-            if(cata.data.index == 24){
-                await catalogClient.createCatalog(`vendor_catalog${ind+1}`, );
-                cata = addrs
-                break;
-            }
-        }
-
-        await digitalMarketClient.ListDigitalProduct(
+        let prod = await digitalMarketClient.ListDigitalProduct(
             market_acc,
             currency,
             price,
@@ -61,27 +88,66 @@ export function DigitalProductFunctionalities(props){
             deliveryEstimate,
             tx_id
         );
+
+        let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
+
+        if((!await catalogClient.GetCatalogAddrLocal(listings_catalog)) && !(await catalogClient.GetCacheCatalog(listings_catalog)).data){
+            await catalogClient.InitVendorCatalog(
+                market_acc,
+                market_auth
+            )
+        }
+
+        await catalogClient.AddToVendorCatalog(
+            market_acc,
+            market_auth,
+            prod.publicKey
+        );
+
+        return MfreeVendorListings();
     }
 
     // Commission, Template
-    ChangeProdType = async() =>{
+    ChangeProdType = async(
+        prod_addr,
+        prod_type = "Template"
+    ) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
+
+        return digitalMarketClient.SetProductType(
+            prod_addr,
+            market_acc,
+            market_auth,
+            prod_type
+        )   
     }
 
-    // Text, Video, Audio, Folder
-    SetFileType = async() =>{
+    // Text, Video, Audio, Image, Folder
+    SetFileType = async(
+        prod_addr,
+        file_type = "Image"
+    ) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
+        return digitalMarketClient.SetFileType(
+            prod_addr,
+            market_acc,
+            market_auth,
+            file_type
+        )
     }
 
     ChangeAvailability = async(prod_addr, available = false) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
-        digitalMarketClient.ChangeAvailability(
-
+        return digitalMarketClient.ChangeAvailability(
+            prod_addr,
+            market_acc,
+            market_auth,
+            available
         )
     }
 
@@ -89,7 +155,7 @@ export function DigitalProductFunctionalities(props){
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
-        digitalMarketClient.ChangeProductPrice(
+        return digitalMarketClient.ChangeProductPrice(
             prod_addr,
             market_acc,
             market_auth,
@@ -101,7 +167,7 @@ export function DigitalProductFunctionalities(props){
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
-        digitalMarketClient.UpdateCurrency(
+        return digitalMarketClient.UpdateCurrency(
             prod_addr,
             market_acc,
             market_auth,
@@ -113,11 +179,11 @@ export function DigitalProductFunctionalities(props){
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
-        let buffers = await Promise.all(
+        let buffers = (await Promise.all(
             files.map((fil)=>{
                 return fil.arrayBuffer();
             })
-        );
+        )).map(buff => utos(new Uint8Array.from(buff)));
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -128,13 +194,79 @@ export function DigitalProductFunctionalities(props){
             tx_id
         )
     }
+
+    /// BUYER UTILS
+
+    GetAllVendorDigitalProducts = async(market_acc) =>{
+        let vendor_catalog = await catalogClient.GetCacheCatalog(
+            catalogClient.GenVendorListingsAddress(
+                market_acc
+            )
+        )
+        if(!(vendor_catalog.data)){
+            return ""
+        }
+
+        let arclient = new ArQueryClient();
+        let cache = vendor_catalog.data.cache;
+
+        for(let link of vendor_catalog.data.memory){
+            cache.push(...(await arclient.FetchData(link)).split("||"));
+        }
+
+        let digi_prods = (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
+    }
 }
 
 export function PhysicalProductFunctionalities(props){
+    const {digitalMarketClient} = useContext(DigitalMarketCtx);
+
     const {physicalMarketClient} = useContext(PhysicalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {catalogClient} = useContext(CatalogCtx);
+
+    /// SELLER UTILS
+    MfreeVendorListings = async() => {
+        let vendor_catalog = await catalogClient.GetCacheCatalog(
+            catalogClient.GenVendorListingsAddress(
+                marketAccountsClient.market_account
+            )
+        )
+        if(!(vendor_catalog.data)){
+            return ""
+        }
+
+        let arclient = new ArQueryClient();
+        let cache = vendor_catalog.data.cache;
+
+        if(vendor_catalog.data.full){
+            for(let link of vendor_catalog.data.memory){
+                cache.push(...(await arclient.FetchData(link)).split("||"));
+            }
+
+            let phys_prods = (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
+            let digi_prods = (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
+            let prods = [...phys_prods, ...digi_prods];
+
+            let buff = prods.map(pk => pk.toString()).join("||");
+            let link = await bundlrClient.UploadBuffer(buff);
+
+            return catalogClient.RemapVendorCatalog(
+                marketAccountsClient.market_account,
+                marketAccountsClient.master_auth,
+                link
+            )
+        }else if(vendor_catalog.data.flag){
+            let buff = cache.map(pk => pk.toString()).join("||");
+            
+            return catalogClient.DrainVendorCatalog(
+                marketAccountsClient.market_account,
+                marketAccountsClient.master_auth,
+                await bundlrClient.UploadBuffer(buff)
+            );   
+        }
+    }
 
     ListProduct = async(
         currency = "11111111111111111111111111111111",
@@ -161,13 +293,30 @@ export function PhysicalProductFunctionalities(props){
             deliveryEstimate,
             tx_id
         )
+
+        let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
+
+        if((!await catalogClient.GetCatalogAddrLocal(listings_catalog)) && !(await catalogClient.GetCacheCatalog(listings_catalog)).data){
+            await catalogClient.InitVendorCatalog(
+                market_acc,
+                market_auth
+            )
+        }
+
+        await catalogClient.AddToVendorCatalog(
+            market_acc,
+            market_auth,
+            prod.publicKey
+        );
+
+        return MfreeVendorListings();
     }
 
     ChangePrice = async(prod_addr, new_price = 0) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
-        physicalMarketClient.ChangeProductPrice(
+        return physicalMarketClient.ChangeProductPrice(
             prod_addr,
             market_acc,
             market_auth,
@@ -178,7 +327,7 @@ export function PhysicalProductFunctionalities(props){
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
-        physicalMarketClient.ChangeProductQuantity(
+        return physicalMarketClient.ChangeProductQuantity(
             prod_addr,
             market_acc,
             market_auth,
@@ -189,7 +338,7 @@ export function PhysicalProductFunctionalities(props){
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
-        physicalMarketClient.UpdateCurrency(
+        return physicalMarketClient.UpdateCurrency(
             prod_addr,
             market_acc,
             market_auth,
@@ -200,20 +349,62 @@ export function PhysicalProductFunctionalities(props){
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
-        let buffers = await Promise.all(
+        let buffers = (await Promise.all(
             files.map((fil)=>{
                 return fil.arrayBuffer();
             })
-        );
+        )).map(buff => utos(new Uint8Array.from(buff)));
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
-        physicalMarketClient.SetMedia(
+        return physicalMarketClient.SetMedia(
             prod_addr,
             market_acc,
             market_auth,
             tx_id
         )
+
+    }
+
+    /// BUYER UTILS
+
+    GetAllVendorDigitalProducts = async(market_acc) =>{
+        let vendor_catalog = await catalogClient.GetCacheCatalog(
+            catalogClient.GenVendorListingsAddress(
+                market_acc
+            )
+        )
+        if(!(vendor_catalog.data)){
+            return ""
+        }
+
+        let arclient = new ArQueryClient();
+        let cache = vendor_catalog.data.cache;
+
+        for(let link of vendor_catalog.data.memory){
+            cache.push(...(await arclient.FetchData(link)).split("||"));
+        }
+
+        let digi_prods = (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
+    }
+
+    ResolveProductImages = async(product) => {
+        if((typeof product == "string") || product.toBase58){
+            product = await physicalMarketClient.GetPhysicalProduct(product);
+        }
+        if(product.data){
+            let arclient = new ArQueryClient();
+            return (await Promise.all(
+                (await arclient.FetchData(product.data.metadata.media)).split("||").map((block)=>{
+                    return new Promise((fulfill, reject) => {
+                        let reader = new FileReader();
+                        reader.onerror = reject;
+                        reader.onload = (e) => fulfill(reader.result);
+                        reader.readAsDataURL(new Blob([Buffer.from(stou(data))]));
+                    })
+                })
+            ));
+        }
 
     }
 }
