@@ -47,8 +47,8 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 	const [ query, setQuery ] = useState({})
 
 	return(
-		<div ref={ref} className="flex flex-col rounded-lg p-auto w-fill mx-10 mt-28 py-auto align-middle justify-center">
-			<div className="flex gap-3 flex-row rounded-full bg-searchbartransparent border-2 border-[#222222] p-4 w-full mx-auto py-auto align-middle">
+		<div ref={ref} className="flex flex-col rounded-lg p-auto w-fill mt-28 py-auto align-middle justify-center max-w-4xl mx-auto">
+			<div className="flex gap-3 flex-row rounded-full bg-searchbartransparent border-2 border-[#222222] p-2 w-full mx-auto py-auto align-middle">
 				<Combobox value={selected} onChange={setSelected} >
 					<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px]"/>
 					<Combobox.Input
