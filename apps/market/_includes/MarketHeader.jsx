@@ -20,10 +20,11 @@ import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 
 export function HomeHeader(props) {
-
+	const router = useRouter();
 	let {connection} = useConnection();
 	let wallet = useWallet();
 
@@ -64,7 +65,10 @@ export function HomeHeader(props) {
 			{props.headerMiddle}
 			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E]">
 				<div className="flex flex-row px-2 gap-3">
-					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2">
+					<button
+						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2"
+						onClick={() => router.push('/sell')}
+					>
 						<PlusCircleIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
 					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2">
