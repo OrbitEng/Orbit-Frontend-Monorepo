@@ -77,9 +77,9 @@ export default function ProductsPage(props) {
 	// todo: add nfts later
 	return (
 		<>
-			{ productType === "physical" && <DigitalProductLayout id={productId} /> }
-			{ productType === "template" && <DigitalProductLayout id={productId} /> }
-			{ productType === "commission" && <DigitalProductLayout product={dummyService} /> }
+			{ productType === "physical" && <DigitalProductLayout id={productId} product={dummyService} /> }
+			{ productType === "template" && <DigitalProductLayout id={productId} product={dummyService} /> }
+			{ productType === "commission" && <DigitalProductLayout id={productId} product={dummyService} /> }
 		</>
 	)
 }

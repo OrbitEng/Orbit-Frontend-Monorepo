@@ -142,7 +142,7 @@ export function ProductDisplay(props) {
 				<div className="flex flex-row w-full justify-center mt-6">
 					{
 						// FIXME(millionz): eventually more types will come along and break this
-						props.prodInfo?.type === "service" ? (
+						props.prodInfo?.type === "commission" ? (
 							<div className="flex flex-row justify-center">
 								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]">✉️ Request</button>
 							</div> 
