@@ -50,21 +50,36 @@ export default function ProductsPage(props) {
 	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
 
 	// fetch product somewhere in here from query
-	const [prod, setProd] = useState(props.prod);
-	useEffect(()=>{
-		if(props.prod){
-			return
-		}
+	const [prod, setProd] = useState();
 
+	useEffect(async ()=>{
+		switch (productType){
+			case "commission":
+			case "template":
+				setProd(await digitalMarketClient.GetDigitalProduct(
+					productId
+				))
+				break;
+			case "physical":
+				setProd(await physicalMarketClient.GetPhysicalProduct(
+					productId
+				))
+				break;
+			case "nft":
+				break;
+			default:
+				break;
+		}
 
 	},[])
 
 	// here I'm just using the digital layout because it's the same for pretty much everything...
+	// todo: add nfts later
 	return (
 		<>
 			{ productType === "physical" && <DigitalProductLayout id={productId} /> }
-			{ productType === "digital" && <DigitalProductLayout id={productId} /> }
-			{ productType === "service" && <DigitalProductLayout product={dummyService} /> }
+			{ productType === "template" && <DigitalProductLayout id={productId} /> }
+			{ productType === "commission" && <DigitalProductLayout product={dummyService} /> }
 		</>
 	)
 }

@@ -18,12 +18,12 @@ export function ProductDisplayCardHome(props) {
 			borderColor = "border-[#4541EE]";
 			bgColor = "card-digital-bg";
 			break;
-		case "digital":
+		case "template":
 			glowColor = "bg-[#FF31B9]";
 			borderColor = "border-[#FF31B9]";
 			bgColor = "card-service-bg";
 			break;
-		case "service":
+		case "commission":
 			glowColor = "bg-[#4541EE]";
 			borderColor = "border-[#4541EE]";
 			bgColor = "card-service-bg";

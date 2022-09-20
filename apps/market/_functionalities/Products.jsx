@@ -256,7 +256,7 @@ export function PhysicalProductFunctionalities(props){
     const {catalogClient} = useContext(CatalogCtx);
 
     /// SELLER UTILS
-    MfreeVendorListings = async() => {
+    MfreeVendorListings = useCallback(async() => {
         let vendor_catalog = await catalogClient.GetCacheCatalog(
             catalogClient.GenVendorListingsAddress(
                 marketAccountsClient.market_account
@@ -295,9 +295,9 @@ export function PhysicalProductFunctionalities(props){
                 await bundlrClient.UploadBuffer(buff)
             );   
         }
-    }
+    })
 
-    ListProduct = async(
+    ListProduct = useCallback(async(
         currency = "11111111111111111111111111111111",
         price,
         available = true,
@@ -339,9 +339,9 @@ export function PhysicalProductFunctionalities(props){
         );
 
         return MfreeVendorListings();
-    }
+    })
 
-    ChangePrice = async(prod_addr, new_price = 0) =>{
+    ChangePrice = useCallback(async(prod_addr, new_price = 0) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
@@ -351,8 +351,8 @@ export function PhysicalProductFunctionalities(props){
             market_auth,
             new_price
         )
-    }
-    ChangeQuantity = async(prod_addr, new_quantity = 0) =>{
+    })
+    ChangeQuantity = useCallback(async(prod_addr, new_quantity = 0) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
@@ -362,8 +362,8 @@ export function PhysicalProductFunctionalities(props){
             market_auth,
             new_quantity
         )
-    }
-    ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
+    })
+    ChangeCurrency = useCallback(async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
@@ -373,8 +373,8 @@ export function PhysicalProductFunctionalities(props){
             market_auth,
             new_currency
         )
-    }
-    SetMedia = async(prod_addr, files, desc) =>{
+    })
+    SetMedia = useCallback(async(prod_addr, files, desc) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
@@ -394,11 +394,11 @@ export function PhysicalProductFunctionalities(props){
             tx_id
         )
 
-    }
+    })
 
     /// BUYER UTILS
 
-    GetAllVendorDigitalProducts = async(market_acc) =>{
+    GetAllVendorDigitalProducts = useCallback(async(market_acc) =>{
         let vendor_catalog = await catalogClient.GetCacheCatalog(
             catalogClient.GenVendorListingsAddress(
                 market_acc
@@ -416,9 +416,9 @@ export function PhysicalProductFunctionalities(props){
         }
 
         return (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
-    }
+    })
 
-    ResolveProductMedia = async(product) => {
+    ResolveProductMedia = useCallback(async(product) => {
         if((typeof product == "string") || product.toBase58){
             product = await physicalMarketClient.GetPhysicalProduct(product);
         }
@@ -445,5 +445,5 @@ export function PhysicalProductFunctionalities(props){
                 )
             ), desc];
         }
-    }
+    })
 }
