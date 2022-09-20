@@ -1,6 +1,16 @@
 import Image from "next/image"
 import Link from "next/link";
 
+// sellerImg={product.sellerImg} // profile picture
+// sellerName={product.sellerName} // seller name/nickname
+// sellerAddr={product.sellerAddr} // wallet addr of seller
+// name={product.name} // name of product string
+// type={product.type} // "physical", "digital", "service", "nft", ...
+// price={product.price} // price string (in usd)
+// imgUrl={product.imageUrl} // imageUrl (arweave)
+// paymentList={product.paymentTypes} // array ["solana", "usdc", ...]
+// productId={product.accountId} // the solana account Id of the product account
+
 export function ProductDisplayCardHome(props) {
 	const glowColor = "bg-[#4541EE]"
 	const borderColor = "border-[#4541EE]"

@@ -25,8 +25,8 @@ const responsive = {
 };
 
 export default function ProductShowcaseRow(props) {
-	const [ query, setQuery ] = useState()
-	const [ selected, setSelected ] = useState()
+	const [ query, setQuery ] = useState();
+	const [ selected, setSelected ] = useState();
 
 	return(
 		<div className="flex flex-col my-14">
@@ -72,15 +72,6 @@ export default function ProductShowcaseRow(props) {
 						props?.products?.map((product, index) => {
 							<ProductDisplayCardHome 
 								address={product.address} // address of prod listing
-								sellerImg={product.sellerImg} // profile picture
-								sellerName={product.sellerName} // seller name/nickname
-								sellerAddr={product.sellerAddr} // wallet addr of seller
-								name={product.name} // name of product string
-								type={product.type} // "physical", "digital", "service", "nft", ...
-								price={product.price} // price string (in usd)
-								imgUrl={product.imageUrl} // imageUrl (arweave)
-								paymentList={product.paymentTypes} // array ["solana", "usdc", ...]
-								productId={product.accountId} // the solana account Id of the product account
 							/>
 						})
 					}
@@ -89,7 +80,7 @@ export default function ProductShowcaseRow(props) {
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="Logo Designs"
-						type="service"
+						type="commission"
 						price="$119.99"
 						imgUrl="/demologos.png"
 						paymentList={["solana", "usdc"]}
@@ -100,7 +91,7 @@ export default function ProductShowcaseRow(props) {
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
-						type="digital"
+						type="template"
 						price="$9.99"
 						imgUrl="/demobgpack.png"
 						paymentList={["solana", "usdc"]}
@@ -111,7 +102,7 @@ export default function ProductShowcaseRow(props) {
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="Logo Designs"
-						type="service"
+						type="commission"
 						price="$119.99"
 						imgUrl="/demologos.png"
 						paymentList={["solana", "usdc"]}
@@ -122,7 +113,7 @@ export default function ProductShowcaseRow(props) {
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
-						type="digital"
+						type="template"
 						price="$9.99"
 						imgUrl="/demobgpack.png"
 						paymentList={["solana", "usdc"]}

@@ -37,6 +37,8 @@ import CatalogCtx from "@contexts/CatalogCtx";
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 
+import ProductCacheCtx from '@contexts/ProductCacheCtx';
+
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
@@ -49,6 +51,7 @@ function MyApp({ Component, pageProps }) {
   const [catalogClient, setCatalogClient] = useState();
   const [bundlrClient, setBundlrClient] = useState();
   const [matrixClient, setMatrixClient] = useState();
+  const [ productCache, setProductCache] = useState();
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet
@@ -91,7 +94,11 @@ function MyApp({ Component, pageProps }) {
                           <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
                             <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
                               <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
-                                <Component {...pageProps} />
+                                <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
+                                  
+                                  <Component {...pageProps} />
+                                  
+                                </ProductCacheCtx.Provider>
                               </BundlrCtx.Provider>
                             </CatalogCtx.Provider>
                           </DisputeProgramCtx.Provider>
