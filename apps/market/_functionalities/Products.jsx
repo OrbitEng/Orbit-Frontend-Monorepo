@@ -20,7 +20,7 @@ export function DigitalProductFunctionalities(props){
     const {physicalMarketClient} = useContext(PhysicalMarketCtx);
 
     /// SELLER UTILS
-    MfreeVendorListings = async() => {
+    MfreeVendorListings = useCallback(async() => {
         let vendor_catalog = await catalogClient.GetCacheCatalog(
             catalogClient.GenVendorListingsAddress(
                 marketAccountsClient.market_account
@@ -59,10 +59,9 @@ export function DigitalProductFunctionalities(props){
                 await bundlrClient.UploadBuffer(buff)
             );   
         }
-    }
+    })
 
-
-    ListProduct = async(
+    ListProduct = useCallback(async(
         currency = "11111111111111111111111111111111",
         price,
         available = true,
@@ -105,10 +104,10 @@ export function DigitalProductFunctionalities(props){
         );
 
         return MfreeVendorListings();
-    }
+    })
 
     // Commission, Template
-    ChangeProdType = async(
+    ChangeProdType = useCallback(async(
         prod_addr,
         prod_type = "Template"
     ) =>{
@@ -121,10 +120,10 @@ export function DigitalProductFunctionalities(props){
             market_auth,
             prod_type
         )   
-    }
+    })
 
     // Text, Video, Audio, Image, Folder
-    SetFileType = async(
+    SetFileType = useCallback(async(
         prod_addr,
         file_type = "Image"
     ) =>{
@@ -137,9 +136,9 @@ export function DigitalProductFunctionalities(props){
             market_auth,
             file_type
         )
-    }
+    })
 
-    ChangeAvailability = async(prod_addr, available = false) =>{
+    ChangeAvailability = useCallback(async(prod_addr, available = false) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
@@ -149,9 +148,9 @@ export function DigitalProductFunctionalities(props){
             market_auth,
             available
         )
-    }
+    })
 
-    ChangePrice = async(prod_addr, new_price = 0) =>{
+    ChangePrice = useCallback(async(prod_addr, new_price = 0) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
@@ -161,9 +160,9 @@ export function DigitalProductFunctionalities(props){
             market_auth,
             new_price
         )
-    }
+    })
 
-    ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
+    ChangeCurrency = useCallback(async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
@@ -173,9 +172,9 @@ export function DigitalProductFunctionalities(props){
             market_auth,
             new_currency
         )
-    }
+    })
 
-    SetMedia = async(prod_addr, files, desc) =>{
+    SetMedia = useCallback(async(prod_addr, files, desc) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
@@ -194,11 +193,11 @@ export function DigitalProductFunctionalities(props){
             market_auth,
             tx_id
         )
-    }
+    })
 
     /// BUYER UTILS
 
-    GetAllVendorDigitalProducts = async(market_acc) =>{
+    GetAllVendorDigitalProducts = useCallback(async(market_acc) =>{
         let vendor_catalog = await catalogClient.GetCacheCatalog(
             catalogClient.GenVendorListingsAddress(
                 market_acc
@@ -216,9 +215,9 @@ export function DigitalProductFunctionalities(props){
         }
 
         return (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
-    }
+    })
 
-    ResolveProductMedia = async(product) => {
+    ResolveProductMedia = useCallback(async(product) => {
         if((typeof product == "string") || product.toBase58){
             product = await digitalMarketClient.GetDigitalProduct(product);
         }
@@ -245,7 +244,7 @@ export function DigitalProductFunctionalities(props){
                 )
             ), desc];
         }
-    }
+    })
 }
 
 export function PhysicalProductFunctionalities(props){

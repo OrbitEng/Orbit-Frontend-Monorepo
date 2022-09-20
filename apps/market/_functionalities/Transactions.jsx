@@ -283,7 +283,7 @@ export function ServiceFunctionalities(){
      * @param {*} tx_addr 
      * @returns {Blob} for now. add proper decoding later
      */
-    const SeePreview = async(tx_addr) =>{
+    const SeePreview = useCallback(async(tx_addr) =>{
         let comish_addr = digitalMarketClient.GetTransaction(tx_addr).data.comishAccount;
         let comish_data = digitalMarketClient.getComish(new PublicKey(comish_addr));
         let ar_addr = enc_common.utos(comish_data.data.previewAddress);
@@ -296,7 +296,7 @@ export function ServiceFunctionalities(){
             reader.onload = (e) => fulfill(reader.result);
             reader.readAsDataURL(new Blob([Buffer.from(stou(data))]));
         })
-    }
+    })
 
 }
 
@@ -306,7 +306,7 @@ export function PhysicalFunctionalities(){
     const {bundlrClient} = useContext(BundlrCtx);
     const {disputeProgramClient} = useContext(DisputeProgramCtx);
 
-    const OpenDispute = async(tx_addr, threshold_voters)=>{
+    const OpenDispute = useCallback(async(tx_addr, threshold_voters)=>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
@@ -316,7 +316,7 @@ export function PhysicalFunctionalities(){
             market_acc,
             market_auth
         )
-    }
+    })
 
     const CommitMessage = async()
 }

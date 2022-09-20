@@ -40,8 +40,8 @@ export function Home(props) {
 					<PageSearchBar ref={ref}/>
 					<TopVendorsDisplay />
 					<ProductShowcaseRow title="Most Popular Items" />
-					<ProductShowcaseRow title="Digital Products" searchable />
-					<ProductShowcaseRow title="Services" searchable/>
+					<ProductShowcaseRow title="Digital Products" prod_type="template" searchable />
+					<ProductShowcaseRow title="Services" prod_type="commission" searchable/>
 					<NewsStand />
 					<MainFooter />
 				</div>

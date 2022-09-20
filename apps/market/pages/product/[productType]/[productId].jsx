@@ -1,9 +1,13 @@
 import { useRouter } from "next/router";
+
 import { 
 	DigitalProductLayout,
 	DigitalServiceLayout,
 	PhysicalProductLayout,
 } from "@layouts/ProductDisplays";
+import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
+import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
+import { useState, useEffect, useContext } from "react";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Dummy Products
@@ -42,7 +46,18 @@ export default function ProductsPage(props) {
 	const router = useRouter();
 	const { productType, productId } = router.query;
 
+	const {digitalMarketClient} = useContext(DigitalMarketCtx);
+	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
+
 	// fetch product somewhere in here from query
+	const [prod, setProd] = useState(props.prod);
+	useEffect(()=>{
+		if(props.prod){
+			return
+		}
+
+
+	},[])
 
 	// here I'm just using the digital layout because it's the same for pretty much everything...
 	return (
