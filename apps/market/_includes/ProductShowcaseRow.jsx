@@ -72,6 +72,7 @@ export default function ProductShowcaseRow(props) {
 						props?.products?.map((product, index) => {
 							<ProductDisplayCardHome 
 								address={product.address} // address of prod listing
+								type = {product.type}
 							/>
 						})
 					}
@@ -91,7 +92,7 @@ export default function ProductShowcaseRow(props) {
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
-						type="template"
+						type="digital"
 						price="$9.99"
 						imgUrl="/demobgpack.png"
 						paymentList={["solana", "usdc"]}

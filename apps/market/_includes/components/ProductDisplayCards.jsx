@@ -1,5 +1,10 @@
 import Image from "next/image"
 import Link from "next/link";
+import { useState } from "react";
+import { useEffect } from "react";
+
+import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
+import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 
 // sellerImg={product.sellerImg} // profile picture
 // sellerName={product.sellerName} // seller name/nickname
@@ -12,43 +17,62 @@ import Link from "next/link";
 // productId={product.accountId} // the solana account Id of the product account
 
 export function ProductDisplayCardHome(props) {
-	const glowColor = "bg-[#4541EE]"
-	const borderColor = "border-[#4541EE]"
-	const bgColor = "card-service-bg";
+
+	const {digitalMarketClient} = useContext(DigitalMarketCtx);
+	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
+
+	const [glowColor, setGlowColor] = "bg-[#4541EE]"
+	const [borderColor, setBorderColor] = "border-[#4541EE]"
+	const [bgColor, setBgColor] = "card-service-bg";
 	const buttonSet = (
 		<div className="flex flex-row gap-x-2 mt-3">
 			<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">🛒 Add to Cart</button>
 			<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">⚡ Quick Buy</button>
 		</div>
-	) 
+	);
 
-	switch (props.type) {
-		case "physical":
-			glowColor = "bg-[#4541EE]";
-			borderColor = "border-[#4541EE]";
-			bgColor = "card-digital-bg";
-			break;
-		case "template":
-			glowColor = "bg-[#FF31B9]";
-			borderColor = "border-[#FF31B9]";
-			bgColor = "card-service-bg";
-			break;
-		case "commission":
-			glowColor = "bg-[#4541EE]";
-			borderColor = "border-[#4541EE]";
-			bgColor = "card-service-bg";
-			buttonSet = (
-				<div className="flex flex-row justify-center mt-3">
-					<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
-				</div>
-			)
-			break;
-		case "nft":
-			glowColor = "bg-[#4541EE]";
-			borderColor = "border-[#4541EE]";
-			bgColor = "card-digital-bg";
-			break;
-	}
+	const [prod, setProd] = useState();
+
+	useEffect(async ()=>{
+		switch(props.type){
+			case "commission":
+				setGlowColor("bg-[#4541EE]");
+				setBorderColor("border-[#4541EE]");
+				setBgColor("card-service-bg");
+				buttonSet = (
+					<div className="flex flex-row justify-center mt-3">
+						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
+					</div>
+				);
+				setProd(await digitalMarketClient.GetDigitalProduct(
+					productId
+				))
+				break;
+			case "template":
+				setGlowColor("bg-[#FF31B9]");
+				setBorderColor("border-[#FF31B9]");
+				setBgColor("card-service-bg");
+				setProd(await digitalMarketClient.GetDigitalProduct(
+					productId
+				));
+				break;
+			case "physical":
+				setGlowColor("bg-[#4541EE]");
+				setBorderColor("border-[#4541EE]");
+				setBgColor("card-digital-bg");
+				setProd(await physicalMarketClient.GetPhysicalProduct(
+					productId
+				));
+				break;
+			case "nft":
+				setGlowColor("bg-[#4541EE]");
+				setBorderColor("border-[#4541EE]");
+				setBgColor("card-digital-bg");
+				break;
+			default:
+				break;
+		}
+	},[])
 
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">
