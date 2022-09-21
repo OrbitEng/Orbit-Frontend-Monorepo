@@ -1,9 +1,15 @@
-import Image from "next/image"
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useContext } from "react";
 
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
+import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+
+import ProductCacheCtx from "@contexts/ProductCacheCtx";
+import VendorCacheCtx from "@contexts/VendorCacheCtx";
+
+import {ArQueryClient} from "data-transfer-clients";
 
 // sellerImg={product.sellerImg} // profile picture
 // sellerName={product.sellerName} // seller name/nickname
@@ -15,14 +21,41 @@ import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 // paymentList={product.paymentTypes} // array ["solana", "usdc", ...]
 // productId={product.accountId} // the solana account Id of the product account
 
+async function ResolveArweaveImages(medialink){
+	let arclient = new ArQueryClient();
+	let media = (await arclient.FetchData(medialink)).split("~~");
+	let desc = "";
+	if(media.length == 2){
+		desc = media[1];
+	}
+	media = media[0].split("||");
+	
+
+	return [(
+		await Promise.all(
+			media.map((block)=>{
+				return new Promise((fulfill, reject) => {
+					let reader = new FileReader();
+					reader.onerror = reject;
+					reader.onload = (e) => fulfill(reader.result);
+					reader.readAsDataURL(new Blob([Buffer.from(stou(block))]));
+				})
+			})
+		)
+	), desc];
+}
+
 export function ProductDisplayCardHome(props) {
 
 	const {digitalMarketClient} = useContext(DigitalMarketCtx);
 	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {setProductCache} = useContext(ProductCacheCtx);
+	const {setVendorCache} = useContext(VendorCacheCtx);
 
-	const [glowColor, setGlowColor] = useState("bg-[#4541EE]")
-	const [borderColor, setBorderColor] = useState("border-[#4541EE]")
-	const [bgColor, setBgColor] = useState("card-service-bg")
+	const [glowColor, setGlowColor] = useState("bg-[#4541EE]");
+	const [borderColor, setBorderColor] = useState("border-[#4541EE]");
+	const [bgColor, setBgColor] = useState("card-service-bg");
 	const buttonSet = (
 		<div className="flex flex-row gap-x-2 mt-3">
 			<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">🛒 Add to Cart</button>
@@ -31,8 +64,11 @@ export function ProductDisplayCardHome(props) {
 	);
 
 	const [prod, setProd] = useState();
+	const [vendor, setVendor] = useState();
 
 	useEffect(async ()=>{
+		let tp = "";
+
 		switch(props.type){
 			case "commission":
 				setGlowColor("bg-[#4541EE]");
@@ -43,25 +79,19 @@ export function ProductDisplayCardHome(props) {
 						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
 					</div>
 				);
-				setProd(await digitalMarketClient.GetDigitalProduct(
-					productId
-				))
+				tp = await digitalMarketClient.GetDigitalProduct(props.address)
 				break;
 			case "template":
 				setGlowColor("bg-[#FF31B9]");
 				setBorderColor("border-[#FF31B9]");
 				setBgColor("card-service-bg");
-				setProd(await digitalMarketClient.GetDigitalProduct(
-					productId
-				));
+				tp = await digitalMarketClient.GetDigitalProduct(props.address)
 				break;
 			case "physical":
 				setGlowColor("bg-[#4541EE]");
 				setBorderColor("border-[#4541EE]");
 				setBgColor("card-digital-bg");
-				setProd(await physicalMarketClient.GetPhysicalProduct(
-					productId
-				));
+				tp = await physicalMarketClient.GetPhysicalProduct(props.address)
 				break;
 			case "nft":
 				setGlowColor("bg-[#4541EE]");
@@ -70,13 +100,17 @@ export function ProductDisplayCardHome(props) {
 				break;
 			default:
 				break;
-		}
+		};
+
+		[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
+		setProd(tp);
+		setVendor(await marketAccountsClient.GetAccount(tp.data.metadata.seller));
 	},[])
 
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">
 			<div className="relative group">
-				<div className={glowColor + " absolute -inset-0 rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-700 group-hover:duration-700 animate-tilt"} />
+				<div className={glowColor + " absolute -inset-0 rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-700 group-hover:duration-700 animate-tilt"} onClick={()=>{setProductCache(prod); setVendorCache(vendor)}}/>
 					<Link href={"/product/" + props.type + "/" + props.address}>
 						<div className={bgColor + " relative py-4 rounded-lg leading-none flex flex-col items-center overflow-hidden"}>
 							<div className="flex items-center content-center border-[#4F4F4F] border-2 border-opacity-30 rounded-full shadow bg-gradient-to-r to-[#120D20] from-[#19112E]">

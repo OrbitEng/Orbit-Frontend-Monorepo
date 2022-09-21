@@ -44,4 +44,8 @@ export function MarketAccountFunctionalities(props){
         await marketAccountsClient.UpdatePfp(ar_addr);
     }, [])
 
+    return {
+        CreateAccount,
+        SetPfp
+    }
 }

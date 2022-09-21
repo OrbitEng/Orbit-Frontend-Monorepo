@@ -7,6 +7,8 @@ import {
 } from "@layouts/ProductDisplays";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
+import ProductCacheCtx from "@contexts/ProductCacheCtx";
+import VendorCacheCtx from "@contexts/VendorCacheCtx";
 import { useState, useEffect, useContext } from "react";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,9 +37,28 @@ const dummyService = {
 	}
 }
 
+async function ResolveArweaveImages(medialink){
+	let arclient = new ArQueryClient();
+	let media = (await arclient.FetchData(medialink)).split("~~");
+	let desc = "";
+	if(media.length == 2){
+		desc = media[1];
+	}
+	media = media[0].split("||");
+	
 
-const dummyDigital = {
-
+	return [(
+		await Promise.all(
+			media.map((block)=>{
+				return new Promise((fulfill, reject) => {
+					let reader = new FileReader();
+					reader.onerror = reject;
+					reader.onload = (e) => fulfill(reader.result);
+					reader.readAsDataURL(new Blob([Buffer.from(stou(block))]));
+				})
+			})
+		)
+	), desc];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,29 +69,38 @@ export default function ProductsPage(props) {
 
 	const {digitalMarketClient} = useContext(DigitalMarketCtx);
 	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {productCache} = useContext(ProductCacheCtx);
+	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {setVendorCache} = useContext(VendorCacheCtx);
 
 	// fetch product somewhere in here from query
 	const [prod, setProd] = useState();
+	const [vendor, setVendor] = useState();
 
 	useEffect(async ()=>{
+		if(productCache && productCache.address.toString() == productId){
+			setProd(productCache);
+			return
+		}
+		let tp = "";
+
 		switch (productType){
 			case "commission":
 			case "template":
-				setProd(await digitalMarketClient.GetDigitalProduct(
-					productId
-				))
+				tp = await digitalMarketClient.GetDigitalProduct(productId);
 				break;
 			case "physical":
-				setProd(await physicalMarketClient.GetPhysicalProduct(
-					productId
-				))
+				tp = await physicalMarketClient.GetPhysicalProduct(productId);
 				break;
 			case "nft":
 				break;
 			default:
 				break;
-		}
+		};
 
+		[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
+		setProd(tp);
+		setVendor(await marketAccountsClient.GetAccount(tp.data.metadata.seller));
 	},[])
 
 	// here I'm just using the digital layout because it's the same for pretty much everything...

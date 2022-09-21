@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
 import Head from "next/head";
 
-// import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";

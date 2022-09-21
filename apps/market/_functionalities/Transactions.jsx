@@ -241,7 +241,7 @@ export function DigitalFunctionalities(){
 
     return {
         ConfirmUpload,
-        UploadImageFinal,
+        UploadImage,
         UploadAudio,
         UploadVideo,
         CommitNKeys,
@@ -296,8 +296,12 @@ export function ServiceFunctionalities(){
             reader.onload = (e) => fulfill(reader.result);
             reader.readAsDataURL(new Blob([Buffer.from(stou(data))]));
         })
-    })
+    }, [])
 
+    return {
+        UploadPreview,
+        SeePreview
+    }
 }
 
 export function PhysicalFunctionalities(){
@@ -316,7 +320,9 @@ export function PhysicalFunctionalities(){
             market_acc,
             market_auth
         )
-    })
+    }, [])
 
-    const CommitMessage = async()
+    return {
+        OpenDispute
+    }
 }

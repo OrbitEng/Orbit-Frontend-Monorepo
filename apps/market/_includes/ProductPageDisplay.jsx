@@ -42,17 +42,19 @@ const handleCurrency = (priceStruct) => {
 // come back and change it afterwards
 /* 
 Props: {
-	address: Pubkey, (address of the product account)
-	imageUrls: [ string... ],
-	itemName: string
-	currency: string
-	stock: string, (can be left blank)
-	type: string, (Maybe should make enum?)
+	product.address: Pubkey, (address of the product account)
+	product.data.images: [ string... ],
+	product.data.metadata.name: string
+	product.data.metadata.currency: string
+	product.data.medata.available: bool,
+
+	product.data.quantity: string, (can be left blank) // only available for physical products
+	product.data.digitalFileType: string, (Maybe should make enum?)
 	price: {
-		value: num (this is the number of tokens)
-		addr: string (this is the mint address for a token)
+		product.data.metadata.price: num (this is the number of tokens)
+		currency <product.data.metadata.currency>: string (this is the mint address for a token)
 	}, 
-	description: string,
+	product.data.description: string,
 	seller: {
 		sellerImg: string, (can be left blank)
 		sellerName: string,
