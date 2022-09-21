@@ -1,7 +1,6 @@
 import Image from "next/image"
 import Link from "next/link";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
@@ -21,9 +20,9 @@ export function ProductDisplayCardHome(props) {
 	const {digitalMarketClient} = useContext(DigitalMarketCtx);
 	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
 
-	const [glowColor, setGlowColor] = "bg-[#4541EE]"
-	const [borderColor, setBorderColor] = "border-[#4541EE]"
-	const [bgColor, setBgColor] = "card-service-bg";
+	const [glowColor, setGlowColor] = useState("bg-[#4541EE]")
+	const [borderColor, setBorderColor] = useState("border-[#4541EE]")
+	const [bgColor, setBgColor] = useState("card-service-bg";)
 	const buttonSet = (
 		<div className="flex flex-row gap-x-2 mt-3">
 			<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">🛒 Add to Cart</button>
