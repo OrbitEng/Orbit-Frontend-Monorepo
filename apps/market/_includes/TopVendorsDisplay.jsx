@@ -22,7 +22,7 @@ export default function TopVendorsDisplay(props) {
 		setTopVendors([]);
 
 		let top_vendors_addrs = await catalogClient.GetParty(
-			await marketAccountsClient.GetTopVendorsAddress()
+			await catalogClient.GenTopVendorsAddress()
 		);
 
 		let top_vendors = await marketAccountsClient.GetMultipleMarketAccounts(

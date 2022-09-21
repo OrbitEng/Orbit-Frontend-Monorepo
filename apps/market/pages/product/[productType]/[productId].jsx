@@ -80,7 +80,7 @@ export default function ProductsPage(props) {
 	const [prod, setProd] = useState();
 	const [vendor, setVendor] = useState();
 
-	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
+	const {GetPfp} = MarketAccountFunctionalities()
 
 	useEffect(async ()=>{
 		if(productCache && productCache.address.toString() == productId){

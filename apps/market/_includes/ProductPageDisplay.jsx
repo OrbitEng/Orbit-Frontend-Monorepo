@@ -63,7 +63,7 @@ Props: {
 */
 export function ProductDisplay(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
-	// console.log(props);
+	console.log(props);
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">

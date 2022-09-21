@@ -119,7 +119,8 @@ export function ProductDisplayCardHome(props) {
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">
 			<div className="relative group">
-				<div className={glowColor + " absolute -inset-0 rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-700 group-hover:duration-700 animate-tilt"} onClick={()=>{setProductCache(prod); setVendorCache(vendor)}}/>
+				{/* onClick={()=>{setProductCache(prod); setVendorCache(vendor)}} */}
+				<div className={glowColor + " absolute -inset-0 rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-700 group-hover:duration-700 animate-tilt"} />
 					<Link href={"/product/" + props.type + "/" + props.address}>
 						<div className={bgColor + " relative py-4 rounded-lg leading-none flex flex-col items-center overflow-hidden"}>
 							<div className="flex items-center content-center border-[#4F4F4F] border-2 border-opacity-30 rounded-full shadow bg-gradient-to-r to-[#120D20] from-[#19112E]">
