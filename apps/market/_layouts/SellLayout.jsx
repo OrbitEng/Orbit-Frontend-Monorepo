@@ -24,7 +24,9 @@ export function SellLayout(props){
 						(
 							<CategorySelect cat={{selectedCategory, setSelectedCategory}} />	
 						) : (
-							<DigitalUpload />
+							(selectedCategory == "digital" && <DigitalUpload />)
+							(selectedCategory == "physical" && <PhysicalUpload />)
+							(selectedCategory == "service" && <ServiceUpload />)
 						)
 					}
 					<MainFooter />
@@ -152,8 +154,10 @@ function DigitalUpload(props) {
 						type="text"
 						id="stock"
 						name="stock"
-					>
-					</input>
+					/>
+				</div>
+				<div className="bg-[#171717] px-16 py-3 rounded-full flex justify-center mx-auto">
+					<input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-3xl rounded-full" type="submit" value="Upload"/>
 				</div>
 			</form>
 		</div>
