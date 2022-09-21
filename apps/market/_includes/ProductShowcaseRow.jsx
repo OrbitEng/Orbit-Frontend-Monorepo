@@ -94,7 +94,7 @@ export default function ProductShowcaseRow(props) {
 						sellerName="Marketplaceseller"
 						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
 						name="10ct Background Pack"
-						type="digital"
+						type="template"
 						price="$9.99"
 						imgUrl="/demobgpack.png"
 						paymentList={["solana", "usdc"]}

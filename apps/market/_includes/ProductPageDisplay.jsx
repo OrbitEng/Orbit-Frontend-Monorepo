@@ -87,7 +87,7 @@ export function ProductDisplay(props) {
 					{
 						!props.prodInfo?.imageUrls || props.prodInfo?.imageUrls?.map((url, index) => {
 							return(
-								<div className="flex mx-auto justify-center">
+								<div className="flex mx-auto justify-center" key={index}>
 									<Image 
 										src={url}
 										layout="fixed"
