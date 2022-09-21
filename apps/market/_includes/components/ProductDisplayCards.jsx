@@ -22,7 +22,7 @@ export function ProductDisplayCardHome(props) {
 
 	const [glowColor, setGlowColor] = useState("bg-[#4541EE]")
 	const [borderColor, setBorderColor] = useState("border-[#4541EE]")
-	const [bgColor, setBgColor] = useState("card-service-bg";)
+	const [bgColor, setBgColor] = useState("card-service-bg")
 	const buttonSet = (
 		<div className="flex flex-row gap-x-2 mt-3">
 			<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">🛒 Add to Cart</button>
