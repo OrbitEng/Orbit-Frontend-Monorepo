@@ -161,7 +161,7 @@ export function ProductDisplayCardHome(props) {
 									{
 										props?.paymentList?.map((payment, index) => {
 											return(
-											<div className="flex bg-[#201B31] rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem]">
+											<div className="flex bg-[#201B31] rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem]" key={index}>
 												<Image
 													layout="fixed"
 													src={"/" + payment + "LogoSmall.png"}

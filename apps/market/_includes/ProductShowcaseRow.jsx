@@ -70,9 +70,10 @@ export default function ProductShowcaseRow(props) {
 					{
 						//TODO: make this populate with the actual products
 						props?.products?.map((product, index) => {
-							<ProductDisplayCardHome 
+							return <ProductDisplayCardHome 
 								address={product.address} // address of prod listing
 								type = {product.type}
+								key = {index}
 							/>
 						})
 					}
@@ -86,6 +87,7 @@ export default function ProductShowcaseRow(props) {
 						imgUrl="/demologos.png"
 						paymentList={["solana", "usdc"]}
 						productId="123456789"
+						key={11}
 					/>
 					<ProductDisplayCardHome
 						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
@@ -97,6 +99,7 @@ export default function ProductShowcaseRow(props) {
 						imgUrl="/demobgpack.png"
 						paymentList={["solana", "usdc"]}
 						productId="123456789"
+						key={12}
 					/>
 					<ProductDisplayCardHome
 						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
@@ -108,6 +111,7 @@ export default function ProductShowcaseRow(props) {
 						imgUrl="/demologos.png"
 						paymentList={["solana", "usdc"]}
 						productId="123456789"
+						key={13}
 					/>
 					<ProductDisplayCardHome
 						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
@@ -119,6 +123,7 @@ export default function ProductShowcaseRow(props) {
 						imgUrl="/demobgpack.png"
 						paymentList={["solana", "usdc"]}
 						productId="123456789"
+						key={14}
 					/>
 				</Carousel>
 		</div>

@@ -42,8 +42,8 @@ export function MainFooter(){
                         Marketplace
                     </div>
                     <div className='flex flex-col gap-y-3 text-[#8A8A8A] align-top'>
-                        <Link href={"./"}>Dumb</Link>
-                        <Link href={"./"}>Stuff</Link>
+                        <Link href={"/"}>Dumb</Link>
+                        <Link href={"/"}>Stuff</Link>
                     </div>
                 </div>
                 <div className='grid grid-col justify-center grow text-center'>
