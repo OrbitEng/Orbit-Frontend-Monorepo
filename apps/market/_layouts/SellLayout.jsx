@@ -16,9 +16,9 @@ export function SellLayout(props){
 				<title>Market Home</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
-			<main className="bg-[url('/oldbgWallpaper.png')]">
+			<main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
 				<HomeHeader headerMiddle={searchBar}/>
-				<div className={(selectedCategory == null ? "-mt-14 sm:-mt-32" : "") + " max-w-7xl align-center mx-auto h-view"}>
+				<div className={(selectedCategory == null ? "-mt-14 sm:-mt-32" : "") + " max-w-7xl align-center mx-auto min-h-view"}>
 					{
 						(selectedCategory == null || selectedCategory == undefined) ? 
 						(
@@ -35,18 +35,127 @@ export function SellLayout(props){
 }
 
 function DigitalUpload(props) {
+	let uploadedImages = null;
 	return(
-		<div className="flex flex-col w-full mx-auto my-auto content-center">
+		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
-			<div className="flex flex-row">
-				<div className="w-1/2">
-					<h3 className="font-bold text-white text-xl">Upload Preview</h3>
-					<span className="text-[#767676]">Formats: jpg, mp4, png</span>
-					<div className="flex border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full h-full content-center align-middle">
-						<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
+			<div className="flex flex-row justify-between h-[45vh]">
+				<div className="w-3/4 h-fit mx-8">
+					<div className="flex flex-col mb-2 leading-tight">
+						<h3 className="font-bold text-white text-xl">Upload Preview</h3>
+						<span className="text-[#767676]">Formats: jpg, mp4, png</span>
+					</div>
+					<div className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full content-center align-middle py-12 px-28">
+						<div className="relative flex h-52 mx-16">
+							<Image
+								src="/PhotoIcon.png"
+								layout="fill"
+								objectFit="contain"
+							/>
+						</div>
+						<div className="flex flex-col">
+							<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
+							<span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
+						</div>
+					</div>
+				</div>
+				<div className="w-1/2 h-full mx-8 overflow-scroll">
+					<div className="sticky top-0 bg-transparent backdrop-blur-lg">
+						<div className="flex flex-col mb-2 leading-tight">
+							<h3 className="font-bold text-white text-xl">Import Content</h3>
+							<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
+						</div>
+						<div className="flex justify-center bg-[#171717] rounded-2xl py-4 mx-auto w-full shadow-lg">
+							<button className="bg-[#383838] font-bold text-white rounded-full mx-auto w-1/2 p-2">
+								Choose File
+							</button>
+						</div>
+					</div>
+					<div className="flex flex-col scrollable my-4 gap-y-4">
+						{
+							uploadedImages && uploadedImages?.map(() => {
+								return(
+									<div className="bg-[#171717] rounded-full"></div>
+								)
+							})
+						}
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
+						<div className="bg-[#171717] rounded-full py-3 px-4">
+							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+						</div>
 					</div>
 				</div>
 			</div>
+			<form className="flex flex-col gap-y-6 mb-32">
+				<div className="flex flex-col">
+					<label for="title" className="text-white font-semibold text-xl">Listing Title</label>
+					<input
+						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E]"
+						type="text"
+						id="title"
+						name="title"
+					/>
+				</div>
+				<div className="flex flex-col">
+					<label for="price" className="text-white font-semibold text-xl">Price</label>
+					<input
+						className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
+						type="text"
+						id="price"
+						name="price"
+					>
+					</input>
+				</div>
+				<div className="flex flex-col">
+					<label for="stock" className="text-white font-semibold text-xl">Item Quantity</label>
+					<input
+						className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
+						type="number"
+						id="stock"
+						name="stock"
+					>
+					</input>
+				</div>
+				<div className="flex flex-col">
+					<label for="description" className="text-white font-semibold text-xl">Description</label>
+					<input
+						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
+						type="text"
+						id="stock"
+						name="stock"
+					>
+					</input>
+				</div>
+			</form>
 		</div>
 	)
 }
