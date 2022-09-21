@@ -10,6 +10,9 @@ import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+
+import { MarketAccountFunctionalities } from "@functionalities/Accounts";
+
 import { useState, useEffect, useContext } from "react";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,13 +80,15 @@ export default function ProductsPage(props) {
 	const [prod, setProd] = useState();
 	const [vendor, setVendor] = useState();
 
+	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
+
 	useEffect(async ()=>{
 		if(productCache && productCache.address.toString() == productId){
 			setProd(productCache);
 			return
 		}
 		let tp;
-
+		
 		switch (productType){
 			case "commission":
 			case "template":
@@ -100,7 +105,8 @@ export default function ProductsPage(props) {
 
 		if(tp){
 			[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
-			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
+			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller);
+			vendor.data.profilePic = GetPfp(vendor.data.profilePic);
 			tp.data.metadata.seller = vendor;
 			setVendor(vendor);
 		};

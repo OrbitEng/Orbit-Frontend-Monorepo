@@ -9,6 +9,8 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
 
+import { MarketAccountFunctionalities } from "@functionalities/Accounts";
+
 import {ArQueryClient} from "data-transfer-clients";
 
 // sellerImg={product.sellerImg} // profile picture
@@ -66,6 +68,8 @@ export function ProductDisplayCardHome(props) {
 	const [prod, setProd] = useState();
 	const [vendor, setVendor] = useState();
 
+	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
+
 	useEffect(async ()=>{
 		let tp;
 
@@ -105,6 +109,7 @@ export function ProductDisplayCardHome(props) {
 		if(tp){
 			[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
 			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
+			vendor.data.profilePic = GetPfp(vendor.data.profilePic);
 			tp.data.metadata.seller = vendor;
 			setVendor(vendor);
 		};

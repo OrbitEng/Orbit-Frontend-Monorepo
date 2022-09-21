@@ -1,6 +1,6 @@
 import { useContext, useCallback } from "react";
 
-
+import ArQueryClient from "data-transfer-clients";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
@@ -16,7 +16,7 @@ export function MarketAccountFunctionalities(props){
 
     // AFTER CREATING MAKE SURE TO CALL MATRIX REGISTER/LOGIN ALL THAT SHIT
     // CHECK HEADER
-    const CreateAccount = useCallback(async(user_metadata, payer_as_wallet = true, save_authority = true)=>{
+    const CreateAccount = useCallback(async(user_metadata, payer_as_wallet = true)=>{
         let ar_addr = await bundlrClient.UploadBuffer(
             enc_common.stou(
                 JSON.stringify(user_metadata)
@@ -39,13 +39,33 @@ export function MarketAccountFunctionalities(props){
     }, [])
 
     const SetPfp = useCallback(async()=>{
-        let ar_addr = await bundlrClient.UploadBuffer(Buffer.from(await file_common.GetFile()));
+        let ar_addr = await bundlrClient.UploadBuffer(
+            enc_common.utos(new Uint8Array((await file_common.GetFile()).arrayBuffer()))
+        );
 
         await marketAccountsClient.UpdatePfp(ar_addr);
     }, [])
 
+    const GetPfp = useCallback(async(ar_addr)=>{
+        let data = (new ArQueryClient()).FetchData(ar_addr);
+
+        return new Promise((fulfill, reject) => {
+            let reader = new FileReader();
+            reader.onerror = reject;
+            reader.onload = (e) => fulfill(reader.result);
+            reader.readAsDataURL(new Blob([Buffer.from(enc_common.stou(data))]));
+        })
+    }, [])
+
+    const GetMetadata = useCallback(()=>{
+        let data = (new ArQueryClient()).FetchData(ar_addr);
+        return JSON.parse(data)
+    }, [])
+
     return {
         CreateAccount,
-        SetPfp
+        SetPfp,
+        GetPfp,
+        GetMetadata
     }
 }

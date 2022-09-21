@@ -267,7 +267,7 @@ export function ServiceFunctionalities(){
         }
 
         let ar_addr = await bundlrClient.UploadBuffer(
-            utos(new Uint8Array((await file_common.GetFile()).arrayBuffer()))
+            enc_common.utos(new Uint8Array((await file_common.GetFile()).arrayBuffer()))
         );
 
         await digitalMarketClient.CommitPreview(
@@ -294,7 +294,7 @@ export function ServiceFunctionalities(){
             let reader = new FileReader();
             reader.onerror = reject;
             reader.onload = (e) => fulfill(reader.result);
-            reader.readAsDataURL(new Blob([Buffer.from(stou(data))]));
+            reader.readAsDataURL(new Blob([Buffer.from(enc_common.stou(data))]));
         })
     }, [])
 

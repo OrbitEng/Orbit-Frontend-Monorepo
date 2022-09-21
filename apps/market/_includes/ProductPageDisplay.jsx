@@ -45,20 +45,19 @@ Props: {
 	product.address: Pubkey, (address of the product account)
 	product.data.images: [ string... ],
 	product.data.metadata.name: string
-	product.data.metadata.currency: string
 	product.data.medata.available: bool,
 
 	product.data.quantity: string, (can be left blank) // only available for physical products
 	product.data.digitalFileType: string, (Maybe should make enum?)
-	price: {
-		product.data.metadata.price: num (this is the number of tokens)
-		currency <product.data.metadata.currency>: string (this is the mint address for a token)
-	}, 
+	
+	product.data.metadata.price: num (this is the number of tokens)
+	product.data.metadata.currency: string string (this is the mint address for a token)
+
 	product.data.description: string,
 	product.vendor: {
-		sellerImg: string, (can be left blank)
-		sellerName: string,
-		sellerAddr: string
+		data.profilePic: url string, (can be left blank)
+		data.metadata.name: string,
+		address: string
 	}
 }
 */
