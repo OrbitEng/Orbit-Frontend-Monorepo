@@ -67,7 +67,7 @@ export function ProductDisplayCardHome(props) {
 	const [vendor, setVendor] = useState();
 
 	useEffect(async ()=>{
-		let tp = "";
+		let tp;
 
 		switch(props.type){
 			case "commission":
@@ -101,10 +101,14 @@ export function ProductDisplayCardHome(props) {
 			default:
 				break;
 		};
-
-		[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
+		
+		if(tp){
+			[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
+			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
+			tp.data.metadata.seller = vendor;
+			setVendor(vendor);
+		};
 		setProd(tp);
-		setVendor(await marketAccountsClient.GetAccount(tp.data.metadata.seller));
 	},[])
 
 	return(

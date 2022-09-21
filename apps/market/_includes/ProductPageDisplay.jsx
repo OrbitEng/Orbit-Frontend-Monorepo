@@ -55,7 +55,7 @@ Props: {
 		currency <product.data.metadata.currency>: string (this is the mint address for a token)
 	}, 
 	product.data.description: string,
-	seller: {
+	product.vendor: {
 		sellerImg: string, (can be left blank)
 		sellerName: string,
 		sellerAddr: string

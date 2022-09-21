@@ -9,6 +9,7 @@ import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
+import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { useState, useEffect, useContext } from "react";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -71,7 +72,6 @@ export default function ProductsPage(props) {
 	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {productCache} = useContext(ProductCacheCtx);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {setVendorCache} = useContext(VendorCacheCtx);
 
 	// fetch product somewhere in here from query
 	const [prod, setProd] = useState();
@@ -82,7 +82,7 @@ export default function ProductsPage(props) {
 			setProd(productCache);
 			return
 		}
-		let tp = "";
+		let tp;
 
 		switch (productType){
 			case "commission":
@@ -98,9 +98,13 @@ export default function ProductsPage(props) {
 				break;
 		};
 
-		[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
+		if(tp){
+			[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
+			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
+			tp.data.metadata.seller = vendor;
+			setVendor(vendor);
+		};
 		setProd(tp);
-		setVendor(await marketAccountsClient.GetAccount(tp.data.metadata.seller));
 	},[])
 
 	// here I'm just using the digital layout because it's the same for pretty much everything...
