@@ -4,7 +4,7 @@ import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
 import Head from "next/head";
 import Image from "next/image";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 
 import {DigitalProductFunctionalities, PhysicalProductFunctionalities} from "@functionalities/Products";
@@ -77,7 +77,6 @@ function DigitalUpload(props) {
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
-
 			<div className="flex flex-row justify-between h-[55vh] mb-12">
 				<div className="w-3/4 h-fit mx-8">
 					<div className="flex flex-col mb-2 leading-tight">
@@ -100,7 +99,7 @@ function DigitalUpload(props) {
 					</div>
 				</div>
 				<div className="w-1/2 h-full mx-8">
-					<div className="sticky top-0 bg-transparent backdrop-blur-lg">
+					<div className="top-0 bg-transparent backdrop-blur-lg">
 						<div className="flex flex-col mb-2 leading-tight">
 							<h3 className="font-bold text-white text-xl">Import Content</h3>
 							<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
@@ -121,8 +120,14 @@ function DigitalUpload(props) {
 						}
 						{
 							Array(20).fill(0).map((v) => {
-								return <div className="bg-[#171717] rounded-full py-3 px-4">
-											<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+								return <div className="flex flex-row bg-[#171717] rounded-full py-3 px-4 justify-around">
+											<span className="flex flex-row gap-x-1 whitespace-nowrap text-white font-semibold basis-3/4 align-middle mx-auto my-auto overflow-ellipsis">
+												Uploaded file:{" "}
+												<span className="font-semibold text-[#AD61E8]">Filename.png</span>
+											</span>
+											<button className="flex p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
+												<TrashIcon className="flex text-white h-6 w-6"/>
+											</button>
 										</div>	
 							})
 						}
