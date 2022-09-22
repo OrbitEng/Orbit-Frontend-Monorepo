@@ -3740,6 +3740,11 @@ atomic-sleep@^1.0.0:
   resolved "https://registry.npmjs.org/atomic-sleep/-/atomic-sleep-1.0.0.tgz"
   integrity sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==
 
+attr-accept@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.2.tgz#646613809660110749e92f2c10833b70968d929b"
+  integrity sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==
+
 autoprefixer@^10.4.7:
   version "10.4.8"
   resolved "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.8.tgz"
@@ -4925,6 +4930,15 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
+"data-transfer-clients@file:packages/data-transfer-clients":
+  version "1.0.0"
+  dependencies:
+    "@bundlr-network/client" "^0.8.1"
+    "@matrix-org/olm" "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.12.tgz"
+    browser-clients "file:../../Library/Caches/Yarn/v6/npm-data-transfer-clients-1.0.0-07047960-bc24-4542-887c-5eef5181bb3f-1663874541413/node_modules/browser-clients"
+    matrix-js-sdk "^19.4.0"
+    tweetnacl "^1.0.3"
+
 data-uri-to-buffer@3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-3.0.1.tgz"
@@ -5789,6 +5803,13 @@ file-loader@^6.2.0:
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
+
+file-selector@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/file-selector/-/file-selector-0.6.0.tgz#fa0a8d9007b829504db4d07dd4de0310b65287dc"
+  integrity sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==
+  dependencies:
+    tslib "^2.4.0"
 
 file-uri-to-path@1.0.0:
   version "1.0.0"
@@ -8347,6 +8368,19 @@ ora@^5.4.1:
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
 
+"orbit-clients@file:packages/orbit-clients":
+  version "1.0.0"
+  dependencies:
+    "@bundlr-network/client" "^0.8.0"
+    "@project-serum/anchor" "^0.25.0"
+    accounts-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-592f6f25-e8b9-4fc8-841a-47ce0caad9dd-1663874541506/node_modules/orbit-clients/accounts-program"
+    browser-clients "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-592f6f25-e8b9-4fc8-841a-47ce0caad9dd-1663874541506/node_modules/browser-clients"
+    catalog-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-592f6f25-e8b9-4fc8-841a-47ce0caad9dd-1663874541506/node_modules/orbit-clients/catalog-program"
+    digital-market "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-592f6f25-e8b9-4fc8-841a-47ce0caad9dd-1663874541506/node_modules/orbit-clients/digital-market"
+    dispute-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-592f6f25-e8b9-4fc8-841a-47ce0caad9dd-1663874541506/node_modules/orbit-clients/dispute-program"
+    multisig "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-592f6f25-e8b9-4fc8-841a-47ce0caad9dd-1663874541506/node_modules/orbit-clients/multisig"
+    physical-market "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-592f6f25-e8b9-4fc8-841a-47ce0caad9dd-1663874541506/node_modules/orbit-clients/physical-market"
+
 os-browserify@0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/os-browserify/-/os-browserify-0.3.0.tgz"
@@ -8791,7 +8825,7 @@ prompts@^2.4.0:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -8981,6 +9015,15 @@ react-dom@^17.0.2:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     scheduler "^0.20.2"
+
+react-dropzone@^14.2.2:
+  version "14.2.2"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-14.2.2.tgz#a75a0676055fe9e2cb78578df4dedb4c42b54f98"
+  integrity sha512-5oyGN/B5rNhop2ggUnxztXBQ6q6zii+OMEftPzsxAR2hhpVWz0nAV+3Ktxo2h5bZzdcCKrpd8bfWAVsveIBM+w==
+  dependencies:
+    attr-accept "^2.2.2"
+    file-selector "^0.6.0"
+    prop-types "^15.8.1"
 
 react-is@17.0.2, react-is@^17.0.1:
   version "17.0.2"

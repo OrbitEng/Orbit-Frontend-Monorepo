@@ -1,14 +1,14 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
 import Head from "next/head";
 import Image from "next/image";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { useDropzone } from "react-dropzone";
 
 import {DigitalProductFunctionalities, PhysicalProductFunctionalities} from "@functionalities/Products";
 import { file_common } from "browser-clients";
-import { useCallback } from "react";
 
 export function SellLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -54,6 +54,22 @@ function DigitalUpload(props) {
 	
 	const [files, setFiles] = useState();
 
+	const onDrop = useCallback((acceptedFiles) => {
+		acceptedFiles.forEach((file) => {
+			const reader = new FileReader()
+
+			reader.onabort = () => console.log('file reading was aborted')
+			reader.onerror = () => console.log('file reading has failed')
+			reader.onload = () => {
+				// Do whatever you want with the file contents
+				const binaryStr = reader.result
+				console.log(binaryStr)
+			}
+			reader.readAsArrayBuffer(file)
+		})
+	}, [])
+	const {getRootProps, getInputProps, open} = useDropzone({onDrop})
+
 	const uploadCallback = useCallback(async()=>{
 		setFiles(await file_common.GetFiles())
 	},[])
@@ -68,7 +84,8 @@ function DigitalUpload(props) {
 						<h3 className="font-bold text-white text-xl">Upload Preview</h3>
 						<span className="text-[#767676]">Formats: jpg, mp4, png</span>
 					</div>
-					<div className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full content-center align-middle py-12 px-28">
+					<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full content-center align-middle py-12 px-28">
+						<input {...getInputProps()}/>
 						<div className="relative flex h-52 mx-16">
 							<Image
 								src="/PhotoIcon.png"
@@ -89,7 +106,7 @@ function DigitalUpload(props) {
 							<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
 						</div>
 						<div className="flex justify-center bg-[#171717] rounded-2xl py-4 mx-auto w-full shadow-lg">
-							<button className="bg-[#383838] font-bold text-white rounded-full mx-auto w-1/2 p-2" onClick={uploadCallback}>
+							<button className="bg-[#383838] font-bold text-white rounded-full mx-auto w-1/2 p-2" onClick={open}>
 								Choose File
 							</button>
 						</div>
