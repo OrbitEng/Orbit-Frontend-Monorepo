@@ -6,6 +6,8 @@ import Head from "next/head";
 import Image from "next/image";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
+import {DigitalProductFunctionalities, PhysicalProductFunctionalities} from "@functionalities/Products";
+
 export function SellLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
 	const [ selectedCategory, setSelectedCategory ] = useState(null);
@@ -40,9 +42,20 @@ export function SellLayout(props){
 
 function DigitalUpload(props) {
 	let uploadedImages = null;
+	
+	const {ListProductTemplate} = DigitalProductFunctionalities();
+
+	const [prodName, setProdName] = useState();
+	const [price, setProdPrice] = useState();
+	const [currency, setCurrency] = useState("");
+	const [description, setDescription] = useState();
+	
+	const [files, setFiles] = useState();
+
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
+
 			<div className="flex flex-row justify-between h-[55vh] mb-12">
 				<div className="w-3/4 h-fit mx-8">
 					<div className="flex flex-col mb-2 leading-tight">
@@ -93,7 +106,8 @@ function DigitalUpload(props) {
 					</div>
 				</div>
 			</div>
-			<form className="flex flex-col gap-y-6 mb-32">
+
+			<form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProductTemplate()}}>
 				<div className="flex flex-col">
 					<label for="title" className="text-white font-semibold text-xl">Listing Title</label>
 					<input
@@ -111,8 +125,11 @@ function DigitalUpload(props) {
 						id="price"
 						name="price"
 					>
+						{/* todo: indy add currency dropdown */}
 					</input>
 				</div>
+				
+				{/* digital dont get quantity tf */}
 				<div className="flex flex-col">
 					<label for="stock" className="text-white font-semibold text-xl">Item Quantity</label>
 					<input
@@ -123,13 +140,13 @@ function DigitalUpload(props) {
 					>
 					</input>
 				</div>
+
 				<div className="flex flex-col">
 					<label for="description" className="text-white font-semibold text-xl">Description</label>
 					<textarea
 						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
-						type="text"
-						id="stock"
-						name="stock"
+						id="description"
+						name="description"
 					/>
 				</div>
 				<div className="bg-[#171717] px-16 py-3 rounded-full flex justify-center mx-auto">
@@ -140,9 +157,13 @@ function DigitalUpload(props) {
 	)
 }
 
-function PhysicalUpload(props) {}
+function PhysicalUpload(props) {
+	const {ListProduct} = PhysicalProductFunctionalities();
+}
 
-function ServiceUpload(props) {}
+function ServiceUpload(props) {
+	const {ListProductCommission} = DigitalProductFunctionalities();
+}
 
 function CategorySelect(props) {
 	const {selectedCategory, setSelectedCategory} = props.cat;

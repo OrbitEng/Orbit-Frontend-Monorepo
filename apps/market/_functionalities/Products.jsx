@@ -293,8 +293,8 @@ export function DigitalProductFunctionalities(props){
 
     return {
         MfreeVendorListings,
-        ListProduct,
-        ChangeProdType,
+        ListProductCommission,
+        ListProductTemplate,
         SetFileType,
         ChangeAvailability,
         ChangePrice,
