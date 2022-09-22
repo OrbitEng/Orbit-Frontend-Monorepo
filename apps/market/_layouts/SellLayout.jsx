@@ -7,6 +7,8 @@ import Image from "next/image";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 
 import {DigitalProductFunctionalities, PhysicalProductFunctionalities} from "@functionalities/Products";
+import { file_common } from "browser-clients";
+import { useCallback } from "react";
 
 export function SellLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -52,6 +54,10 @@ function DigitalUpload(props) {
 	
 	const [files, setFiles] = useState();
 
+	const uploadCallback = useCallback(async()=>{
+		setFiles(await file_common.GetFiles())
+	},[])
+
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
@@ -83,7 +89,7 @@ function DigitalUpload(props) {
 							<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
 						</div>
 						<div className="flex justify-center bg-[#171717] rounded-2xl py-4 mx-auto w-full shadow-lg">
-							<button className="bg-[#383838] font-bold text-white rounded-full mx-auto w-1/2 p-2">
+							<button className="bg-[#383838] font-bold text-white rounded-full mx-auto w-1/2 p-2" onClick={uploadCallback}>
 								Choose File
 							</button>
 						</div>
