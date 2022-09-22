@@ -55,24 +55,9 @@ function DigitalUpload(props) {
 	const [files, setFiles] = useState();
 
 	const onDrop = useCallback((acceptedFiles) => {
-		acceptedFiles.forEach((file) => {
-			const reader = new FileReader()
-
-			reader.onabort = () => console.log('file reading was aborted')
-			reader.onerror = () => console.log('file reading has failed')
-			reader.onload = () => {
-				// Do whatever you want with the file contents
-				const binaryStr = reader.result
-				console.log(binaryStr)
-			}
-			reader.readAsArrayBuffer(file)
-		})
+		setFiles(acceptedFiles)
 	}, [])
-	const {getRootProps, getInputProps, open} = useDropzone({onDrop})
-
-	const uploadCallback = useCallback(async()=>{
-		setFiles(await file_common.GetFiles())
-	},[])
+	const {getRootProps, getInputProps, open} = useDropzone({onDrop});
 
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
@@ -143,6 +128,7 @@ function DigitalUpload(props) {
 						type="text"
 						id="title"
 						name="title"
+						onChange={(e)=>{setProdName(e.target.value)}}
 					/>
 				</div>
 				<div className="flex flex-col">
@@ -152,10 +138,12 @@ function DigitalUpload(props) {
 						type="text"
 						id="price"
 						name="price"
+						onChange={(e)=>{setProdPrice(e.target.value)}}
 					>
 						{/* todo: indy add currency dropdown */}
 					</input>
 				</div>
+				{/* (e)=>{setCurrency} */}
 				
 				{/* digital dont get quantity tf */}
 				<div className="flex flex-col">
@@ -175,6 +163,7 @@ function DigitalUpload(props) {
 						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
 						id="description"
 						name="description"
+						onChange={(e)=>{setDescription(e.target.value)}}
 					/>
 				</div>
 				<div className="bg-[#171717] px-16 py-3 rounded-full flex justify-center mx-auto">
