@@ -17,11 +17,14 @@ module.exports = {
         searchbuttontrans: 'rgba(45,42,53,0.7)',
         searchbuttontrans2: 'rgba(45,42,53,0.4)',
         selleridproductpagetrans: 'rgba(12,12,12,.58)'
+      },
+      height:{
+        "76": "304px"
       }
     },
   },
   plugins: [
-    require("tailwind-scrollbar")
+    require("tailwind-scrollbar")({ nocompatible: true })
   ],
   variants:{
     scrollbar: ["dark", "rounded"]

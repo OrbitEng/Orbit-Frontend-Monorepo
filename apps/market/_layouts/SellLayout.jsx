@@ -63,7 +63,7 @@ function DigitalUpload(props) {
 						</div>
 					</div>
 				</div>
-				<div className="w-1/2 h-full mx-8 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+				<div className="w-1/2 h-full mx-8">
 					<div className="sticky top-0 bg-transparent backdrop-blur-lg">
 						<div className="flex flex-col mb-2 leading-tight">
 							<h3 className="font-bold text-white text-xl">Import Content</h3>
@@ -75,7 +75,7 @@ function DigitalUpload(props) {
 							</button>
 						</div>
 					</div>
-					<div className="flex flex-col scrollable my-4 gap-y-4">
+					<div className="flex flex-col h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
 						{
 							uploadedImages && uploadedImages?.map(() => {
 								return(
@@ -125,7 +125,7 @@ function DigitalUpload(props) {
 				</div>
 				<div className="flex flex-col">
 					<label for="description" className="text-white font-semibold text-xl">Description</label>
-					<input
+					<textarea
 						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
 						type="text"
 						id="stock"
