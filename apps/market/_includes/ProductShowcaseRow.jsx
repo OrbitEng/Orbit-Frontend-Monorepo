@@ -69,10 +69,10 @@ export default function ProductShowcaseRow(props) {
 				>
 					{
 						//TODO: make this populate with the actual products
-						props?.products?.map((product, index) => {
+						props?.addresses?.map((addr, index) => {
 							return <ProductDisplayCardHome 
-								address={product.address} // address of prod listing
-								type = {product.type}
+								address={addr} // address of prod listing
+								type = {props.prod_type}
 								key = {index}
 							/>
 						})

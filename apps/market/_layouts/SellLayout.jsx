@@ -24,9 +24,11 @@ export function SellLayout(props){
 						(
 							<CategorySelect cat={{selectedCategory, setSelectedCategory}} />	
 						) : (
-							(selectedCategory == "digital" && <DigitalUpload />)
-							(selectedCategory == "physical" && <PhysicalUpload />)
-							(selectedCategory == "service" && <ServiceUpload />)
+							<>
+							{(selectedCategory == "digital") && <DigitalUpload />}
+							{(selectedCategory == "physical") && <PhysicalUpload />}
+							{(selectedCategory == "service") && <ServiceUpload />}
+							</>
 						)
 					}
 					<MainFooter />
@@ -41,7 +43,7 @@ function DigitalUpload(props) {
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
-			<div className="flex flex-row justify-between h-[45vh]">
+			<div className="flex flex-row justify-between h-[55vh] mb-12">
 				<div className="w-3/4 h-fit mx-8">
 					<div className="flex flex-col mb-2 leading-tight">
 						<h3 className="font-bold text-white text-xl">Upload Preview</h3>
@@ -61,7 +63,7 @@ function DigitalUpload(props) {
 						</div>
 					</div>
 				</div>
-				<div className="w-1/2 h-full mx-8 overflow-scroll">
+				<div className="w-1/2 h-full mx-8 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
 					<div className="sticky top-0 bg-transparent backdrop-blur-lg">
 						<div className="flex flex-col mb-2 leading-tight">
 							<h3 className="font-bold text-white text-xl">Import Content</h3>
@@ -81,39 +83,13 @@ function DigitalUpload(props) {
 								)
 							})
 						}
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
-						<div className="bg-[#171717] rounded-full py-3 px-4">
-							<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
-						</div>
+						{
+							Array(20).fill(0).map((v) => {
+								return <div className="bg-[#171717] rounded-full py-3 px-4">
+											<span className="text-white font-semibold">Uploaded file: {"\n"}<span className="font-semibold text-[#AD61E8]">Filename.png</span></span>
+										</div>	
+							})
+						}
 					</div>
 				</div>
 			</div>

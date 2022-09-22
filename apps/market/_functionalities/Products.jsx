@@ -61,7 +61,7 @@ export function DigitalProductFunctionalities(props){
         }
     }, [])
 
-    const ListProduct = useCallback(async(
+    const ListProductCommission = useCallback(async(
         currency = "11111111111111111111111111111111",
         price,
         available = true,
@@ -80,7 +80,7 @@ export function DigitalProductFunctionalities(props){
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
-        let prod = await digitalMarketClient.ListDigitalProduct(
+        let prod = await digitalMarketClient.ListDigitalProductCommission(
             name,
             market_acc,
             currency,
@@ -108,20 +108,51 @@ export function DigitalProductFunctionalities(props){
         return MfreeVendorListings();
     }, [])
 
-    // Commission, Template
-    const ChangeProdType = useCallback(async(
-        prod_addr,
-        prod_type = "Template"
-    ) =>{
+    const ListProductTemplate = useCallback(async(
+        currency = "11111111111111111111111111111111",
+        price,
+        available = true,
+        deliveryEstimate = 14,
+        name,
+        files
+    ) => {
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
-        return digitalMarketClient.SetProductType(
-            prod_addr,
+        let buffers = await Promise.all(
+            files.map((fil)=>{
+                return fil.arrayBuffer();
+            })
+        );
+
+        let tx_id = await bundlrClient.UploadBuffer(buffers);
+
+        let prod = await digitalMarketClient.ListDigitalProductTemplate(
+            name,
+            market_acc,
+            currency,
+            price,
+            available,
+            deliveryEstimate,
+            tx_id
+        );
+
+        let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
+
+        if((!await catalogClient.GetCatalogAddrLocal(listings_catalog)) && !(await catalogClient.GetCacheCatalog(listings_catalog)).data){
+            await catalogClient.InitVendorCatalog(
+                market_acc,
+                market_auth
+            )
+        }
+
+        await catalogClient.AddToVendorCatalog(
             market_acc,
             market_auth,
-            prod_type
-        )   
+            prod.publicKey
+        );
+
+        return MfreeVendorListings();
     }, [])
 
     // Text, Video, Audio, Image, Folder
@@ -271,7 +302,9 @@ export function DigitalProductFunctionalities(props){
         SetMedia,
         SetName,
         GetAllVendorDigitalProducts,
-        ResolveProductMedia
+        ResolveProductMedia,
+        ListProductCommission,
+        ListProductTemplate
     }
 }
 
