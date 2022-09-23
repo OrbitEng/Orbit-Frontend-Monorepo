@@ -76,13 +76,13 @@ function DigitalUpload(props) {
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
-			<div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between h-[55vh] mb-12 overflow-hidden text-ellipsis gap-x-10">
-				<div className="w-full h-fit col-span-7">
+			<div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-10">
+				<div className="w-full h-full col-span-7">
 					<div className="flex flex-col mb-2 leading-tight">
 						<h3 className="font-bold text-white text-xl">Upload Preview</h3>
-						<span className="text-[#767676]">Formats: jpg, mp4, png</span>
+						<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
 					</div>
-					<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full content-center align-middle py-12 px-28">
+					<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full h-96 content-center align-middle py-12 px-28">
 						<input {...getInputProps()}/>
 						<div className="relative flex h-52 mx-16">
 							<Image
@@ -120,10 +120,10 @@ function DigitalUpload(props) {
 						{
 							Array(20).fill(0).map((v) => {
 								return (
-									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-4 justify-around truncate">
+									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate">
 										<span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
 											Uploaded file:{" "}
-											<span className="font-semibold basis-1/4 flex-none text-[#AD61E8] truncate">fnameashdkjashjdhaoufvaskjasbkjsdlkjaklsjdlkajsldkjalsjdlkasjdlkjlkkdjbs.png</span>
+											<span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">fnameashdkjashjdhaoufvaskjasbkjsdlkjaklsjdlkajsldkjalsjdlkasjdlkjlkkdjbs.png</span>
 										</span>
 										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
 											<TrashIcon className="flex text-white h-6 w-6"/>
