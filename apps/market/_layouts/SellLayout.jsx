@@ -65,7 +65,8 @@ function DigitalUpload(props) {
 	
 	const [files, setFiles] = useState();
 
-	const tokenlist = token_addresses[process.env.NEXT_CLUSTER_NAME];
+	console.log(process.env.NEXT_PUBLIC_CLUSTER_NAME)
+	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 
 	const onDrop = useCallback((acceptedFiles) => {
 		setFiles(acceptedFiles)
@@ -157,9 +158,9 @@ function DigitalUpload(props) {
 							<Listbox.Button>{currency}</Listbox.Button>
 							<Listbox.Options>
 								{
-									Object.entries(tokenlist).map(([k,v])=>{
+									Object.entries(tokenlist).map(([k,v], i)=>{
 										return <Listbox.Option
-											key = {v}
+											key = {i}
 											value = {v}
 											onClick = {()=>{setCurrency(v)}}
 										>
