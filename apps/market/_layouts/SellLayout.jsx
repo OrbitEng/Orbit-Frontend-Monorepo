@@ -6,9 +6,20 @@ import Head from "next/head";
 import Image from "next/image";
 import { ArrowRightIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
+import { Listbox } from "@headlessui/react";
 
 import {DigitalProductFunctionalities, PhysicalProductFunctionalities} from "@functionalities/Products";
-import { file_common } from "browser-clients";
+
+const token_addresses = {
+	mainnet: {
+		"sol": "11111111111111111111111111111111",
+		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+	},
+	devnet: {
+		"sol": "11111111111111111111111111111111",
+		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+	}
+}
 
 export function SellLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -49,10 +60,12 @@ function DigitalUpload(props) {
 
 	const [prodName, setProdName] = useState();
 	const [price, setProdPrice] = useState();
-	const [currency, setCurrency] = useState("");
+	const [currency, setCurrency] = useState("11111111111111111111111111111111");
 	const [description, setDescription] = useState();
 	
 	const [files, setFiles] = useState();
+
+	const tokenlist = token_addresses[process.env.NEXT_CLUSTER_NAME];
 
 	const onDrop = useCallback((acceptedFiles) => {
 		setFiles(acceptedFiles)
@@ -140,7 +153,22 @@ function DigitalUpload(props) {
 						name="price"
 						onChange={(e)=>{setProdPrice(e.target.value)}}
 					>
-						{/* todo: indy add currency dropdown */}
+						<Listbox>
+							<Listbox.Button>{currency}</Listbox.Button>
+							<Listbox.Options>
+								{
+									Object.entries(tokenlist).map(([k,v])=>{
+										return <Listbox.Option
+											key = {v}
+											value = {v}
+											onClick = {()=>{setCurrency(v)}}
+										>
+											{k}
+										</Listbox.Option>
+									})
+								}
+							</Listbox.Options>
+						</Listbox>
 					</input>
 				</div>
 				{/* (e)=>{setCurrency} */}
