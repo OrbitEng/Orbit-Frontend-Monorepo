@@ -77,7 +77,7 @@ function DigitalUpload(props) {
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
 			<div className="flex flex-row justify-between h-[55vh] mb-12">
-				<div className="w-3/4 h-fit mx-8">
+				<div className="basis-7/12 h-fit mx-8">
 					<div className="flex flex-col mb-2 leading-tight">
 						<h3 className="font-bold text-white text-xl">Upload Preview</h3>
 						<span className="text-[#767676]">Formats: jpg, mp4, png</span>
@@ -97,7 +97,7 @@ function DigitalUpload(props) {
 						</div>
 					</div>
 				</div>
-				<div className="w-1/2 h-full mx-8">
+				<div className="basis-5/12 flex-grow-0 h-full mx-8">
 					<div className="top-0 bg-transparent backdrop-blur-lg">
 						<div className="flex flex-col mb-2 leading-tight">
 							<h3 className="font-bold text-white text-xl">Import Content</h3>
@@ -109,7 +109,7 @@ function DigitalUpload(props) {
 							</button>
 						</div>
 					</div>
-					<div className="flex flex-col h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+					<div className="flex flex-col w-full h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
 						{
 							uploadedImages && uploadedImages?.map(() => {
 								return(
@@ -119,21 +119,22 @@ function DigitalUpload(props) {
 						}
 						{
 							Array(20).fill(0).map((v) => {
-								return <div className="flex flex-row bg-[#171717] rounded-full py-3 px-4 justify-around">
-											<span className="flex flex-row gap-x-1 whitespace-nowrap text-white font-semibold basis-3/4 align-middle mx-auto my-auto overflow-ellipsis">
+								return (
+									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-4 justify-around">
+											<span className="flex flex-none justify-center flex-row gap-x-1 whitespace-nowrap text-white font-semibold basis-3/4 align-middle mx-auto my-auto overflow-ellipsis">
 												Uploaded file:{" "}
-												<span className="font-semibold text-[#AD61E8]">Filename.png</span>
+												<span className="font-semibold flex-none text-[#AD61E8] overflow-ellipsis">fnameashdkjashjdhaoufvaskjasbkdjbs.png</span>
 											</span>
-											<button className="flex p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
+											<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
 												<TrashIcon className="flex text-white h-6 w-6"/>
 											</button>
 										</div>	
+								)
 							})
 						}
 					</div>
 				</div>
 			</div>
-
 			<form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProductTemplate()}}>
 				<div className="flex flex-col">
 					<label for="title" className="text-white font-semibold text-xl">Listing Title</label>
@@ -142,37 +143,38 @@ function DigitalUpload(props) {
 						type="text"
 						id="title"
 						name="title"
-						onChange={(e)=>{setProdName(e.target.value)}}
 					/>
 				</div>
 				<div className="flex flex-col">
 					<label for="price" className="text-white font-semibold text-xl">Price</label>
-					<input
-						className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
-						type="text"
-						id="price"
-						name="price"
-						onChange={(e)=>{setProdPrice(e.target.value)}}
-					>
+					<div classname="flex flex-row gap-x-5 bg-[#171717]">
+						<input
+							className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
+							type="text"
+							id="price"
+							name="price"
+							onChange={(e)=>{setProdPrice(e.target.value)}}
+						/>
 						<Listbox>
 							<Listbox.Button>{currency}</Listbox.Button>
 							<Listbox.Options>
 								{
 									Object.entries(tokenlist).map(([k,v], i)=>{
-										return <Listbox.Option
-											key = {i}
-											value = {v}
-											onClick = {()=>{setCurrency(v)}}
-										>
-											{k}
-										</Listbox.Option>
+										return (
+											<Listbox.Option
+												key = {i}
+												value = {v}
+												onClick = {()=>{setCurrency(v)}}
+											>
+												{k}
+											</Listbox.Option>
+										)
 									})
 								}
 							</Listbox.Options>
 						</Listbox>
-					</input>
+					</div>
 				</div>
-				{/* (e)=>{setCurrency} */}
 				
 				{/* digital dont get quantity tf */}
 				<div className="flex flex-col">
