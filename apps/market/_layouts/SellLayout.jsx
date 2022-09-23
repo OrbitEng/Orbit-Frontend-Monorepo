@@ -76,8 +76,8 @@ function DigitalUpload(props) {
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
-			<div className="flex flex-row justify-between h-[55vh] mb-12">
-				<div className="basis-7/12 h-fit mx-8">
+			<div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between h-[55vh] mb-12 overflow-hidden text-ellipsis gap-x-10">
+				<div className="w-full h-fit col-span-7">
 					<div className="flex flex-col mb-2 leading-tight">
 						<h3 className="font-bold text-white text-xl">Upload Preview</h3>
 						<span className="text-[#767676]">Formats: jpg, mp4, png</span>
@@ -97,7 +97,7 @@ function DigitalUpload(props) {
 						</div>
 					</div>
 				</div>
-				<div className="basis-5/12 flex-grow-0 h-full mx-8">
+				<div className="flex flex-col col-span-5 flex-none flex-grow-0 h-full overflow-ellipsis">
 					<div className="top-0 bg-transparent backdrop-blur-lg">
 						<div className="flex flex-col mb-2 leading-tight">
 							<h3 className="font-bold text-white text-xl">Import Content</h3>
@@ -120,15 +120,15 @@ function DigitalUpload(props) {
 						{
 							Array(20).fill(0).map((v) => {
 								return (
-									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-4 justify-around">
-											<span className="flex flex-none justify-center flex-row gap-x-1 whitespace-nowrap text-white font-semibold basis-3/4 align-middle mx-auto my-auto overflow-ellipsis">
-												Uploaded file:{" "}
-												<span className="font-semibold flex-none text-[#AD61E8] overflow-ellipsis">fnameashdkjashjdhaoufvaskjasbkdjbs.png</span>
-											</span>
-											<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
-												<TrashIcon className="flex text-white h-6 w-6"/>
-											</button>
-										</div>	
+									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-4 justify-around truncate">
+										<span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
+											Uploaded file:{" "}
+											<span className="font-semibold basis-1/4 flex-none text-[#AD61E8] truncate">fnameashdkjashjdhaoufvaskjasbkjsdlkjaklsjdlkajsldkjalsjdlkasjdlkjlkkdjbs.png</span>
+										</span>
+										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
+											<TrashIcon className="flex text-white h-6 w-6"/>
+										</button>
+									</div>	
 								)
 							})
 						}
@@ -147,7 +147,7 @@ function DigitalUpload(props) {
 				</div>
 				<div className="flex flex-col">
 					<label for="price" className="text-white font-semibold text-xl">Price</label>
-					<div classname="flex flex-row gap-x-5 bg-[#171717]">
+					<div className="flex flex-row gap-x-5 bg-[#171717]">
 						<input
 							className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
 							type="text"
