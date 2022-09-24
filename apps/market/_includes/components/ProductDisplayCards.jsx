@@ -13,16 +13,6 @@ import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 
 import {ArQueryClient} from "data-transfer-clients";
 
-// sellerImg={product.sellerImg} // profile picture
-// sellerName={product.sellerName} // seller name/nickname
-// sellerAddr={product.sellerAddr} // wallet addr of seller
-// name={product.name} // name of product string
-// type={product.type} // "physical", "digital", "service", "nft", ...
-// price={product.price} // price string (in usd)
-// imgUrl={product.imageUrl} // imageUrl (arweave)
-// paymentList={product.paymentTypes} // array ["solana", "usdc", ...]
-// productId={product.accountId} // the solana account Id of the product account
-
 async function ResolveArweaveImages(medialink){
 	let arclient = new ArQueryClient();
 	let media = (await arclient.FetchData(medialink)).split("~~");

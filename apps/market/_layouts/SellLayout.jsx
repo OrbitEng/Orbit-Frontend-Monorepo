@@ -12,11 +12,11 @@ import {DigitalProductFunctionalities, PhysicalProductFunctionalities} from "@fu
 
 const token_addresses = {
 	mainnet: {
-		"sol": "11111111111111111111111111111111",
+		"solana": "11111111111111111111111111111111",
 		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
 	},
 	devnet: {
-		"sol": "11111111111111111111111111111111",
+		"solana": "11111111111111111111111111111111",
 		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
 	}
 }
@@ -60,12 +60,11 @@ function DigitalUpload(props) {
 
 	const [prodName, setProdName] = useState();
 	const [price, setProdPrice] = useState();
-	const [currency, setCurrency] = useState("11111111111111111111111111111111");
+	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
 	
 	const [files, setFiles] = useState();
 
-	console.log(process.env.NEXT_PUBLIC_CLUSTER_NAME)
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 
 	const onDrop = useCallback((acceptedFiles) => {
@@ -126,7 +125,9 @@ function DigitalUpload(props) {
 											<span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">fnameashdkjashjdhaoufvaskjasbkjsdlkjaklsjdlkajsldkjalsjdlkasjdlkjlkkdjbs.png</span>
 										</span>
 										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
-											<TrashIcon className="flex text-white h-6 w-6"/>
+											<button>
+												<TrashIcon className="flex text-white h-6 w-6"/>
+											</button>
 										</button>
 									</div>	
 								)
@@ -137,7 +138,7 @@ function DigitalUpload(props) {
 			</div>
 			<form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProductTemplate()}}>
 				<div className="flex flex-col">
-					<label for="title" className="text-white font-semibold text-xl">Listing Title</label>
+					<label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
 					<input
 						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E]"
 						type="text"
@@ -145,40 +146,61 @@ function DigitalUpload(props) {
 						name="title"
 					/>
 				</div>
-				<div className="flex flex-col">
-					<label for="price" className="text-white font-semibold text-xl">Price</label>
-					<div className="flex flex-row gap-x-5 bg-[#171717]">
+				<div className="flex flex-col h-full">
+					<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
+					<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full">
 						<input
-							className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
+							className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg grow"
 							type="text"
 							id="price"
 							name="price"
 							onChange={(e)=>{setProdPrice(e.target.value)}}
 						/>
-						<Listbox>
-							<Listbox.Button>{currency}</Listbox.Button>
-							<Listbox.Options>
-								{
-									Object.entries(tokenlist).map(([k,v], i)=>{
-										return (
-											<Listbox.Option
-												key = {i}
-												value = {v}
-												onClick = {()=>{setCurrency(v)}}
-											>
-												{k}
-											</Listbox.Option>
-										)
-									})
-								}
-							</Listbox.Options>
-						</Listbox>
+						<div className="w-1/6 h-full">
+							<Listbox value={currency} onChange={setCurrency}>
+								<div className="w-full border-2 h-1/2 text-2xl">
+									<Listbox.Button className="w-full h-full bg-[#242424]">{
+										<div>
+											<Image
+												layout="fixed"
+												src={"/" + currency + "SvgLogo.svg"}
+												height={16}
+												width={16}
+											/>
+											{currency}
+										</div>
+										
+									}</Listbox.Button>
+									<Listbox.Options className="w-full text-center">
+										{
+											Object.keys(tokenlist).filter(tn => tn != currency).map((tokenname, index)=>{
+												return (
+													<Listbox.Option
+														key = {index}
+														value = {tokenname}
+														className={({active})=>{
+															return `w-full ${active? "bg-[#242424]" : ""}`
+														}}
+													>
+														{({selected})=>{
+															return <div>
+																		{tokenname}
+																	</div>
+														}}
+													</Listbox.Option>
+												)
+											})
+										}
+									</Listbox.Options>
+								</div>
+							</Listbox>
+						</div>
 					</div>
 				</div>
 				
 				{/* digital dont get quantity tf */}
 				<div className="flex flex-col">
-					<label for="stock" className="text-white font-semibold text-xl">Item Quantity</label>
+					<label htmlFor="stock" className="text-white font-semibold text-xl">Item Quantity</label>
 					<input
 						className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
 						type="number"
@@ -189,7 +211,7 @@ function DigitalUpload(props) {
 				</div>
 
 				<div className="flex flex-col">
-					<label for="description" className="text-white font-semibold text-xl">Description</label>
+					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
 					<textarea
 						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
 						id="description"
@@ -279,7 +301,7 @@ function CategorySelect(props) {
 					</div>
 					<h1 className="text-3xl font-bold text-white mx-auto text-center">Digital</h1>
 					<p className="text-xl text-[#6A6A6A] mx-auto justify-center mt-4 leading-tight text-center">
-						Get paid for your digital art, premade designs, beatpacks, private content and more!
+						Get paid htmlFor your digital art, premade designs, beatpacks, private content and more!
 					</p>
 					<div className="rounded-full p-2 my-auto h-14 w-14 bg-gradient-to-tr from-[#0E0C15] to-[#18171D] via-[#161320] mx-auto content-center align-middle">
 						<ArrowRightIcon className="h-10 w-10 text-[#FB3FFF] m-auto stroke-2" />
