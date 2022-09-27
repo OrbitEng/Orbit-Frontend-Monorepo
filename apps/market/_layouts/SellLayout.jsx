@@ -54,7 +54,6 @@ export function SellLayout(props){
 }
 
 function DigitalUpload(props) {
-	let uploadedFiles = null;
 	
 	const {ListProductTemplate} = DigitalProductFunctionalities();
 
@@ -68,7 +67,8 @@ function DigitalUpload(props) {
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 
 	const onDrop = useCallback((acceptedFiles) => {
-		setFiles(acceptedFiles)
+		console.log(acceptedFiles);
+		setFiles([...files, ...acceptedFiles])
 	}, [])
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop});
 
@@ -114,13 +114,23 @@ function DigitalUpload(props) {
 					</div>
 					<div className="flex flex-col w-full h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
 						{
-							uploadedFiles && uploadedFiles?.map(() => {
+							files && files?.map((f,fi) => {
 								return(
-									<div className="bg-[#171717] rounded-full"></div>
+									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate">
+										<span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
+											Uploaded file:{" "}
+											<span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">{f.name}{f.type}</span>
+										</span>
+										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
+											<button onClick={()=>{deleteFile(fi)}}>
+												<TrashIcon className="flex text-white h-6 w-6"/>
+											</button>
+										</button>
+									</div>
 								)
 							})
 						}
-						{
+						{/* {
 							Array(20).fill(0).map((v, fi) => {
 								return (
 									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate">
@@ -136,7 +146,7 @@ function DigitalUpload(props) {
 									</div>	
 								)
 							})
-						}
+						} */}
 					</div>
 				</div>
 			</div>
