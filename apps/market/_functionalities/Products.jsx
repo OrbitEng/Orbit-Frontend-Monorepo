@@ -67,6 +67,7 @@ export function DigitalProductFunctionalities(props){
         available = true,
         deliveryEstimate = 14,
         name,
+        description,
         files
     ) => {
         let market_acc = marketAccountsClient.market_account;
@@ -78,16 +79,17 @@ export function DigitalProductFunctionalities(props){
             })
         );
 
-        let tx_id = await bundlrClient.UploadBuffer(buffers);
+        let media_url = await bundlrClient.UploadBuffer(buffers);
+        let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
 
         let prod = await digitalMarketClient.ListDigitalProductCommission(
-            name,
+            desc_url,
             market_acc,
             currency,
             price,
             available,
             deliveryEstimate,
-            tx_id
+            media_url
         );
 
         let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
@@ -125,16 +127,17 @@ export function DigitalProductFunctionalities(props){
             })
         );
 
-        let tx_id = await bundlrClient.UploadBuffer(buffers);
+        let media_url = await bundlrClient.UploadBuffer(buffers);
+        let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
 
         let prod = await digitalMarketClient.ListDigitalProductTemplate(
-            name,
+            desc_url,
             market_acc,
             currency,
             price,
             available,
             deliveryEstimate,
-            tx_id
+            media_url
         );
 
         let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
@@ -207,7 +210,7 @@ export function DigitalProductFunctionalities(props){
         )
     }, [])
 
-    const SetMedia = useCallback(async(prod_addr, files, desc) =>{
+    const SetMedia = useCallback(async(prod_addr, files) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
         
@@ -216,7 +219,6 @@ export function DigitalProductFunctionalities(props){
                 return fil.arrayBuffer();
             })
         )).map(buff => utos(new Uint8Array.from(buff))).join("||");
-        buffers += "~~" + desc;
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -228,15 +230,17 @@ export function DigitalProductFunctionalities(props){
         )
     }, [])
 
-    const SetName = useCallback(async(prod_addr, name) =>{
+    const SetInfo = useCallback(async(prod_addr, name = "prod name", desc = "prod desc") =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
-        digitalMarketClient.SetName(
+        let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
+
+        digitalMarketClient.SetProdInfo(
             prod_addr,
             market_acc,
             market_auth,
-            name
+            tx_url
         )
     }, [])
 
@@ -263,33 +267,25 @@ export function DigitalProductFunctionalities(props){
     }, [])
 
     const ResolveProductMedia = useCallback(async(product) => {
-        if((typeof product == "string") || product.toBase58){
-            product = await digitalMarketClient.GetDigitalProduct(product);
+        let arclient = new ArQueryClient();
+        let product = await digitalMarketClient.GetDigitalProduct(product_addr);
+        if(!(product.data && product.data.metadata.images)){
+            return undefined
         }
-        if(product.data){
-            let arclient = new ArQueryClient();
-            let media = (await arclient.FetchData(product.data.metadata.media)).split("~~");
-            let desc = "";
-            if(media.length == 2){
-                desc = media[1];
-            }
-            media = media[0].split("||");
-            
-
-            return [(
-                await Promise.all(
-                    media.map((block)=>{
-                        return new Promise((fulfill, reject) => {
-                            let reader = new FileReader();
-                            reader.onerror = reject;
-                            reader.onload = (e) => fulfill(reader.result);
-                            reader.readAsDataURL(new Blob([Buffer.from(stou(block))]));
-                        })
-                    })
-                )
-            ), desc];
-        }
+        return arclient.GetImagesData(product.data.metadata.media);
     }, [])
+
+    /**
+     * should return [name, desc]
+     */
+    const ResolveProductInfo = useCallback(async(product_addr) => {
+        let arclient = new ArQueryClient();
+        let product = await digitalMarketClient.GetDigitalProduct(product_addr);
+        if(!(product.data && product.data.metadata.info)){
+            return undefined
+        }
+        return (await arclient.FetchData(product.data.metadata.info)).split("||");
+    }, []);
 
     return {
         MfreeVendorListings,
@@ -300,11 +296,12 @@ export function DigitalProductFunctionalities(props){
         ChangePrice,
         ChangeCurrency,
         SetMedia,
-        SetName,
+        SetInfo,
         GetAllVendorDigitalProducts,
         ResolveProductMedia,
         ListProductCommission,
-        ListProductTemplate
+        ListProductTemplate,
+        ResolveProductInfo
     }
 }
 
@@ -364,6 +361,7 @@ export function PhysicalProductFunctionalities(props){
         available = true,
         deliveryEstimate = 14,
         name,
+        description,
         files
     ) => {
         let market_acc = marketAccountsClient.market_account;
@@ -374,16 +372,17 @@ export function PhysicalProductFunctionalities(props){
             })
         );
 
-        let tx_id = await bundlrClient.UploadBuffer(buffers);
+        let media_url = await bundlrClient.UploadBuffer(buffers);
+        let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
 
         await physicalMarketClient.ListPhysicalProduct(
-            name,
+            desc_url,
             market_acc,
             currency,
             price,
             available,
             deliveryEstimate,
-            tx_id
+            media_url
         )
 
         let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
@@ -436,8 +435,9 @@ export function PhysicalProductFunctionalities(props){
             market_auth,
             new_currency
         )
-    }, [])
-    const SetMedia = useCallback(async(prod_addr, files, desc) =>{
+    }, []);
+
+    const SetMedia = useCallback(async(prod_addr, files) =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
@@ -446,7 +446,6 @@ export function PhysicalProductFunctionalities(props){
                 return fil.arrayBuffer();
             })
         )).map(buff => utos(new Uint8Array.from(buff))).join("||");
-        buffers += "~~" + desc;
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -459,21 +458,23 @@ export function PhysicalProductFunctionalities(props){
 
     }, [])
 
-    const SetName = useCallback(async(prod_addr, name) =>{
+    const SetInfo = useCallback(async(prod_addr, name = "prod name", desc = "prod desc") =>{
         let market_acc = marketAccountsClient.market_account;
         let market_auth = marketAccountsClient.master_auth;
 
-        physicalMarketClient.SetName(
+        let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
+
+        physicalMarketClient.SetProdInfo(
             prod_addr,
             market_acc,
             market_auth,
-            name
+            tx_url
         )
     }, [])
 
     /// BUYER UTILS
 
-    const GetAllVendorDigitalProducts = useCallback(async(market_acc) =>{
+    const GetAllVendorPhysicalProducts = useCallback(async(market_acc) =>{
         let vendor_catalog = await catalogClient.GetCacheCatalog(
             catalogClient.GenVendorListingsAddress(
                 market_acc
@@ -491,36 +492,28 @@ export function PhysicalProductFunctionalities(props){
         }
 
         return (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
-    }, [])
+    }, []);
 
     const ResolveProductMedia = useCallback(async(product) => {
-        if((typeof product == "string") || product.toBase58){
-            product = await physicalMarketClient.GetPhysicalProduct(product);
+        let arclient = new ArQueryClient();
+        let product = await physicalMarketClient.GetPhysicalProduct(product_addr);
+        if(!(product.data && product.data.metadata.images)){
+            return undefined
         }
-        if(product.data){
-            let arclient = new ArQueryClient();
-            let media = (await arclient.FetchData(product.data.metadata.media)).split("~~");
-            let desc = "";
-            if(media.length == 2){
-                desc = media[1];
-            }
-            media = media[0].split("||");
-            
-
-            return [(
-                await Promise.all(
-                    media.map((block)=>{
-                        return new Promise((fulfill, reject) => {
-                            let reader = new FileReader();
-                            reader.onerror = reject;
-                            reader.onload = (e) => fulfill(reader.result);
-                            reader.readAsDataURL(new Blob([Buffer.from(stou(block))]));
-                        })
-                    })
-                )
-            ), desc];
-        }
+        return arclient.GetImagesData(product.data.metadata.media);
     }, [])
+
+    /**
+     * should return [name, desc]
+     */
+    const ResolveProductInfo = useCallback(async(product_addr) => {
+        let arclient = new ArQueryClient();
+        let product = await physicalMarketClient.GetPhysicalProduct(product_addr);
+        if(!(product.data && product.data.metadata.info)){
+            return undefined
+        }
+        return (await arclient.FetchData(product.data.metadata.info)).split("||");
+    }, []);
 
     return {
         MfreeVendorListings,
@@ -529,8 +522,9 @@ export function PhysicalProductFunctionalities(props){
         ChangeQuantity,
         ChangeCurrency,
         SetMedia,
-        SetName,
-        GetAllVendorDigitalProducts,
-        ResolveProductMedia
+        SetInfo,
+        GetAllVendorPhysicalProducts,
+        ResolveProductMedia,
+        ResolveProductInfo
     }
 }

@@ -54,7 +54,7 @@ export function SellLayout(props){
 }
 
 function DigitalUpload(props) {
-	let uploadedImages = null;
+	let uploadedFiles = null;
 	
 	const {ListProductTemplate} = DigitalProductFunctionalities();
 
@@ -71,6 +71,10 @@ function DigitalUpload(props) {
 		setFiles(acceptedFiles)
 	}, [])
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop});
+
+	const deleteFile = useCallback((index)=>{
+		setFiles([...files.slice(0,index), ...files.slice(index+1)])
+	},[])
 
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
@@ -110,14 +114,14 @@ function DigitalUpload(props) {
 					</div>
 					<div className="flex flex-col w-full h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
 						{
-							uploadedImages && uploadedImages?.map(() => {
+							uploadedFiles && uploadedFiles?.map(() => {
 								return(
 									<div className="bg-[#171717] rounded-full"></div>
 								)
 							})
 						}
 						{
-							Array(20).fill(0).map((v) => {
+							Array(20).fill(0).map((v, fi) => {
 								return (
 									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate">
 										<span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
@@ -125,7 +129,7 @@ function DigitalUpload(props) {
 											<span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">fnameashdkjashjdhaoufvaskjasbkjsdlkjaklsjdlkajsldkjalsjdlkasjdlkjlkkdjbs.png</span>
 										</span>
 										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
-											<button>
+											<button onClick={()=>{deleteFile(fi)}}>
 												<TrashIcon className="flex text-white h-6 w-6"/>
 											</button>
 										</button>

@@ -230,7 +230,7 @@ export function DigitalFunctionalities(){
 
         let raw_blocks = await (new ArQueryClient()).FetchData( await digitalMarketClient.GetLink(tx_addr) ).split("||");
 
-        return file_client.StitchEncryptedImage(
+        return file_client.AssembleImage(
             raw_blocks[0],
             raw_blocks[1],
             raw_blocks[2],
@@ -288,14 +288,7 @@ export function ServiceFunctionalities(){
         let comish_data = digitalMarketClient.getComish(new PublicKey(comish_addr));
         let ar_addr = enc_common.utos(comish_data.data.previewAddress);
 
-        let data = (new ArQueryClient()).FetchData(ar_addr);
-
-        return new Promise((fulfill, reject) => {
-            let reader = new FileReader();
-            reader.onerror = reject;
-            reader.onload = (e) => fulfill(reader.result);
-            reader.readAsDataURL(new Blob([Buffer.from(enc_common.stou(data))]));
-        })
+        return (new ArQueryClient()).GetImageData(ar_addr);
     }, [])
 
     return {
