@@ -442,10 +442,10 @@ export function PhysicalProductFunctionalities(props){
         let market_auth = marketAccountsClient.master_auth;
 
         let buffers = (await Promise.all(
-            files.map((fil)=>{
-                return fil.arrayBuffer();
+            files.map(async (fil)=>{      
+                return enc_common.utos(new Uint8Array.from(await fil.arrayBuffer())) + "<<" + fil.type;
             })
-        )).map(buff => utos(new Uint8Array.from(buff))).join("||");
+        )).join("||")
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
