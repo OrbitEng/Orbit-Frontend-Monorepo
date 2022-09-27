@@ -266,7 +266,7 @@ export function DigitalProductFunctionalities(props){
         return (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
     }, [])
 
-    const ResolveProductMedia = useCallback(async(product) => {
+    const ResolveProductMedia = useCallback(async(product_addr) => {
         let arclient = new ArQueryClient();
         let product = await digitalMarketClient.GetDigitalProduct(product_addr);
         if(!(product.data && product.data.metadata.images)){
@@ -494,7 +494,7 @@ export function PhysicalProductFunctionalities(props){
         return (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
     }, []);
 
-    const ResolveProductMedia = useCallback(async(product) => {
+    const ResolveProductMedia = useCallback(async(product_addr) => {
         let arclient = new ArQueryClient();
         let product = await physicalMarketClient.GetPhysicalProduct(product_addr);
         if(!(product.data && product.data.metadata.images)){

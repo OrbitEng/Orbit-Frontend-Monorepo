@@ -53,24 +53,24 @@ export function ProductDisplayCardHome(props) {
 					</div>
 				);
 				tp = await digitalMarketClient.GetDigitalProduct(props.address);
-				tp.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.metadata.info);
-				tp.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.metadata.media);
+				tp.data.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
+				tp.data.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
 				break;
 			case "template":
 				setGlowColor("bg-[#FF31B9]");
 				setBorderColor("border-[#FF31B9]");
 				setBgColor("card-service-bg");
 				tp = await digitalMarketClient.GetDigitalProduct(props.address);
-				tp.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.metadata.info);
-				tp.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.metadata.media);
+				tp.data.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
+				tp.data.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
 				break;
 			case "physical":
 				setGlowColor("bg-[#4541EE]");
 				setBorderColor("border-[#4541EE]");
 				setBgColor("card-digital-bg");
 				tp = await physicalMarketClient.GetPhysicalProduct(props.address);
-				tp.metadata.info = await physicalProductFuncs.ResolveProductInfo(tp.metadata.info);
-				tp.metadata.images = await physicalProductFuncs.ResolveProductMedia(tp.metadata.media);
+				tp.data.metadata.info = await physicalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
+				tp.data.metadata.images = await physicalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
 				break;
 			case "nft":
 				setGlowColor("bg-[#4541EE]");
@@ -82,7 +82,6 @@ export function ProductDisplayCardHome(props) {
 		};
 		
 		if(tp){
-			[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
 			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
 			vendor.data.profilePic = GetPfp(vendor.data.profilePic);
 			tp.data.metadata.seller = vendor;

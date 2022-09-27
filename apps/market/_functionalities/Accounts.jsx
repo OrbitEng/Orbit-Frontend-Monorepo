@@ -47,14 +47,7 @@ export function MarketAccountFunctionalities(props){
     }, [])
 
     const GetPfp = useCallback(async(ar_addr)=>{
-        let data = (new ArQueryClient()).FetchData(ar_addr);
-
-        return new Promise((fulfill, reject) => {
-            let reader = new FileReader();
-            reader.onerror = reject;
-            reader.onload = (e) => fulfill(reader.result);
-            reader.readAsDataURL(new Blob([Buffer.from(enc_common.stou(data))]));
-        })
+        return (await (new ArQueryClient()).GetImageData(ar_addr))[0];
     }, [])
 
     const GetMetadata = useCallback(()=>{

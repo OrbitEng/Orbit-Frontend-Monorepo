@@ -43,8 +43,8 @@ const handleCurrency = (priceStruct) => {
 /* 
 Props: {
 	product.address: Pubkey, (address of the product account)
-	product.data.images: [ string... ],
-	product.data.metadata.name: string
+	product.data.metadata.images: [ string... ],
+	product.data.metadata.info: [name, desc]
 	product.data.medata.available: bool,
 
 	product.data.quantity: string, (can be left blank) // only available for physical products
@@ -54,7 +54,7 @@ Props: {
 	product.data.metadata.currency: string string (this is the mint address for a token)
 
 	product.data.description: string,
-	product.vendor: {
+	product.data.metadata.seller: {
 		data.profilePic: url string, (can be left blank)
 		data.metadata.name: string,
 		address: string
