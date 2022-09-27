@@ -4930,6 +4930,7 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
+<<<<<<< Updated upstream
 "data-transfer-clients@file:packages/data-transfer-clients":
   version "1.0.0"
   dependencies:
@@ -4939,6 +4940,8 @@ dashdash@^1.12.0:
     matrix-js-sdk "^19.4.0"
     tweetnacl "^1.0.3"
 
+=======
+>>>>>>> Stashed changes
 data-uri-to-buffer@3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-3.0.1.tgz"
@@ -8368,6 +8371,7 @@ ora@^5.4.1:
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
 
+<<<<<<< Updated upstream
 "orbit-clients@file:packages/orbit-clients":
   version "1.0.0"
   dependencies:
@@ -8381,6 +8385,8 @@ ora@^5.4.1:
     multisig "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/orbit-clients/multisig"
     physical-market "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/orbit-clients/physical-market"
 
+=======
+>>>>>>> Stashed changes
 os-browserify@0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/os-browserify/-/os-browserify-0.3.0.tgz"
