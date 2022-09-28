@@ -66,12 +66,12 @@ export function HomeHeader(props) {
 			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E]">
 				<div className="flex flex-row px-2 gap-3">
 					<button
-						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2"
+						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-105"
 						onClick={() => router.push('/sell')}
 					>
 						<PlusCircleIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
-					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2">
+					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-105">
 						<EnvelopeIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 						{
 							(props.notifications || props.notifications > 0) &&
@@ -80,12 +80,12 @@ export function HomeHeader(props) {
 					</button>
 				</div>
 				<div className="flex flex-row px-2 gap-3">
-					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full">
+					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full transition hover:scale-105">
 						<WalletMultiButton 
 							// onClick={}
 						/>
 					</div>
-					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2">
+					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-105">
 						<Bars3CenterLeftIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
 				</div>
