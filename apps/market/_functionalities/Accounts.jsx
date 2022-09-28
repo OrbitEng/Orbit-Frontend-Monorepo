@@ -39,8 +39,9 @@ export function MarketAccountFunctionalities(props){
     }, [])
 
     const SetPfp = useCallback(async()=>{
+        let file = await file_common.GetFile();
         let ar_addr = await bundlrClient.UploadBuffer(
-            enc_common.utos(new Uint8Array((await file_common.GetFile()).arrayBuffer()))
+            enc_common.utos(new Uint8Array.from((file).arrayBuffer())) + "<<" + file.type
         );
 
         await marketAccountsClient.UpdatePfp(ar_addr);
