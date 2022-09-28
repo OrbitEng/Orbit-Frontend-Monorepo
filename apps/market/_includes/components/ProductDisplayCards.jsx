@@ -32,6 +32,8 @@ export function ProductDisplayCardHome(props) {
 		</div>
 	);
 
+	let tp = undefined;
+
 	const [prod, setProd] = useState();
 	const [vendor, setVendor] = useState();
 
@@ -40,8 +42,6 @@ export function ProductDisplayCardHome(props) {
 	const [physicalProductFuncs,] = useState(PhysicalProductFunctionalities());
 
 	useEffect(async ()=>{
-		let tp;
-
 		switch(props.type){
 			case "commission":
 				setGlowColor("bg-[#4541EE]");
@@ -53,16 +53,16 @@ export function ProductDisplayCardHome(props) {
 					</div>
 				);
 				tp = await digitalMarketClient.GetDigitalProduct(props.address);
-				tp.data.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
-				tp.data.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
+				(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.data.metadata.info));
+				(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.data.metadata.media));
 				break;
 			case "template":
 				setGlowColor("bg-[#FF31B9]");
 				setBorderColor("border-[#FF31B9]");
 				setBgColor("card-service-bg");
 				tp = await digitalMarketClient.GetDigitalProduct(props.address);
-				tp.data.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
-				tp.data.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
+				(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.data.metadata.info));
+				(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.data.metadata.media));
 				break;
 			case "physical":
 				setGlowColor("bg-[#4541EE]");
