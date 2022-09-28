@@ -15,10 +15,10 @@ export function NavBar(props){
         leaveTo="opacity-0"
       >
         <nav className="relative flex flex-row align-middle gap-10 text-lg justify-self-center">
-            <button className="relative bg-transparent font-bold text-[#BBBBBB]">Home</button>
-            <button className="relative bg-transparent font-bold text-[#606060]">Explore</button>
-            <button className="relative bg-transparent font-bold text-[#606060]">Learn</button>
-            <button className="relative bg-transparent font-bold text-[#606060]">Referral</button>
+            <button className="relative bg-transparent font-bold text-[#BBBBBB] transition hover:scale-105">Home</button>
+            <button className="relative bg-transparent font-bold text-[#606060] transition hover:scale-105">Explore</button>
+            <button className="relative bg-transparent font-bold text-[#606060] transition hover:scale-105">Learn</button>
+            <button className="relative bg-transparent font-bold text-[#606060] transition hover:scale-105">Referral</button>
         </nav>
     </Transition>
     )

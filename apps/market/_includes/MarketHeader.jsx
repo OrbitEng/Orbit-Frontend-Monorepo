@@ -3,7 +3,6 @@ import OrbitLogo from '../public/OrbitLogo.png'
 
 import * as anchor from "@project-serum/anchor";
 
-import { HeaderSearchBar } from '@includes/components/SearchBar'
 import { Bars3CenterLeftIcon, PlusCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useCallback, useContext, useEffect } from 'react';
