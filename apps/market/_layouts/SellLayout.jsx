@@ -62,19 +62,22 @@ function DigitalUpload(props) {
 	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
 	
-	const [files, setFiles] = useState();
+	const [files, setFiles] = useState([]);
 
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 
-	const onDrop = useCallback((acceptedFiles) => {
-		console.log(acceptedFiles);
-		setFiles([...files, ...acceptedFiles])
-	}, [])
+	const onDrop = (acceptedFiles) => {
+		setFiles(cf => [...cf, ...acceptedFiles]);
+	}
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop});
 
-	const deleteFile = useCallback((index)=>{
-		setFiles([...files.slice(0,index), ...files.slice(index+1)])
-	},[])
+	const deleteFile = (filein)=>{
+		let index = files.indexOf(filein);
+		if(index == -1){
+			return;
+		}
+		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
+	}
 
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
@@ -116,15 +119,13 @@ function DigitalUpload(props) {
 						{
 							files && files?.map((f,fi) => {
 								return(
-									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate">
+									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate" key={f.name + fi}>
 										<span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
 											Uploaded file:{" "}
 											<span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">{f.name}{f.type}</span>
 										</span>
-										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
-											<button onClick={()=>{deleteFile(fi)}}>
-												<TrashIcon className="flex text-white h-6 w-6"/>
-											</button>
+										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{deleteFile(f)}}>
+											<TrashIcon className="flex text-white h-6 w-6"/>
 										</button>
 									</div>
 								)
