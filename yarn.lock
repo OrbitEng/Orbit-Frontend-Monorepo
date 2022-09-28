@@ -4930,18 +4930,6 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-<<<<<<< Updated upstream
-"data-transfer-clients@file:packages/data-transfer-clients":
-  version "1.0.0"
-  dependencies:
-    "@bundlr-network/client" "^0.8.1"
-    "@matrix-org/olm" "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.12.tgz"
-    browser-clients "file:../../Library/Caches/Yarn/v6/npm-data-transfer-clients-1.0.0-baaa55b6-6c9c-42a8-bf77-db9173130317-1664126061126/node_modules/browser-clients"
-    matrix-js-sdk "^19.4.0"
-    tweetnacl "^1.0.3"
-
-=======
->>>>>>> Stashed changes
 data-uri-to-buffer@3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-3.0.1.tgz"
@@ -5798,6 +5786,14 @@ file-entry-cache@^6.0.1:
   integrity sha512-7Gps/XWymbLk2QLYK4NzpMOrYjMhdIxXuIvy2QBsLE6ljuodKvdkWs/cpyJJ3CVIVpH0Oi1Hvg1ovbMzLdFBBg==
   dependencies:
     flat-cache "^3.0.4"
+
+file-loader@^4.2.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/file-loader/-/file-loader-4.3.0.tgz#780f040f729b3d18019f20605f723e844b8a58af"
+  integrity sha512-aKrYPYjF1yG3oX0kWRrqrSMfgftm7oJW5M+m4owoldH5C51C0RkIwB++JbRvEW3IU6/ZG5n8UvEcdgwOt2UOWA==
+  dependencies:
+    loader-utils "^1.2.3"
+    schema-utils "^2.5.0"
 
 file-loader@^6.2.0:
   version "6.2.0"
@@ -7318,6 +7314,15 @@ loader-utils@1.2.3:
     emojis-list "^2.0.0"
     json5 "^1.0.1"
 
+loader-utils@^1.2.3:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.4.0.tgz#c579b5e34cb34b1a74edc6c1fb36bfa371d5a613"
+  integrity sha512-qH0WSMBtn/oHuwjy/NucEgbx5dbxxnxup9s4PVXJUDHZBQY+s0NWA9rJf53RBnQZxfch7euUui7hpoAPvALZdA==
+  dependencies:
+    big.js "^5.2.2"
+    emojis-list "^3.0.0"
+    json5 "^1.0.1"
+
 loader-utils@^2.0.0:
   version "2.0.2"
   resolved "https://registry.npmjs.org/loader-utils/-/loader-utils-2.0.2.tgz"
@@ -8046,6 +8051,13 @@ next-transpile-modules@^9.0.0:
     enhanced-resolve "^5.7.0"
     escalade "^3.1.1"
 
+next-videos@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/next-videos/-/next-videos-1.5.0.tgz#bfc55f7db06e079d4559f6f8b4c28d617192582b"
+  integrity sha512-U6HY68UDxsDMMRgjABYq1S2EIStqZNp8FFtL8LKXJrhGFIO1nM2a3Afy0jw3JI2nK1HSXq4s4anQ96Yn4ukceA==
+  dependencies:
+    file-loader "^4.2.0"
+
 next@12.0.7:
   version "12.0.7"
   resolved "https://registry.npmjs.org/next/-/next-12.0.7.tgz"
@@ -8371,22 +8383,6 @@ ora@^5.4.1:
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
 
-<<<<<<< Updated upstream
-"orbit-clients@file:packages/orbit-clients":
-  version "1.0.0"
-  dependencies:
-    "@bundlr-network/client" "^0.8.0"
-    "@project-serum/anchor" "^0.25.0"
-    accounts-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/orbit-clients/accounts-program"
-    browser-clients "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/browser-clients"
-    catalog-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/orbit-clients/catalog-program"
-    digital-market "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/orbit-clients/digital-market"
-    dispute-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/orbit-clients/dispute-program"
-    multisig "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/orbit-clients/multisig"
-    physical-market "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-ac621cb5-3d87-4e8a-8366-bdde1fc9b16e-1664126061216/node_modules/orbit-clients/physical-market"
-
-=======
->>>>>>> Stashed changes
 os-browserify@0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/os-browserify/-/os-browserify-0.3.0.tgz"
@@ -9588,7 +9584,7 @@ scheduler@^0.21.0:
   dependencies:
     loose-envify "^1.1.0"
 
-schema-utils@^2.6.5:
+schema-utils@^2.5.0, schema-utils@^2.6.5:
   version "2.7.1"
   resolved "https://registry.npmjs.org/schema-utils/-/schema-utils-2.7.1.tgz"
   integrity sha512-SHiNtMOUGWBQJwzISiVYKu82GiV4QYGePp3odlY1tuKO7gPtphAT5R/py0fA6xtbgLL/RvtJZnU9b8s0F1q0Xg==
