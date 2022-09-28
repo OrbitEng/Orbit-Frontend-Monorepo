@@ -45,19 +45,16 @@ export default function TopVendorsDisplay(props) {
 				profilepic: enc_common.utos(vendor?.profilePic)
 			}
 		}))
-		
-		console.log(topVendors)
 	}, []);
 
 	let undefVendorsArr = Array.of(1,2,3,4,5,6)
-
 	// fetch the top 8 vendors and display here
 	return(
 		<div className="flex flex-col justify-center mx-auto w-full m-28">
 			<div className="text-white w-full font-bold text-4xl text-center mb-10">Top Vendor Profiles 🛍️</div>
 			<div className="grid grid-flow-row grid-rows-2 grid-cols-3 gap-x-5 gap-y-8 w-full">
 			{
-				(topVendors == undefined) ? 
+				(topVendors == undefined || topVendors.length == 0) ? 
 					undefVendorsArr?.map((number, index) => {
 						return(<Vendor rank={number} key={number} />)
 					})
