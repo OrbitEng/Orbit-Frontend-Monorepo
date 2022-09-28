@@ -85,17 +85,27 @@ export function ProductDisplay(props) {
 					itemClass="carousel-item-padding-40px"
 				>
 					{
-						!props.prodInfo?.imageUrls || props.prodInfo?.imageUrls?.map((url, index) => {
-							return(
-								<div className="flex mx-auto justify-center" key={index}>
-									<Image 
-										src={url}
-										layout="fixed"
-										width={400}
-										height={400}
-									/>
-								</div>	
-							)
+						props.prodInfo?.metadata?.media?.map((url, index) => {
+							let type = url.split(":", 2)[1].split(",",2)[0].split(";")[0].split("/")[0];
+							switch(type){
+								case "text":
+									return <div className="flex mx-auto justify-center" key={index}>
+												<Image 
+													src={url}
+													layout="fixed"
+													width={400}
+													height={400}
+												/>
+											</div>
+								case "video":
+									return 	<video
+												autoplay
+												width='500'
+												height='500'
+											>
+												<source src="/blue.mp4" />
+											</video>
+							}
 						})
 					}
 				</Carousel>

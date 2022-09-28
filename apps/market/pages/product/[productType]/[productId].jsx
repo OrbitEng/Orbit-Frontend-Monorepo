@@ -41,30 +41,6 @@ const dummyService = {
 	}
 }
 
-async function ResolveArweaveImages(medialink){
-	let arclient = new ArQueryClient();
-	let media = (await arclient.FetchData(medialink)).split("~~");
-	let desc = "";
-	if(media.length == 2){
-		desc = media[1];
-	}
-	media = media[0].split("||");
-	
-
-	return [(
-		await Promise.all(
-			media.map((block)=>{
-				return new Promise((fulfill, reject) => {
-					let reader = new FileReader();
-					reader.onerror = reject;
-					reader.onload = (e) => fulfill(reader.result);
-					reader.readAsDataURL(new Blob([Buffer.from(stou(block))]));
-				})
-			})
-		)
-	), desc];
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Components
 export default function ProductsPage(props) {
@@ -104,8 +80,7 @@ export default function ProductsPage(props) {
 		};
 
 		if(tp){
-			[tp.data.images, tp.data.description] = ResolveArweaveImages(tp.data.metadata.media);
-			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller);
+			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
 			vendor.data.profilePic = GetPfp(vendor.data.profilePic);
 			tp.data.metadata.seller = vendor;
 			setVendor(vendor);
