@@ -18,9 +18,7 @@ export function MarketAccountFunctionalities(props){
     // CHECK HEADER
     const CreateAccount = useCallback(async(user_metadata, payer_as_wallet = true)=>{
         let ar_addr = await bundlrClient.UploadBuffer(
-            enc_common.stou(
-                JSON.stringify(user_metadata)
-            )
+            JSON.stringify(user_metadata)
         );
 
         await marketAccountsClient.CreateAccount(

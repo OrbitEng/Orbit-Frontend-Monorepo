@@ -4,7 +4,7 @@ import OrbitLogo from '../public/OrbitLogo.png'
 import * as anchor from "@project-serum/anchor";
 
 import { Bars3CenterLeftIcon, PlusCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useCallback, useContext, useEffect } from 'react';
 
 const {DigitalMarketClient, PhysicalMarketClient, DisputeClient, MarketAccountsClient, CatalogClient} = require("orbit-clients");
@@ -20,6 +20,7 @@ import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 
 export function HomeHeader(props) {
@@ -35,17 +36,23 @@ export function HomeHeader(props) {
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 
-	useEffect(()=>{
+	const [marketAccount, setMarketAccount] = useState();
+
+	useEffect(async ()=>{
 		if(!wallet) return;
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
 		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
 		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
+		let accounts_client = new MarketAccountsClient(wallet, connection, provider)
 		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
 		setMatrixClient(new ChatClient());
+
+		await accounts_client.GetAccount()
+		
 	}, [])
 
 	return(
@@ -80,9 +87,7 @@ export function HomeHeader(props) {
 				</div>
 				<div className="flex flex-row px-2 gap-3">
 					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full transition hover:scale-105">
-						<WalletMultiButton 
-							// onClick={}
-						/>
+						<WalletMultiButton/>
 					</div>
 					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-105">
 						<Bars3CenterLeftIcon className="w-3 h-3 sm:w-5 sm:h-5" />
