@@ -16,7 +16,7 @@ export function MarketAccountFunctionalities(props){
 
     // AFTER CREATING MAKE SURE TO CALL MATRIX REGISTER/LOGIN ALL THAT SHIT
     // CHECK HEADER
-    const CreateAccount = useCallback(async(user_metadata, payer_as_wallet = true)=>{
+    const CreateAccount = async(user_metadata, payer_as_wallet = true)=>{
         let ar_addr = await bundlrClient.UploadBuffer(
             JSON.stringify(user_metadata)
         );
@@ -34,20 +34,20 @@ export function MarketAccountFunctionalities(props){
 
         await chat_client.CreateAccount(master_auth);
         await chat_client.Sync();
-    }, [])
+    }
 
-    const SetPfp = useCallback(async()=>{
+    const SetPfp = async()=>{
         let file = await file_common.GetFile();
         let ar_addr = await bundlrClient.UploadBuffer(
             enc_common.utos(new Uint8Array.from((file).arrayBuffer())) + "<<" + file.type
         );
 
         await marketAccountsClient.UpdatePfp(ar_addr);
-    }, [])
+    }
 
-    const GetPfp = useCallback(async(ar_addr)=>{
+    const GetPfp = async(ar_addr)=>{
         return (await (new ArQueryClient()).GetImageData(ar_addr))[0];
-    }, [])
+    }
 
     const GetMetadata = useCallback(()=>{
         let data = (new ArQueryClient()).FetchData(ar_addr);

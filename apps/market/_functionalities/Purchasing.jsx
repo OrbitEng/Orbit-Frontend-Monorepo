@@ -12,7 +12,7 @@ export function Purchasing() {
         const {marketAccountsClient} = useContext(MarketAccountsCtx);
         const {matrixClient} = useContext(MatrixClientCtx);
 
-        const BuyDigitalProd = useCallback(async (product, vendor)=>{
+        const BuyDigitalProd = async (product, vendor)=>{
 			let market_acc = marketAccountsClient.market_account;
         	let market_auth = marketAccountsClient.master_auth;
 
@@ -44,9 +44,9 @@ export function Purchasing() {
 				await digitalMarketClient.SetRoomId(tx_addr, roomid)
 			}
 
-		},[])
+		}
 
-		const BuyPhysicalProd = useCallback(async (product, vendor)=>{
+		const BuyPhysicalProd = async (product, vendor)=>{
 			let market_acc = marketAccountsClient.market_account;
         	let market_auth = marketAccountsClient.master_auth;
 
@@ -76,7 +76,7 @@ export function Purchasing() {
 				await physicalMarketClient.SetRoomId(tx_addr, roomid)
 			}
 
-		},[])
+		}
 
 		return {BuyDigitalProd, BuyPhysicalProd}
 }

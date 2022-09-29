@@ -12,7 +12,7 @@ export function ChatFunctionalities(props){
 
     const [chatLogs, setChatLogs] = useState([]);
 
-    const FilterNewChatLogs = useCallback(async(messages) =>{
+    const FilterNewChatLogs = async(messages) =>{
             let logs = [];
             for(let message of messages){
                 if(message.type != "m.room.message"){
@@ -69,27 +69,27 @@ export function ChatFunctionalities(props){
                 logs.push(ret)
             }
             return logs
-    })
+    }
 
     /**
      * called on startup
      */
-    const PollMessages = useCallback(async() =>{
+    const PollMessages = async() =>{
         let messages = matrixClient.GetMessagesForRoom(roomId);
 
         chatLogs.push(FilterNewChatLogs(messages));
         setChatLogs(chatLogs);
-    }, [])
+    }
 
     /**
      * lazy loading
      */
-    const FetchOlderMessages = useCallback(async() =>{
+    const FetchOlderMessages = async() =>{
         let messages = matrixClient.UpdateRoomOlderMessages(roomId, chatLogs.length);
 
         chatLogs.push(FilterNewChatLogs(messages));
         setChatLogs(chatLogs);
-    }, [])
+    }
 
     return {
         chatLogs,

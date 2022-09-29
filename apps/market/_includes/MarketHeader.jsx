@@ -17,16 +17,21 @@ import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import CatalogCtx from '@contexts/CatalogCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+
+import { MarketAccountFunctionalities } from '@functionalities/Accounts';
+
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 
 export function HomeHeader(props) {
 	const router = useRouter();
 	let {connection} = useConnection();
 	let wallet = useWallet();
+
+	const {CreateAccount} = MarketAccountFunctionalities();
 
 	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
 	const {disputeProgramClient, setDisputeProgramClient} = useContext(DisputeProgramCtx);
@@ -51,7 +56,12 @@ export function HomeHeader(props) {
 		setBundlrClient(new BundlrClient(wallet));
 		setMatrixClient(new ChatClient());
 
-		await accounts_client.GetAccount()
+		let account = await accounts_client.GetAccount(
+			await accounts_client.GetAccountAddress(wallet.publicKey)
+		);
+
+		if(!account.data) return;
+		setMarketAccount(account)
 		
 	}, [])
 
@@ -87,7 +97,11 @@ export function HomeHeader(props) {
 				</div>
 				<div className="flex flex-row px-2 gap-3">
 					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full transition hover:scale-105">
-						<WalletMultiButton/>
+						<WalletMultiButton onClick={CreateAccount}>
+							{
+								marketAccount ? marketAccount.address : "create account"
+							}
+						</WalletMultiButton>
 					</div>
 					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-105">
 						<Bars3CenterLeftIcon className="w-3 h-3 sm:w-5 sm:h-5" />
