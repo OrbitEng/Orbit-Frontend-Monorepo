@@ -149,7 +149,8 @@ function DigitalUpload(props) {
 					<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
 						<input
 							className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg grow"
-							type="text"
+							type="number"
+							min="0"
 							id="price"
 							name="price"
 							onChange={(e)=>{setProdPrice(e.target.value)}}
