@@ -4,7 +4,7 @@ import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
 import Head from "next/head";
 import Image from "next/image";
-import { ArrowRightIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ArrowRightIcon, ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
@@ -131,23 +131,6 @@ function DigitalUpload(props) {
 								)
 							})
 						}
-						{/* {
-							Array(20).fill(0).map((v, fi) => {
-								return (
-									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate">
-										<span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
-											Uploaded file:{" "}
-											<span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">fnameashdkjashjdhaoufvaskjasbkjsdlkjaklsjdlkajsldkjalsjdlkasjdlkjlkkdjbs.png</span>
-										</span>
-										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center">
-											<button onClick={()=>{deleteFile(fi)}}>
-												<TrashIcon className="flex text-white h-6 w-6"/>
-											</button>
-										</button>
-									</div>	
-								)
-							})
-						} */}
 					</div>
 				</div>
 			</div>
@@ -163,7 +146,7 @@ function DigitalUpload(props) {
 				</div>
 				<div className="flex flex-col h-full">
 					<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
-					<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full">
+					<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
 						<input
 							className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg grow"
 							type="text"
@@ -171,22 +154,28 @@ function DigitalUpload(props) {
 							name="price"
 							onChange={(e)=>{setProdPrice(e.target.value)}}
 						/>
-						<div className="w-1/6 h-full">
+						<div className="flex flex-col w-1/6 h-full justify-center">
 							<Listbox value={currency} onChange={setCurrency}>
-								<div className="w-full border-2 h-1/2 text-2xl">
-									<Listbox.Button className="w-full h-full bg-[#242424]">{
-										<div>
-											<Image
-												layout="fixed"
-												src={"/" + currency + "SvgLogo.svg"}
-												height={16}
-												width={16}
-											/>
-											{currency}
+								<div className="flex relative w-3/4 text-xl h-1/2 justify-end">
+									<Listbox.Button className="flex w-full h-full bg-[#242424] rounded-lg p-1 justify-center">{
+										<div className="flex flex-row align-middle">
+											<span className="my-auto align-middle">
+												<Image
+													layout="fixed"
+													src={"/" + currency + "SvgLogo.svg"}
+													height={16}
+													width={16}
+												/>
+											</span>
+											<span className="align-middle my-auto mx-1 font-medium">{
+												(currency === "usdc") ?
+												currency.toUpperCase() :
+												currency?.charAt(0).toUpperCase() + currency.slice(1)
+											}</span>
+											<ChevronDownIcon className="text-white h-5 w-5 my-auto align-middle"/>
 										</div>
-										
 									}</Listbox.Button>
-									<Listbox.Options className="w-full text-center">
+									<Listbox.Options className="w-full text-center absolute -bottom-6 transition rounded-b bg-[#242424]">
 										{
 											Object.keys(tokenlist).filter(tn => tn != currency).map((tokenname, index)=>{
 												return (
@@ -194,13 +183,17 @@ function DigitalUpload(props) {
 														key = {index}
 														value = {tokenname}
 														className={({active})=>{
-															return `w-full ${active? "bg-[#242424]" : ""}`
+															`w-full py-1 ${active? "bg-[#2c2c2c] font-medium rounded-b" : ""}`
 														}}
 													>
 														{({selected})=>{
-															return <div>
-																		{tokenname}
-																	</div>
+															return (
+																<div>{
+																	(tokenname === "usdc") ?
+																	(tokenname.toUpperCase()) :
+																	(tokenname.charAt(0).toUpperCase() + tokenname.slice(1))
+																}</div>
+															)
 														}}
 													</Listbox.Option>
 												)
@@ -224,7 +217,6 @@ function DigitalUpload(props) {
 					>
 					</input>
 				</div>
-
 				<div className="flex flex-col">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
 					<textarea
@@ -234,8 +226,8 @@ function DigitalUpload(props) {
 						onChange={(e)=>{setDescription(e.target.value)}}
 					/>
 				</div>
-				<div className="bg-[#171717] px-16 py-3 rounded-full flex justify-center mx-auto">
-					<input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-3xl rounded-full" type="submit" value="Upload"/>
+				<div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
+					<input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
 				</div>
 			</form>
 		</div>

@@ -15,7 +15,7 @@ export function DigitalProductLayout(props){
     return(
 		<div className="w-full min-h-screen bg-transparent">
 			<Head>
-				<title>Market Home</title>
+				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
 			<main className="bg-[url('/bgWallpaper.png')]">
