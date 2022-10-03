@@ -27,30 +27,10 @@ const responsive = {
 	}
 };
 
-function renderRow(addresses) {
-	console.log(addresses)
-	if(addresses !== undefined || addresses?.length === 0) {
-		addresses?.map((addr, index) => {
-			return (
-				<ProductDisplayCardHome 
-					address={addr} // address of prod listing
-					type = {props.prod_type}
-					key = {index}
-				/>
-			)
-		})
-	} else {
-		console.log("hello there")
-		let undefProdsArr = Array.of(1,2,3,4);
-		undefProdsArr.map(() => {
-			return <EmptyProductDisplayCardHome />
-		})
-	}
-}
-
 export default function ProductShowcaseRow(props) {
 	const [ query, setQuery ] = useState();
 	const [ selected, setSelected ] = useState();
+	const undefProdsArr = Array.of(1,2,3,4);
 
 	return(
 		<div className="flex flex-col my-14">
@@ -92,9 +72,22 @@ export default function ProductShowcaseRow(props) {
 					itemClass="carousel-item-padding-40px"
 				>
 					{
-						renderRow(props?.addresses)
+						(props?.addresses !== undefined || props?.addresses?.length === 0) ?
+							props?.addresses?.map((addr, index) => {
+								return (
+									<ProductDisplayCardHome 
+										address={addr} // address of prod listing
+										type = {props.prod_type}
+										key = {index}
+									/>
+								)
+							})
+							:
+							undefProdsArr.map(() => {
+								return <EmptyProductDisplayCardHome />
+							})
 					}
 				</Carousel>
-		</div>
+			</div>
 	)
 }
