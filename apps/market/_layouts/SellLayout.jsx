@@ -28,7 +28,7 @@ export function SellLayout(props){
     return(
 		<div className="w-full min-h-screen bg-transparent">
 			<Head>
-				<title>Market Home</title>
+				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
 			<main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">

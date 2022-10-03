@@ -32,7 +32,7 @@ export function HeaderSearchBar(props) {
 					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">🔮 Services</button>
 					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">👾 Digital Products</button>
 					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">📦 Physical Products</button>
-					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] hover: duration-200 ease-in-out">🎨 NFTs</button>
+					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">🎨 NFTs</button>
 				</div>
 			</Transition>
 		</div>

@@ -60,7 +60,7 @@ export function Home(props) {
 	return(
 		<div className="w-full min-h-screen bg-transparent">
 			<Head>
-				<title>Market Home</title>
+				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
 			<main className="bg-[url('/bgWallpaper.png')] bg-cover">
