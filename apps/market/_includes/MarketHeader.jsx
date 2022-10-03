@@ -41,7 +41,7 @@ export function HomeHeader(props) {
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 
-	const [marketAccount, setMarketAccount] = useState();
+	const [marketAccount, setMarketAccount] = useState(undefined);
 
 	useEffect(async ()=>{
 		if(!wallet) return;
@@ -57,7 +57,7 @@ export function HomeHeader(props) {
 		setMatrixClient(new ChatClient());
 
 		let account = await accounts_client.GetAccount(
-			await accounts_client.GetAccountAddress(wallet.publicKey)
+			await accounts_client?.GetAccountAddress(wallet.publicKey)
 		);
 
 		if(!account.data) return;
@@ -82,12 +82,12 @@ export function HomeHeader(props) {
 			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E]">
 				<div className="flex flex-row px-2 gap-3">
 					<button
-						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-105"
+						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]"
 						onClick={() => router.push('/sell')}
 					>
 						<PlusCircleIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
-					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-105">
+					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]">
 						<EnvelopeIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 						{
 							(props.notifications || props.notifications > 0) &&
@@ -96,14 +96,16 @@ export function HomeHeader(props) {
 					</button>
 				</div>
 				<div className="flex flex-row px-2 gap-3">
-					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full transition hover:scale-105">
-						<WalletMultiButton onClick={CreateAccount}>
-							{
-								marketAccount ? marketAccount.address : "create account"
-							}
-						</WalletMultiButton>
+					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full transition hover:scale-[102%]">
+						{
+							wallet ? ( 
+								<WalletConnectButton />
+							) : (
+								<MarketAccountButton />
+							)
+						}
 					</div>
-					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-105">
+					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]">
 						<Bars3CenterLeftIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
 				</div>

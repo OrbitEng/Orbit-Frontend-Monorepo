@@ -14,8 +14,32 @@ import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import {ArQueryClient} from "data-transfer-clients";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities } from "@functionalities/Products";
 
-export function ProductDisplayCardHome(props) {
+export function EmptyProductDisplayCardHome(props) {
+	let paymentList = ["solana", "usdc"]
 
+	return(
+		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">
+			<div className="relative group">
+				<div className="bg-[#4541EE] absolute -inset-0 rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-700 group-hover:duration-700 animate-tilt" />
+					<div className="card-service-bg relative py-4 rounded-lg leading-none flex flex-col items-center overflow-hidden">
+						<div className="flex items-center content-center border-[#4F4F4F] border-2 border-opacity-30 rounded-full shadow bg-[#535353] animate-pulse w-48 py-4" />
+						<div className="relative mx-auto content-center my-2 overflow-visible">
+							<div className="max overflow-hidden bg-[#535353] animate-pulse rounded-lg h-[200px] w-[200px]" />
+						</div>
+						<div className="flex flex-col mt-4 justify-start w-4/5">
+							<div className="bg-[#535353] animate-pulse w-20 h-4 rounded-md" />
+							<div className="flex flex-row gap-1 mt-1 align-middle">
+								<div className="w-32 h-4 bg-[#535353] align-middle font-semibold rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem] animate-pulse" />
+							</div>
+						</div>
+						<div className="flex flex-row gap-x-2 mt-3 bg-[#535353] animate-pulse h-10 w-52 rounded-md" />
+				</div>
+			</div>
+		</div>
+	)
+}
+
+export function ProductDisplayCardHome(props) {
 	const {digitalMarketClient} = useContext(DigitalMarketCtx);
 	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
@@ -52,25 +76,31 @@ export function ProductDisplayCardHome(props) {
 						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
 					</div>
 				);
-				tp = await digitalMarketClient.GetDigitalProduct(props.address);
-				(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.data.metadata.info));
-				(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.data.metadata.media));
+				if (digitalMarketClient) {
+					tp = await digitalMarketClient.GetDigitalProduct(props.address);
+					(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs?.ResolveProductInfo(tp.data.metadata.info));
+					(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs?.ResolveProductMedia(tp.data.metadata.media));
+				}
 				break;
 			case "template":
 				setGlowColor("bg-[#FF31B9]");
 				setBorderColor("border-[#FF31B9]");
 				setBgColor("card-service-bg");
-				tp = await digitalMarketClient.GetDigitalProduct(props.address);
-				(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs.ResolveProductInfo(tp.data.metadata.info));
-				(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs.ResolveProductMedia(tp.data.metadata.media));
+				if (digitalMarketClient) {
+					tp = await digitalMarketClient.GetDigitalProduct(props.address);
+					(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs?.ResolveProductInfo(tp.data.metadata.info));
+					(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs?.ResolveProductMedia(tp.data.metadata.media));
+				}
 				break;
 			case "physical":
 				setGlowColor("bg-[#4541EE]");
 				setBorderColor("border-[#4541EE]");
 				setBgColor("card-digital-bg");
-				tp = await physicalMarketClient.GetPhysicalProduct(props.address);
-				tp.data.metadata.info = await physicalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
-				tp.data.metadata.images = await physicalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
+				if (physicalMarketClient) {
+					tp = await physicalMarketClient.GetPhysicalProduct(props.address);
+					tp.data.metadata.info = await physicalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
+					tp.data.metadata.images = await physicalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
+				}
 				break;
 			case "nft":
 				setGlowColor("bg-[#4541EE]");

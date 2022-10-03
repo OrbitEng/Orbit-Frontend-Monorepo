@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { ProductDisplayCardHome } from "@includes/components/ProductDisplayCards";
+import { 
+	ProductDisplayCardHome,
+	EmptyProductDisplayCardHome
+} from "@includes/components/ProductDisplayCards";
 
 import Carousel from "react-multi-carousel";
 import 'react-multi-carousel/lib/styles.css'
@@ -23,6 +26,27 @@ const responsive = {
 	  slidesToSlide: 2
 	}
 };
+
+function renderRow(addresses) {
+	console.log(addresses)
+	if(addresses !== undefined || addresses?.length === 0) {
+		addresses?.map((addr, index) => {
+			return (
+				<ProductDisplayCardHome 
+					address={addr} // address of prod listing
+					type = {props.prod_type}
+					key = {index}
+				/>
+			)
+		})
+	} else {
+		console.log("hello there")
+		let undefProdsArr = Array.of(1,2,3,4);
+		undefProdsArr.map(() => {
+			return <EmptyProductDisplayCardHome />
+		})
+	}
+}
 
 export default function ProductShowcaseRow(props) {
 	const [ query, setQuery ] = useState();
@@ -68,63 +92,8 @@ export default function ProductShowcaseRow(props) {
 					itemClass="carousel-item-padding-40px"
 				>
 					{
-						//TODO: make this populate with the actual products
-						props?.addresses?.map((addr, index) => {
-							return <ProductDisplayCardHome 
-								address={addr} // address of prod listing
-								type = {props.prod_type}
-								key = {index}
-							/>
-						})
+						renderRow(props?.addresses)
 					}
-					<ProductDisplayCardHome
-						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-						sellerName="Marketplaceseller"
-						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-						name="Logo Designs"
-						type="commission"
-						price="$119.99"
-						imgUrl="/demologos.png"
-						paymentList={["solana", "usdc"]}
-						productId="123456789"
-						key={11}
-					/>
-					<ProductDisplayCardHome
-						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-						sellerName="Marketplaceseller"
-						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-						name="10ct Background Pack"
-						type="template"
-						price="$9.99"
-						imgUrl="/demobgpack.png"
-						paymentList={["solana", "usdc"]}
-						productId="123456789"
-						key={12}
-					/>
-					<ProductDisplayCardHome
-						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-						sellerName="Marketplaceseller"
-						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-						name="Logo Designs"
-						type="commission"
-						price="$119.99"
-						imgUrl="/demologos.png"
-						paymentList={["solana", "usdc"]}
-						productId="123456789"
-						key={13}
-					/>
-					<ProductDisplayCardHome
-						address="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-						sellerName="Marketplaceseller"
-						sellerAddr="E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-						name="10ct Background Pack"
-						type="template"
-						price="$9.99"
-						imgUrl="/demobgpack.png"
-						paymentList={["solana", "usdc"]}
-						productId="123456789"
-						key={14}
-					/>
 				</Carousel>
 		</div>
 	)
