@@ -4,7 +4,7 @@ import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
 import Head from "next/head";
 import Image from "next/image";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
@@ -58,6 +58,7 @@ function DigitalUpload(props) {
 
 	const [prodName, setProdName] = useState();
 	const [price, setProdPrice] = useState();
+	const [takeHomeMoney, setTakeHomeMoney] = useState();
 	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
 	const [selectedCategory, setSelectedCategory] = props.cat;
@@ -83,8 +84,8 @@ function DigitalUpload(props) {
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
 			<button className="flex flex-row space-x-1 mb-10 align-middle" onClick={() => setSelectedCategory(null)}>
-				<ArrowLeftIcon className="h-5 w-5 text-[#4E4E4E] my-auto" />
-				<div className="text-[#4E4E4E] text-xl my-auto">Back to Categories</div>
+				<ArrowLeftIcon className="h-5 w-5 text-[#767676] my-auto" />
+				<div className="text-[#767676] text-xl my-auto">Back to Categories</div>
 			</button>
 			<div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-10">
 				<div className="w-full h-full col-span-7">
@@ -151,14 +152,21 @@ function DigitalUpload(props) {
 				<div className="flex flex-col h-full">
 					<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
 					<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
-						<input
-							className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg grow"
-							type="number"
-							min="0"
-							id="price"
-							name="price"
-							onChange={(e)=>{setProdPrice(e.target.value)}}
-						/>
+						<div className="p-3 flex flex-col focus:outline-0 grow">
+							<input
+								className="px-3 pt-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg grow"
+								placeholder="0.00"
+								type="number"
+								min="0"
+								id="price"
+								name="price"
+								onChange={(e)=>{
+									setProdPrice(e.target.value)
+									setTakeHomeMoney((e.target.value*95)/100)
+								}}
+							/>
+							<div className="px-3 text-[#8E8E8E] align-middle my-auto">{(takeHomeMoney || "0.00")}</div>
+						</div>
 						<div className="flex flex-col w-1/6 h-full justify-center">
 							<Listbox value={currency} onChange={setCurrency}>
 								<div className="flex relative w-3/4 text-xl h-1/2 justify-end">
@@ -209,13 +217,18 @@ function DigitalUpload(props) {
 							</Listbox>
 						</div>
 					</div>
+					<div className="flex flex-row gap-x-1 align-middle mt-1">
+						<InformationCircleIcon className="h-5 w-5 text-yellow-400 my-auto" />
+						<span className="font-semibold text-[#767676] align-middle my-auto">Sale Fee: 5%</span>
+					</div>
 				</div>
 				<div className="flex flex-col">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
 					<textarea
-						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
+						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#3E3E3E] rounded-lg"
 						id="description"
 						name="description"
+						placeholder="What are you selling?"
 						onChange={(e)=>{setDescription(e.target.value)}}
 					/>
 				</div>
@@ -255,7 +268,7 @@ function CategorySelect(props) {
 					</div>
 					<h1 className="text-3xl font-bold text-white mx-auto text-center">Physical</h1>
 					<p className="text-xl text-[#6A6A6A] mx-auto justify-center mt-4 leading-tight text-center">
-						Sell shoes, clothes tech, and much more with orbit, it's just a few clicks away!
+						Sell shoes, clothes tech, and much more with just a few clicks on the Orbit network!
 					</p>
 					<div className="rounded-full p-2 my-auto h-14 w-14 bg-gradient-to-tr from-[#0E0C15] to-[#18171D] via-[#161320] mx-auto content-center align-middle">
 						<ArrowRightIcon className="h-10 w-10 text-[#3F46FF] m-auto stroke-2" />
@@ -278,7 +291,7 @@ function CategorySelect(props) {
 					</div>
 					<h1 className="text-3xl font-bold text-white mx-auto text-center">Services</h1>
 					<p className="text-xl text-[#6A6A6A] mx-auto justify-center mt-4 leading-tight text-center">
-						Freelance and take comissions through Orbit, start your custom content adventures!
+						Freelance and take comissions through Orbit, your buisness has never been easier!
 					</p>
 					<div className="rounded-full p-2 my-auto h-14 w-14 bg-gradient-to-tr from-[#0E0C15] to-[#18171D] via-[#161320] mx-auto content-center align-middle">
 						<ArrowRightIcon className="h-10 w-10 text-[#4E268F] m-auto stroke-2" />
@@ -301,7 +314,7 @@ function CategorySelect(props) {
 					</div>
 					<h1 className="text-3xl font-bold text-white mx-auto text-center">Digital</h1>
 					<p className="text-xl text-[#6A6A6A] mx-auto justify-center mt-4 leading-tight text-center">
-						Get paid htmlFor your digital art, premade designs, beatpacks, private content and more!
+						Get paid for your digital art, design packages, beats, private content and more!
 					</p>
 					<div className="rounded-full p-2 my-auto h-14 w-14 bg-gradient-to-tr from-[#0E0C15] to-[#18171D] via-[#161320] mx-auto content-center align-middle">
 						<ArrowRightIcon className="h-10 w-10 text-[#FB3FFF] m-auto stroke-2" />
