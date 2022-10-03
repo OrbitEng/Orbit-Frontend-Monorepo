@@ -4,7 +4,7 @@ import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
 import Head from "next/head";
 import Image from "next/image";
-import { ArrowRightIcon, ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
@@ -40,9 +40,9 @@ export function SellLayout(props){
 							<CategorySelect cat={{selectedCategory, setSelectedCategory}} />	
 						) : (
 							<>
-							{(selectedCategory == "digital") && <DigitalUpload />}
-							{(selectedCategory == "physical") && <PhysicalUpload />}
-							{(selectedCategory == "service") && <ServiceUpload />}
+							{(selectedCategory == "digital") && <DigitalUpload cat={[selectedCategory, setSelectedCategory]} />}
+							{(selectedCategory == "physical") && <PhysicalUpload cat={[selectedCategory, setSelectedCategory]} />}
+							{(selectedCategory == "service") && <ServiceUpload cat={[selectedCategory, setSelectedCategory]} />}
 							</>
 						)
 					}
@@ -54,13 +54,13 @@ export function SellLayout(props){
 }
 
 function DigitalUpload(props) {
-	
 	const {ListProductTemplate} = DigitalProductFunctionalities();
 
 	const [prodName, setProdName] = useState();
 	const [price, setProdPrice] = useState();
 	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
+	const [selectedCategory, setSelectedCategory] = props.cat;
 	
 	const [files, setFiles] = useState([]);
 
@@ -81,7 +81,11 @@ function DigitalUpload(props) {
 
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
-			<h1 className="text-white font-bold text-4xl my-10">Create New Digital Product</h1>
+			<h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
+			<button className="flex flex-row space-x-1 mb-10 align-middle" onClick={() => setSelectedCategory(null)}>
+				<ArrowLeftIcon className="h-5 w-5 text-[#4E4E4E] my-auto" />
+				<div className="text-[#4E4E4E] text-xl my-auto">Back to Categories</div>
+			</button>
 			<div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-10">
 				<div className="w-full h-full col-span-7">
 					<div className="flex flex-col mb-2 leading-tight">
