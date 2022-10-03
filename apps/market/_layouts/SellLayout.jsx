@@ -188,7 +188,7 @@ function DigitalUpload(props) {
 													>
 														{({selected})=>{
 															return (
-																<div>{
+																<div className="font-medium">{
 																	(tokenname === "usdc") ?
 																	(tokenname.toUpperCase()) :
 																	(tokenname.charAt(0).toUpperCase() + tokenname.slice(1))
