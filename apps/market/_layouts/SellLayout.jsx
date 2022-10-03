@@ -210,18 +210,6 @@ function DigitalUpload(props) {
 						</div>
 					</div>
 				</div>
-				
-				{/* digital dont get quantity tf */}
-				<div className="flex flex-col">
-					<label htmlFor="stock" className="text-white font-semibold text-xl">Item Quantity</label>
-					<input
-						className="p-3 text-lg focus:outline-0 bg-[#171717] text-[#4E4E4E] rounded-lg"
-						type="number"
-						id="stock"
-						name="stock"
-					>
-					</input>
-				</div>
 				<div className="flex flex-col">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
 					<textarea
