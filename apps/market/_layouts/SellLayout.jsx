@@ -64,13 +64,14 @@ export function DigitalUploadForm(props) {
 	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
 	const [selectedCategory, setSelectedCategory] = props.cat;
+	const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
 
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 	
 	//////////////////////////////////////////////////
 	// Functions for managing product preview images
 	const [previewFiles, setPreviewFiles] = useState([]);
-	const {getRootProps, getInputProps} = useDropzone({
+	const {getRootProps, getInputProps, open: openPreview} = useDropzone({
 		onDrop: (acceptedFiles) => {setPreviewFiles(cf => [...cf, ...acceptedFiles])}
 	});
 	const deletePreviewFile = (filein) => {
@@ -109,39 +110,54 @@ export function DigitalUploadForm(props) {
 						<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
 					</div>
 					<div className="flex flex-row">
-						<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-[75%] h-96 content-center align-middle py-12 px-20">
-							<input {...getInputProps()}/>
-							<div className="relative flex h-52 mx-16">
+						{
+							previwFiles && previewFiles?.length > 0 ?
+							<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-[75%] h-96 content-center align-middle py-12 px-20">
+								<input {...getInputProps()}/>
+								<div className="relative flex h-52 mx-16">
+									<Image
+										src="/PhotoIcon.png"
+										layout="fill"
+										objectFit="contain"
+									/>
+								</div>
+								<div className="flex flex-col">
+									<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
+									<span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
+								</div>
+							</div> :
+							<div className="flex flex-col rounded-2xl overflow-hidden h-96 content-center align-middle">
 								<Image
-									src="/PhotoIcon.png"
+									src={bigPreviewSrc}
+									width={200}
+									height={200}
 									layout="fill"
-									objectFit="contain"
+									objectFit="cover"
 								/>
 							</div>
-							<div className="flex flex-col">
-								<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
-								<span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
-							</div>
-						</div>
+						}
 						<div className="flex flex-col overflow-scroll w-[20%] h-96 px-2 overflow-y-scroll">
 							{
 								previewFiles && previewFiles?.map((f,fi) => {
 									return(
-										<div className="p-3 bg-white">
+										<button className="p-3 bg-white">
 											<Image
 												src={URL.createObjectURL(f)}
 												width={20}
 												height={20}
 												layout="fixed"
 											/>
-										</div>
+										</button>
 									)
 								})
 							}
-							<div className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]">
+							<button
+								className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]"
+								onClick={openPreview}
+							>
 								<PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
 								<span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
-							</div>
+							</button>
 						</div>
 					</div>
 				</div>
