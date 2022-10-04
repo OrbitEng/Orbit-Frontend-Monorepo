@@ -25,6 +25,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
+import MarketAccountButton from '@includes/components/MarketAccountButton';
 
 export function HomeHeader(props) {
 	const router = useRouter();
@@ -98,8 +99,8 @@ export function HomeHeader(props) {
 				<div className="flex flex-row px-2 gap-3">
 					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full transition hover:scale-[102%]">
 						{
-							wallet ? ( 
-								<WalletConnectButton />
+							!wallet.connected ? ( 
+								<WalletMultiButton />
 							) : (
 								<MarketAccountButton />
 							)
