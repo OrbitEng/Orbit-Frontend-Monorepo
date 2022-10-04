@@ -61,7 +61,7 @@ export function ProductDisplayCardHome(props) {
 	const [prod, setProd] = useState();
 	const [vendor, setVendor] = useState();
 
-	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
+	const {GetPfp} = MarketAccountFunctionalities()
 	const [digitalProductFuncs,] = useState(DigitalProductFunctionalities());
 	const [physicalProductFuncs,] = useState(PhysicalProductFunctionalities());
 

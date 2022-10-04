@@ -2,6 +2,7 @@ import { useContext, useState, useCallback } from "react";
 
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
+import CommissionMarketCtx from "@contexts/CommissionMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 import CatalogCtx from "@contexts/CatalogCtx";
@@ -17,61 +18,13 @@ export function DigitalProductFunctionalities(props){
     const {bundlrClient} = useContext(BundlrCtx);
     const {catalogClient} = useContext(CatalogCtx);
 
-    const {physicalMarketClient} = useContext(PhysicalMarketCtx);
-
-    /// SELLER UTILS
-    const MfreeVendorListings = async() => {
-        let vendor_catalog = await catalogClient.GetCacheCatalog(
-            catalogClient.GenVendorListingsAddress(
-                marketAccountsClient.market_account
-            )
-        )
-        if(!(vendor_catalog.data)){
-            return ""
-        }
-
-        let arclient = new ArQueryClient();
-        let cache = vendor_catalog.data.cache;
-
-        if(vendor_catalog.data.full){
-            for(let link of vendor_catalog.data.memory){
-                cache.push(...(await arclient.FetchData(link)).split("||"));
-            }
-
-            let phys_prods = (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
-            let digi_prods = (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
-            let prods = [...phys_prods, ...digi_prods];
-
-            let buff = prods.map(pk => pk.toString()).join("||");
-            let link = await bundlrClient.UploadBuffer(buff);
-
-            return catalogClient.RemapVendorCatalog(
-                marketAccountsClient.market_account,
-                marketAccountsClient.master_auth,
-                link
-            )
-        }else if(vendor_catalog.data.flag){
-            let buff = cache.map(pk => pk.toString()).join("||");
-            
-            return catalogClient.DrainVendorCatalog(
-                marketAccountsClient.market_account,
-                marketAccountsClient.master_auth,
-                await bundlrClient.UploadBuffer(buff)
-            );   
-        }
-    }
-
     const ListProduct = async(
         currency = "11111111111111111111111111111111",
         price,
-        available = true,
         deliveryEstimate = 14,
         name,
         files
     ) => {
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
-
         let buffers = await Promise.all(
             files.map((fil)=>{
                 return fil.arrayBuffer();
@@ -81,32 +34,13 @@ export function DigitalProductFunctionalities(props){
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
 
-        let prod = await digitalMarketClient.ListProduct(
+        await digitalMarketClient.ListProduct(
             desc_url,
-            market_acc,
             currency,
             price,
-            available,
             deliveryEstimate,
             media_url
         );
-
-        let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
-
-        if((!await catalogClient.GetCatalogAddrLocal(listings_catalog)) && !(await catalogClient.GetCacheCatalog(listings_catalog)).data){
-            await catalogClient.InitVendorCatalog(
-                market_acc,
-                market_auth
-            )
-        }
-
-        await catalogClient.AddToVendorCatalog(
-            market_acc,
-            market_auth,
-            prod.publicKey
-        );
-
-        return MfreeVendorListings();
     }
 
     // Text, Video, Audio, Image, Folder
@@ -240,8 +174,7 @@ export function DigitalProductFunctionalities(props){
 
     return {
         MfreeVendorListings,
-        ListProductCommission,
-        ListProductTemplate,
+        ListProduct,
         SetFileType,
         ChangeAvailability,
         ChangePrice,
@@ -250,8 +183,6 @@ export function DigitalProductFunctionalities(props){
         SetInfo,
         GetAllVendorDigitalProducts,
         ResolveProductMedia,
-        ListProductCommission,
-        ListProductTemplate,
         ResolveProductInfo
     }
 }

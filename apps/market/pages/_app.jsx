@@ -31,6 +31,7 @@ import { clusterApiUrl } from '@solana/web3.js';
 
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
+import CommissionMarketCtx from '@contexts/CommissionMarketCtx';
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 import CatalogCtx from "@contexts/CatalogCtx";
@@ -48,6 +49,7 @@ function MyApp({ Component, pageProps }) {
   const [digitalMarketClient, setDigitalMarketClient] = useState();
   const [disputeProgramClient, setDisputeProgramClient] = useState();
   const [physicalMarketClient, setPhysicalMarketClient] = useState();
+  const [commissionMarketClient, setCommissionMarketClient] = useState();
   const [marketAccountsClient, setMarketAccountsClient] = useState();
   const [catalogClient, setCatalogClient] = useState();
   const [bundlrClient, setBundlrClient] = useState();
@@ -95,17 +97,21 @@ function MyApp({ Component, pageProps }) {
                       <DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
                         <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
                           <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
-                            <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
-                              <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
-                                <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
-                                  <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
+                            <CommissionMarketCtx.Provider value={{commissionMarketClient, setCommissionMarketClient}}>
 
-                                    <Component {...pageProps} />
+                              <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
+                                <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
+                                  <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
+                                    <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
 
-                                  </VendorCacheCtx.Provider>
-                                </ProductCacheCtx.Provider>
-                              </BundlrCtx.Provider>
-                            </CatalogCtx.Provider>
+                                      <Component {...pageProps} />
+
+                                    </VendorCacheCtx.Provider>
+                                  </ProductCacheCtx.Provider>
+                                </BundlrCtx.Provider>
+                              </CatalogCtx.Provider>
+
+                            </CommissionMarketCtx.Provider>
                           </DisputeProgramCtx.Provider>
                         </MarketAccountsCtx.Provider>
                       </DigitalMarketCtx.Provider>

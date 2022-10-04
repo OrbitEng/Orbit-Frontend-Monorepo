@@ -7,12 +7,13 @@ import { Bars3CenterLeftIcon, PlusCircleIcon, EnvelopeIcon } from '@heroicons/re
 import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useCallback, useContext, useEffect } from 'react';
 
-const {DigitalMarketClient, PhysicalMarketClient, DisputeClient, MarketAccountsClient, CatalogClient} = require("orbit-clients");
+const {DigitalMarketClient, PhysicalMarketClient, CommissionMarketClient, DisputeClient, MarketAccountsClient, CatalogClient} = require("orbit-clients");
 const {BundlrClient, ChatClient} = require("data-transfer-clients");
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
+import CommissionMarketCtx from '@contexts/CommissionMarketCtx';
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import CatalogCtx from '@contexts/CatalogCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
@@ -36,6 +37,7 @@ export function HomeHeader(props) {
 	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
 	const {disputeProgramClient, setDisputeProgramClient} = useContext(DisputeProgramCtx);
 	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {commissionMarketClient, setCommissionMarketClient} = useContext(CommissionMarketCtx);
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
@@ -52,6 +54,7 @@ export function HomeHeader(props) {
 		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
 		let accounts_client = new MarketAccountsClient(wallet, connection, provider)
 		setMarketAccountsClient(new MarketAccountsClient(wallet, connection, provider));
+		setCommissionMarketClient(new CommissionMarketClient(wallet, connection, provider))
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
 		setMatrixClient(new ChatClient());

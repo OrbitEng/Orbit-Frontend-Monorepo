@@ -56,6 +56,18 @@ export function MarketAccountFunctionalities(props){
         await marketAccountsClient.SetReflink(reflink)
     }
 
+    const UnsetReflink = async() =>{
+        await marketAccountsClient.RemoveReflink();
+    }
+
+    const CreateReflink = async() =>{
+        await marketAccountsClient.CreateReflink();
+    }
+
+    const DeleteReflink = async() =>{
+        await marketAccountsClient.DeleteReflink();
+    }
+
     const GetPfp = async(ar_addr)=>{
         return (await (new ArQueryClient()).GetImageData(ar_addr))[0];
     }
@@ -69,6 +81,10 @@ export function MarketAccountFunctionalities(props){
         CreateAccount,
         SetPfp,
         GetPfp,
-        GetMetadata
+        GetMetadata,
+        SetReflink,
+        UnsetReflink,
+        CreateReflink,
+        DeleteReflink
     }
 }
