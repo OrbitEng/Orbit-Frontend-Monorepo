@@ -52,10 +52,10 @@ export function HomeHeader(props) {
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
 		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
-		// setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
+		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
 		let accounts_client = new MarketAccountsClient(wallet, connection, provider)
 		setMarketAccountsClient(accounts_client);
-		// setCommissionMarketClient(new CommissionMarketClient(wallet, connection, provider))
+		setCommissionMarketClient(new CommissionMarketClient(wallet, connection, provider))
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
 		setMatrixClient(new ChatClient());

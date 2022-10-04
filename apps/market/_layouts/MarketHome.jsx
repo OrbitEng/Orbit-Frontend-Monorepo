@@ -14,6 +14,7 @@ import useOnScreen from '@hooks/useOnScreen'
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx'
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx'
+import CommissionMarketCtx from '@contexts/CommissionMarketCtx'
 import CatalogCtx from '@contexts/CatalogCtx'
 
 export function Home(props) {
@@ -24,6 +25,7 @@ export function Home(props) {
 
 	const {digitalMarketClient} = useContext(DigitalMarketCtx);
 	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {commissionMarketClient} = useContext(CommissionMarketCtx);
 	const {catalogClient} = useContext(CatalogCtx);
 
 	const [recentCommissions, setRecentCommissions] = useState();
@@ -37,20 +39,20 @@ export function Home(props) {
 	useEffect(async ()=>{
 		if(!digitalMarketClient || !physicalMarketClient) return;
 
-		let digital_template_catalog = await catalogClient.GetModCatalog(
-			(await digitalMarketClient.GenRecentCatalogTemplate())[0]
+		let digital_catalog = await catalogClient.GetModCatalog(
+			(await digitalMarketClient.GenRecentCatalog())[0]
 		);
-		let digital_commission_catalog = await catalogClient.GetModCatalog(
-			(await digitalMarketClient.GenRecentCatalogCommission())[0]
+		let commission_catalog = await catalogClient.GetModCatalog(
+			(await commissionMarketClient.GenRecentCatalog())[0]
 		);
 		let physical_catalog = await catalogClient.GetModCatalog(
 			(await physicalMarketClient.GenRecentCatalog())[0]
 		);
 
-		if(!(digital_template_catalog && digital_template_catalog.data) || !(digital_commission_catalog && digital_commission_catalog.data) || !(physical_catalog && physical_catalog.data)) return;
+		if(!(digital_catalog && digital_catalog.data) || !(commission_catalog && commission_catalog.data) || !(physical_catalog && physical_catalog.data)) return;
 
-		setRecentCommissions(digital_commission_catalog.data.pubkeys);
-		setRecentTemplatess(digital_template_catalog.data.pubkeys);
+		setRecentCommissions(commission_catalog.data.pubkeys);
+		setRecentTemplatess(digital_catalog.data.pubkeys);
 		setRecentPhysicals(physical_catalog.data.pubkeys);
 
 	}, [digitalMarketClient, physicalMarketClient]);

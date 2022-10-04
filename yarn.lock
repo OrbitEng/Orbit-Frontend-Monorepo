@@ -3371,9 +3371,6 @@ accepts@^1.3.7, accepts@~1.3.5, accepts@~1.3.7:
     mime-types "~2.1.34"
     negotiator "0.6.3"
 
-"accounts-program@file:./packages/orbit-clients/accounts-program":
-  version "1.0.0"
-
 acorn-jsx@^5.3.2:
   version "5.3.2"
   resolved "https://registry.npmjs.org/acorn-jsx/-/acorn-jsx-5.3.2.tgz"
@@ -4103,11 +4100,6 @@ brorand@^1.0.1, brorand@^1.1.0:
   resolved "https://registry.npmjs.org/brorand/-/brorand-1.1.0.tgz"
   integrity sha512-cKV8tMCEpQs4hK/ik71d6LrPOnpkpGBR0wzxqr68g2m/LB2GxVYQroAjMJZRVM1Y4BCjCKc3vAamxSzOY2RP+w==
 
-"browser-clients@file:packages/browser-clients":
-  version "1.0.0"
-  dependencies:
-    scrypt-js "^3.0.1"
-
 browser-request@^0.3.3:
   version "0.3.3"
   resolved "https://registry.npmjs.org/browser-request/-/browser-request-0.3.3.tgz"
@@ -4406,9 +4398,6 @@ caseless@~0.12.0:
   resolved "https://registry.npmjs.org/caseless/-/caseless-0.12.0.tgz"
   integrity sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw==
 
-"catalog-program@file:./packages/orbit-clients/catalog-program":
-  version "1.0.0"
-
 cbor-sync@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmjs.org/cbor-sync/-/cbor-sync-1.0.4.tgz"
@@ -4647,9 +4636,6 @@ commander@~2.13.0:
   version "2.13.0"
   resolved "https://registry.npmjs.org/commander/-/commander-2.13.0.tgz"
   integrity sha512-MVuS359B+YzaWqjCL/c+22gfryv+mCBPHAv3zyVI2GN8EY6IRP8VwtasXn8jyyhvvq84R4ImN1OKRtcbIasjYA==
-
-"commission-market@file:./packages/orbit-clients/commissions-market":
-  version "1.0.0"
 
 common-tags@^1.8.0:
   version "1.8.2"
@@ -4933,15 +4919,6 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
-"data-transfer-clients@file:packages/data-transfer-clients":
-  version "1.0.0"
-  dependencies:
-    "@bundlr-network/client" "^0.8.1"
-    "@matrix-org/olm" "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.12.tgz"
-    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-data-transfer-clients-1.0.0-80074ee8-c572-46ea-8c40-e4037f8ebbfc-1664910315685/node_modules/browser-clients"
-    matrix-js-sdk "^19.4.0"
-    tweetnacl "^1.0.3"
-
 data-uri-to-buffer@3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/data-uri-to-buffer/-/data-uri-to-buffer-3.0.1.tgz"
@@ -5144,9 +5121,6 @@ diffie-hellman@^5.0.0:
     miller-rabin "^4.0.0"
     randombytes "^2.0.0"
 
-"digital-market@file:./packages/orbit-clients/digital-market":
-  version "1.0.0"
-
 dijkstrajs@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/dijkstrajs/-/dijkstrajs-1.0.2.tgz"
@@ -5158,9 +5132,6 @@ dir-glob@^3.0.1:
   integrity sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==
   dependencies:
     path-type "^4.0.0"
-
-"dispute-program@file:./packages/orbit-clients/dispute-program":
-  version "1.0.0"
 
 dlv@^1.1.3:
   version "1.1.3"
@@ -7939,9 +7910,6 @@ multiformats@^9.4.2:
   resolved "https://registry.npmjs.org/multiformats/-/multiformats-9.7.1.tgz"
   integrity sha512-TaVmGEBt0fhxiNJMGphBfB+oGvUxFs8KgGvgl8d3C+GWtrFcvXdJ2196eg+dYhmSFClmgFfSfJEklo+SZzdNuw==
 
-"multisig@file:./packages/orbit-clients/multisig":
-  version "1.0.0"
-
 multistream@^4.1.0:
   version "4.1.0"
   resolved "https://registry.npmjs.org/multistream/-/multistream-4.1.0.tgz"
@@ -8395,20 +8363,6 @@ ora@^5.4.1:
     strip-ansi "^6.0.0"
     wcwidth "^1.0.1"
 
-"orbit-clients@file:packages/orbit-clients":
-  version "1.0.0"
-  dependencies:
-    "@bundlr-network/client" "^0.8.0"
-    "@project-serum/anchor" "^0.25.0"
-    accounts-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/accounts-program"
-    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/browser-clients"
-    catalog-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/catalog-program"
-    commission-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/commissions-market"
-    digital-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/digital-market"
-    dispute-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/dispute-program"
-    multisig "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/multisig"
-    physical-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/physical-market"
-
 os-browserify@0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/os-browserify/-/os-browserify-0.3.0.tgz"
@@ -8583,9 +8537,6 @@ performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/performance-now/-/performance-now-2.1.0.tgz"
   integrity sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow==
-
-"physical-market@file:./packages/orbit-clients/physical-market":
-  version "1.0.0"
 
 picocolors@^1.0.0:
   version "1.0.0"

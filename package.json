@@ -6,11 +6,6 @@
     "apps/*",
     "packages/*"
   ],
-  "bundledDependencies": [
-    "orbit-clients",
-    "browser-clients",
-    "data-transfer-clients"
-  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --parallel",
