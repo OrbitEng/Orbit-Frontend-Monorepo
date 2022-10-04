@@ -125,7 +125,7 @@ export function DigitalUploadForm(props) {
 						</div>
 						<div className="flex flex-col overflow-scroll w-[20%] h-96 px-2 overflow-y-scroll">
 							{
-								productFiles && productFiles?.map((f,fi) => {
+								previewFiles && previewFiles?.map((f,fi) => {
 									return(
 										<div className="p-3 bg-white">
 											<Image
@@ -159,7 +159,7 @@ export function DigitalUploadForm(props) {
 					</div>
 					<div className="flex flex-col w-full h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
 						{
-							previewFiles && previewFiles?.map((f,fi) => {
+							productFiles && productFiles?.map((f,fi) => {
 								return(
 									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate" key={f.name + fi}>
 										<span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
