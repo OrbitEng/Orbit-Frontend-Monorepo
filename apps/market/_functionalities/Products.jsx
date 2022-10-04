@@ -61,56 +61,7 @@ export function DigitalProductFunctionalities(props){
         }
     }
 
-    const ListProductCommission = async(
-        currency = "11111111111111111111111111111111",
-        price,
-        available = true,
-        deliveryEstimate = 14,
-        name,
-        description,
-        files
-    ) => {
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
-
-        let buffers = await Promise.all(
-            files.map((fil)=>{
-                return fil.arrayBuffer();
-            })
-        );
-
-        let media_url = await bundlrClient.UploadBuffer(buffers);
-        let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
-
-        let prod = await digitalMarketClient.ListDigitalProductCommission(
-            desc_url,
-            market_acc,
-            currency,
-            price,
-            available,
-            deliveryEstimate,
-            media_url
-        );
-
-        let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
-
-        if((!await catalogClient.GetCatalogAddrLocal(listings_catalog)) && !(await catalogClient.GetCacheCatalog(listings_catalog)).data){
-            await catalogClient.InitVendorCatalog(
-                market_acc,
-                market_auth
-            )
-        }
-
-        await catalogClient.AddToVendorCatalog(
-            market_acc,
-            market_auth,
-            prod.publicKey
-        );
-
-        return MfreeVendorListings();
-    }
-
-    const ListProductTemplate = async(
+    const ListProduct = async(
         currency = "11111111111111111111111111111111",
         price,
         available = true,
@@ -130,7 +81,7 @@ export function DigitalProductFunctionalities(props){
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
 
-        let prod = await digitalMarketClient.ListDigitalProductTemplate(
+        let prod = await digitalMarketClient.ListProduct(
             desc_url,
             market_acc,
             currency,
