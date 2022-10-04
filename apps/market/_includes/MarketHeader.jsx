@@ -50,7 +50,7 @@ export function HomeHeader(props) {
 		if(!wallet) return;
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
-		// setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
+		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
 		// setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
 		let accounts_client = new MarketAccountsClient(wallet, connection, provider)
