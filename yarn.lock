@@ -4938,7 +4938,7 @@ dashdash@^1.12.0:
   dependencies:
     "@bundlr-network/client" "^0.8.1"
     "@matrix-org/olm" "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.12.tgz"
-    browser-clients "file:../../Library/Caches/Yarn/v6/npm-data-transfer-clients-1.0.0-b194d33c-3884-4965-8d38-3c4630a7379e-1664904261375/node_modules/browser-clients"
+    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-data-transfer-clients-1.0.0-80074ee8-c572-46ea-8c40-e4037f8ebbfc-1664910315685/node_modules/browser-clients"
     matrix-js-sdk "^19.4.0"
     tweetnacl "^1.0.3"
 
@@ -8400,14 +8400,14 @@ ora@^5.4.1:
   dependencies:
     "@bundlr-network/client" "^0.8.0"
     "@project-serum/anchor" "^0.25.0"
-    accounts-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-4e8ad3f5-1856-4ecf-ae8a-a478a483bee9-1664904261469/node_modules/orbit-clients/accounts-program"
-    browser-clients "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-4e8ad3f5-1856-4ecf-ae8a-a478a483bee9-1664904261469/node_modules/browser-clients"
-    catalog-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-4e8ad3f5-1856-4ecf-ae8a-a478a483bee9-1664904261469/node_modules/orbit-clients/catalog-program"
-    commission-market "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-4e8ad3f5-1856-4ecf-ae8a-a478a483bee9-1664904261469/node_modules/orbit-clients/commissions-market"
-    digital-market "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-4e8ad3f5-1856-4ecf-ae8a-a478a483bee9-1664904261469/node_modules/orbit-clients/digital-market"
-    dispute-program "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-4e8ad3f5-1856-4ecf-ae8a-a478a483bee9-1664904261469/node_modules/orbit-clients/dispute-program"
-    multisig "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-4e8ad3f5-1856-4ecf-ae8a-a478a483bee9-1664904261469/node_modules/orbit-clients/multisig"
-    physical-market "file:../../Library/Caches/Yarn/v6/npm-orbit-clients-1.0.0-4e8ad3f5-1856-4ecf-ae8a-a478a483bee9-1664904261469/node_modules/orbit-clients/physical-market"
+    accounts-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/accounts-program"
+    browser-clients "file:../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/browser-clients"
+    catalog-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/catalog-program"
+    commission-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/commissions-market"
+    digital-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/digital-market"
+    dispute-program "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/dispute-program"
+    multisig "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/multisig"
+    physical-market "file:./../../../../AppData/Local/Yarn/Cache/v6/npm-orbit-clients-1.0.0-39001e57-591e-4ef9-8fd5-2516758f1a11-1664910315779/node_modules/orbit-clients/physical-market"
 
 os-browserify@0.3.0:
   version "0.3.0"

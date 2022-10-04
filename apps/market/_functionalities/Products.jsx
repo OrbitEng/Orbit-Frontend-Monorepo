@@ -132,20 +132,14 @@ export function DigitalProductFunctionalities(props){
     /// BUYER UTILS
 
     const GetAllVendorDigitalProducts = async(market_acc) =>{
-        let vendor_catalog = await catalogClient.GetCacheCatalog(
+        let vendor_catalog = await catalogClient.GetVendorCatalog(
             catalogClient.GenVendorListingsAddress(
-                market_acc
+                market_acc,
+                "digital"
             )
         )
         if(!(vendor_catalog.data)){
             return ""
-        }
-
-        let arclient = new ArQueryClient();
-        let cache = vendor_catalog.data.cache;
-
-        for(let link of vendor_catalog.data.memory){
-            cache.push(...(await arclient.FetchData(link)).split("||"));
         }
 
         return (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
