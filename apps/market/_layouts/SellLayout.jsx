@@ -4,7 +4,7 @@ import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
 import Head from "next/head";
 import Image from "next/image";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
@@ -64,22 +64,35 @@ export function DigitalUploadForm(props) {
 	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
 	const [selectedCategory, setSelectedCategory] = props.cat;
-	
-	const [files, setFiles] = useState([]);
 
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
-
-	const onDrop = (acceptedFiles) => {
-		setFiles(cf => [...cf, ...acceptedFiles]);
-	}
-	const {getRootProps, getInputProps, open} = useDropzone({onDrop});
-
-	const deleteFile = (filein)=>{
-		let index = files.indexOf(filein);
+	
+	//////////////////////////////////////////////////
+	// Functions for managing product preview images
+	const [previewFiles, setPreviewFiles] = useState([]);
+	const {getRootProps, getInputProps} = useDropzone({
+		onDrop: (acceptedFiles) => {setPreviewFiles(cf => [...cf, ...acceptedFiles])}
+	});
+	const deletePreviewFile = (filein) => {
+		let index = previewFiles.indexOf(filein);
 		if(index == -1){
 			return;
 		}
-		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
+		setPreviewFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
+	}
+
+	//////////////////////////////////////////////////
+	// Functions for managing product images
+	const [productFiles, setProductFiles] = useState([]);
+	const {open} = useDropzone({
+		onDrop: (acceptedFiles) => {setProductFiles(cf => [...cf, ...acceptedFiles])}
+	})
+	const deleteProductFile = (filein) => {
+		let index = productFiles.indexOf(filein);
+		if(index == -1){
+			return;
+		}
+		setProductFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
 	}
 
 	return(
@@ -95,25 +108,47 @@ export function DigitalUploadForm(props) {
 						<h3 className="font-bold text-white text-xl">Upload Preview</h3>
 						<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
 					</div>
-					<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full h-96 content-center align-middle py-12 px-28">
-						<input {...getInputProps()}/>
-						<div className="relative flex h-52 mx-16">
-							<Image
-								src="/PhotoIcon.png"
-								layout="fill"
-								objectFit="contain"
-							/>
+					<div className="flex flex-row">
+						<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-[75%] h-96 content-center align-middle py-12 px-20">
+							<input {...getInputProps()}/>
+							<div className="relative flex h-52 mx-16">
+								<Image
+									src="/PhotoIcon.png"
+									layout="fill"
+									objectFit="contain"
+								/>
+							</div>
+							<div className="flex flex-col">
+								<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
+								<span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
+							</div>
 						</div>
-						<div className="flex flex-col">
-							<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
-							<span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
+						<div className="flex flex-col overflow-scroll w-[20%] h-96 px-2 overflow-y-scroll">
+							{
+								productFiles && productFiles?.map((f,fi) => {
+									return(
+										<div className="p-3 bg-white">
+											<Image
+												src={URL.createObjectURL(f)}
+												width={20}
+												height={20}
+												layout="fixed"
+											/>
+										</div>
+									)
+								})
+							}
+							<div className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]">
+								<PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
+								<span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div className="flex flex-col col-span-5 flex-none flex-grow-0 h-full overflow-ellipsis">
 					<div className="top-0 bg-transparent backdrop-blur-lg">
 						<div className="flex flex-col mb-2 leading-tight">
-							<h3 className="font-bold text-white text-xl">Import Content</h3>
+							<h3 className="font-bold text-white text-xl">Upload Product</h3>
 							<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
 						</div>
 						<div className="flex justify-center bg-[#171717] rounded-2xl py-4 mx-auto w-full shadow-lg">
@@ -124,14 +159,14 @@ export function DigitalUploadForm(props) {
 					</div>
 					<div className="flex flex-col w-full h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
 						{
-							files && files?.map((f,fi) => {
+							previewFiles && previewFiles?.map((f,fi) => {
 								return(
 									<div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate" key={f.name + fi}>
 										<span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
 											Uploaded file:{" "}
 											<span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">{f.name}{f.type}</span>
 										</span>
-										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{deleteFile(f)}}>
+										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{deletePreviewFile(f)}}>
 											<TrashIcon className="flex text-white h-6 w-6"/>
 										</button>
 									</div>
