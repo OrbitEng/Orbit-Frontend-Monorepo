@@ -14,7 +14,11 @@ import { promises } from "stream";
 
 // check if catalog.index == 24
 
-export function DigitalProductFunctionalities(digitalMarketClient, marketAccountsClient, bundlrClient, catalogClient){
+export function DigitalProductFunctionalities(props){
+    const {digitalMarketClient} = useContext(DigitalMarketCtx);
+    const {marketAccountsClient} = useContext(MarketAccountsCtx);
+    const {bundlrClient} = useContext(BundlrCtx);
+    const {catalogClient} = useContext(CatalogCtx);
 
     const ListProduct = async(
         currency = "11111111111111111111111111111111",
@@ -164,7 +168,11 @@ export function DigitalProductFunctionalities(digitalMarketClient, marketAccount
     }
 }
 
-export function PhysicalProductFunctionalities(physicalMarketClient, marketAccountsClient, bundlrClient, catalogClient){
+export function PhysicalProductFunctionalities(props){
+    const {physicalMarketClient} = useContext(PhysicalMarketCtx);
+    const {marketAccountsClient} = useContext(MarketAccountsCtx);
+    const {bundlrClient} = useContext(BundlrCtx);
+    const {catalogClient} = useContext(CatalogCtx);
 
     /// SELLER UTILS
 
@@ -313,7 +321,11 @@ export function PhysicalProductFunctionalities(physicalMarketClient, marketAccou
     }
 }
 
-export function CommissionProductFunctionalities(commissionMarketClient, marketAccountsClient, bundlrClient, catalogClient){
+export function CommissionProductFunctionalities(props){
+    const {commissionMarketClient} = useContext(CommissionMarketCtx);
+    const {marketAccountsClient} = useContext(MarketAccountsCtx);
+    const {bundlrClient} = useContext(BundlrCtx);
+    const {catalogClient} = useContext(CatalogCtx);
 
     /// SELLER UTILS
 

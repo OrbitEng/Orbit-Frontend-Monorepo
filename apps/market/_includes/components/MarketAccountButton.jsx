@@ -2,15 +2,14 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState, useContext } from 'react'
 
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
-import BundlrCtx from "@contexts/BundlrCtx";
 import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 
 export default function MarketAccountButton(props) {
 	let [isOpen, setIsOpen] = useState(false);
 	const [nickName, setNickName] = useState("");
-	const {bundlrClient} = useContext(BundlrCtx);
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
-	const {CreateAccount} = MarketAccountFunctionalities(bundlrClient, marketAccountsClient);
+
+	const {CreateAccount} = MarketAccountFunctionalities();
 
 	const closeModal = async () => {
 		setIsOpen(false)

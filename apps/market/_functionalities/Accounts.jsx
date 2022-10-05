@@ -1,9 +1,17 @@
 import { useContext, useCallback } from "react";
 
 import ArQueryClient from "data-transfer-clients";
+import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+import BundlrCtx from "@contexts/BundlrCtx";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import {enc_common, file_common} from "browser-clients";
 
-export function MarketAccountFunctionalities(bundlrClient, marketAccountsClient){
+import { ChatClient } from "data-transfer-clients";
+
+export function MarketAccountFunctionalities(props){
+    const {marketAccountsClient} = useContext(MarketAccountsCtx);
+    const {bundlrClient} = useContext(BundlrCtx);
+
 
     // AFTER CREATING MAKE SURE TO CALL MATRIX REGISTER/LOGIN ALL THAT SHIT
     // CHECK HEADER

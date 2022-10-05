@@ -43,13 +43,26 @@ export function HomeHeader(props) {
 	const [marketAccount, setMarketAccount] = useState(undefined);
 
 	useEffect(async ()=>{
-		if(!(wallet && wallet.publicKey)) return;
+		let temp_wallet = wallet;
+		if(!(wallet && wallet.publicKey)) {
+			temp_wallet = {};
+		}
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
 
 		let accounts_client = new MarketAccountsClient(wallet, connection, provider);
-		let account_address = (accounts_client.GenAccountAddress(wallet.publicKey))[0];
-		console.log("account address", account_address)
+		let account_address = "";
+		try{
+			account_address = (accounts_client.GenAccountAddress(wallet.publicKey))[0];
+			let account = await accounts_client.GetAccount(account_address);
+			if(!(account && account.data)){
+				return
+			}else{
+				setMarketAccount(account)
+			}
+		}catch{
+			
+		}
 
 		setDigitalMarketClient(new DigitalMarketClient(wallet, account_address, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, account_address, connection, provider));
@@ -59,18 +72,8 @@ export function HomeHeader(props) {
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
 		setMatrixClient(new ChatClient());
-
-		let account = await accounts_client.GetAccount(account_address);
 		
-		console.log("huh", account);
-
-		if(!(account && account.data)){
-			return
-		}else{
-			setMarketAccount(account)
-		}
-		
-	}, [])
+	}, [wallet.connected])
 
 	return(
 		<header className="mx-auto max-w-7xl h-14 sm:h-32 top-0 sticky flex flex-row justify-between bg-transparent backdrop-blur z-50 overflow-visible">
