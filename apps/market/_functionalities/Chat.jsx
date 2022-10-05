@@ -4,11 +4,7 @@ import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import Image from "next/image";
 
 
-export function ChatFunctionalities(props){
-    const [txAddr, setTxAddr] = useState(props.tx_addr)
-    const [roomId, setRoomId] = useState(props.roomid);
-    const {matrixClient} = useContext(MatrixClientCtx);
-    const {digitalMarketClient} = useContext(DigitalMarketCtx);
+export function ChatFunctionalities(matrixClient, digitalMarketClient, txAddr, roomId){
 
     const [chatLogs, setChatLogs] = useState([]);
 
