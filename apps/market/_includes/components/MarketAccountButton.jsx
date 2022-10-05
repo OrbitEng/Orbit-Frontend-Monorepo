@@ -6,20 +6,25 @@ import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 
 export default function MarketAccountButton(props) {
 	let [isOpen, setIsOpen] = useState(false);
-	const [nickName, setNickName] = useState();
+	const [nickName, setNickName] = useState("");
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {CreateAccount} = MarketAccountFunctionalities();
 
-	function closeModal() {
+	closeModal = async () => {
 		setIsOpen(false)
 		try{
 			CreateAccount({nickname: nickName}, undefined, undefined);
+			props.setMarketAccount(
+				await marketAccountsClient.GetAccount(
+					accounts_client.GenAccountAddress(wallet.publicKey)
+				)
+			)
 		} catch(e) {
 			console.log("someone messed up market account creation with: " + e.message)
 		}		
 	}
 
-	function openModal() {
+	openModal = async() => {
 		setIsOpen(true)
 	}
 

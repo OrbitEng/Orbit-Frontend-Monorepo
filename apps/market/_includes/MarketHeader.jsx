@@ -19,8 +19,6 @@ import CatalogCtx from '@contexts/CatalogCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 
-import { MarketAccountFunctionalities } from '@functionalities/Accounts';
-
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -32,8 +30,6 @@ export function HomeHeader(props) {
 	const router = useRouter();
 	let {connection} = useConnection();
 	let wallet = useWallet();
-
-	const {CreateAccount} = MarketAccountFunctionalities();
 
 	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
 	const {disputeProgramClient, setDisputeProgramClient} = useContext(DisputeProgramCtx);
@@ -50,22 +46,28 @@ export function HomeHeader(props) {
 		if(!wallet) return;
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
-		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
-		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
-		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
-		let accounts_client = new MarketAccountsClient(wallet, connection, provider)
+
+		let accounts_client = new MarketAccountsClient(wallet, connection, provider);
+		let account_address = (market_client.GenAccountAddress(this.wallet.publicKey))[0]
+
+		setDigitalMarketClient(new DigitalMarketClient(wallet, account_address, connection, provider));
+		setDisputeProgramClient(new DisputeClient(wallet, account_address, connection, provider));
+		setPhysicalMarketClient(new PhysicalMarketClient(wallet, account_address, connection, provider));
 		setMarketAccountsClient(accounts_client);
-		setCommissionMarketClient(new CommissionMarketClient(wallet, connection, provider))
+		setCommissionMarketClient(new CommissionMarketClient(wallet, account_address, connection, provider))
 		setCatalogClient(new CatalogClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
 		setMatrixClient(new ChatClient());
 
-		let account = await accounts_client.GetAccount(
-			accounts_client.GenAccountAddress(wallet.publicKey)
-		);
+		let account = await accounts_client.GetAccount(account_address);
+		
+		console.log(account);
 
-		if(!(account && account.data)) return;
-		setMarketAccount(account)
+		if(!(account && account.data)){
+			return
+		}else{
+			setMarketAccount(account)
+		}
 		
 	}, [])
 
@@ -105,7 +107,8 @@ export function HomeHeader(props) {
 							!wallet.connected ? ( 
 								<WalletMultiButton />
 							) : (
-								<MarketAccountButton />
+								// add market account set here
+								<MarketAccountButton setMarketAccout={setMarketAccount}/>
 							)
 						}
 					</div>
