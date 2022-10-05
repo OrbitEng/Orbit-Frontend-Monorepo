@@ -18,10 +18,9 @@ export function EmptyProductDisplayCardHome(props) {
 	let paymentList = ["solana", "usdc"]
 
 	return(
-		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">
+		<div className="row-span-1 col-span-1 my-3 mx-4 transition duration-700">
 			<div className="relative group">
-				<div className="bg-[#4541EE] absolute -inset-0 rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-700 group-hover:duration-700 animate-tilt" />
-					<div className="card-service-bg relative py-4 rounded-lg leading-none flex flex-col items-center overflow-hidden">
+					<div className="card-digital-bg relative py-4 rounded-lg leading-none flex flex-col items-center overflow-hidden">
 						<div className="flex items-center content-center border-[#4F4F4F] border-2 border-opacity-30 rounded-full shadow bg-[#535353] animate-pulse w-48 py-4" />
 						<div className="relative mx-auto content-center my-2 overflow-visible">
 							<div className="max overflow-hidden bg-[#535353] animate-pulse rounded-lg h-[200px] w-[200px]" />
