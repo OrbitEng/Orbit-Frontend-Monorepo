@@ -135,7 +135,7 @@ export function DigitalUploadForm(props) {
 									</div>
 								</div>
 							) : (
-								<div className="relative rounded-2xl overflow-hidden h-96 content-center align-middle w-[75%]">
+								<div {...getRootProps()} className="relative rounded-2xl overflow-hidden h-96 content-center align-middle w-[75%]">
 									<Image
 										src={bigPreviewSrc || "/noneya"}
 										width={200}
