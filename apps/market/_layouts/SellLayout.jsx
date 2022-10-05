@@ -72,7 +72,9 @@ export function DigitalUploadForm(props) {
 	// Functions for managing product preview images
 	const [previewFiles, setPreviewFiles] = useState([]);
 	const {getRootProps, getInputProps, open: openPreview} = useDropzone({
-		onDrop: (acceptedFiles) => {setPreviewFiles(cf => [...cf, ...acceptedFiles])}
+		onDrop: (acceptedFiles) => {
+			setPreviewFiles(cf => [...cf, ...acceptedFiles]);
+		}
 	});
 	const deletePreviewFile = (filein) => {
 		let index = previewFiles.indexOf(filein);
@@ -85,7 +87,7 @@ export function DigitalUploadForm(props) {
 	//////////////////////////////////////////////////
 	// Functions for managing product images
 	const [productFiles, setProductFiles] = useState([]);
-	const {open} = useDropzone({
+	const {getRootProps: getProdRootProps, open: openProduct} = useDropzone({
 		onDrop: (acceptedFiles) => {setProductFiles(cf => [...cf, ...acceptedFiles])}
 	})
 	const deleteProductFile = (filein) => {
@@ -174,7 +176,7 @@ export function DigitalUploadForm(props) {
 							<span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
 						</div>
 						<div className="flex justify-center bg-[#171717] rounded-2xl py-4 mx-auto w-full shadow-lg">
-							<button className="bg-[#383838] font-bold text-white rounded-full mx-auto w-1/2 p-2" onClick={open}>
+							<button className="bg-[#383838] font-bold text-white rounded-full mx-auto w-1/2 p-2" onClick={openProduct}>
 								Choose File
 							</button>
 						</div>
