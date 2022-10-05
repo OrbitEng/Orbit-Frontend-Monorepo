@@ -10,7 +10,7 @@ export default function MarketAccountButton(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {CreateAccount} = MarketAccountFunctionalities();
 
-	closeModal = async () => {
+	const closeModal = async () => {
 		setIsOpen(false)
 		try{
 			CreateAccount({nickname: nickName}, undefined, undefined);
@@ -24,7 +24,7 @@ export default function MarketAccountButton(props) {
 		}		
 	}
 
-	openModal = async() => {
+	const openModal = async() => {
 		setIsOpen(true)
 	}
 

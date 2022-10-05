@@ -43,12 +43,12 @@ export function HomeHeader(props) {
 	const [marketAccount, setMarketAccount] = useState(undefined);
 
 	useEffect(async ()=>{
-		if(!wallet) return;
+		if(!(wallet && wallet.publicKey)) return;
 
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
 
 		let accounts_client = new MarketAccountsClient(wallet, connection, provider);
-		let account_address = (market_client.GenAccountAddress(this.wallet.publicKey))[0]
+		let account_address = (accounts_client.GenAccountAddress(wallet.publicKey))[0]
 
 		setDigitalMarketClient(new DigitalMarketClient(wallet, account_address, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, account_address, connection, provider));
