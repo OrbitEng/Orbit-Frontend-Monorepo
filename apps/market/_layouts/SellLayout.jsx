@@ -135,7 +135,7 @@ export function DigitalUploadForm(props) {
 									</div>
 								</div>
 							) : (
-								<div className="flex flex-col rounded-2xl overflow-hidden h-96 content-center align-middle w-[75%]">
+								<div className="relative rounded-2xl overflow-hidden h-96 content-center align-middle w-[75%]">
 									<Image
 										src={bigPreviewSrc || "/noneya"}
 										width={200}
@@ -146,19 +146,20 @@ export function DigitalUploadForm(props) {
 								</div>
 							)
 						}
-						<div className="flex flex-col overflow-scroll w-[20%] h-96 px-2 overflow-y-scroll">
+						<div className="flex flex-col overflow-scroll w-[20%] h-96 px-2 overflow-y-scroll gap-y-3">
 							{
 								previewFiles && previewFiles?.map((f,fi) => {
 									return(
 										<button
-											className="p-3 bg-white"
+											className="relative h-24 w-full border-white border-2 rounded-lg overflow-hidden"
 											onClick={()=>{setBigPreviewSrc(URL.createObjectURL(f))}}
 										>
 											<Image
 												src={URL.createObjectURL(f) || "/"}
-												width={20}
-												height={20}
-												layout="fixed"
+												width={100}
+												height={100}
+												layout="fill"
+												objectFit="cover"
 											/>
 										</button>
 									)
