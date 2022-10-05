@@ -71,11 +71,11 @@ export function DigitalUploadForm(props) {
 	//////////////////////////////////////////////////
 	// Functions for managing product preview images
 	const [previewFiles, setPreviewFiles] = useState([]);
-	const {getRootProps, getInputProps, open: openPreview} = useDropzone({
-		onDrop: (acceptedFiles) => {
-			setPreviewFiles(cf => [...cf, ...acceptedFiles]);
-		}
-	});
+	const prevFilesCallback = useCallback((acceptedFiles) => {
+		// setPreviewFiles([...acceptedFiles]);
+		setPreviewFiles(cf => [...cf, ...acceptedFiles]);
+	}, [])
+
 	const deletePreviewFile = (filein) => {
 		let index = previewFiles.indexOf(filein);
 		if(index == -1){
@@ -84,12 +84,16 @@ export function DigitalUploadForm(props) {
 		setPreviewFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
 	}
 
+	const {getRootProps, getInputProps, open: openPreview} = useDropzone({onDrop: prevFilesCallback});
+	
+
 	//////////////////////////////////////////////////
 	// Functions for managing product images
 	const [productFiles, setProductFiles] = useState([]);
-	const {getRootProps: getProdRootProps, open: openProduct} = useDropzone({
-		onDrop: (acceptedFiles) => {setProductFiles(cf => [...cf, ...acceptedFiles])}
-	})
+	const prodFilesCallback = useCallback((acceptedFiles) => {
+		setProductFiles(cf => [...cf, ...acceptedFiles])
+	}, [])
+
 	const deleteProductFile = (filein) => {
 		let index = productFiles.indexOf(filein);
 		if(index == -1){
@@ -98,6 +102,7 @@ export function DigitalUploadForm(props) {
 		setProductFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
 	}
 
+	const {getRootProps: getProdRootProps, open: openProduct} = useDropzone({onDrop: prodFilesCallback})
 
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
@@ -114,7 +119,7 @@ export function DigitalUploadForm(props) {
 					</div>
 					<div className="flex flex-row">
 						{
-							!(previewFiles && previewFiles?.length > 0) ? (
+							!(previewFiles && previewFiles.length > 0) ? (
 								<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-[75%] h-96 content-center align-middle py-12 px-20">
 									<input {...getInputProps()}/>
 									<div className="relative flex h-52 mx-16">
@@ -147,7 +152,7 @@ export function DigitalUploadForm(props) {
 									return(
 										<button
 											className="p-3 bg-white"
-											onClick={setBigPreviewSrc(URL.createObjectURL(f))}
+											onClick={()=>{setBigPreviewSrc(URL.createObjectURL(f))}}
 										>
 											<Image
 												src={URL.createObjectURL(f) || "/"}
@@ -161,7 +166,7 @@ export function DigitalUploadForm(props) {
 							}
 							<button
 								className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]"
-								onClick={openPreview}
+								onClick={()=>{openPreview()}}
 							>
 								<PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
 								<span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
