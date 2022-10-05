@@ -111,7 +111,7 @@ export function DigitalUploadForm(props) {
 					</div>
 					<div className="flex flex-row">
 						{
-							previwFiles && previewFiles?.length > 0 ?
+							previewFiles && previewFiles?.length > 0 ?
 							<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-[75%] h-96 content-center align-middle py-12 px-20">
 								<input {...getInputProps()}/>
 								<div className="relative flex h-52 mx-16">

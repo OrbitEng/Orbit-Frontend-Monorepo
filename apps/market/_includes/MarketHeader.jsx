@@ -48,7 +48,8 @@ export function HomeHeader(props) {
 		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
 
 		let accounts_client = new MarketAccountsClient(wallet, connection, provider);
-		let account_address = (accounts_client.GenAccountAddress(wallet.publicKey))[0]
+		let account_address = (accounts_client.GenAccountAddress(wallet.publicKey))[0];
+		console.log("account address", account_address)
 
 		setDigitalMarketClient(new DigitalMarketClient(wallet, account_address, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, account_address, connection, provider));
@@ -61,7 +62,7 @@ export function HomeHeader(props) {
 
 		let account = await accounts_client.GetAccount(account_address);
 		
-		console.log(account);
+		console.log("huh", account);
 
 		if(!(account && account.data)){
 			return
@@ -75,13 +76,15 @@ export function HomeHeader(props) {
 		<header className="mx-auto max-w-7xl h-14 sm:h-32 top-0 sticky flex flex-row justify-between bg-transparent backdrop-blur z-50 overflow-visible">
 			<div className="relative py-auto w-40 align-middle content-start mr-36 cursor-pointer">
 				<Link href="./">
-					<Image
-						src={OrbitLogo}
-						layout="fill"
-						alt="The Name and Logo for the Orbit market"
-						objectFit="contain"
-						priority={true}
-					/>
+					<div>
+						<Image
+							src={OrbitLogo}
+							layout="fill"
+							alt="The Name and Logo for the Orbit market"
+							objectFit="contain"
+							priority={true}
+						/>
+					</div>
 				</Link>
 			</div>
 			{props.headerMiddle}

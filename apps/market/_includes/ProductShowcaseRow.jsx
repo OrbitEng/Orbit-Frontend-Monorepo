@@ -83,8 +83,8 @@ export default function ProductShowcaseRow(props) {
 								)
 							})
 							:
-							undefProdsArr.map(() => {
-								return <EmptyProductDisplayCardHome />
+							undefProdsArr.map((undef, ki) => {
+								return <EmptyProductDisplayCardHome key={ki}/>
 							})
 					}
 				</Carousel>

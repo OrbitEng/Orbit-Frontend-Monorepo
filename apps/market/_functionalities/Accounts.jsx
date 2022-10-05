@@ -11,13 +11,14 @@ import { ChatClient } from "data-transfer-clients";
 export function MarketAccountFunctionalities(props){
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
-    const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 
 
     // AFTER CREATING MAKE SURE TO CALL MATRIX REGISTER/LOGIN ALL THAT SHIT
     // CHECK HEADER
     // pfp is a file
     const CreateAccount = async(user_metadata, pfp, reflink = undefined)=>{
+        console.log(bundlrClient)
+
         let pfp_link = "";
         if(pfp){
             pfp_link = await bundlrClient.UploadBuffer(

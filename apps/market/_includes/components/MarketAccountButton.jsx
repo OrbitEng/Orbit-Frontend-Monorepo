@@ -16,7 +16,7 @@ export default function MarketAccountButton(props) {
 			CreateAccount({nickname: nickName}, undefined, undefined);
 			props.setMarketAccount(
 				await marketAccountsClient.GetAccount(
-					accounts_client.GenAccountAddress(wallet.publicKey)
+					marketAccountsClient.GenAccountAddress(wallet.publicKey)
 				)
 			)
 		} catch(e) {
