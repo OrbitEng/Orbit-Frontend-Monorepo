@@ -9,6 +9,8 @@ import CatalogCtx from "@contexts/CatalogCtx";
 
 import { ArQueryClient } from "data-transfer-clients";
 import { utos } from "browser-clients/src/encryption/enc-common";
+import { map } from "next-pwa/cache";
+import { promises } from "stream";
 
 // check if catalog.index == 24
 
@@ -23,6 +25,7 @@ export function DigitalProductFunctionalities(props){
         price,
         deliveryEstimate = 14,
         name,
+        description,
         files
     ) => {
         let buffers = await Promise.all(
@@ -48,56 +51,38 @@ export function DigitalProductFunctionalities(props){
         prod_addr,
         file_type = "Image"
     ) =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
         
         return digitalMarketClient.SetFileType(
             prod_addr,
-            market_acc,
-            market_auth,
             file_type
         )
     }
 
     const ChangeAvailability = async(prod_addr, available = false) =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
-        
-        return digitalMarketClient.ChangeAvailability(
-            prod_addr,
-            market_acc,
-            market_auth,
-            available
-        )
+        if (available){
+            await catalogClient.ProductAvailable(prod_addr);
+        }else{
+            await catalogClient.ProductUnavailable(prod_addr);
+        }
     }
 
     const ChangePrice = async(prod_addr, new_price = 0) =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
         
         return digitalMarketClient.ChangeProductPrice(
             prod_addr,
-            market_acc,
-            market_auth,
             new_price
         )
     }
 
     const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
         
         return digitalMarketClient.UpdateCurrency(
             prod_addr,
-            market_acc,
-            market_auth,
             new_currency
         )
     }
 
     const SetMedia = async(prod_addr, files) =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
         
         let buffers = (await Promise.all(
             files.map(async (fil)=>{      
@@ -109,22 +94,15 @@ export function DigitalProductFunctionalities(props){
 
         digitalMarketClient.SetMedia(
             prod_addr,
-            market_acc,
-            market_auth,
             tx_id
         )
     }
 
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
-
         let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
 
         digitalMarketClient.SetProdInfo(
             prod_addr,
-            market_acc,
-            market_auth,
             tx_url
         )
     }
@@ -132,17 +110,27 @@ export function DigitalProductFunctionalities(props){
     /// BUYER UTILS
 
     const GetAllVendorDigitalProducts = async(market_acc) =>{
-        let vendor_catalog = await catalogClient.GetVendorCatalog(
-            catalogClient.GenVendorListingsAddress(
-                market_acc,
-                "digital"
-            )
-        )
+        let catalog_addr = (await marketAccountsClient.GetAccount(market_acc)).data.digitalVendorCatalog;
+        let vendor_catalog = await catalogClient.GetVendorCatalog(catalog_addr);
         if(!(vendor_catalog.data)){
             return ""
         }
 
-        return (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
+        let all_prods = vendor_catalog.productAvailable[0].toString(2) + vendor_catalog.productAvailable[1].toString(2) + vendor_catalog.productAvailable[2].toString(2) + vendor_catalog.productAvailable[3].toString(2);
+        let indexes = [];
+        for(let i = 0; i < 256; i++){
+            if(all_prods[i] == "1"){
+                indexes.push(
+                    digitalMarketClient.GenProductAddress(
+                        catalog_addr, i
+                    )
+                )
+            }
+        };
+
+        return (await digitalMarketClient.GetMultipleDigitalProducts(
+            (await Promise.all(indexes)).map(n => n[0])
+        )).filter(prod => prod.data != undefined);
     }
 
     const ResolveProductMedia = async(product_addr) => {
@@ -167,7 +155,6 @@ export function DigitalProductFunctionalities(props){
     };
 
     return {
-        MfreeVendorListings,
         ListProduct,
         SetFileType,
         ChangeAvailability,
@@ -182,65 +169,21 @@ export function DigitalProductFunctionalities(props){
 }
 
 export function PhysicalProductFunctionalities(props){
-    const {digitalMarketClient} = useContext(DigitalMarketCtx);
-
     const {physicalMarketClient} = useContext(PhysicalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {catalogClient} = useContext(CatalogCtx);
 
     /// SELLER UTILS
-    const MfreeVendorListings = async() => {
-        let vendor_catalog = await catalogClient.GetCacheCatalog(
-            catalogClient.GenVendorListingsAddress(
-                marketAccountsClient.market_account
-            )
-        )
-        if(!(vendor_catalog.data)){
-            return ""
-        }
-
-        let arclient = new ArQueryClient();
-        let cache = vendor_catalog.data.cache;
-
-        if(vendor_catalog.data.full){
-            for(let link of vendor_catalog.data.memory){
-                cache.push(...(await arclient.FetchData(link)).split("||"));
-            }
-
-            let phys_prods = (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
-            let digi_prods = (await digitalMarketClient.GetMultipleDigitalProducts(cache)).filter(prod => prod.data != undefined);
-            let prods = [...phys_prods, ...digi_prods];
-
-            let buff = prods.map(pk => pk.toString()).join("||");
-            let link = await bundlrClient.UploadBuffer(buff);
-
-            return catalogClient.RemapVendorCatalog(
-                marketAccountsClient.market_account,
-                marketAccountsClient.master_auth,
-                link
-            )
-        }else if(vendor_catalog.data.flag){
-            let buff = cache.map(pk => pk.toString()).join("||");
-            
-            return catalogClient.DrainVendorCatalog(
-                marketAccountsClient.market_account,
-                marketAccountsClient.master_auth,
-                await bundlrClient.UploadBuffer(buff)
-            );   
-        }
-    }
 
     const ListProduct = async(
         currency = "11111111111111111111111111111111",
         price,
-        available = true,
         deliveryEstimate = 14,
         name,
         description,
         files
     ) => {
-        let market_acc = marketAccountsClient.market_account;
 
         let buffers = await Promise.all(
             files.map((fil)=>{
@@ -253,69 +196,44 @@ export function PhysicalProductFunctionalities(props){
 
         await physicalMarketClient.ListPhysicalProduct(
             desc_url,
-            market_acc,
             currency,
             price,
-            available,
             deliveryEstimate,
             media_url
         )
+    }
 
-        let listings_catalog = catalogClient.GenVendorListingsAddress(market_acc);
-
-        if((!await catalogClient.GetCatalogAddrLocal(listings_catalog)) && !(await catalogClient.GetCacheCatalog(listings_catalog)).data){
-            await catalogClient.InitVendorCatalog(
-                market_acc,
-                market_auth
-            )
+    const ChangeAvailability = async(prod_addr, available = false) =>{
+        if (available){
+            await catalogClient.ProductAvailable(prod_addr);
+        }else{
+            await catalogClient.ProductUnavailable(prod_addr);
         }
-
-        await catalogClient.AddToVendorCatalog(
-            market_acc,
-            market_auth,
-            prod.publicKey
-        );
-
-        return MfreeVendorListings();
     }
 
     const ChangePrice = async(prod_addr, new_price = 0) =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
 
         return physicalMarketClient.ChangeProductPrice(
             prod_addr,
-            market_acc,
-            market_auth,
             new_price
         )
     }
     const ChangeQuantity = async(prod_addr, new_quantity = 0) =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
 
         return physicalMarketClient.ChangeProductQuantity(
             prod_addr,
-            market_acc,
-            market_auth,
             new_quantity
         )
     }
     const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
 
         return physicalMarketClient.UpdateCurrency(
             prod_addr,
-            market_acc,
-            market_auth,
             new_currency
         )
     };
 
     const SetMedia = async(prod_addr, files) =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
 
         let buffers = (await Promise.all(
             files.map(async (fil)=>{      
@@ -327,23 +245,17 @@ export function PhysicalProductFunctionalities(props){
 
         return physicalMarketClient.SetMedia(
             prod_addr,
-            market_acc,
-            market_auth,
             tx_id
         )
 
     }
 
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
 
         let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
 
         physicalMarketClient.SetProdInfo(
             prod_addr,
-            market_acc,
-            market_auth,
             tx_url
         )
     }
@@ -351,23 +263,27 @@ export function PhysicalProductFunctionalities(props){
     /// BUYER UTILS
 
     const GetAllVendorPhysicalProducts = async(market_acc) =>{
-        let vendor_catalog = await catalogClient.GetCacheCatalog(
-            catalogClient.GenVendorListingsAddress(
-                market_acc
-            )
-        )
+        let catalog_addr = (await marketAccountsClient.GetAccount(market_acc)).data.physicalVendorCatalog;
+        let vendor_catalog = await catalogClient.GetVendorCatalog(catalog_addr);
         if(!(vendor_catalog.data)){
             return ""
         }
 
-        let arclient = new ArQueryClient();
-        let cache = vendor_catalog.data.cache;
+        let all_prods = vendor_catalog.productAvailable[0].toString(2) + vendor_catalog.productAvailable[1].toString(2) + vendor_catalog.productAvailable[2].toString(2) + vendor_catalog.productAvailable[3].toString(2);
+        let indexes = [];
+        for(let i = 0; i < 256; i++){
+            if(all_prods[i] == "1"){
+                indexes.push(
+                    physicalMarketClient.GenProductAddress(
+                        catalog_addr, i
+                    )
+                )
+            }
+        };
 
-        for(let link of vendor_catalog.data.memory){
-            cache.push(...(await arclient.FetchData(link)).split("||"));
-        }
-
-        return (await physicalMarketClient.GetMultiplePhysicalProducts(cache)).filter(prod => prod.data != undefined);
+        return (await physicalMarketClient.GetMultipleDigitalProducts(
+            (await Promise.all(indexes)).map(n => n[0])
+        )).filter(prod => prod.data != undefined);
     };
 
     const ResolveProductMedia = async(product_addr) => {
@@ -392,14 +308,160 @@ export function PhysicalProductFunctionalities(props){
     };
 
     return {
-        MfreeVendorListings,
         ListProduct,
         ChangePrice,
+        ChangeAvailability,
         ChangeQuantity,
         ChangeCurrency,
         SetMedia,
         SetInfo,
         GetAllVendorPhysicalProducts,
+        ResolveProductMedia,
+        ResolveProductInfo
+    }
+}
+
+export function CommissionProductFunctionalities(props){
+    const {commissionMarketClient} = useContext(CommissionMarketCtx);
+    const {marketAccountsClient} = useContext(MarketAccountsCtx);
+    const {bundlrClient} = useContext(BundlrCtx);
+    const {catalogClient} = useContext(CatalogCtx);
+
+    /// SELLER UTILS
+
+    const ListProduct = async(
+        currency = "11111111111111111111111111111111",
+        price,
+        deliveryEstimate = 14,
+        name,
+        description,
+        files
+    ) => {
+
+        let buffers = await Promise.all(
+            files.map((fil)=>{
+                return fil.arrayBuffer();
+            })
+        );
+
+        let media_url = await bundlrClient.UploadBuffer(buffers);
+        let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
+
+        await commissionMarketClient.ListProduct(
+            desc_url,
+            currency,
+            price,
+            deliveryEstimate,
+            media_url
+        )
+    }
+
+    const ChangeAvailability = async(prod_addr, available = false) =>{
+        if (available){
+            await catalogClient.ProductAvailable(prod_addr);
+        }else{
+            await catalogClient.ProductUnavailable(prod_addr);
+        }
+    }
+
+    const ChangePrice = async(prod_addr, new_price = 0) =>{
+
+        return commissionMarketClient.ChangeProductPrice(
+            prod_addr,
+            new_price
+        )
+    }
+    
+    const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
+
+        return commissionMarketClient.UpdateCurrency(
+            prod_addr,
+            new_currency
+        )
+    };
+
+    const SetMedia = async(prod_addr, files) =>{
+
+        let buffers = (await Promise.all(
+            files.map(async (fil)=>{      
+                return enc_common.utos(new Uint8Array.from(await fil.arrayBuffer())) + "<<" + fil.type;
+            })
+        )).join("||")
+
+        let tx_id = await bundlrClient.UploadBuffer(buffers);
+
+        return commissionMarketClient.SetMedia(
+            prod_addr,
+            tx_id
+        )
+
+    }
+
+    const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
+
+        let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
+
+        commissionMarketClient.SetProdInfo(
+            prod_addr,
+            tx_url
+        )
+    }
+
+    /// BUYER UTILS
+
+    const GetAllVendorCommissionProducts = async(market_acc) =>{
+        let catalog_addr = (await marketAccountsClient.GetAccount(market_acc)).data.commissionVendorCatalog;
+        let vendor_catalog = await catalogClient.GetVendorCatalog(catalog_addr);
+        if(!(vendor_catalog.data)){
+            return ""
+        }
+
+        let all_prods = vendor_catalog.productAvailable[0].toString(2) + vendor_catalog.productAvailable[1].toString(2) + vendor_catalog.productAvailable[2].toString(2) + vendor_catalog.productAvailable[3].toString(2);
+        let indexes = [];
+        for(let i = 0; i < 256; i++){
+            if(all_prods[i] == "1"){
+                indexes.push(
+                    commissionMarketClient.GenProductAddress(
+                        catalog_addr, i
+                    )
+                )
+            }
+        };
+
+        return (await commissionMarketClient.GetMultipleDigitalProducts(
+            (await Promise.all(indexes)).map(n => n[0])
+        )).filter(prod => prod.data != undefined);
+    };
+
+    const ResolveProductMedia = async(product_addr) => {
+        let arclient = new ArQueryClient();
+        let product = await commissionMarketClient.GetCommissionProduct(product_addr);
+        if(!(product.data && product.data.metadata.images)){
+            return undefined
+        }
+        return arclient.GetImagesData(product.data.metadata.media);
+    }
+
+    /**
+     * should return [name, desc]
+     */
+    const ResolveProductInfo = async(product_addr) => {
+        let arclient = new ArQueryClient();
+        let product = await commissionMarketClient.GetCommissionProduct(product_addr);
+        if(!(product.data && product.data.metadata.info)){
+            return undefined
+        }
+        return (await arclient.FetchData(product.data.metadata.info)).split("||");
+    };
+
+    return {
+        ListProduct,
+        ChangePrice,
+        ChangeAvailability,
+        ChangeCurrency,
+        SetMedia,
+        SetInfo,
+        GetAllVendorCommissionProducts,
         ResolveProductMedia,
         ResolveProductInfo
     }
