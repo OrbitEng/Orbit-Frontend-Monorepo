@@ -96,6 +96,7 @@ export function DigitalUploadForm(props) {
 		setProductFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
 	}
 
+
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
@@ -111,38 +112,43 @@ export function DigitalUploadForm(props) {
 					</div>
 					<div className="flex flex-row">
 						{
-							previewFiles && previewFiles?.length > 0 ?
-							<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-[75%] h-96 content-center align-middle py-12 px-20">
-								<input {...getInputProps()}/>
-								<div className="relative flex h-52 mx-16">
+							!(previewFiles && previewFiles?.length > 0) ? (
+								<div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-[75%] h-96 content-center align-middle py-12 px-20">
+									<input {...getInputProps()}/>
+									<div className="relative flex h-52 mx-16">
+										<Image
+											src="/PhotoIcon.png"
+											layout="fill"
+											objectFit="contain"
+										/>
+									</div>
+									<div className="flex flex-col">
+										<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
+										<span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
+									</div>
+								</div>
+							) : (
+								<div className="flex flex-col rounded-2xl overflow-hidden h-96 content-center align-middle w-[75%]">
 									<Image
-										src="/PhotoIcon.png"
+										src={bigPreviewSrc || "/noneya"}
+										width={200}
+										height={200}
 										layout="fill"
-										objectFit="contain"
+										objectFit="cover"
 									/>
 								</div>
-								<div className="flex flex-col">
-									<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
-									<span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
-								</div>
-							</div> :
-							<div className="flex flex-col rounded-2xl overflow-hidden h-96 content-center align-middle">
-								<Image
-									src={bigPreviewSrc}
-									width={200}
-									height={200}
-									layout="fill"
-									objectFit="cover"
-								/>
-							</div>
+							)
 						}
 						<div className="flex flex-col overflow-scroll w-[20%] h-96 px-2 overflow-y-scroll">
 							{
 								previewFiles && previewFiles?.map((f,fi) => {
 									return(
-										<button className="p-3 bg-white">
+										<button
+											className="p-3 bg-white"
+											onClick={setBigPreviewSrc(URL.createObjectURL(f))}
+										>
 											<Image
-												src={URL.createObjectURL(f)}
+												src={URL.createObjectURL(f) || "/"}
 												width={20}
 												height={20}
 												layout="fixed"

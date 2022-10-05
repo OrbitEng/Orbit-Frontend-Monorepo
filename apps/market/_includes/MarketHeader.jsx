@@ -95,7 +95,7 @@ export function HomeHeader(props) {
 				<div className="flex flex-row px-2 gap-3">
 					<button
 						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]"
-						onClick={() => router.push('/sell')}
+						onClick={() => router.push("sell")}
 					>
 						<PlusCircleIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
