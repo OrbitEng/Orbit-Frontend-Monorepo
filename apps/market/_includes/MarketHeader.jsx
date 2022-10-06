@@ -114,7 +114,7 @@ export function HomeHeader(props) {
 								<WalletMultiButton />
 							) : (
 								// add market account set here
-								<MarketAccountButton setMarketAccout={setMarketAccount}/>
+								<MarketAccountButton setMarketAccout={setMarketAccount} connectedWallet={wallet}/>
 							)
 						}
 					</div>

@@ -16,7 +16,7 @@ export function MarketAccountFunctionalities(props){
     // AFTER CREATING MAKE SURE TO CALL MATRIX REGISTER/LOGIN ALL THAT SHIT
     // CHECK HEADER
     // pfp is a file
-    const CreateAccount = async(user_metadata, pfp, reflink = undefined)=>{
+    const CreateAccount = async(user_metadata, pfp = undefined, reflink = undefined)=>{
         console.log("creating account", bundlrClient)
 
         let pfp_link = "";
@@ -35,13 +35,6 @@ export function MarketAccountFunctionalities(props){
             pfp_link,
             reflink
         );
-
-        // let chat_client = new ChatClient(master_auth);
-
-        // setMatrixClient(chat_client);
-
-        // await chat_client.CreateAccount(master_auth);
-        // await chat_client.Sync();
     }
 
     const SetPfp = async()=>{

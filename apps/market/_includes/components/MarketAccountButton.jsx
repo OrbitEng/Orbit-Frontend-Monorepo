@@ -16,16 +16,12 @@ export default function MarketAccountButton(props) {
 	}
 
 	const createAccount = async () => {
-		try{
-			CreateAccount({nickname: nickName}, undefined, undefined);
-			props.setMarketAccount(
-				await marketAccountsClient.GetAccount(
-					marketAccountsClient.GenAccountAddress(wallet.publicKey)
-				)
+		CreateAccount({nickname: nickName}, undefined, undefined);
+		props.setMarketAccount(
+			await marketAccountsClient.GetAccount(
+				marketAccountsClient.GenAccountAddress(props.connectedWallet.publicKey)
 			)
-		} catch(e) {
-			console.log("someone messed up market account creation with: " + e.message)
-		}	
+		)
 	}
 
 	const handleSubmit = () => {
