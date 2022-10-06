@@ -52,26 +52,31 @@ export function HomeHeader(props) {
 
 		let accounts_client = new MarketAccountsClient(wallet, connection, provider);
 		let account_address = "";
-		try{
+		if (wallet && wallet.publicKey){
 			account_address = (accounts_client.GenAccountAddress(wallet.publicKey))[0];
-			let account = await accounts_client.GetAccount(account_address);
-			if(!(account && account.data)){
-				return
-			}else{
-				setMarketAccount(account)
+		}
+		try{
+			if(account_address != ""){
+				let account = await accounts_client.GetAccount(account_address);
+				if(!(account && account.data)){
+					
+				}else{
+					setMarketAccount(account)
+				}
 			}
-		}catch{
+		}catch(e){
 			
 		}
 
 		setDigitalMarketClient(new DigitalMarketClient(wallet, account_address, connection, provider));
 		setDisputeProgramClient(new DisputeClient(wallet, account_address, connection, provider));
 		setPhysicalMarketClient(new PhysicalMarketClient(wallet, account_address, connection, provider));
-		setMarketAccountsClient(accounts_client);
 		setCommissionMarketClient(new CommissionMarketClient(wallet, account_address, connection, provider))
-		setCatalogClient(new CatalogClient(wallet, connection, provider));
+		setCatalogClient(new CatalogClient(wallet, account_address, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
 		setMatrixClient(new ChatClient());
+
+		setMarketAccountsClient(accounts_client);
 		
 	}, [wallet.connected])
 
@@ -114,7 +119,7 @@ export function HomeHeader(props) {
 								<WalletMultiButton />
 							) : (
 								// add market account set here
-								<MarketAccountButton setMarketAccout={setMarketAccount} connectedWallet={wallet}/>
+								<MarketAccountButton setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
 							)
 						}
 					</div>

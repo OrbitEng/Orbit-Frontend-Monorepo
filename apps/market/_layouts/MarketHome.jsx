@@ -37,7 +37,7 @@ export function Home(props) {
 	}, [searchBarVisible]);
 
 	useEffect(async ()=>{
-		if(!digitalMarketClient || !physicalMarketClient) return;
+		if(!digitalMarketClient || !physicalMarketClient || !catalogClient) return;
 
 		let digital_catalog = await catalogClient.GetModCatalog(
 			(await digitalMarketClient.GenRecentCatalog())[0]
