@@ -135,7 +135,7 @@ export function DigitalUploadForm(props) {
 									</div>
 								</div>
 							) : (
-								<div {...getRootProps()} className="relative rounded-2xl overflow-hidden h-96 content-center align-middle w-[75%]">
+								<div className="relative rounded-2xl overflow-hidden h-96 content-center align-middle w-[75%]">
 									<Image
 										src={bigPreviewSrc || "/noneya"}
 										width={200}
@@ -196,7 +196,7 @@ export function DigitalUploadForm(props) {
 											Uploaded file:{" "}
 											<span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">{f.name}{f.type}</span>
 										</span>
-										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{deletePreviewFile(f)}}>
+										<button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{deleteProductFile(f)}}>
 											<TrashIcon className="flex text-white h-6 w-6"/>
 										</button>
 									</div>
