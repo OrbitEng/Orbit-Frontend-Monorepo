@@ -34,7 +34,7 @@ export default function MarketAccountButton(props) {
 	}
 
   return (
-    <>
+    <div>
 		<button
 			type="button"
 			onClick={openModal}
@@ -68,37 +68,40 @@ export default function MarketAccountButton(props) {
 					leaveFrom="opacity-100 scale-100"
 					leaveTo="opacity-0 scale-95"
 				>
-					<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] p-6 text-left align-middle shadow-xl transition-all">
-						<Dialog.Title
-							as="h3"
-							className="text-lg font-medium leading-6 text-white"
-						>
-						Create Your Account
-						</Dialog.Title>
-						<div className="flex flex-col mt-2 gap-y-2">
-							<p className="text-sm text-gray-500">
-							Your market account is your portal to the Orbit network, it lets you buy and sell items as well as earn revenue!
-							</p>
-							<div className="flex flex-col">
-								<label className="text-gray-500 font-bold">Nickname</label>
-								<input type="text" value={nickName} onChange={(e) => {setNickName(e.target.value)}}/>
-							</div>
-						</div>
-						<div className="mt-4">
-							<button
-							type="button"
-							className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-							onClick={handleSubmit}
+					<div>
+						<div className="absolute -inset-0 w-full h-full bg-black z-0 rounded-2xl" />
+						<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] p-6 text-left align-middle shadow-xl transition-all">
+							<Dialog.Title
+								as="h3"
+								className="text-lg font-medium leading-6 text-white"
 							>
-								Create Account!
-							</button>
-						</div>
-					</Dialog.Panel>
+							Create Your Account
+							</Dialog.Title>
+							<div className="flex flex-col mt-2 gap-y-2">
+								<p className="text-sm text-gray-500">
+								Your market account is your portal to the Orbit network, it lets you buy and sell items as well as earn revenue!
+								</p>
+								<div className="flex flex-col">
+									<label className="text-gray-500 font-bold">Nickname</label>
+									<input type="text" value={nickName} onChange={(e) => {setNickName(e.target.value)}}/>
+								</div>
+							</div>
+							<div className="mt-4">
+								<button
+								type="button"
+								className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+								onClick={handleSubmit}
+								>
+									Create Account!
+								</button>
+							</div>
+						</Dialog.Panel>
+					</div>
 				</Transition.Child>
 				</div>
 			</div>
 			</Dialog>
 		</Transition>
-    </>
+    </div>
   )
 }
