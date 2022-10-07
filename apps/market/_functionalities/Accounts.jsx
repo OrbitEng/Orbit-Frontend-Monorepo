@@ -19,22 +19,26 @@ export function MarketAccountFunctionalities(props){
     const CreateAccount = async(user_metadata, pfp = undefined, reflink = undefined)=>{
         console.log("creating account", bundlrClient)
 
-        let pfp_link = "";
-        if(pfp){
-            pfp_link = await bundlrClient.UploadBuffer(
-                enc_common.utos(new Uint8Array.from((pfp).arrayBuffer())) + "<<" + pfp.type
+        try{
+            let pfp_link = "";
+            if(pfp){
+                pfp_link = await bundlrClient.UploadBuffer(
+                    enc_common.utos(new Uint8Array.from((pfp).arrayBuffer())) + "<<" + pfp.type
+                );
+            }
+
+            let metadata_addr = await bundlrClient.UploadBuffer(
+                JSON.stringify(user_metadata)
             );
+
+            await marketAccountsClient.CreateAccount(
+                metadata_addr,
+                pfp_link,
+                reflink
+            );
+        }catch(e){
+            return "could not create your account at the current time. please try again later"
         }
-
-        let metadata_addr = await bundlrClient.UploadBuffer(
-            JSON.stringify(user_metadata)
-        );
-
-        await marketAccountsClient.CreateAccount(
-            metadata_addr,
-            pfp_link,
-            reflink
-        );
     }
 
     const SetPfp = async()=>{

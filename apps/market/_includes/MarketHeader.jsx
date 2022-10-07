@@ -61,6 +61,7 @@ export function HomeHeader(props) {
 				if(!(account && account.data)){
 					
 				}else{
+					console.log(account);
 					setMarketAccount(account)
 				}
 			}
@@ -118,6 +119,7 @@ export function HomeHeader(props) {
 							!wallet.connected ? ( 
 								<WalletMultiButton />
 							) : (
+								marketAccount ? <WalletMultiButton /> :
 								// add market account set here
 								<MarketAccountButton setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
 							)

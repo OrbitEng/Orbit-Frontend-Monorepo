@@ -8,7 +8,10 @@ import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, 
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
-import {DigitalProductFunctionalities, PhysicalProductFunctionalities} from "@functionalities/Products";
+import {DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities} from "@functionalities/Products";
+import { useEffect } from "react";
+import CatalogCtx from "@contexts/CatalogCtx";
+import { useContext } from "react";
 
 const token_addresses = {
 	mainnet: {
@@ -56,23 +59,44 @@ export function SellLayout(props){
 
 
 export function DigitalUploadForm(props) {
-	const {ListProductTemplate} = DigitalProductFunctionalities();
+	const {ListProduct, CreateDigitalListingsCatalog} = DigitalProductFunctionalities();
+	const {catalogClient} = useContext(CatalogCtx);
 
-	const [prodName, setProdName] = useState();
+	const [prodName, setProdName] = useState("");
 	const [price, setProdPrice] = useState();
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
 	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
-	const [selectedCategory, setSelectedCategory] = props.cat;
 	const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
+
+	const [vendorDigitalCatalog, setVendorDigitalCatalog] = useState();
 
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 	
+	useEffect(async ()=>{
+		try{
+			let vc = await catalogClient.GetVendorCatalog(
+				catalogClient.GenVendorListingsAddress(
+					catalogClient.market_account_address, "digital"
+				)[0]
+			);
+			if(vc && vc.data){
+				setVendorDigitalCatalog(vc)
+			}
+		}catch(e){
+
+		}
+	}, []);
+
+	const CreateDigitalCatalog = useCallback(()=>{
+		CreateDigitalListingsCatalog();
+		setVendorDigitalCatalog(true);
+	},[])
+
 	//////////////////////////////////////////////////
 	// Functions for managing product preview images
 	const [previewFiles, setPreviewFiles] = useState([]);
 	const prevFilesCallback = useCallback((acceptedFiles) => {
-		// setPreviewFiles([...acceptedFiles]);
 		setPreviewFiles(cf => [...cf, ...acceptedFiles]);
 	}, [])
 
@@ -206,113 +230,126 @@ export function DigitalUploadForm(props) {
 					</div>
 				</div>
 			</div>
-			<form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProductTemplate()}}>
-				<div className="flex flex-col">
-					<label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
-					<input
-						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
-						placeholder="Enter Title"
-						type="text"
-						id="title"
-						name="title"
-					/>
-				</div>
-				<div className="flex flex-col h-full">
-					<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
-					<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
-						<div className="p-3 flex flex-col focus:outline-0 grow">
-							<input
-								className="px-3 pt-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg grow"
-								placeholder="0.00"
-								type="number"
-								min="0"
-								id="price"
-								name="price"
-								onChange={(e)=>{
-									setProdPrice(e.target.value)
-									setTakeHomeMoney((e.target.value*95)/100)
-								}}
-							/>
-							<div className="px-3 text-[#8E8E8E] align-middle my-auto">{(takeHomeMoney || "0.00")}</div>
+			
+			{
+				vendorDigitalCatalog ? (
+					<form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct()}}>
+					<div className="flex flex-col">
+						<label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
+						<input
+							className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+							placeholder="Enter Title"
+							type="text"
+							id="title"
+							name="title"
+						/>
+					</div>
+					<div className="flex flex-col h-full">
+						<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
+						<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
+							<div className="p-3 flex flex-col focus:outline-0 grow">
+								<input
+									className="px-3 pt-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg grow"
+									placeholder="0.00"
+									type="number"
+									min="0"
+									id="price"
+									name="price"
+									onChange={(e)=>{
+										setProdPrice(e.target.value)
+										setTakeHomeMoney((e.target.value*95)/100)
+									}}
+								/>
+								<div className="px-3 text-[#8E8E8E] align-middle my-auto">{(takeHomeMoney || "0.00")}</div>
+							</div>
+							<div className="flex flex-col w-1/6 h-full justify-center">
+								<Listbox value={currency} onChange={setCurrency}>
+									<div className="flex relative w-3/4 text-xl h-1/2 justify-end">
+										<Listbox.Button className="flex w-full h-full bg-[#242424] rounded-lg p-1 justify-center">{
+											<div className="flex flex-row align-middle">
+												<span className="my-auto align-middle">
+													<Image
+														layout="fixed"
+														src={"/" + currency + "SvgLogo.svg"}
+														height={16}
+														width={16}
+													/>
+												</span>
+												<span className="align-middle my-auto mx-1 font-medium">{
+													(currency === "usdc") ?
+													currency.toUpperCase() :
+													currency?.charAt(0).toUpperCase() + currency.slice(1)
+												}</span>
+												<ChevronDownIcon className="text-white h-5 w-5 my-auto align-middle"/>
+											</div>
+										}</Listbox.Button>
+										<Listbox.Options className="w-full text-center absolute -bottom-6 transition rounded-b bg-[#242424]">
+											{
+												Object.keys(tokenlist).filter(tn => tn != currency).map((tokenname, index)=>{
+													return (
+														<Listbox.Option
+															key = {index}
+															value = {tokenname}
+															className={({active})=>{
+																`w-full py-1 ${active? "bg-[#2c2c2c] font-medium rounded-b" : ""}`
+															}}
+														>
+															{({selected})=>{
+																return (
+																	<div className="font-medium">{
+																		(tokenname === "usdc") ?
+																		(tokenname.toUpperCase()) :
+																		(tokenname.charAt(0).toUpperCase() + tokenname.slice(1))
+																	}</div>
+																)
+															}}
+														</Listbox.Option>
+													)
+												})
+											}
+										</Listbox.Options>
+									</div>
+								</Listbox>
+							</div>
 						</div>
-						<div className="flex flex-col w-1/6 h-full justify-center">
-							<Listbox value={currency} onChange={setCurrency}>
-								<div className="flex relative w-3/4 text-xl h-1/2 justify-end">
-									<Listbox.Button className="flex w-full h-full bg-[#242424] rounded-lg p-1 justify-center">{
-										<div className="flex flex-row align-middle">
-											<span className="my-auto align-middle">
-												<Image
-													layout="fixed"
-													src={"/" + currency + "SvgLogo.svg"}
-													height={16}
-													width={16}
-												/>
-											</span>
-											<span className="align-middle my-auto mx-1 font-medium">{
-												(currency === "usdc") ?
-												currency.toUpperCase() :
-												currency?.charAt(0).toUpperCase() + currency.slice(1)
-											}</span>
-											<ChevronDownIcon className="text-white h-5 w-5 my-auto align-middle"/>
-										</div>
-									}</Listbox.Button>
-									<Listbox.Options className="w-full text-center absolute -bottom-6 transition rounded-b bg-[#242424]">
-										{
-											Object.keys(tokenlist).filter(tn => tn != currency).map((tokenname, index)=>{
-												return (
-													<Listbox.Option
-														key = {index}
-														value = {tokenname}
-														className={({active})=>{
-															`w-full py-1 ${active? "bg-[#2c2c2c] font-medium rounded-b" : ""}`
-														}}
-													>
-														{({selected})=>{
-															return (
-																<div className="font-medium">{
-																	(tokenname === "usdc") ?
-																	(tokenname.toUpperCase()) :
-																	(tokenname.charAt(0).toUpperCase() + tokenname.slice(1))
-																}</div>
-															)
-														}}
-													</Listbox.Option>
-												)
-											})
-										}
-									</Listbox.Options>
-								</div>
-							</Listbox>
+						<div className="flex flex-row gap-x-1 align-middle mt-1">
+							<InformationCircleIcon className="h-5 w-5 text-yellow-400 my-auto" />
+							<span className="font-semibold text-[#767676] align-middle my-auto">Sale Fee: 5%</span>
 						</div>
 					</div>
-					<div className="flex flex-row gap-x-1 align-middle mt-1">
-						<InformationCircleIcon className="h-5 w-5 text-yellow-400 my-auto" />
-						<span className="font-semibold text-[#767676] align-middle my-auto">Sale Fee: 5%</span>
+					<div className="flex flex-col">
+						<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
+						<textarea
+							className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
+							id="description"
+							name="description"
+							placeholder="What are you selling?"
+							onChange={(e)=>{setDescription(e.target.value)}}
+						/>
 					</div>
-				</div>
-				<div className="flex flex-col">
-					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
-					<textarea
-						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
-						id="description"
-						name="description"
-						placeholder="What are you selling?"
-						onChange={(e)=>{setDescription(e.target.value)}}
-					/>
-				</div>
-				<div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
-					<input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
-				</div>
-			</form>
+					<div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
+						<input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
+					</div>
+					</form>
+				) : (
+					<div>
+						<div>
+							Make a catalog to start listing physical products!
+						</div>
+						<button onClick={CreateDigitalCatalog} className="w-32 h-32"/>
+					</div>
+				)
+			}
 		</div>
 	)
 }
 
 
 export function PhysicalUploadForm(props) {
-	const {ListProduct} = PhysicalProductFunctionalities();
+	const {ListProduct, CreatePhysicalListingsCatalog} = PhysicalProductFunctionalities();
+	const {catalogClient} = useContext(CatalogCtx);
 
-	const [prodName, setProdName] = useState();
+	const [prodName, setProdName] = useState("");
 	const [price, setProdPrice] = useState();
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
 	const [currency, setCurrency] = useState("solana");
@@ -320,6 +357,23 @@ export function PhysicalUploadForm(props) {
 	const [selectedCategory, setSelectedCategory] = props.cat;
 	
 	const [files, setFiles] = useState([]);
+
+	const [vendorPhysicalCatalog, setVendorPhysicalCatalog] = useState();
+
+	useEffect(async()=>{
+		try{
+			let vc = await catalogClient.GetVendorCatalog(
+				catalogClient.GenVendorListingsAddress(
+					catalogClient.market_account_address, "physical"
+				)[0]
+			);
+			if(vc && vc.data){
+				setVendorPhysicalCatalog(vc)
+			}
+		}catch(e){
+
+		}
+	},[])
 
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 
@@ -395,7 +449,10 @@ export function PhysicalUploadForm(props) {
 					</div>
 				</div>
 			</div>
-			<form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProductTemplate()}}>
+			<div>
+
+			</div>
+			<form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct()}}>
 				<div className="flex flex-col">
 					<label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
 					<input
@@ -509,7 +566,24 @@ export function PhysicalUploadForm(props) {
 }
 
 export function ServiceUploadForm(props) {
-	const {ListProductCommission} = DigitalProductFunctionalities();
+	const {ListProduct, CreateCommissionsListingsCatalog} = CommissionProductFunctionalities();
+	const {catalogClient} = useContext(CatalogCtx);
+	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState();
+	useEffect(async()=>{
+		try{
+			let vc = await catalogClient.GetVendorCatalog(
+				catalogClient.GenVendorListingsAddress(
+					catalogClient.market_account_address, "commissions"
+				)[0]
+			);
+			if(vc && vc.data){
+				setVendorCommissionCatalog(vc)
+			}
+		}catch(e){
+
+		}
+	},[])
+
 	return(<div>fuck</div>)
 }
 

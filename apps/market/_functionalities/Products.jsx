@@ -20,6 +20,10 @@ export function DigitalProductFunctionalities(props){
     const {bundlrClient} = useContext(BundlrCtx);
     const {catalogClient} = useContext(CatalogCtx);
 
+    const CreateDigitalListingsCatalog = async()=>{
+        await catalogClient.InitVendorCatalog("digital")
+    }
+
     const ListProduct = async(
         currency = "11111111111111111111111111111111",
         price,
@@ -155,6 +159,7 @@ export function DigitalProductFunctionalities(props){
     };
 
     return {
+        CreateDigitalListingsCatalog,
         ListProduct,
         SetFileType,
         ChangeAvailability,
@@ -175,6 +180,9 @@ export function PhysicalProductFunctionalities(props){
     const {catalogClient} = useContext(CatalogCtx);
 
     /// SELLER UTILS
+    const CreatePhysicalListingsCatalog = async()=>{
+        await catalogClient.InitVendorCatalog("physical")
+    }
 
     const ListProduct = async(
         currency = "11111111111111111111111111111111",
@@ -308,6 +316,7 @@ export function PhysicalProductFunctionalities(props){
     };
 
     return {
+        CreatePhysicalListingsCatalog,
         ListProduct,
         ChangePrice,
         ChangeAvailability,
@@ -328,6 +337,9 @@ export function CommissionProductFunctionalities(props){
     const {catalogClient} = useContext(CatalogCtx);
 
     /// SELLER UTILS
+    const CreateCommissionsListingsCatalog = async()=>{
+        await catalogClient.InitVendorCatalog("commissions")
+    }
 
     const ListProduct = async(
         currency = "11111111111111111111111111111111",
@@ -455,6 +467,7 @@ export function CommissionProductFunctionalities(props){
     };
 
     return {
+        CreateCommissionsListingsCatalog,
         ListProduct,
         ChangePrice,
         ChangeAvailability,
