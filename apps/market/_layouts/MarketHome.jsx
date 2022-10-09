@@ -75,8 +75,8 @@ export function Home(props) {
 					<ProductShowcaseRow title="Digital Products" prod_type="template" addresses={recentTemplatess} searchable />
 					<ProductShowcaseRow title="Services" prod_type="commission" addresses={recentCommissions} searchable />
 					<NewsStand />
-					<MainFooter />
 				</div>
+				<MainFooter />
 			</main>
 		</div>
 	)

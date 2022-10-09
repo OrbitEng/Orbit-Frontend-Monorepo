@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export function MainFooter(){
     return (
-        <footer className=" bg-transparent text-[#B1B1B1]">
+        <footer className="max-w-7xl bg-transparent text-[#B1B1B1] mx-auto relative">
             <nav className="flex flex-row justify-center h-full pb-12 align-center">
                 <div className='w-1/5 justify-center hidden sm:flex flex-col align-center'>
                     <div className='relative w-full h-14'>
