@@ -84,7 +84,7 @@ export function HomeHeader(props) {
 
 	return(
 		<header className="mx-auto max-w-7xl h-14 sm:h-32 top-0 sticky flex flex-row justify-between bg-transparent backdrop-blur z-50 overflow-visible">
-			<div className="relative py-auto w-40 align-middle content-start mr-36 cursor-pointer">
+			<div className="relative py-auto w-40 align-middle content-start cursor-pointer">
 				<Link href="./">
 					<div>
 						<Image

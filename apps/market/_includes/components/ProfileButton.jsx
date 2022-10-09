@@ -59,7 +59,7 @@ export default function ProfileButton(props) {
 									</div>
 									<div className="flex flex-col align-middle my-auto w-8/12">
 										<span className="truncate text-[#848484]">{props?.account?.nickname || "@nickname"}</span>
-										<span className="truncate text-white font-bold -mt-2 text-lg">{props?.account?.addr || "placehkjahkjhkjhaksjdaholderaddr"}</span>
+										<span className="truncate text-white font-bold -mt-2 text-lg">{wallet.publicKey.toString() || "walletAddr"}</span>
 									</div>
 									<div classname="relative flex align-middle my-auto">
 										<ChevronRightIcon className="stroke-2 text-[#BEBEBE] h-7 w-7 my-1" />

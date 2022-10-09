@@ -4,9 +4,9 @@ import { Fragment } from "react"
 export function NavBar(props){
     return (
         <Transition
+        className="justify-self-center my-auto align-middle"
         appear={true}
         show={true}
-        as={Fragment}
         enter="transition-opacity duration-500"
         enterFrom="opacity-0"
         enterTo="opacity-100"
