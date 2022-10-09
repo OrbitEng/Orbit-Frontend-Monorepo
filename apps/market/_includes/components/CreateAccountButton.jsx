@@ -4,7 +4,7 @@ import { Fragment, useState, useContext } from 'react'
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 
-export default function MarketAccountButton(props) {
+export default function CreateAccountButton(props) {
 	let [isOpen, setIsOpen] = useState(false);
 	const [nickName, setNickName] = useState("");
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
@@ -42,7 +42,6 @@ export default function MarketAccountButton(props) {
 		>
 			Create Account
 		</button>
-
 		<Transition appear show={isOpen} as={Fragment}>
 			<Dialog as="div" className="relative z-[100]" onClose={closeModal}>
 			<Transition.Child

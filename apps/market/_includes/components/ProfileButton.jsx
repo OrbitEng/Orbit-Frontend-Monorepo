@@ -1,0 +1,161 @@
+import { useContext, useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment } from "react";
+import { ArrowRightOnRectangleIcon, ChevronRightIcon, StarIcon, TruckIcon, UserCircleIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+
+export default function ProfileButton(props) {
+	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
+	const [ balance, setBalance ] = useState(0);
+	let wallet = useWallet();
+	let connection = useConnection()
+
+
+	useEffect(async () => {
+		setBalance(await connection.connection.getBalance(wallet.publicKey))
+	}, [connection])
+
+	return(
+		<Menu>
+			<Menu.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle">
+				<Image
+					src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+					width={20}
+					height={20}
+					layout="fill"
+					objectfit="contain"
+				/>
+			</Menu.Button>
+			<Transition
+				as={Fragment}
+				enter="transition ease-out duration-100"
+				enterFrom="transform opacity-0 scale-95"
+				enterTo="transform opacity-100 scale-100"
+				leave="transition ease-in duration-75"
+				leaveFrom="transform opacity-100 scale-100"
+				leaveTo="transform opacity-0 scale-95"
+			>
+				<Menu.Items className="absolute flex flex-col top-24 p-5 -right-4 bg-[#8E84FF] backdrop-blur bg-opacity-20 rounded-lg shadow-lg w-64">
+					<Menu.Item>
+						{({active}) => (
+							<Link 
+								className={"m-1"}
+								href="/profile"
+							>
+								<div className="flex flex-row my-auto gap-x-2 cursor-pointer group">
+									<div className="relative flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden my-auto">
+										<Image 
+											src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+											width={20}
+											height={20}
+											layout="fill"
+											objectfit="contain"
+										/>
+									</div>
+									<div className="flex flex-col align-middle my-auto w-8/12">
+										<span className="truncate text-[#848484]">{props?.account?.nickname || "@nickname"}</span>
+										<span className="truncate text-white font-bold -mt-2 text-lg">{props?.account?.addr || "placehkjahkjhkjhaksjdaholderaddr"}</span>
+									</div>
+									<div classname="relative flex align-middle my-auto">
+										<ChevronRightIcon className="stroke-2 text-[#BEBEBE] h-7 w-7 my-1" />
+									</div>
+								</div>
+							</Link>
+						)}
+					</Menu.Item>
+					<div className="flex flex-col mt-5 gap-y-2 ml-2">
+						<Menu.Item>
+						{({ active }) => (
+							<Link href="/profile">
+								<div className="flex flex-row align-middle gap-x-4">
+									<UserCircleIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+									<span className="text-white font-bold text-lg my-auto">Profile</span>
+								</div>
+							</Link>
+						)}
+						</Menu.Item>
+						<Menu.Item>
+						{({ active }) => (
+							<Link href="/settings">
+								<div className="flex flex-row align-middle gap-x-4">
+									<TruckIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+									<span className="text-white font-bold text-lg my-auto">Orders</span>
+								</div>
+							</Link>
+						)}
+						</Menu.Item>
+						<Menu.Item>
+						{({ active }) => (
+							<Link href="/referrals">
+								<div className="flex flex-row align-middle gap-x-4">
+									<UsersIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+									<span className="text-white font-bold text-lg my-auto">Referrals</span>
+								</div>
+							</Link>
+						)}
+						</Menu.Item>
+						<Menu.Item>
+						{({ active }) => (
+							<Link href="/favorites">
+								<div className="flex flex-row align-middle gap-x-4">
+									<StarIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+									<span className="text-white font-bold text-lg my-auto">Favorites</span>
+								</div>
+							</Link>
+						)}
+						</Menu.Item>
+					</div>
+					<div className="flex flex-col rounded-lg border-[#525252] border-[1.5px] h-fill mt-5 mb-3 p-2 px-5 divide-y-[1.5px] divide-[#525252]">
+							<div className="flex flex-col justify-start">
+								<div className="align-middle bg-[#5F5F5F] backdrop-blur bg-opacity-20 flex flex-row gap-x-[6px] rounded px-2 w-fit mt-1">
+									<span className="font-semibold text-[#989898] text-sm">Connected Wallet</span>
+									<div className="bg-green-500 rounded-full my-auto">
+										<div className="bg-green-500 rounded-full h-2 w-2 my-auto animate-ping" />
+									</div>
+								</div>
+								<div
+									className="flex flex-row gap-x-2 group cursor-pointer"
+								>
+									<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden my-2">
+										<Image
+											src={wallet.wallet.adapter.icon}
+											width={50}
+											height={50}
+											objectFit="contain"
+										/>
+									</div>
+									<div className="flex flex-col align-middle my-auto">
+										<span className="text-[#A4A4A4] w-1/4 truncate text-xs">{wallet.wallet.adapter.name}</span>
+										<span className="font-semibold text-white truncate text-sm w-1/4 -mt-1">{wallet.publicKey.toString()}</span>
+									</div>
+								</div>
+							</div>
+							<div className="flex flex-col">
+								<span className="text-[#989898] mt-1">Wallet Balance</span>
+								<div className="flex flex-row gap-x-2">
+									<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden my-2">
+										<Image
+											src={"/solanaSvgLogo.svg"}
+											width={50}
+											height={50}
+											objectFit="contain"
+										/>
+									</div>
+									<span className="font-semibold text-white truncate w-1/2 my-auto">{(balance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
+								</div>
+							</div>
+					</div>
+					<button className="flex flex-row relative left-0 font-semibold text-[#ACACAC] align-middle justify-end">
+							<span className="my-auto">Logout</span>
+							<ArrowRightOnRectangleIcon className="h-6 w-6 my-auto" />
+					</button>
+				</Menu.Items>
+			</Transition>
+		</Menu>
+	)
+}

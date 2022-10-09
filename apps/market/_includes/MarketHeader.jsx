@@ -3,7 +3,7 @@ import OrbitLogo from '../public/OrbitLogo.png'
 
 import * as anchor from "@project-serum/anchor";
 
-import { Bars3CenterLeftIcon, PlusCircleIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
+import { Bars3CenterLeftIcon, PlusCircleIcon, EnvelopeIcon, ShoppingCartIcon } from '@heroicons/react/24/outline'
 import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useCallback, useContext, useEffect } from 'react';
 
@@ -24,7 +24,8 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
-import MarketAccountButton from '@includes/components/MarketAccountButton';
+import CreateAccountButton from '@includes/components/CreateAccountButton';
+import ProfileButton from '@includes/components/ProfileButton';
 
 export function HomeHeader(props) {
 	const router = useRouter();
@@ -114,19 +115,19 @@ export function HomeHeader(props) {
 					</button>
 				</div>
 				<div className="flex flex-row px-2 gap-3">
-					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full transition hover:scale-[102%]">
+					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full">
 						{
 							!wallet.connected ? ( 
 								<WalletMultiButton />
 							) : (
-								marketAccount ? <WalletMultiButton /> :
+								marketAccount ? <ProfileButton /> :
 								// add market account set here
-								<MarketAccountButton setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
+								<CreateAccountButton setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
 							)
 						}
 					</div>
 					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]">
-						<Bars3CenterLeftIcon className="w-3 h-3 sm:w-5 sm:h-5" />
+						<ShoppingCartIcon className="w-3 h-3 sm:w-5 sm:h-5" />
 					</button>
 				</div>
 			</div>
