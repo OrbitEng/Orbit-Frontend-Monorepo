@@ -6,7 +6,7 @@ export function SellerAccountDisplay(props) {
 	let wallet = useWallet();
 
 	return(
-		<div className="flex flex-col max-w-6xl mr-auto">
+		<div className="flex flex-col max-w-6xl mx-auto">
 			<div className="flex flex-row gap-x-8 my-10">
 				<div className="flex flex-shrink-0 relative h-44 w-44 overflow-hidden rounded-full">
 					<Image
@@ -16,7 +16,7 @@ export function SellerAccountDisplay(props) {
 					/>
 				</div>
 				<div className="flex flex-col my-auto">
-					<div className="my-auto rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
+					<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
 						<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{props?.username || "@UserNamePlaceHolder"}</span>
 					</div>
 					<span className="text-white font-bold text-6xl">{props?.name || "NamePlaceholder"}</span>
