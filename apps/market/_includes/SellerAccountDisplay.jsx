@@ -1,9 +1,26 @@
+import { useState, useContext, useEffect } from "react";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { LargeExplore } from "@includes/ProductExplorer";
+import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
+
+import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 
 export function SellerAccountDisplay(props) {
+	console.log(props?.sellerAddr)
 	let wallet = useWallet();
+
+	const [marketAccount, setMarketAccount] = useState()
+	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
+
+	useEffect(() => {
+		if (wallet.connected && marketAccountsClient){
+			setMarketAccount(
+				(marketAccountsClient.GenAccountAddress(wallet.publicKey))[0] || undefined
+			)
+		}
+		console.log(marketAccount);
+	}, [wallet.publicKey])
 
 	return(
 		<div className="flex flex-col max-w-6xl mx-auto">
@@ -16,14 +33,21 @@ export function SellerAccountDisplay(props) {
 					/>
 				</div>
 				<div className="flex flex-col my-auto">
-					<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
-						<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{props?.username || "@UserNamePlaceHolder"}</span>
-					</div>
-					<span className="text-white font-bold text-6xl">{props?.name || "NamePlaceholder"}</span>
+					<div className="flex flex-row gap-x-2">
+						<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{props?.username || "@UserNamePlaceHolder"}</span>
+						</div>
+						{props?.sellerAddr.toString() != marketAccount ||  (
+							<div className="rounded-full h-fit my-auto p-1 flex bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747]">
+								<EllipsisHorizontalIcon className="text-white h-5 w-5 my-auto"/>
+							</div>
+						)}
+					</div>	
+					<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.name || "NamePlaceholder"}</span>
 					<p className="text-[#5B5B5B]">{props?.bio || "King of the hill is my favorite game, im always in first no matter what case it is"}</p>
 				</div>
 			</div>
-			<LargeExplore/>
+			<LargeExplore items={props.items}/>
 		</div>
 	)
 }

@@ -2,12 +2,14 @@ import Image from "next/image";
 import { useState } from "react";
 import ProductShowcaseRow from "@includes/ProductShowcaseRow";
 import { ChevronDownIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "./components/ProductDisplayCards";
+import { ProductDisplay } from "./ProductPageDisplay";
 
 export function LargeExplore(props) {
 	const [sortMethod, setSortMethod] = useState("recent");
 
 	return(
-		<div className="flex flex-col mx-auto w-full">
+		<div className="flex flex-col mx-auto w-full mt-6">
 			<div className="flex flex-row justify-between">
 				<div className="flex flex-row justify-between w-fit rounded-xl bg-[#12171D] p-1 font-bold text-white text-sm">
 					<button
@@ -33,8 +35,8 @@ export function LargeExplore(props) {
 					<button className="p-2 bg-[#13171D] rounded-lg">
 						<PaperAirplaneIcon className="h-5 w-5 text-white"/>
 					</button>
-					<button className="flex flex-row gap-x-2 align-middle py-1 px-3 bg-[#13171D] rounded-lg" disabled>
-						<span className="my-auto text-white font-semibold text-sm">Filter View...</span>
+					<button className="flex flex-row gap-x-2 align-middle py-1 px-3 bg-[#13171D] rounded-full" disabled>
+						<span className="my-auto text-white font-semibold text-sm ">Filter View...</span>
 						<ChevronDownIcon className="h-3 w-3 text-white my-auto stroke-2"/>
 					</button>
 				</div>
@@ -51,7 +53,23 @@ export function LargeExplore(props) {
 						</div>
 					</div>
 				):(
-					<div className="flex">
+					<div className="grid grid-flow-row grid-cols-4 mt-4 mb-28">
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
+						<EmptyProductDisplayCardHome />
 					</div>
 				)
 			}

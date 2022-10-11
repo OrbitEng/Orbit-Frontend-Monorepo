@@ -16,7 +16,7 @@ export function GenericLayout(props){
 		<div className="w-full min-h-screen bg-transparent">
 			<Head>
 				<title>Orbit</title>
-				<link rel="icon" href="orbit.png" />
+				<link rel="icon" href="/orbit.png" />
 			</Head>
 			<main className="bg-[url('/bgWallpaper.png')] min-h-screen">
 				<HomeHeader headerMiddle={searchBar}/>
