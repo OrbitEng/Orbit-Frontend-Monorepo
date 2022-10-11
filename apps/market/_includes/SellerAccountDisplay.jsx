@@ -2,9 +2,9 @@ import { useState, useContext, useEffect } from "react";
 import Image from "next/image";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { LargeExplore } from "@includes/ProductExplorer";
-import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
 
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
+import EditProfileButton from "@includes/components/EditProfileButton";
 
 export function SellerAccountDisplay(props) {
 	console.log(props?.sellerAddr)
@@ -38,9 +38,7 @@ export function SellerAccountDisplay(props) {
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{props?.username || "@UserNamePlaceHolder"}</span>
 						</div>
 						{props?.sellerAddr?.toString() != marketAccount ||  (
-							<div className="rounded-full h-fit my-auto p-1 flex bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747]">
-								<EllipsisHorizontalIcon className="text-white h-5 w-5 my-auto"/>
-							</div>
+							<EditProfileButton/>
 						)}
 					</div>	
 					<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.name || "NamePlaceholder"}</span>

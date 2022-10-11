@@ -127,3 +127,60 @@ export function SignupModal(props) {
 		</div>
 	)
 }
+
+export function EditModal(props) {
+	const [userName, setUserName] = useState();
+	const [name, setName] = useState();
+	const [bio, setBio] = useState();
+
+	return(
+		<div className="flex flex-col rounded-xl max-w-lg bg-[#141619] py-10 px-[4rem] mx-auto w-full">
+			<h1 className="text-3xl text-white font-bold">Edit Profile</h1>
+			<span className="text-[#848484]">
+				Update your profile to look just the way you like it!
+			</span>
+			<div className="group cursor-pointer relative mt-5 mb-2 mx-auto justify-center w-fit">
+				<div className="flex flex-shrink-0 relative h-32 w-32 overflow-hidden rounded-full">
+					<Image
+						src={props?.vendor?.profilepic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+						layout="fill"
+						objectFit="contain"
+					/>
+				</div>
+			</div>
+			<button className="bg-[#222429] text-white font-semibold text-lg mx-auto px-3 py-1 rounded-full mb-4">Choose Avatar</button>
+			<div className="flex flex-col gap-y-3">
+				<div className="flex flex-col justify-start gap-y-1">
+					<label className="font-bold text-white text-lg">Username<span className="text-red-500">*</span></label>
+					<input
+						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						placeholder="Enter Username"
+						value={userName}
+						onChange={(e) => {setUserName(e.target.value)}}
+					/>
+				</div>
+				<div className="flex flex-col justify-start gap-y-1">
+					<label className="font-bold text-white text-lg">Name<span className="text-red-500">*</span></label>
+					<input
+						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						placeholder="Enter Name"
+						value={name}
+						onChange={(e) => {setName(e.target.value)}}
+					/>
+				</div>
+				<div className="flex flex-col justify-start gap-y-1">
+					<label className="font-bold text-white text-lg">Bio</label>
+					<textarea
+						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						placeholder="Enter Bio"
+						value={bio}
+						onChange={(e) => {setBio(e.target.value)}}
+					/>
+				</div>
+				<button className="flex flex-row mt-6 mx-auto text-lg rounded-full font-bold text-white bg-[#1773EB] align-middle my-auto px-6 py-2">
+					Update Profile
+				</button>
+			</div>
+		</div>
+	)
+}
