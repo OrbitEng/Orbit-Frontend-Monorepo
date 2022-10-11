@@ -4,7 +4,7 @@ import { Fragment } from "react"
 export function NavBar(props){
     return (
         <Transition
-        className="flex justify-self-center my-auto align-middle justify-center"
+        className="absolute top-0 justify-self-center align-middle justify-center mx-auto w-full"
         appear={true}
         show={true}
         enter="transition-opacity duration-500"
@@ -14,7 +14,7 @@ export function NavBar(props){
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <nav className="relative flex flex-row align-middle gap-10 text-lg justify-self-center justify-evenly">
+        <nav className="relative h-32 hidden w-1/3 lg:flex flex-row align-middle gap-10 text-sm lg:text-lg mx-auto justify-evenly">
             <button className="relative bg-transparent font-bold text-[#BBBBBB] transition hover:scale-105">Home</button>
             <button className="relative bg-transparent font-bold text-[#606060] transition hover:scale-105">Explore</button>
             <button className="relative bg-transparent font-bold text-[#606060] transition hover:scale-105">Learn</button>

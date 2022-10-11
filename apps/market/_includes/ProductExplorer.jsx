@@ -3,7 +3,6 @@ import { useState } from "react";
 import ProductShowcaseRow from "@includes/ProductShowcaseRow";
 import { ChevronDownIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "./components/ProductDisplayCards";
-import { ProductDisplay } from "./ProductPageDisplay";
 
 export function LargeExplore(props) {
 	const [sortMethod, setSortMethod] = useState("recent");
