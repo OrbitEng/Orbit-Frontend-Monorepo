@@ -12,13 +12,22 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 export default function ProfileButton(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const [ balance, setBalance ] = useState(0);
+	const [marketAccount, setMarketAccount] = useState()
 	let wallet = useWallet();
 	let connection = useConnection()
-
 
 	useEffect(async () => {
 		setBalance(await connection.connection.getBalance(wallet.publicKey))
 	}, [connection])
+
+	useEffect(() => {
+		if (wallet.connected && marketAccountsClient){
+			setMarketAccount(
+				(marketAccountsClient.GenAccountAddress(wallet.publicKey))[0] || undefined
+			)
+		}
+		console.log(marketAccount);
+	}, [wallet.publicKey])
 
 	return(
 		<Menu>
@@ -40,7 +49,7 @@ export default function ProfileButton(props) {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="absolute flex flex-col top-24 p-5 -right-4 bg-[#8E84FF] backdrop-blur bg-opacity-20 rounded-lg shadow-lg w-64">
+				<Menu.Items className="absolute flex flex-col top-24 p-5 -right-4 bg-[#8E84FF] backdrop-filter backdrop-blur bg-opacity-20 rounded-lg shadow-lg w-64">
 					<Menu.Item>
 						{({active}) => (
 							<Link 
@@ -59,7 +68,7 @@ export default function ProfileButton(props) {
 									</div>
 									<div className="flex flex-col align-middle my-auto w-8/12">
 										<span className="truncate text-[#848484]">{props?.account?.nickname || "@nickname"}</span>
-										<span className="truncate text-white font-bold -mt-2 text-lg">{props?.account?.addr || "placehkjahkjhkjhaksjdaholderaddr"}</span>
+										<span className="truncate text-white font-bold -mt-2 text-lg">{marketAccount.toString() || "accountAddr"}</span>
 									</div>
 									<div classname="relative flex align-middle my-auto">
 										<ChevronRightIcon className="stroke-2 text-[#BEBEBE] h-7 w-7 my-1" />
@@ -71,42 +80,50 @@ export default function ProfileButton(props) {
 					<div className="flex flex-col mt-5 gap-y-2 ml-2">
 						<Menu.Item>
 						{({ active }) => (
-							<Link href="/profile">
-								<div className="flex flex-row align-middle gap-x-4">
-									<UserCircleIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
-									<span className="text-white font-bold text-lg my-auto">Profile</span>
-								</div>
-							</Link>
+							<button className="cursor-pointer group">
+								<Link href="/profile">
+									<div className="flex flex-row align-middle gap-x-4">
+										<UserCircleIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+										<span className="text-white font-bold text-lg my-auto">Profile</span>
+									</div>
+								</Link>
+							</button>
 						)}
 						</Menu.Item>
 						<Menu.Item>
 						{({ active }) => (
-							<Link href="/settings">
-								<div className="flex flex-row align-middle gap-x-4">
-									<TruckIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
-									<span className="text-white font-bold text-lg my-auto">Orders</span>
-								</div>
-							</Link>
+							<button className="cursor-pointer group">
+								<Link href="/orders">
+									<div className="flex flex-row align-middle gap-x-4">
+										<TruckIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+										<span className="text-white font-bold text-lg my-auto">Orders</span>
+									</div>
+								</Link>
+							</button>
 						)}
 						</Menu.Item>
 						<Menu.Item>
 						{({ active }) => (
-							<Link href="/referrals">
-								<div className="flex flex-row align-middle gap-x-4">
-									<UsersIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
-									<span className="text-white font-bold text-lg my-auto">Referrals</span>
-								</div>
-							</Link>
+							<button className="cursor-pointer group">
+								<Link href="/referrals">
+									<div className="flex flex-row align-middle gap-x-4">
+										<UsersIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+										<span className="text-white font-bold text-lg my-auto">Referrals</span>
+									</div>
+								</Link>
+							</button>
 						)}
 						</Menu.Item>
 						<Menu.Item>
 						{({ active }) => (
-							<Link href="/favorites">
-								<div className="flex flex-row align-middle gap-x-4">
-									<StarIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
-									<span className="text-white font-bold text-lg my-auto">Favorites</span>
-								</div>
-							</Link>
+							<button className="cursor-pointer group">
+								<Link href="/favorites">
+									<div className="flex flex-row align-middle gap-x-4">
+										<StarIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+										<span className="text-white font-bold text-lg my-auto">Favorites</span>
+									</div>
+								</Link>
+							</button>
 						)}
 						</Menu.Item>
 					</div>
@@ -119,9 +136,13 @@ export default function ProfileButton(props) {
 									</div>
 								</div>
 								<div
-									className="flex flex-row gap-x-2 group cursor-pointer"
+									className="flex flex-row gap-x-2 group cursor-pointer group"
 								>
-									<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden my-2">
+									<div className="flex flex-row gap-x-2 absolute transition duration-300 opacity-0 group-hover:opacity-100">
+										<button onClick={() => wallet.disconnect()} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg w-fit text-center my-2 transition duration-300">Disconnect</button>
+										<button onClick={() => navigator.clipboard.writeText(wallet.publicKey.toString())} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg w-fit text-center my-2 transition duration-300">Copy</button>
+									</div>
+									<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden my-2 group-hover:opacity-0 transition duration-300">
 										<Image
 											src={wallet.wallet.adapter.icon}
 											width={50}
@@ -129,7 +150,7 @@ export default function ProfileButton(props) {
 											objectFit="contain"
 										/>
 									</div>
-									<div className="flex flex-col align-middle my-auto">
+									<div className="flex flex-col align-middle my-auto group-hover:opacity-0 transition duration-300">
 										<span className="text-[#A4A4A4] w-1/4 truncate text-xs">{wallet.wallet.adapter.name}</span>
 										<span className="font-semibold text-white truncate text-sm w-1/4 -mt-1">{wallet.publicKey.toString()}</span>
 									</div>
