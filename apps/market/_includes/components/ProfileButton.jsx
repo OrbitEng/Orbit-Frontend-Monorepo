@@ -12,7 +12,7 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 export default function ProfileButton(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const [ balance, setBalance ] = useState(0);
-	const [marketAccount, setMarketAccount] = useState()
+	const [marketAccountAddr, setMarketAccountAddr] = useState()
 	let wallet = useWallet();
 	let connection = useConnection()
 
@@ -22,11 +22,11 @@ export default function ProfileButton(props) {
 
 	useEffect(() => {
 		if (wallet.connected && marketAccountsClient){
-			setMarketAccount(
+			setMarketAccountAddr(
 				(marketAccountsClient.GenAccountAddress(wallet.publicKey))[0] || undefined
 			)
 		}
-		console.log(marketAccount);
+		console.log("Market Account Addr: " + marketAccountAddr);
 	}, [wallet.publicKey])
 
 	return(
@@ -68,7 +68,7 @@ export default function ProfileButton(props) {
 									</div>
 									<div className="flex flex-col align-middle my-auto w-8/12">
 										<span className="truncate text-[#848484]">{props?.account?.nickname || "@nickname"}</span>
-										<span className="truncate text-white font-bold -mt-2 text-lg">{marketAccount.toString() || "accountAddr"}</span>
+										<span className="truncate text-white font-bold -mt-2 text-lg">{marketAccountAddr.toString() || "accountAddr"}</span>
 									</div>
 									<div classname="relative flex align-middle my-auto">
 										<ChevronRightIcon className="stroke-2 text-[#BEBEBE] h-7 w-7 my-1" />
@@ -171,7 +171,13 @@ export default function ProfileButton(props) {
 								</div>
 							</div>
 					</div>
-					<button className="flex flex-row relative left-0 font-semibold text-[#ACACAC] align-middle justify-end">
+					<button 
+						onClick={() => {
+							setMarketAccountsClient(undefined);
+							props?.setMarketAccount(undefined);
+						}} 
+						className="flex flex-row relative left-0 font-semibold text-[#ACACAC] align-middle justify-end"
+					>
 							<span className="my-auto">Logout</span>
 							<ArrowRightOnRectangleIcon className="h-6 w-6 my-auto" />
 					</button>

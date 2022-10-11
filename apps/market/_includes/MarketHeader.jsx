@@ -120,7 +120,7 @@ export function HomeHeader(props) {
 							!wallet.connected ? ( 
 								<WalletMultiButton />
 							) : (
-								marketAccount ? <ProfileButton /> :
+								marketAccount ? <ProfileButton setMarketAccount={setMarketAccount} /> :
 								// add market account set here
 								<CreateAccountButton setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
 							)
