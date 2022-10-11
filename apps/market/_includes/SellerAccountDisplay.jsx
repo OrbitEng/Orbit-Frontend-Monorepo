@@ -37,7 +37,7 @@ export function SellerAccountDisplay(props) {
 						<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{props?.username || "@UserNamePlaceHolder"}</span>
 						</div>
-						{props?.sellerAddr.toString() != marketAccount ||  (
+						{props?.sellerAddr?.toString() != marketAccount ||  (
 							<div className="rounded-full h-fit my-auto p-1 flex bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747]">
 								<EllipsisHorizontalIcon className="text-white h-5 w-5 my-auto"/>
 							</div>

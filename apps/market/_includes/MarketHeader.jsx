@@ -85,8 +85,8 @@ export function HomeHeader(props) {
 	return(
 		<header className="mx-auto max-w-7xl h-14 lg:h-32 top-0 sticky flex flex-row justify-between bg-transparent backdrop-blur z-50 overflow-visible">
 			<div className="relative py-auto w-40 align-middle content-start cursor-pointer">
-				<Link href="./">
-					<div>
+				<Link href="/">
+					<div className="">
 						<Image
 							src={OrbitLogo}
 							layout="fill"
@@ -98,7 +98,7 @@ export function HomeHeader(props) {
 				</Link>
 			</div>
 			{props.headerMiddle}
-			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E] z-[60]">
+			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E] z-[60] w-40">
 				<div className="flex flex-row px-2 gap-3">
 					<button
 						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]"

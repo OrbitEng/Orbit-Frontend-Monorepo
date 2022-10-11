@@ -53,8 +53,8 @@ export default function ProfileButton(props) {
 					<Menu.Item>
 						{({active}) => (
 							<Link 
-								className={"m-1"}
-								href="/profile"
+								className="m-1"
+								href={"/profile/" + marketAccountAddr.toString() || ""}
 							>
 								<div className="flex flex-row my-auto gap-x-2 cursor-pointer group">
 									<div className="relative flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden my-auto">
