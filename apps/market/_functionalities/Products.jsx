@@ -1,8 +1,5 @@
 import { useContext, useState, useCallback } from "react";
 
-import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
-import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
-import CommissionMarketCtx from "@contexts/CommissionMarketCtx";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
@@ -10,7 +7,6 @@ import BundlrCtx from "@contexts/BundlrCtx";
 import { ArQueryClient } from "data-transfer-clients";
 
 export function DigitalProductFunctionalities(props){
-    const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {productClient} = useContext(ProductClientCtx);
@@ -71,7 +67,7 @@ export function DigitalProductFunctionalities(props){
         file_type = "Image"
     ) =>{
         
-        return digitalMarketClient.SetFileType(
+        return productClient.SetFileType(
             prod_addr,
             file_type
         )
@@ -79,24 +75,26 @@ export function DigitalProductFunctionalities(props){
 
     const ChangeAvailability = async(prod_addr, available = false) =>{
         if (available){
-            await catalogClient.ProductAvailable(prod_addr);
+            await productClient.MarkProdAvailable(prod_addr, productClient.GenListingsAddres("digital"));
         }else{
-            await catalogClient.ProductUnavailable(prod_addr);
+            await productClient.MarkProdUnavailable(prod_addr, productClient.GenListingsAddres("digital"));
         }
     }
 
     const ChangePrice = async(prod_addr, new_price = 0) =>{
         
-        return digitalMarketClient.ChangeProductPrice(
+        return productClient.ChangeProductPrice(
             prod_addr,
+            productClient.GenListingsAddres("digital"),
             new_price
         )
     }
 
     const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
         
-        return digitalMarketClient.UpdateCurrency(
+        return productClient.UpdateCurrency(
             prod_addr,
+            productClient.GenListingsAddres("digital"),
             new_currency
         )
     }
@@ -111,8 +109,9 @@ export function DigitalProductFunctionalities(props){
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
-        digitalMarketClient.SetMedia(
+        productClient.SetMedia(
             prod_addr,
+            productClient.GenListingsAddres("digital"),
             tx_id
         )
     }
@@ -120,16 +119,18 @@ export function DigitalProductFunctionalities(props){
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
         let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
 
-        digitalMarketClient.SetProdInfo(
+        productClient.SetProdInfo(
             prod_addr,
+            productClient.GenListingsAddres("digital"),
             tx_url
         )
     }
 
-    /// BUYER UTILS
+    ////////////////////////////////////////////////
+    /// FETCHING UTILS
 
     const GetAllVendorDigitalProducts = async(market_acc) =>{
-        let listings_addr= (await marketAccountsClient.GetAccount(market_acc)).data.digitalVendorCatalog;
+        let listings_addr = (await marketAccountsClient.GetAccount(market_acc)).data.digitalVendorCatalog;
         let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
         if(!listings_struct){
             return ""
@@ -140,22 +141,22 @@ export function DigitalProductFunctionalities(props){
         for(let i = 0; i < 256; i++){
             if(all_prods[i] == "0"){
                 indexes.push(
-                    digitalMarketClient.GenProductAddress(
-                        catalog_addr, i
+                    productClient.GenProductAddress(
+                        i, listings_addr, "digital"
                     )
                 )
             }
         };
 
-        return (await digitalMarketClient.GetMultipleDigitalProducts(
+        return (await productClient.GetMultipleDigitalProducts(
             (await Promise.all(indexes)).map(n => n[0])
         )).filter(prod => prod.data != undefined);
     }
 
     const ResolveProductMedia = async(product_addr) => {
         let arclient = new ArQueryClient();
-        let product = await digitalMarketClient.GetDigitalProduct(product_addr);
-        if(!(product.data && product.data.metadata.images)){
+        let product = await productClient.GetDigitalProduct(product_addr);
+        if(!(product.data && product.data.metadata.media)){
             return undefined
         }
         return arclient.GetImagesData(product.data.metadata.media);
@@ -166,7 +167,7 @@ export function DigitalProductFunctionalities(props){
      */
     const ResolveProductInfo = async(product_addr) => {
         let arclient = new ArQueryClient();
-        let product = await digitalMarketClient.GetDigitalProduct(product_addr);
+        let product = await productClient.GetDigitalProduct(product_addr);
         if(!(product.data && product.data.metadata.info)){
             return undefined
         }
@@ -189,14 +190,14 @@ export function DigitalProductFunctionalities(props){
 }
 
 export function PhysicalProductFunctionalities(props){
-    const {physicalMarketClient} = useContext(PhysicalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
+    const {productClient} = useContext(ProductClientCtx);
     
 
     /// SELLER UTILS
     const CreatePhysicalListingsCatalog = async()=>{
-        await catalogClient.InitVendorCatalog("physical")
+        await productClient.InitVendorCatalog("physical")
     }
 
     const ListProduct = async(
@@ -205,6 +206,7 @@ export function PhysicalProductFunctionalities(props){
         deliveryEstimate = 14,
         name,
         description,
+        quantity,
         files
     ) => {
 
@@ -216,42 +218,63 @@ export function PhysicalProductFunctionalities(props){
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
+        let listings_addr = productClient.GetListingsStruct("digital");
 
-        await physicalMarketClient.ListPhysicalProduct(
-            desc_url,
-            currency,
-            price,
-            deliveryEstimate,
-            media_url
+        let next_index = productClient.FindNextAvailableAddress(
+            await productClient.GetListingsStruct(
+                listings_addr
+            )
+        );
+
+        let prod_addr = productClient.GenProductAddress(
+            next_index, listings_addr, "digital"
         )
+
+        await productClient.ListPhysicalProduct(
+            prod_addr,
+            {
+                info: desc_url,
+                ownerCatalog: listings_addr,
+                index: next_index,
+                currency: currency,
+                price: price,
+                deliveryEstimate: deliveryEstimate,
+                media: media_url
+            },
+            quantity,
+            add_to_recent
+        );
     }
 
     const ChangeAvailability = async(prod_addr, available = false) =>{
         if (available){
-            await catalogClient.ProductAvailable(prod_addr);
+            await productClient.MarkProdAvailable(prod_addr, productClient.GenListingsAddres("physical"));
         }else{
-            await catalogClient.ProductUnavailable(prod_addr);
+            await productClient.MarkProdUnavailable(prod_addr, productClient.GenListingsAddres("physical"));
         }
     }
 
     const ChangePrice = async(prod_addr, new_price = 0) =>{
 
-        return physicalMarketClient.ChangeProductPrice(
+        return productClient.ChangeProductPrice(
             prod_addr,
+            productClient.GenListingsAddres("physical"),
             new_price
         )
     }
     const ChangeQuantity = async(prod_addr, new_quantity = 0) =>{
 
-        return physicalMarketClient.ChangeProductQuantity(
+        return productClient.ChangeProductQuantity(
             prod_addr,
+            productClient.GenListingsAddres("physical"),
             new_quantity
         )
     }
     const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
 
-        return physicalMarketClient.UpdateCurrency(
+        return productClient.UpdateCurrency(
             prod_addr,
+            productClient.GenListingsAddres("physical"),
             new_currency
         )
     };
@@ -266,8 +289,9 @@ export function PhysicalProductFunctionalities(props){
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
-        return physicalMarketClient.SetMedia(
+        return productClient.SetMedia(
             prod_addr,
+            productClient.GenListingsAddres("physical"),
             tx_id
         )
 
@@ -277,16 +301,18 @@ export function PhysicalProductFunctionalities(props){
 
         let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
 
-        physicalMarketClient.SetProdInfo(
+        productClient.SetProdInfo(
             prod_addr,
+            productClient.GenListingsAddres("physical"),
             tx_url
         )
     }
 
-    /// BUYER UTILS
+    /////////////////////////////////////////////////
+    /// FETCHING UTILS
 
     const GetAllVendorPhysicalProducts = async(market_acc) =>{
-        let listings_addr= (await marketAccountsClient.GetAccount(market_acc)).data.physicalVendorCatalog;
+        let listings_addr = (await marketAccountsClient.GetAccount(market_acc)).data.physicalVendorCatalog;
         let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
         if(!listings_struct){
             return ""
@@ -297,22 +323,22 @@ export function PhysicalProductFunctionalities(props){
         for(let i = 0; i < 256; i++){
             if(all_prods[i] == "0"){
                 indexes.push(
-                    physicalMarketClient.GenProductAddress(
-                        catalog_addr, i
+                    productClient.GenProductAddress(
+                        i, listings_addr, "physical"
                     )
                 )
             }
         };
 
-        return (await physicalMarketClient.GetMultipleDigitalProducts(
+        return (await productClient.GetMultiplePhysicalProducts(
             (await Promise.all(indexes)).map(n => n[0])
         )).filter(prod => prod.data != undefined);
     };
 
     const ResolveProductMedia = async(product_addr) => {
         let arclient = new ArQueryClient();
-        let product = await physicalMarketClient.GetPhysicalProduct(product_addr);
-        if(!(product.data && product.data.metadata.images)){
+        let product = await productClient.GetPhysicalProduct(product_addr);
+        if(!(product.data && product.data.metadata.media)){
             return undefined
         }
         return arclient.GetImagesData(product.data.metadata.media);
@@ -323,7 +349,7 @@ export function PhysicalProductFunctionalities(props){
      */
     const ResolveProductInfo = async(product_addr) => {
         let arclient = new ArQueryClient();
-        let product = await physicalMarketClient.GetPhysicalProduct(product_addr);
+        let product = await productClient.GetPhysicalProduct(product_addr);
         if(!(product.data && product.data.metadata.info)){
             return undefined
         }
@@ -346,14 +372,14 @@ export function PhysicalProductFunctionalities(props){
 }
 
 export function CommissionProductFunctionalities(props){
-    const {commissionMarketClient} = useContext(CommissionMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
+    const {productClient} = useContext(ProductClientCtx);
     
 
     /// SELLER UTILS
     const CreateCommissionsListingsCatalog = async()=>{
-        await catalogClient.InitVendorCatalog("commissions")
+        await productClient.InitVendorCatalog("commissions")
     }
 
     const ListProduct = async(
@@ -374,7 +400,7 @@ export function CommissionProductFunctionalities(props){
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
 
-        await commissionMarketClient.ListProduct(
+        await productClient.ListProduct(
             desc_url,
             currency,
             price,
@@ -385,24 +411,26 @@ export function CommissionProductFunctionalities(props){
 
     const ChangeAvailability = async(prod_addr, available = false) =>{
         if (available){
-            await catalogClient.ProductAvailable(prod_addr);
+            await productClient.ProductAvailable(prod_addr);
         }else{
-            await catalogClient.ProductUnavailable(prod_addr);
+            await productClient.ProductUnavailable(prod_addr);
         }
     }
 
     const ChangePrice = async(prod_addr, new_price = 0) =>{
 
-        return commissionMarketClient.ChangeProductPrice(
+        return productClient.ChangeProductPrice(
             prod_addr,
+            productClient.GenListingsAddres("commission"),
             new_price
         )
     }
     
     const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
 
-        return commissionMarketClient.UpdateCurrency(
+        return productClient.UpdateCurrency(
             prod_addr,
+            productClient.GenListingsAddres("commission"),
             new_currency
         )
     };
@@ -417,8 +445,9 @@ export function CommissionProductFunctionalities(props){
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
-        return commissionMarketClient.SetMedia(
+        return productClient.SetMedia(
             prod_addr,
+            productClient.GenListingsAddres("commission"),
             tx_id
         )
 
@@ -428,8 +457,9 @@ export function CommissionProductFunctionalities(props){
 
         let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
 
-        commissionMarketClient.SetProdInfo(
+        productClient.SetProdInfo(
             prod_addr,
+            productClient.GenListingsAddres("commission"),
             tx_url
         )
     }
@@ -437,7 +467,7 @@ export function CommissionProductFunctionalities(props){
     /// BUYER UTILS
 
     const GetAllVendorCommissionProducts = async(market_acc) =>{
-        let listings_addr= (await marketAccountsClient.GetAccount(market_acc)).data.commissionVendorCatalog;
+        let listings_addr = (await marketAccountsClient.GetAccount(market_acc)).data.commissionVendorCatalog;
         let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
         if(!listings_struct){
             return ""
@@ -448,22 +478,22 @@ export function CommissionProductFunctionalities(props){
         for(let i = 0; i < 256; i++){
             if(all_prods[i] == "0"){
                 indexes.push(
-                    commissionMarketClient.GenProductAddress(
-                        catalog_addr, i
+                    productClient.GenProductAddress(
+                        i, listings_addr, "commission"
                     )
                 )
             }
         };
 
-        return (await commissionMarketClient.GetMultipleDigitalProducts(
+        return (await productClient.GetMultipleCommissionProducts(
             (await Promise.all(indexes)).map(n => n[0])
         )).filter(prod => prod.data != undefined);
     };
 
     const ResolveProductMedia = async(product_addr) => {
         let arclient = new ArQueryClient();
-        let product = await commissionMarketClient.GetCommissionProduct(product_addr);
-        if(!(product.data && product.data.metadata.images)){
+        let product = await productClient.GetCommissionProduct(product_addr);
+        if(!(product.data && product.data.metadata.media)){
             return undefined
         }
         return arclient.GetImagesData(product.data.metadata.media);
@@ -474,7 +504,7 @@ export function CommissionProductFunctionalities(props){
      */
     const ResolveProductInfo = async(product_addr) => {
         let arclient = new ArQueryClient();
-        let product = await commissionMarketClient.GetCommissionProduct(product_addr);
+        let product = await productClient.GetCommissionProduct(product_addr);
         if(!(product.data && product.data.metadata.info)){
             return undefined
         }
