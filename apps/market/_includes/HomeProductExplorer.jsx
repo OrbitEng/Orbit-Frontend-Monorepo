@@ -3,12 +3,10 @@ import { ProductDisplayCardHome } from "./components/ProductDisplayCards";
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
-import CatalogCtx from '@contexts/CatalogCtx';
 
 export function HomeProductExplorer(props) {
 	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
 	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
-	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
 
 	const [ digitalProducts, setDigitalProducts ] = useState();
 	const [ physicalProducts, setPhysicalProducts ] = useState();

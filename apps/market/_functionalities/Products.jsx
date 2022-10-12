@@ -3,25 +3,20 @@ import { useContext, useState, useCallback } from "react";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import CommissionMarketCtx from "@contexts/CommissionMarketCtx";
+import ProductClientCtx from "@contexts/ProductClientCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
-import CatalogCtx from "@contexts/CatalogCtx";
 
 import { ArQueryClient } from "data-transfer-clients";
-import { utos } from "browser-clients/src/encryption/enc-common";
-import { map } from "next-pwa/cache";
-import { promises } from "stream";
-
-// check if catalog.index == 24
 
 export function DigitalProductFunctionalities(props){
     const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
-    const {catalogClient} = useContext(CatalogCtx);
+    const {productClient} = useContext(ProductClientCtx);
 
     const CreateDigitalListingsCatalog = async()=>{
-        await catalogClient.InitVendorCatalog("digital")
+        await productClient.InitVendorListings("digital");
     }
 
     const ListProduct = async(
@@ -30,7 +25,9 @@ export function DigitalProductFunctionalities(props){
         deliveryEstimate = 14,
         name,
         description,
-        files
+        files,
+        fileType = "Image",
+        add_to_recent = false
     ) => {
         let buffers = await Promise.all(
             files.map((fil)=>{
@@ -40,13 +37,31 @@ export function DigitalProductFunctionalities(props){
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
+        let listings_addr = productClient.GetListingsStruct("digital");
 
-        await digitalMarketClient.ListProduct(
-            desc_url,
-            currency,
-            price,
-            deliveryEstimate,
-            media_url
+        let next_index = productClient.FindNextAvailableAddress(
+            await productClient.GetListingsStruct(
+                listings_addr
+            )
+        );
+
+        let prod_addr = productClient.GenProductAddress(
+            next_index, listings_addr, "digital"
+        )
+
+        await productClient.ListDigitalProduct(
+            prod_addr,
+            {
+                info: desc_url,
+                ownerCatalog: listings_addr,
+                index: next_index,
+                currency: currency,
+                price: price,
+                deliveryEstimate: deliveryEstimate,
+                media: media_url
+            },
+            fileType,
+            add_to_recent
         );
     }
 
@@ -114,16 +129,16 @@ export function DigitalProductFunctionalities(props){
     /// BUYER UTILS
 
     const GetAllVendorDigitalProducts = async(market_acc) =>{
-        let catalog_addr = (await marketAccountsClient.GetAccount(market_acc)).data.digitalVendorCatalog;
-        let vendor_catalog = await catalogClient.GetVendorCatalog(catalog_addr);
-        if(!(vendor_catalog.data)){
+        let listings_addr= (await marketAccountsClient.GetAccount(market_acc)).data.digitalVendorCatalog;
+        let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
+        if(!listings_struct){
             return ""
         }
 
-        let all_prods = vendor_catalog.productAvailable[0].toString(2) + vendor_catalog.productAvailable[1].toString(2) + vendor_catalog.productAvailable[2].toString(2) + vendor_catalog.productAvailable[3].toString(2);
+        let all_prods = listings_struct.addressAvailable[0].toString(2) + listings_struct.addressAvailable[1].toString(2) + listings_struct.addressAvailable[2].toString(2) + listings_struct.addressAvailable[3].toString(2);
         let indexes = [];
         for(let i = 0; i < 256; i++){
-            if(all_prods[i] == "1"){
+            if(all_prods[i] == "0"){
                 indexes.push(
                     digitalMarketClient.GenProductAddress(
                         catalog_addr, i
@@ -177,7 +192,7 @@ export function PhysicalProductFunctionalities(props){
     const {physicalMarketClient} = useContext(PhysicalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
-    const {catalogClient} = useContext(CatalogCtx);
+    
 
     /// SELLER UTILS
     const CreatePhysicalListingsCatalog = async()=>{
@@ -271,16 +286,16 @@ export function PhysicalProductFunctionalities(props){
     /// BUYER UTILS
 
     const GetAllVendorPhysicalProducts = async(market_acc) =>{
-        let catalog_addr = (await marketAccountsClient.GetAccount(market_acc)).data.physicalVendorCatalog;
-        let vendor_catalog = await catalogClient.GetVendorCatalog(catalog_addr);
-        if(!(vendor_catalog.data)){
+        let listings_addr= (await marketAccountsClient.GetAccount(market_acc)).data.physicalVendorCatalog;
+        let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
+        if(!listings_struct){
             return ""
         }
 
-        let all_prods = vendor_catalog.productAvailable[0].toString(2) + vendor_catalog.productAvailable[1].toString(2) + vendor_catalog.productAvailable[2].toString(2) + vendor_catalog.productAvailable[3].toString(2);
+        let all_prods = listings_struct.addressAvailable[0].toString(2) + listings_struct.addressAvailable[1].toString(2) + listings_struct.addressAvailable[2].toString(2) + listings_struct.addressAvailable[3].toString(2);
         let indexes = [];
         for(let i = 0; i < 256; i++){
-            if(all_prods[i] == "1"){
+            if(all_prods[i] == "0"){
                 indexes.push(
                     physicalMarketClient.GenProductAddress(
                         catalog_addr, i
@@ -334,7 +349,7 @@ export function CommissionProductFunctionalities(props){
     const {commissionMarketClient} = useContext(CommissionMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
-    const {catalogClient} = useContext(CatalogCtx);
+    
 
     /// SELLER UTILS
     const CreateCommissionsListingsCatalog = async()=>{
@@ -422,16 +437,16 @@ export function CommissionProductFunctionalities(props){
     /// BUYER UTILS
 
     const GetAllVendorCommissionProducts = async(market_acc) =>{
-        let catalog_addr = (await marketAccountsClient.GetAccount(market_acc)).data.commissionVendorCatalog;
-        let vendor_catalog = await catalogClient.GetVendorCatalog(catalog_addr);
-        if(!(vendor_catalog.data)){
+        let listings_addr= (await marketAccountsClient.GetAccount(market_acc)).data.commissionVendorCatalog;
+        let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
+        if(!listings_struct){
             return ""
         }
 
-        let all_prods = vendor_catalog.productAvailable[0].toString(2) + vendor_catalog.productAvailable[1].toString(2) + vendor_catalog.productAvailable[2].toString(2) + vendor_catalog.productAvailable[3].toString(2);
+        let all_prods = listings_struct.addressAvailable[0].toString(2) + listings_struct.addressAvailable[1].toString(2) + listings_struct.addressAvailable[2].toString(2) + listings_struct.addressAvailable[3].toString(2);
         let indexes = [];
         for(let i = 0; i < 256; i++){
-            if(all_prods[i] == "1"){
+            if(all_prods[i] == "0"){
                 indexes.push(
                     commissionMarketClient.GenProductAddress(
                         catalog_addr, i
