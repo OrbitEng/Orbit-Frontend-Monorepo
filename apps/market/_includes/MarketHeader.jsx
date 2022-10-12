@@ -7,13 +7,15 @@ import { Bars3CenterLeftIcon, PlusCircleIcon, EnvelopeIcon, ShoppingCartIcon } f
 import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useCallback, useContext, useEffect } from 'react';
 
-const {DigitalMarketClient, PhysicalMarketClient, CommissionMarketClient, DisputeClient, MarketAccountsClient, CatalogClient} = require("orbit-clients");
+const {DigitalMarketClient, PhysicalMarketClient, CommissionMarketClient, DisputeClient, MarketAccountsClient, ProductClient, TransactionClient} = require("orbit-clients");
 const {BundlrClient, ChatClient} = require("data-transfer-clients");
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
 import CommissionMarketCtx from '@contexts/CommissionMarketCtx';
+import ProductClientCtx from '@contexts/ProductClientCtx';
+import TransactionClientCtx from '@contexts/TransactionClientCtx';
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
@@ -38,6 +40,8 @@ export function HomeHeader(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
+	const {productClient, setProductClient} = useContext(ProductClientCtx);
+	const {transactionClient, setTransactionClient} = useContext(TransactionClientCtx);
 
 	const [marketAccount, setMarketAccount] = useState(undefined);
 
@@ -68,11 +72,12 @@ export function HomeHeader(props) {
 			
 		}
 
-		setDigitalMarketClient(new DigitalMarketClient(wallet, account_address, connection, provider));
-		setDisputeProgramClient(new DisputeClient(wallet, account_address, connection, provider));
-		setPhysicalMarketClient(new PhysicalMarketClient(wallet, account_address, connection, provider));
-		setCommissionMarketClient(new CommissionMarketClient(wallet, account_address, connection, provider))
-		setCatalogClient(new CatalogClient(wallet, account_address, connection, provider));
+		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
+		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
+		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
+		setCommissionMarketClient(new CommissionMarketClient(wallet, connection, provider))
+		setProductClient(new ProductClient(wallet, connection, provider));
+		setTransactionClient(new TransactionClient(wallet, connection, provider));
 		setBundlrClient(new BundlrClient(wallet));
 		setMatrixClient(new ChatClient());
 

@@ -3,6 +3,8 @@ import { useContext, useCallback } from "react";
 import ArQueryClient from "data-transfer-clients";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
+import TransactionClientCtx from "@contexts/TransactionClientCtx";
+import ProductClientCtx from "@contexts/ProductClientCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import {enc_common, file_common} from "browser-clients";
 
@@ -11,6 +13,8 @@ import { ChatClient } from "data-transfer-clients";
 export function MarketAccountFunctionalities(props){
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
+    const {transactionClient} = useContext(TransactionClientCtx);
+    const {productClient} = useContext(ProductClientCtx);
 
 
     // AFTER CREATING MAKE SURE TO CALL MATRIX REGISTER/LOGIN ALL THAT SHIT
@@ -50,13 +54,16 @@ export function MarketAccountFunctionalities(props){
         await marketAccountsClient.UpdatePfp(ar_addr);
     }
 
-    const SetReflink = async(reflink = undefined) => {
+    const SetReflink = async(reflink) => {
         await marketAccountsClient.SetReflink(reflink)
     }
 
     const UnsetReflink = async() =>{
         await marketAccountsClient.RemoveReflink();
     }
+
+    ////////////////////////////////////////////////////////////////
+    /// REFLINK
 
     const CreateReflink = async() =>{
         await marketAccountsClient.CreateReflink();
@@ -65,6 +72,81 @@ export function MarketAccountFunctionalities(props){
     const DeleteReflink = async() =>{
         await marketAccountsClient.DeleteReflink();
     }
+
+    ////////////////////////////////////////////////////////////////
+    /// INIT VENDOR LISTINGS
+
+    const AddVendorPhysicalListings = async() => {
+        return marketAccountsClient.AddVendorPhysicalListings(
+            productClient.GenListingsAddress("physical")
+        )
+    }
+    const AddVendorDigitalListings = async() => {
+        return marketAccountsClient.AddVendorDigitalListings(
+            productClient.GenListingsAddress("digital")
+        )
+    }
+    const AddVendorCommissionListings = async() => {
+        return marketAccountsClient.AddVendorCommissionListings(
+            productClient.GenListingsAddress("commission")
+        )
+    }
+
+    ////////////////////////////////////////////////////////////////
+    /// INIT TX LOGS
+
+    /// :BUYER
+    const AddBuyerPhysicalTransactions = async() => {
+        return marketAccountsClient.AddBuyerPhysicalTransactions(
+            transactionClient.GetBuyerOpenTransactions("physical")
+        );
+    }
+    const AddBuyerDigitalTransactions = async() => {
+        return marketAccountsClient.AddBuyerDigitalTransactions(
+            transactionClient.GetBuyerOpenTransactions("digital")
+        );
+    }
+    const AddBuyerCommissionTransactions = async() => {
+        return marketAccountsClient.AddBuyerCommissionTransactions(
+            transactionClient.GetBuyerOpenTransactions("commission")
+        );
+    }
+
+    /// :SELLER
+    const AddSellerPhysicalTransactions = async() => {
+        return marketAccountsClient.AddSellerPhysicalTransactions(
+            transactionClient.GetSellerOpenTransactions("physical")
+        );
+    }
+    const AddSellerDigitalTransactions = async() => {
+        return marketAccountsClient.AddSellerDigitalTransactions(
+            transactionClient.GetSellerOpenTransactions("digital")
+        );
+    }
+    const AddSellerCommissionTransactions = async() => {
+        return marketAccountsClient.AddSellerCommissionTransactions(
+            transactionClient.GetSellerOpenTransactions("commission")
+        );
+    }
+
+    /////////////////////////////////////////////////////////////
+    /// TRANSFER
+
+    const InitiateTransfer = async(destination_wallet) =>{
+        return marketAccountsClient.InitiateTransfer(destination_wallet)
+    }
+
+    const ConfirmTransfer = async() =>{
+        return marketAccountsClient.ConfirmTransfer()
+    }
+
+    const DeclineTransfer = async() =>{
+        return marketAccountsClient.DeclineTransfer()
+    }
+
+
+    /////////////////////////////////////////////////////////////
+    /// INFO FETCHING
 
     const GetPfp = async(ar_addr)=>{
         return (await (new ArQueryClient()).GetImageData(ar_addr))[0];
@@ -83,6 +165,18 @@ export function MarketAccountFunctionalities(props){
         SetReflink,
         UnsetReflink,
         CreateReflink,
-        DeleteReflink
+        DeleteReflink,
+        AddVendorPhysicalListings,
+        AddVendorDigitalListings,
+        AddVendorCommissionListings,
+        AddBuyerPhysicalTransactions,
+        AddBuyerDigitalTransactions,
+        AddBuyerCommissionTransactions,
+        AddSellerPhysicalTransactions,
+        AddSellerDigitalTransactions,
+        AddSellerCommissionTransactions,
+        InitiateTransfer,
+        ConfirmTransfer,
+        DeclineTransfer
     }
 }

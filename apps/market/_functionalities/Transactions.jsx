@@ -11,124 +11,13 @@ import { ArQueryClient } from "data-transfer-clients";
 import { PublicKey } from "@solana/web3.js";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 
-export function TransactionsGeneralFunctionalities(){
-    const {physicalMarketClient} = useContext(PhysicalMarketCtx);
-    const {digitalMarketClient} = useContext(DigitalMarketCtx);
-
-    const [openPhysicalTransactions, setOpenPhysicalTransactions] = useState();
-    const [openDigitalTransactions, setOpenDigitalTransactions] = useState();
-    const [openServices, setOpenServices] = useState();
-
-    const [pastPhysicalTransactions, setPastPhysicalTransactions] = useState();
-    const [pastTransactions, setPastDigitalTransactions] = useState();
-    const [pastServices, setPastServices] = useState();
-
-    const GetOpenTransactions = async ()=>{
-        setOpenPhysicalTransactions(
-            await physicalMarketClient.GetMultipleTransactions(
-                await physicalMarketClient.GetOpenTransactionAddresses()
-            )
-        );
-
-        let digital_txs = await digitalMarketClient.GetMultipleTransactions(
-            await digitalMarketClient.GetOpenTransactionAddresses()
-        );
-
-        let tx_metas = await digitalMarketClient.GetOpenTransactionsValues();
-
-        console.log("digital_tx_metas: ", tx_metas);
-
-        setOpenDigitalTransactions(
-            digital_txs.filter((a, ind) => {
-                return (tx_metas[ind]["digital_type"]["Template"] != undefined)
-            })
-        );
-
-        setOpenServices(
-            digital_txs.filter((a, ind) => {
-                return (tx_metas[ind]["digital_type"]["Commission"] != undefined)
-            })
-        )
-        
-    }
-
-    const GetPastTransactions = async ()=>{
-        let [pastPhysTx, pastPhysTxMetas] = await physicalMarketClient.GetClosedTransactionsProducts();
-        let pastPhysMetas = await this.physicalMarketClient.GetMultiplePhyiscalProducts(pastPhysTxMetas);
-        
-        setPastPhysicalTransactions(
-            pastPhysTx.map((tx_addr, ind) => {
-                return {
-                    tx_addr: tx_addr,
-                    product: pastPhysMetas[ind]
-                }
-            })
-        );
-
-        let [pastDigitalTxs, pastDigitalTxMetas] = await digitalMarketClient.GetClosedTransactionsProducts();
-        let pastDigitalMetas = await this.digitalMarketClient.GetMultiplePhyiscalProducts(pastDigitalTxMetas);
-
-        pastDigitalTxs = pastDigitalTxs.map((tx_addr, ind) => {
-            return {
-                tx_addr: tx_addr,
-                product: pastDigitalMetas[ind]
-            }
-        })
-
-        let pastDigitalMetasIDB = await this.digitalMarketClient.GetClosedTransactionsValues();
-
-
-        setPastDigitalTransactions(
-            pastDigitalTxs.filter((a, ind) => {
-                return (pastDigitalMetasIDB[ind]["digital_type"]["Template"] != undefined)
-            })
-        );
-
-        setPastServices(
-            pastDigitalTxs.filter((a, ind) => {
-                return (pastDigitalMetasIDB[ind]["digital_type"]["Commission"] != undefined)
-            })
-        )
-
-        
-    }
-
-
-    const MarkTxClosed = async (tx_type, tx_addr)=>{
-        let client =  [digitalMarketClient, physicalMarketClient][+(tx_type == "physical")];
-        let tx = await client.GetTransaction(tx_addr);
-        if(!tx.data.metadata.transactionState["Closed"]){
-            client.MarkAsClosedIDB(tx_addr);
-        }
-    };
-
-    const DeleteClosedTx = async (tx_type, tx_addr)=>{
-        let client =  [digitalMarketClient, physicalMarketClient][+(tx_type == "physical")];
-        client.DeleteClosedTransactionIDB(tx_addr);
-    };
-
-    return {
-        GetOpenTransactions,
-        GetPastTransactions,
-        MarkTxClosed,
-        DeleteClosedTx,
-
-        openPhysicalTransactions,
-        openDigitalTransactions,
-        openServices,
-
-        pastPhysicalTransactions,
-        pastTransactions,
-        pastServices,
-    }    
-}
-
 export function DigitalFunctionalities(){
     const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {matrixClient} = useContext(MatrixClientCtx);
 
+    //////////////////////////////////////////////////////
     //// SELLER UTILS
 
     const ConfirmUpload = async(tx_addr)=>{

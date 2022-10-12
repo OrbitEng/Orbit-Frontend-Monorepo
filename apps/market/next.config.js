@@ -7,7 +7,6 @@ const withTM = require('next-transpile-modules')([
   'browser-clients',
   'data-transfer-clients',
   "accounts-program",
-  "catalog-program",
   "multisig"
 ]);
 
