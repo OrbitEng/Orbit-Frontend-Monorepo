@@ -37,6 +37,8 @@ import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 import CatalogCtx from "@contexts/CatalogCtx";
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
+import ProductClientCtx from '@contexts/ProductClientCtx';
+import TransactionClientCtx from '@contexts/TransactionClientCtx';
 
 import ProductCacheCtx from '@contexts/ProductCacheCtx';
 import VendorCacheCtx from '@contexts/VendorCacheCtx';
@@ -49,6 +51,8 @@ function MyApp({ Component, pageProps }) {
   const [digitalMarketClient, setDigitalMarketClient] = useState();
   const [disputeProgramClient, setDisputeProgramClient] = useState();
   const [physicalMarketClient, setPhysicalMarketClient] = useState();
+  const [productClient, setProductClient] = useState();
+  const [transactionClient, setTransactionClient] = useState();
   const [commissionMarketClient, setCommissionMarketClient] = useState();
   const [marketAccountsClient, setMarketAccountsClient] = useState();
   const [catalogClient, setCatalogClient] = useState();
@@ -98,19 +102,21 @@ function MyApp({ Component, pageProps }) {
                         <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
                           <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
                             <CommissionMarketCtx.Provider value={{commissionMarketClient, setCommissionMarketClient}}>
+                              <ProductClientCtx.Provider value={{productClient, setProductClient}}>
+                                <TransactionClientCtx value={{transactionClient, setTransactionClient}}>
+                                  <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
+                                    <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
+                                      <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
+                                        <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
 
-                              <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
-                                <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
-                                  <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
-                                    <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
+                                          <Component {...pageProps} />
 
-                                      <Component {...pageProps} />
-
-                                    </VendorCacheCtx.Provider>
-                                  </ProductCacheCtx.Provider>
-                                </BundlrCtx.Provider>
-                              </CatalogCtx.Provider>
-
+                                        </VendorCacheCtx.Provider>
+                                      </ProductCacheCtx.Provider>
+                                    </BundlrCtx.Provider>
+                                  </CatalogCtx.Provider>
+                                </TransactionClientCtx>
+                              </ProductClientCtx.Provider>
                             </CommissionMarketCtx.Provider>
                           </DisputeProgramCtx.Provider>
                         </MarketAccountsCtx.Provider>

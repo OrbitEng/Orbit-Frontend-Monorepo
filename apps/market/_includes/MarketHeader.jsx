@@ -15,7 +15,6 @@ import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
 import CommissionMarketCtx from '@contexts/CommissionMarketCtx';
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
-import CatalogCtx from '@contexts/CatalogCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 
@@ -36,7 +35,6 @@ export function HomeHeader(props) {
 	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {commissionMarketClient, setCommissionMarketClient} = useContext(CommissionMarketCtx);
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
-	const {catalogClient, setCatalogClient} = useContext(CatalogCtx);
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 
@@ -53,7 +51,7 @@ export function HomeHeader(props) {
 		let accounts_client = new MarketAccountsClient(wallet, connection, provider);
 		let account_address = "";
 		if (wallet && wallet.publicKey){
-			account_address = (accounts_client.GenAccountAddress(wallet.publicKey))[0];
+			account_address = (accounts_client.GenAccountAddress(wallet.publicKey));
 		}
 		try{
 			if(account_address != ""){
