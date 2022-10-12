@@ -34,7 +34,6 @@ import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import CommissionMarketCtx from '@contexts/CommissionMarketCtx';
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
-import CatalogCtx from "@contexts/CatalogCtx";
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import ProductClientCtx from '@contexts/ProductClientCtx';
@@ -104,17 +103,13 @@ function MyApp({ Component, pageProps }) {
                             <CommissionMarketCtx.Provider value={{commissionMarketClient, setCommissionMarketClient}}>
                               <ProductClientCtx.Provider value={{productClient, setProductClient}}>
                                 <TransactionClientCtx value={{transactionClient, setTransactionClient}}>
-                                  <CatalogCtx.Provider value={{catalogClient, setCatalogClient}}>
-                                    <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
-                                      <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
-                                        <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
-
-                                          <Component {...pageProps} />
-
-                                        </VendorCacheCtx.Provider>
-                                      </ProductCacheCtx.Provider>
-                                    </BundlrCtx.Provider>
-                                  </CatalogCtx.Provider>
+                                  <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
+                                    <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
+                                      <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
+                                        <Component {...pageProps} />
+                                      </VendorCacheCtx.Provider>
+                                    </ProductCacheCtx.Provider>
+                                  </BundlrCtx.Provider>
                                 </TransactionClientCtx>
                               </ProductClientCtx.Provider>
                             </CommissionMarketCtx.Provider>

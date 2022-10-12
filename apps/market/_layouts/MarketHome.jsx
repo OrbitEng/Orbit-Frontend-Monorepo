@@ -15,7 +15,7 @@ import useOnScreen from '@hooks/useOnScreen'
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx'
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx'
 import CommissionMarketCtx from '@contexts/CommissionMarketCtx'
-import CatalogCtx from '@contexts/CatalogCtx'
+import ProductClientCtx from '@contexts/ProductClientCtx'
 
 export function Home(props) {
 	const ref = useRef();
@@ -37,15 +37,15 @@ export function Home(props) {
 	}, [searchBarVisible]);
 
 	useEffect(async ()=>{
-		if(!digitalMarketClient || !physicalMarketClient || !catalogClient) return;
+		if(!digitalMarketClient || !physicalMarketClient || !productClient) return;
 
-		let digital_catalog = await catalogClient.GetModCatalog(
+		let digital_catalog = await productClient.GetModCatalog(
 			(await digitalMarketClient.GenRecentCatalog())[0]
 		);
-		let commission_catalog = await catalogClient.GetModCatalog(
+		let commission_catalog = await productClient.GetModCatalog(
 			(await commissionMarketClient.GenRecentCatalog())[0]
 		);
-		let physical_catalog = await catalogClient.GetModCatalog(
+		let physical_catalog = await productClient.GetModCatalog(
 			(await physicalMarketClient.GenRecentCatalog())[0]
 		);
 

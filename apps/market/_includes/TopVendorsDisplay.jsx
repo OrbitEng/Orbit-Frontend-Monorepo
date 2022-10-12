@@ -1,5 +1,5 @@
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
-import CatalogCtx from "@contexts/CatalogCtx";
+import ProductClientCtx from "@contexts/ProductClientCtx";
 import { useContext, useEffect, useState } from "react";
 import { ArQueryClient } from "data-transfer-clients";
 import { enc_common } from "browser-clients";
@@ -15,17 +15,17 @@ function handleVendor(vendorArr) {
 export default function TopVendorsDisplay(props) {
 
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {catalogClient} = useContext(CatalogCtx);
+	const {productClient} = useContext(ProductClientCtx);
 
 	const [topVendors, setTopVendors] = useState();
 
 	useEffect(async ()=>{
-		if(!(marketAccountsClient && catalogClient)){
+		if(!(marketAccountsClient && productClient)){
 			return
 		}
 
 		let top_vendors_addrs = await catalogClient.GetParty(
-			await catalogClient.GenTopVendorsAddress()
+			await productClient.GenTopVendorsAddress()
 		);
 
 		let top_vendors = await marketAccountsClient.GetMultipleMarketAccounts(
