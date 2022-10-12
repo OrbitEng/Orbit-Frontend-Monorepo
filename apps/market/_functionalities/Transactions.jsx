@@ -141,9 +141,6 @@ export function DigitalFunctionalities(){
         );
     }
 
-    const UploadAudio = async (tx_addr)=>{};
-    const UploadVideo = async (tx_addr)=>{};
-
     const CommitNKeys = async (tx_addr, indexes)=>{
         let market_auth = marketAccountsClient.market_account;
         let market_acc = marketAccountsClient.master_auth;
@@ -219,8 +216,6 @@ export function DigitalFunctionalities(){
     return {
         ConfirmUpload,
         UploadImage,
-        UploadAudio,
-        UploadVideo,
         CommitNKeys,
         CommitAllKeys,
         ChooseBlocks,
