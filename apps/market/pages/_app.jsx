@@ -54,7 +54,6 @@ function MyApp({ Component, pageProps }) {
   const [transactionClient, setTransactionClient] = useState();
   const [commissionMarketClient, setCommissionMarketClient] = useState();
   const [marketAccountsClient, setMarketAccountsClient] = useState();
-  const [catalogClient, setCatalogClient] = useState();
   const [bundlrClient, setBundlrClient] = useState();
   const [matrixClient, setMatrixClient] = useState();
 

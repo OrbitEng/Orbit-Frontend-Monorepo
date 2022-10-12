@@ -107,9 +107,7 @@ export function DigitalFunctionalities(){
     //////////////////////////////////////////////////////
     /// SELLER UTILS
 
-    const ConfirmUpload = async(tx_addr)=>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
+    const UpdateStatusToShipping = async(tx_addr)=>{
 
         await digitalMarketClient.UpdateStatusToShipping(
             tx_addr,
@@ -120,9 +118,8 @@ export function DigitalFunctionalities(){
         await matrixClient.SendNotice(await digitalMarketClient.GetRoomId(tx_addr), "link set");
     }
 
+    // CommitInitKeys, CommitLink bundled together
     const UploadImage = async(tx_addr) =>{
-        let market_acc = marketAccountsClient.market_account;
-        let market_auth = marketAccountsClient.master_auth;
 
         let [ar_addr, kps] = await bundlrClient.UploadImageFinal(await file_common.GetFile());
 
@@ -141,9 +138,7 @@ export function DigitalFunctionalities(){
         );
     }
 
-    const CommitNKeys = async (tx_addr, indexes)=>{
-        let market_auth = marketAccountsClient.market_account;
-        let market_acc = marketAccountsClient.master_auth;
+    const CommitSubkeys = async (tx_addr, indexes)=>{
 
         let link = await digitalMarketClient.GetLink(tx_addr);
         let kps = bundlrClient.GetTransactionsKp(link);
@@ -160,32 +155,21 @@ export function DigitalFunctionalities(){
         );
     };
 
+    const SellerAcceptTransaction = async() =>{
 
-    const CommitAllKeys = async (tx_addr)=>{
-        let market_auth = marketAccountsClient.master_auth;
-        let market_acc = marketAccountsClient.market_account;
+    }
+    const LeaveReview = async() =>{
 
-        let missing_keys = await digitalMarketClient.CommitSubkeys(tx_addr);
-
-        let link = await digitalMarketClient.GetLink(tx_addr);
-        let kps = bundlrClient.GetTransactionsKp(link);
-        let kp_dict = {};
-        
-        missing_keys.forEach((ind)=>{
-            kp_dict[ind] = kps[ind]
-        });
-
-        await this.digitalMarketClient.CommitSubkeys(
-            kp_dict,
-            tx_addr,
-            market_acc,
-            market_auth
-        );
-    };
+    }
 
     ///////////////////////////////////////////////////////////////
     /// BUYER UTILS
 
+    const ConfirmDelivered = async() =>{};
+    const ConfirmAccept = async() =>{};
+    const DenyAccept = async() =>{};
+
+    /// CHAT ONLY
     /**
      * 
      * @param {number[]} blocks 
@@ -214,7 +198,6 @@ export function DigitalFunctionalities(){
     }
 
     return {
-        ConfirmUpload,
         UploadImage,
         CommitNKeys,
         CommitAllKeys,
