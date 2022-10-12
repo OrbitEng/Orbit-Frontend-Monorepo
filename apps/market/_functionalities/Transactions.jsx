@@ -3,6 +3,8 @@ import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
+import TransactionClientCtx from "@contexts/TransactionClientCtx";
+import ProductClientCtx from "@contexts/ProductClientCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 
 
@@ -11,14 +13,99 @@ import { ArQueryClient } from "data-transfer-clients";
 import { PublicKey } from "@solana/web3.js";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 
+/// OPENING TX TAKE STRUCTS
 export function DigitalFunctionalities(){
     const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {matrixClient} = useContext(MatrixClientCtx);
+    const {transactionClient} = useContext(TransactionClientCtx);
+    const {productClient} = useContext(ProductClientCtx);
+
+    ////////////////////////////////////////////////////////////
+    /// TRANSACTIONS
+
+    /// :SOL
+    OpenTransactionSol = async(
+        product,
+        use_discount
+    )=>{
+        let product_addr = product.address;
+        let listings_addr = product.data.metadata.ownerCatalog;
+
+        let listing_struct = await productClient.GetListingsStruct(listings_addr);
+        let vendor_account = await marketAccountsClient.GetAccount(
+            marketAccountsClient.GenAccountAddress(
+                listing_struct.data.listingsOwner
+            )
+        );
+        let seller_tx_log_addr = vendor_account.sellerDigitalTransactions;
+
+        let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+
+        let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("digital");
+        let next_open_buyer_index = transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+
+        let buyer_account_addr = marketAccountsClient.GenAccountAddress();
+        return digitalMarketClient.OpenTransactionSol(
+            next_open_seller_index,
+            seller_tx_log_addr,
+            listings_addr,
+            next_open_buyer_index,
+            buyer_tx_log_addr,
+            buyer_account_addr,
+            product_addr,
+            product.price,
+            use_discount
+        )
+    }
+
+    CloseTransactionSol = async(
+
+    )=>{
+
+    }
+
+    FundEscrowSol = async(
+
+    )=>{
+
+    }
+
+    SellerEarlyDeclineSol = async(
+
+    )=>{
+
+    }
+
+    /// :SPL
+    OpenTransactionSpl = async(
+
+    )=>{
+
+    }
+
+    CloseTransactionSpl = async(
+
+    )=>{
+
+    }
+
+    FundEscrowSpl = async(
+
+    )=>{
+
+    }
+
+    sellerEarlyDeclineSpl = async(
+
+    )=>{
+
+    }
+
 
     //////////////////////////////////////////////////////
-    //// SELLER UTILS
+    /// SELLER UTILS
 
     const ConfirmUpload = async(tx_addr)=>{
         let market_acc = marketAccountsClient.market_account;
@@ -99,7 +186,8 @@ export function DigitalFunctionalities(){
         );
     };
 
-    /////// BUYER UTILS
+    ///////////////////////////////////////////////////////////////
+    /// BUYER UTILS
 
     /**
      * 
