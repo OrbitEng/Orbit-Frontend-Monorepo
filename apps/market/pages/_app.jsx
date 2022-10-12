@@ -54,7 +54,6 @@ function MyApp({ Component, pageProps }) {
   const [transactionClient, setTransactionClient] = useState();
   const [commissionMarketClient, setCommissionMarketClient] = useState();
   const [marketAccountsClient, setMarketAccountsClient] = useState();
-  const [catalogClient, setCatalogClient] = useState();
   const [bundlrClient, setBundlrClient] = useState();
   const [matrixClient, setMatrixClient] = useState();
 
@@ -102,7 +101,7 @@ function MyApp({ Component, pageProps }) {
                           <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
                             <CommissionMarketCtx.Provider value={{commissionMarketClient, setCommissionMarketClient}}>
                               <ProductClientCtx.Provider value={{productClient, setProductClient}}>
-                                <TransactionClientCtx value={{transactionClient, setTransactionClient}}>
+                                <TransactionClientCtx.Provider value={{transactionClient, setTransactionClient}}>
                                   <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
                                     <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
                                       <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
@@ -110,7 +109,7 @@ function MyApp({ Component, pageProps }) {
                                       </VendorCacheCtx.Provider>
                                     </ProductCacheCtx.Provider>
                                   </BundlrCtx.Provider>
-                                </TransactionClientCtx>
+                                </TransactionClientCtx.Provider>
                               </ProductClientCtx.Provider>
                             </CommissionMarketCtx.Provider>
                           </DisputeProgramCtx.Provider>

@@ -26,7 +26,7 @@ export function Home(props) {
 	const {digitalMarketClient} = useContext(DigitalMarketCtx);
 	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {commissionMarketClient} = useContext(CommissionMarketCtx);
-	const {catalogClient} = useContext(CatalogCtx);
+	const {productClient} = useContext(ProductClientCtx);
 
 	const [recentCommissions, setRecentCommissions] = useState();
 	const [recentTemplatess, setRecentTemplatess] = useState();
