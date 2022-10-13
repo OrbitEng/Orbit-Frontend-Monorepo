@@ -27,6 +27,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import CreateAccountButton from '@includes/components/CreateAccountButton';
 import ProfileButton from '@includes/components/ProfileButton';
+import CartSideMenu from './components/CartSideMenu';
 
 export function HomeHeader(props) {
 	const router = useRouter();
@@ -44,6 +45,7 @@ export function HomeHeader(props) {
 	const {transactionClient, setTransactionClient} = useContext(TransactionClientCtx);
 
 	const [marketAccount, setMarketAccount] = useState(undefined);
+	const [menuOpen, setMenuOpen] = useState(false);
 
 	useEffect(async ()=>{
 		let temp_wallet = wallet;
@@ -112,7 +114,7 @@ export function HomeHeader(props) {
 					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]">
 						<EnvelopeIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 						{
-							(props.notifications || props.notifications > 0) &&
+							(props.chatNotifications || props.chatNotifications > 0) &&
 							<div className="inline-flex absolute font-serif bg-red-500 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">{props.notifications > 999 ? "+999" : props.notifications}</div>
 						}
 					</button>
@@ -129,9 +131,17 @@ export function HomeHeader(props) {
 							)
 						}
 					</div>
-					<button className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]">
+					<button 
+						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]"
+						onClick={() => setMenuOpen(true)}
+					>
 						<ShoppingCartIcon className="w-3 h-3 lg:w-5 lg:h-5" />
+						{
+							(props.cartItems || props.cartItems > 0) &&
+							<div className="inline-flex absolute font-serif bg-red-500 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">{props.notifications > 999 ? "+999" : props.notifications}</div>
+						}
 					</button>
+					<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
 				</div>
 			</div>
 		</header>
