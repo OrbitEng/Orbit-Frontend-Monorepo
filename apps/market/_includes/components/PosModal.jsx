@@ -1,8 +1,8 @@
 import { Transition, Dialog, RadioGroup } from "@headlessui/react"
-import { Fragment, useState } from "react"
+import { Fragment, useState, useEffect } from "react"
 import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon } from "@heroicons/react/24/outline";
 import Image from "next/image"
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 const paymentTokens = [
@@ -20,10 +20,12 @@ const paymentTokens = [
 
 export default function PosModal(props) {
 	let wallet = useWallet();
-	const [userName, setUserName] = useState();
-	const [name, setName] = useState();
-	const [bio, setBio] = useState();
-	const [selectedPayment, setSelectedPayment] = useState(paymentTokens[0]);
+	let connection = useConnection()
+	const [balance, setBalance] = useState(0)
+
+	useEffect(async () => {
+		setBalance(await connection.connection.getBalance(wallet.publicKey))
+	}, [connection])	
 	
 	return(
 		<Transition appear show={props.openPos} as={Fragment}>
@@ -74,7 +76,7 @@ export default function PosModal(props) {
 									<ChevronDownIcon className="text-[#797979] h-4 w-4 stroke-[4px]" />
 								</div>
 							</div>
-							<div className="flex flex-col border-y-[0.5px] border-[#535353]">
+							<div className="flex flex-col border-y-[0.5px] border-[#535353] px-4">
 							{
 								props?.cartItems?.map((item, index) => {
 									return(
@@ -105,72 +107,54 @@ export default function PosModal(props) {
 								})
 							}	
 							</div>
-							<div className="flex flex-row justify-between my-4">
-								<RadioGroup className="mx-auto w-full" value={selectedPayment} onChange={setSelectedPayment}>
-									<RadioGroup.Label className="font-bold text-[#A3A3A3] text-xl mx-auto text-center">Payment Method</RadioGroup.Label>
-									<div className="space-y-2">
-										{paymentTokens.map((paymentToken) => (
-										<RadioGroup.Option
-											key={paymentToken.name}
-											value={paymentToken}
-											className={({ active, checked }) =>
-											`${
-												active
-												? 'ring-2 ring-white ring-opacity-60 ring-offset-2 ring-offset-purple-300'
-												: ''
-											}
-											${
-												checked ? 'bg-[#141619] bg-opacity-75 text-white' : 'bg-[#14161988]'
-											}
-												relative flex cursor-pointer rounded-lg px-5 py-4 shadow-md focus:outline-none`
-											}
-										>
-											{({ active, checked }) => (
-											<>
-												<div className="flex w-full items-center justify-between">
-												<div className="flex items-center">
-													<div className="text-sm">
-													<RadioGroup.Label
-														as="p"
-														className={`font-medium  ${
-														checked ? 'text-white' : 'text-gray-500'
-														}`}
-													>
-														{paymentToken.name}
-													</RadioGroup.Label>
-													<RadioGroup.Description
-														as="span"
-														className={`inline ${
-														checked ? 'text-purple-100' : 'text-gray-500'
-														}`}
-													>
-														<span>
-														{paymentToken.devnetAddr.slice(0,24) + "..."}
-														</span>
-													</RadioGroup.Description>
-													</div>
-													</div>
-													{checked && (
-														<div className="shrink-0 text-white">
-															<CheckIcon className="h-6 w-6" />
-														</div>
-													)}
-													</div>
-												</>
-												)}
-											</RadioGroup.Option>
-										))}
-									</div>
-								</RadioGroup>
-							</div>
-								<button
-									className="py-4 px-8 z-[120] flex flex-row justify-center bg-[#008C1F2c] rounded-full mt-4 w-fit mx-auto"
+							<div className="rounded-lg flex flex-row px-4 py-2 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-between">
+								<div
+									className="flex flex-row gap-x-2 group cursor-pointer group basis-1/2 overflow-hidden"
 								>
-									<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
-										<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
-										Confirm Purchase
-									</span>
-								</button>
+									<div className="flex flex-row gap-x-2 absolute transition duration-300 opacity-0 group-hover:opacity-100">
+										<button onClick={() => wallet.disconnect()} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg w-fit text-center my-2 transition duration-300">Disconnect</button>
+										<button onClick={() => navigator.clipboard.writeText(wallet.publicKey.toString())} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg w-fit text-center my-2 transition duration-300">Copy</button>
+									</div>
+									<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden my-2 group-hover:opacity-0 transition duration-300">
+										<Image
+											src={wallet.wallet.adapter.icon}
+											width={50}
+											height={50}
+											objectFit="contain"
+										/>
+									</div>
+									<div className="flex flex-col align-middle my-auto group-hover:opacity-0 transition duration-300 flex-grow-0">
+										<span className="text-[#A4A4A4] truncate text-xs">{wallet.wallet.adapter.name}</span>
+										<span className="font-semibold text-white truncate text-sm -mt-1">{wallet.publicKey.toString()}</span>
+									</div>
+								</div>
+								<div className="align-middle bg-[#5F5F5F] backdrop-blur bg-opacity-20 flex flex-row gap-x-[6px] rounded px-2 my-auto basis-6/10">
+									<span className="font-semibold text-[#989898] text-sm">Connected Wallet</span>
+									<div className="bg-green-500 rounded-full my-auto">
+										<div className="bg-green-500 rounded-full h-2 w-2 my-auto animate-ping" />
+									</div>
+								</div>
+							</div>
+							<div className="rounded-lg flex flex-row px-4 py-2 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-around">
+							</div>
+							<div className="rounded-lg flex flex-col mt-4 justify-between px-8 border-[1px] border-[#5F5F5F] text-white font-bold divide-y-[1px] divide-[#5F5F5F]">
+								<div className="flex flex-row justify-between py-3">
+									<span>Balance:</span>
+									<span>{(balance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
+								</div>
+								<div className="flex flex-row justify-between py-3">
+									<span>Amount Due:</span>
+									<span>{(props.cartTotal/LAMPORTS_PER_SOL || 0) + " SOL"}</span>
+								</div>
+							</div>
+							<button
+								className="py-4 px-8 z-[120] flex flex-row justify-center bg-[#008C1F2c] rounded-full mt-4 w-fit mx-auto"
+							>
+								<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
+									<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
+									Confirm Purchase
+								</span>
+							</button>
 						</div>
 					</Dialog.Panel>
 				</Transition.Child>

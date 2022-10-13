@@ -64,53 +64,57 @@ export default function CartSideMenu(props) {
 										<div className="relative mt-6 flex-1 px-4 sm:px-6">
 											{/* Replace with your content */}
 											<div className="absolute inset-0 px-4 sm:px-6">
-												<div className="h-full scrollbar overflow-scroll flex flex-col" aria-hidden="true" >
-												{
-													props?.cartItems?.map((item, index) => {
-														return(
-															<div key={index} className="flex flex-row rounded-md justify-between my-1">
-																<div className="flex flex-row flex-shrink-0 mr-8">
-																	<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
-																		<div className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">
-																			<XMarkIcon className="h-3 w-3 text-white stroke-[3px]"/>
+												<div className="h-full scrollbar overflow-scroll flex flex-col px-4" aria-hidden="true" >
+													<div className="flex flex-col pb-auto h-full mb-4 border-y-[0.5px] border-[#535353] py-3">
+														{
+															props?.cartItems?.map((item, index) => {
+																return(
+																	<div key={index} className="flex flex-row rounded-md justify-between my-2">
+																		<div className="flex flex-row flex-shrink-0 mr-8">
+																			<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
+																				<div className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">
+																					<XMarkIcon className="h-3 w-3 text-white stroke-[3px]"/>
+																				</div>
+																				<Image 
+																					className="rounded-md"
+																					layout="fill"
+																					src={item.image}
+																					objectFit="contain"
+																				/>
+																			</div>
+																			<div className="flex flex-col justify-start my-auto">
+																				<span className="text-white font-bold -mb-1">{item.name}</span>
+																				<span className="text-[#868686] text-xs">{item.vendorUserName}</span>
+																			</div>
 																		</div>
-																		<Image 
-																			className="rounded-md"
-																			layout="fill"
-																			src={item.image}
-																			objectFit="contain"
-																		/>
+																		<div className="flex flex-col justify-self-end text-center w-fit truncate">
+																			<span className="text-white font-bold -mb-1 truncate">{item.price/LAMPORTS_PER_SOL + " SOL"}</span>
+																			<span className="text-white font-bold text-xs truncate">{"$----"}</span>
+																		</div>
 																	</div>
-																	<div className="flex flex-col justify-start my-auto">
-																		<span className="text-white font-bold -mb-1">{item.name}</span>
-																		<span className="text-[#868686] text-xs">{item.vendorUserName}</span>
-																	</div>
-																</div>
-																<div className="flex flex-col justify-self-end text-center w-fit truncate">
-																	<span className="text-white font-bold -mb-1 truncate">{item.price/LAMPORTS_PER_SOL + " SOL"}</span>
-																	<span className="text-white font-bold text-xs truncate">{"$----"}</span>
-																</div>
-															</div>
-														)
-													})
-												}
-												<div className="rounded-lg mt-auto flex flex-row justify-between px-8 py-3 border-[1px] border-[#5F5F5F] text-white font-bold text-xl">
-													<span>Total</span>
-													<span>{cartTotal/LAMPORTS_PER_SOL + " SOL"}</span>
+																)
+															})
+														}
+													</div>
+													<div className="flex flex-col">
+														<div className="rounded-lg flex flex-row justify-between px-8 py-3 border-[1px] border-[#5F5F5F] text-white font-bold text-xl">
+															<span>Total</span>
+															<span>{cartTotal/LAMPORTS_PER_SOL + " SOL"}</span>
+														</div>
+														<button
+															onClick={() => {
+																setOpenPos(true)
+															}}
+															className="py-4 z-[120] flex flex-row justify-center bg-gradient-to-tr from-[#464255] via-[#2D2A35] to-[#2D2A35] rounded-lg mt-4 border-t-[1px] border-x-[1px] border-[#5F5F5F]"
+														>
+															<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
+																<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
+																Buy Now
+															</span>
+														</button>
+														<PosModal openPos={openPos} setOpenPos={setOpenPos} cartItems={props.cartItems} cartTotal={cartTotal} />
+													</div>
 												</div>
-												<button
-													onClick={() => {
-														setOpenPos(true)
-													}}
-													className="py-4 z-[120] flex flex-row justify-center bg-gradient-to-tr from-[#464255] via-[#2D2A35] to-[#2D2A35] rounded-lg mt-4 border-t-[1px] border-x-[1px] border-[#5F5F5F]"
-												>
-													<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
-														<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
-														Buy Now
-													</span>
-												</button>
-												</div>
-												<PosModal openPos={openPos} setOpenPos={setOpenPos} cartItems={props.cartItems} cartTotal={cartTotal} />
 											</div>
 											{/* /End replace */}
 										</div>

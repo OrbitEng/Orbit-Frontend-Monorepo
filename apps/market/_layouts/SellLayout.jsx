@@ -10,7 +10,7 @@ import { Listbox } from "@headlessui/react";
 
 import {DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities} from "@functionalities/Products";
 import { useEffect } from "react";
-import CatalogCtx from "@contexts/CatalogCtx";
+import ProductClientCtx from "@contexts/ProductClientCtx";
 import { useContext } from "react";
 
 const token_addresses = {
@@ -60,7 +60,7 @@ export function SellLayout(props){
 
 export function DigitalUploadForm(props) {
 	const {ListProduct, CreateDigitalListingsCatalog} = DigitalProductFunctionalities();
-	const {catalogClient} = useContext(CatalogCtx);
+	const {productClient} = useContext(ProductClientCtx);
 
 	const [prodName, setProdName] = useState("");
 	const [price, setProdPrice] = useState();
@@ -76,8 +76,8 @@ export function DigitalUploadForm(props) {
 	useEffect(async ()=>{
 		try{
 			let vc = await catalogClient.GetVendorCatalog(
-				catalogClient.GenVendorListingsAddress(
-					catalogClient.market_account_address, "digital"
+				productClient.GenVendorListingsAddress(
+					productClient.market_account_address, "digital"
 				)[0]
 			);
 			if(vc && vc.data){
@@ -347,7 +347,7 @@ export function DigitalUploadForm(props) {
 
 export function PhysicalUploadForm(props) {
 	const {ListProduct, CreatePhysicalListingsCatalog} = PhysicalProductFunctionalities();
-	const {catalogClient} = useContext(CatalogCtx);
+	const {productClient} = useContext(ProductClientCtx);
 
 	const [prodName, setProdName] = useState("");
 	const [price, setProdPrice] = useState();
@@ -362,9 +362,9 @@ export function PhysicalUploadForm(props) {
 
 	useEffect(async()=>{
 		try{
-			let vc = await catalogClient.GetVendorCatalog(
-				catalogClient.GenVendorListingsAddress(
-					catalogClient.market_account_address, "physical"
+			let vc = await productClient.GetVendorCatalog(
+				productClient.GenVendorListingsAddress(
+					productClient.market_account_address, "physical"
 				)[0]
 			);
 			if(vc && vc.data){
