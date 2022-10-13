@@ -5,32 +5,14 @@ import Image from "next/image";
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 export default function CartSideMenu(props) {
-	let cartItems = [{
-		name:"100 Icon pack",
-		vendorUserName:"@testing123",
-		image:"/demologos.png",
-		price: 12340000000,
-	},
-	{
-		name:"100 Icon pack",
-		vendorUserName:"@testing123",
-		image:"/demologos.png",
-		price: 12340000000,
-	},
-	{
-		name:"100 Icon pack",
-		vendorUserName:"@testing123",
-		image:"/demologos.png",
-		price: 12340000000,
-	}]
-
 	const [cartTotal, setCartTotal] = useState(0);
+
 	useEffect(() => {
 		setCartTotal(0);
-		cartItems.map((item) => {
+		props?.cartItems?.map((item) => {
 			setCartTotal(t => t + item.price)
 		})
-	}, [cartItems.length])
+	}, [props.cartItems.length])
 
 	return (
 		<Transition.Root show={props.open} as={Fragment}>
@@ -82,9 +64,9 @@ export default function CartSideMenu(props) {
 											<div className="absolute inset-0 px-4 sm:px-6">
 												<div className="h-full scrollbar overflow-scroll flex flex-col" aria-hidden="true" >
 												{
-													cartItems?.map((item, index) => {
+													props?.cartItems?.map((item, index) => {
 														return(
-															<div className="flex flex-row rounded-md justify-between my-1">
+															<div key={index} className="flex flex-row rounded-md justify-between my-1">
 																<div className="flex flex-row flex-shrink-0 mr-8">
 																	<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
 																		<div className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">
@@ -104,7 +86,7 @@ export default function CartSideMenu(props) {
 																</div>
 																<div className="flex flex-col justify-self-end text-center w-fit truncate">
 																	<span className="text-white font-bold -mb-1 truncate">{item.price/LAMPORTS_PER_SOL + " SOL"}</span>
-																	<span className="text-white font-bold text-xs truncate">{"$" + "1234"}</span>
+																	<span className="text-white font-bold text-xs truncate">{"$----"}</span>
 																</div>
 															</div>
 														)
@@ -114,12 +96,15 @@ export default function CartSideMenu(props) {
 													<span>Total</span>
 													<span>{cartTotal/LAMPORTS_PER_SOL + " SOL"}</span>
 												</div>
-												<div className="py-4 flex flex-row justify-center bg-gradient-to-tr from-[#464255] via-[#2D2A35] to-[#2D2A35] rounded-lg mt-4 border-t-[1px] border-x-[1px] border-[#5F5F5F]">
+												<button
+													onClick={() => {openPos}}
+													className="py-4 flex flex-row justify-center bg-gradient-to-tr from-[#464255] via-[#2D2A35] to-[#2D2A35] rounded-lg mt-4 border-t-[1px] border-x-[1px] border-[#5F5F5F]"
+												>
 													<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
 														<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
 														Buy Now
 													</span>
-												</div>
+												</button>
 												</div>
 											</div>
 											{/* /End replace */}

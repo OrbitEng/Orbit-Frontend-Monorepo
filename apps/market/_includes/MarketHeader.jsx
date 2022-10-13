@@ -30,6 +30,26 @@ import ProfileButton from '@includes/components/ProfileButton';
 import CartSideMenu from './components/CartSideMenu';
 
 export function HomeHeader(props) {
+	// things for demoing cart funcs
+	let cartItems = [{
+		name:"100 Icon pack",
+		vendorUserName:"@testing123",
+		image:"/demologos.png",
+		price: 12340000000,
+	},
+	{
+		name:"100 Icon pack",
+		vendorUserName:"@testing123",
+		image:"/demologos.png",
+		price: 12340000000,
+	},
+	{
+		name:"100 Icon pack",
+		vendorUserName:"@testing123",
+		image:"/demologos.png",
+		price: 12340000000,
+	}];
+
 	const router = useRouter();
 	let {connection} = useConnection();
 	let wallet = useWallet();
@@ -141,7 +161,7 @@ export function HomeHeader(props) {
 							<div className="inline-flex absolute font-serif bg-red-500 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">{props.notifications > 999 ? "+999" : props.notifications}</div>
 						}
 					</button>
-					<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
+					<CartSideMenu open={menuOpen} setOpen={setMenuOpen} cartItems={cartItems}/>
 				</div>
 			</div>
 		</header>
