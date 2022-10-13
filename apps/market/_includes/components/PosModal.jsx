@@ -1,6 +1,6 @@
 import { Transition, Dialog, RadioGroup } from "@headlessui/react"
-import { Fragment, useState, useEffect } from "react"
-import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon } from "@heroicons/react/24/outline";
+import { Fragment, useState, useEffect, useContext } from "react"
+import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Image from "next/image"
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
@@ -22,6 +22,14 @@ export default function PosModal(props) {
 	let wallet = useWallet();
 	let connection = useConnection()
 	const [balance, setBalance] = useState(0)
+
+	/* this is the shit for shipping and cart context
+		const [ cart, setCart ] = useContext(CartCtx);
+		const [ shipping, setShipping ] = useContext(ShippingCtx);
+	*/
+
+	const shipping = 0;
+	const cart = 0;
 
 	useEffect(async () => {
 		setBalance(await connection.connection.getBalance(wallet.publicKey))
@@ -135,7 +143,25 @@ export default function PosModal(props) {
 									</div>
 								</div>
 							</div>
-							<div className="rounded-lg flex flex-row px-4 py-2 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-around">
+							<div className="rounded-lg flex flex-row px-4 py-4 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-around overflow-hidden">
+								<div className="flex flex-col align-middle basis-2/5 flex-grow-0">
+									<h3 className="font-bold text-white">Name</h3>
+									<span className="text-[#BDBDBD] text-xs truncate">{shipping?.name || "bruhplaceholder"}</span>
+								</div>
+								<div className="flex flex-col align-middle basis-2/5 flex-grow-0">
+									<h3 className="font-bold text-white">Address</h3>
+									<span className="text-[#BDBDBD] text-xs truncate">{shipping?.name || "bruhplaceholder"}</span>
+								</div>
+								<div className="flex flex-col align-middle basis-1/5 flex-grow-0 my-auto">
+									<div className="flex flex-row justify-center">
+										<button className="rounded bg-[#212121] mx-1 p-1">
+											<PencilIcon className="h-4 w-4 text-white"/>
+										</button>
+										<button className="rounded bg-[#212121] mx-1 p-1">
+											<TrashIcon className="h-4 w-4 text-red-500"/>
+										</button>
+									</div>
+								</div>
 							</div>
 							<div className="rounded-lg flex flex-col mt-4 justify-between px-8 border-[1px] border-[#5F5F5F] text-white font-bold divide-y-[1px] divide-[#5F5F5F]">
 								<div className="flex flex-row justify-between py-3">
