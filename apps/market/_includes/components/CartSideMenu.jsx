@@ -3,9 +3,11 @@ import { Dialog, Transition } from '@headlessui/react';
 import { BoltIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from "next/image";
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import PosModal from './PosModal';
 
 export default function CartSideMenu(props) {
 	const [cartTotal, setCartTotal] = useState(0);
+	const [openPos, setOpenPos] = useState(false);
 
 	useEffect(() => {
 		setCartTotal(0);
@@ -97,8 +99,10 @@ export default function CartSideMenu(props) {
 													<span>{cartTotal/LAMPORTS_PER_SOL + " SOL"}</span>
 												</div>
 												<button
-													onClick={() => {openPos}}
-													className="py-4 flex flex-row justify-center bg-gradient-to-tr from-[#464255] via-[#2D2A35] to-[#2D2A35] rounded-lg mt-4 border-t-[1px] border-x-[1px] border-[#5F5F5F]"
+													onClick={() => {
+														setOpenPos(true)
+													}}
+													className="py-4 z-[120] flex flex-row justify-center bg-gradient-to-tr from-[#464255] via-[#2D2A35] to-[#2D2A35] rounded-lg mt-4 border-t-[1px] border-x-[1px] border-[#5F5F5F]"
 												>
 													<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
 														<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
@@ -106,6 +110,7 @@ export default function CartSideMenu(props) {
 													</span>
 												</button>
 												</div>
+												<PosModal openPos={openPos} setOpenPos={setOpenPos} cartItems={props.cartItems} cartTotal={cartTotal} />
 											</div>
 											{/* /End replace */}
 										</div>
