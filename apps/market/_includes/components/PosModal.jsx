@@ -6,16 +6,14 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { getCookie, hasCookie, setCookie } from "cookies-next";
 
-import CartCtx from "@contexts/CartCtx";
-
 export default function PosModal(props) {
 	let wallet = useWallet();
 	let connection = useConnection();
 	const [balance, setBalance] = useState(0);
-	const [cart, setCart] = useContext(CartCtx);
 
 	//placeholder until I make the context
 	let shipping = 0;
+	console.log(props.cart);
 
 	useEffect(async () => {
 		try {
@@ -68,24 +66,24 @@ export default function PosModal(props) {
 									{"Wallet: " + wallet.publicKey}
 								</span>
 							</div>
-							<div className="flex flex-col px-4">
+							<div className="flex flex-col px-4 py-4">
 								<div className="flex flex-row justify-between align-middle">
-									<span className="my-auto text-xl font-bold text-[#E7E7E7]">{"ITEMS(" + (props?.cartItems?.length || 0) + ")"}</span>
+									<span className="my-auto text-xl font-bold text-[#E7E7E7]">{"ITEMS(" + (props?.cart?.items?.length || 0) + ")"}</span>
 									<ChevronDownIcon className="text-[#797979] h-4 w-4 stroke-[4px]" />
 								</div>
 							</div>
-							<div className="flex flex-col border-y-[0.5px] border-[#535353] px-4">
+							<div className="flex flex-col border-y-[0.5px] border-[#535353] px-4 py-3">
 							{
-								cart?.items?.map((item, index) => {
+								props?.cart?.items?.map((item, index) => {
 									return(
 										<div key={index} className="flex flex-row rounded-md justify-between my-2">
 											<div className="flex flex-row flex-shrink-0 mr-8">
 												<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
 													<button 
 														onClick={() => {
-															setCart({
-																items:[...cart.items.slice(0,index), ...cart.items.slice(index+1)],
-																total: cart.total
+															props.setCart({
+																items:[...props.cart.items.slice(0,index), ...props.cart.items.slice(index+1)],
+																total: props.cart.total
 															})
 														}}
 														className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs"
@@ -175,7 +173,7 @@ export default function PosModal(props) {
 								</div>
 								<div className="flex flex-row justify-between py-3">
 									<span>Amount Due:</span>
-									<span>{(props.cartTotal/LAMPORTS_PER_SOL || 0) + " SOL"}</span>
+									<span>{(props.cart.total/LAMPORTS_PER_SOL || 0) + " SOL"}</span>
 								</div>
 							</div>
 							<button

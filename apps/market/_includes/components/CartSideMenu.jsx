@@ -133,7 +133,7 @@ export default function CartSideMenu(props) {
 																Buy Now
 															</span>
 														</button>
-														<PosModal openPos={openPos} setOpenPos={setOpenPos} cartItems={props.cartItems} cartTotal={cartTotal} />
+														<PosModal openPos={openPos} setOpenPos={setOpenPos} cart={cart} setCart={setCart} />
 													</div>
 												</div>
 											</div>
