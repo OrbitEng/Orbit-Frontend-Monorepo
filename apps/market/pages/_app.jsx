@@ -44,6 +44,7 @@ import ProductCacheCtx from '@contexts/ProductCacheCtx';
 import VendorCacheCtx from '@contexts/VendorCacheCtx';
 
 import CartCtx from '@contexts/CartCtx';
+import ShippingCtx from '@contexts/ShippingCtx';
 
 // TODO: init redux here too
 // App wrapper that has all these providers
@@ -82,8 +83,20 @@ function MyApp({ Component, pageProps }) {
       image:"/demologos.png",
       price: 12340000000,
     }],
-    total: 0,
+    total: 37020000000,
   });
+
+  const [shipping, setShipping] = useState({
+    updated: false,
+    firstName:"",
+    lastName:"",
+    addr1:"",
+    addr2:"",
+    city:"",
+    zip:"",
+    country:"",
+    state:""
+  })
 
   // This handles updating the cookies for cart useState changes
   useEffect(() => {
@@ -127,7 +140,6 @@ function MyApp({ Component, pageProps }) {
       ],
       []
   );
-  
 
   return (
           <ConnectionProvider endpoint={endpoint}>
@@ -144,9 +156,11 @@ function MyApp({ Component, pageProps }) {
                                   <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
                                     <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
                                       <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
-                                        <CartCtx.Provider value={{cart, setCart}} >
-                                          <Component {...pageProps} />
-                                        </CartCtx.Provider>
+                                        <ShippingCtx.Provider value={{shipping, setShipping}}>
+                                          <CartCtx.Provider value={{cart, setCart}} >
+                                            <Component {...pageProps} />
+                                          </CartCtx.Provider>
+                                        </ShippingCtx.Provider>
                                       </VendorCacheCtx.Provider>
                                     </ProductCacheCtx.Provider>
                                   </BundlrCtx.Provider>

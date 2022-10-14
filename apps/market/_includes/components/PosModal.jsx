@@ -1,19 +1,29 @@
 import { Transition, Dialog, RadioGroup } from "@headlessui/react"
 import { Fragment, useState, useEffect, useContext } from "react"
-import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon, PencilIcon, TrashIcon, PlusIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import Image from "next/image"
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { getCookie, hasCookie, setCookie } from "cookies-next";
 
+import ShippingCtx from "@contexts/ShippingCtx";
+
 export default function PosModal(props) {
 	let wallet = useWallet();
 	let connection = useConnection();
 	const [balance, setBalance] = useState(0);
+	const [openShippingForm, setOpenShippingForm] = useState(false);
+	const {shipping, setShipping} = useContext(ShippingCtx)
 
-	//placeholder until I make the context
-	let shipping = 0;
-	console.log(props.cart);
+	// Shipping fields
+	const [firstName, setFirstName] = useState(shipping?.firstName || "");
+	const [lastName, setLastName] = useState(shipping?.lastName || "");
+	const [addr1, setAddr1] = useState(shipping?.addr1 || "");
+	const [addr2, setAddr2] = useState(shipping?.addr2 || "");
+	const [city, setCity] = useState(shipping?.city || "");
+	const [zip, setZip] = useState(shipping?.zip || "");
+	const [country, setCountry] = useState(shipping?.country || "");
+	const [state, setState] = useState(shipping?.state || "");
 
 	useEffect(async () => {
 		try {
@@ -48,9 +58,10 @@ export default function PosModal(props) {
 					leaveFrom="opacity-100 scale-100"
 					leaveTo="opacity-0 scale-95"
 				>
-					<Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all">
+					<Dialog.Panel className={`w-full ${openShippingForm ? "max-w-2xl" : "max-w-lg"} transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-200`}>
+					{ openShippingForm != true ? (
 						<div className="flex flex-col rounded-xl max-w-lg py-10 px-[4rem] mx-auto w-max">
-							<div className="relative top-0 right-0 flex pt-1 pr-4 justify-end">
+							<div className="relative top-0 right-0 flex pt-1 justify-end">
 								<button
 									type="button"
 									className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
@@ -142,29 +153,44 @@ export default function PosModal(props) {
 							</div>
 							}
 							<div className="rounded-lg flex flex-row px-4 py-4 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-around overflow-hidden">
-								<div className="flex flex-col align-middle basis-2/5 flex-grow-0">
-									<h3 className="font-bold text-white">Name</h3>
-									<span className="text-[#BDBDBD] text-xs truncate">{shipping?.name || "bruhplaceholder"}</span>
-								</div>
-								<div className="flex flex-col align-middle basis-2/5 flex-grow-0">
-									<h3 className="font-bold text-white">Address</h3>
-									<span className="text-[#BDBDBD] text-xs truncate">{shipping?.name || "bruhplaceholder"}</span>
-								</div>
-								<div className="flex flex-col align-middle basis-1/5 flex-grow-0 my-auto">
-									<div className="flex flex-row justify-center">
-										<button
-											className="rounded bg-[#212121] mx-1 p-1"
+							{
+								shipping?.updated == true ? 
+								<div className={`transition duration-200 ${openShippingForm ? "opacity-0" : "opacity-100"}`}>
+									<div className="flex flex-col align-middle basis-2/5 flex-grow-0">
+										<h3 className="font-bold text-white">Name</h3>
+										<span className="text-[#BDBDBD] text-xs truncate">{shipping?.name || "bruhplaceholder"}</span>
+									</div>
+									<div className="flex flex-col align-middle basis-2/5 flex-grow-0">
+										<h3 className="font-bold text-white">Address</h3>
+										<span className="text-[#BDBDBD] text-xs truncate">{shipping?.name || "bruhplaceholder"}</span>
+									</div>
+									<div className="flex flex-col align-middle basis-1/5 flex-grow-0 my-auto">
+										<div className="flex flex-row justify-center">
+											<button
+												className="rounded bg-[#212121] mx-1 p-1"
 
-										>
-											<PencilIcon className="h-4 w-4 text-white"/>
-										</button>
-										<button 
-											className="rounded bg-[#212121] mx-1 p-1"
-										>
-											<TrashIcon className="h-4 w-4 text-red-500"/>
-										</button>
+											>
+												<PencilIcon className="h-4 w-4 text-white"/>
+											</button>
+											<button 
+												className="rounded bg-[#212121] mx-1 p-1"
+											>
+												<TrashIcon className="h-4 w-4 text-red-500"/>
+											</button>
+										</div>
 									</div>
 								</div>
+							: 
+								<button
+									className="flex flex-row align-middle bg-transparent"
+									onClick={() => {setOpenShippingForm(true)}}
+								>
+									<div className="my-auto rounded-full bg-[#2E813B] bg-opacity-30 p-1 mr-2">
+										<PlusIcon className="h-6 w-6 text-[#2E813B] opacity-70" />
+									</div>
+									<span className="font-semibold text-white my-auto text-sm">Add Shipping Address</span>
+								</button>
+							}
 							</div>
 							<div className="rounded-lg flex flex-col mt-4 justify-between px-8 border-[1px] border-[#5F5F5F] text-white font-bold divide-y-[1px] divide-[#5F5F5F]">
 								<div className="flex flex-row justify-between py-3">
@@ -185,6 +211,121 @@ export default function PosModal(props) {
 								</span>
 							</button>
 						</div>
+					) : (
+						<div className={`flex flex-col rounded-xl py-10 px-[4rem] w-full transition duration-200 ${openShippingForm ? "opacity-100" : "opacity-0"}`}>
+							<div className="relative top-0 right-0 flex pt-1 pr-1 justify-between">
+								<button
+									type="button"
+									className="rounded-full text-white hover:text-white p-1 focus:outline-none"
+									onClick={() => setOpenShippingForm(false)}
+								>
+									<span className="sr-only">Back to checkout</span>
+									<ChevronLeftIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
+								</button>
+								<button
+									type="button"
+									className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
+									onClick={() => props.setOpenPos(false)}
+								>
+									<span className="sr-only">Close panel</span>
+									<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
+								</button>
+							</div>
+							<div className="flex flex-col mt-3 mb-4 mr-auto">
+								<h1 className="text-3xl text-white font-bold">Shipping Address</h1>
+							</div>								
+							<div className="grid grid-flow-row grid-rows-4 grid-cols-2">
+								<div className="flex flex-col justify-start m-2">
+									<span className="text-[#938989] font-semibold font-lg">First Name</span>
+									<input
+										required
+										className="rounded-lg border-[2px] border-[#2D2D43] bg-[#242129] bg-opacity-60 px-2 py-2 text-white placeholder:text-[#433E4B] focus:outline-none"
+										value={firstName}
+										onChange={(e) => {setFirstName(e.target.value)}}
+									/>
+								</div>
+								<div className="flex flex-col justify-start m-2">
+									<span className="text-[#938989] font-semibold font-lg">Last Name</span>
+									<input
+										required
+										className="rounded-lg border-[2px] border-[#2D2D43] bg-[#242129] bg-opacity-60 px-2 py-2 text-white placeholder:text-[#433E4B] focus:outline-none"
+										value={lastName}
+										onChange={(e) => {setLastName(e.target.value)}}
+									/>
+								</div>
+								<div className="flex flex-col justify-start m-2">
+									<span className="text-[#938989] font-semibold font-lg">Address 1</span>
+									<input
+										required
+										className="rounded-lg border-[2px] border-[#2D2D43] bg-[#242129] bg-opacity-60 px-2 py-2 text-white placeholder:text-[#433E4B] focus:outline-none"
+										value={addr1}
+										onChange={(e) => {setAddr1(e.target.value)}}
+									/>
+								</div>
+								<div className="flex flex-col justify-start m-2">
+									<span className="text-[#938989] font-semibold">Address 2</span>
+									<input
+										className="rounded-lg border-[2px] border-[#2D2D43] bg-[#242129] bg-opacity-60 px-2 py-2 text-white placeholder:text-[#433E4B] focus:outline-none"
+										value={addr2}
+										onChange={(e) => {setAddr2(e.target.value)}}
+									/>
+								</div>
+								<div className="flex flex-col justify-start m-2">
+									<span className="text-[#938989] font-semibold">City</span>
+									<input
+										required
+										className="rounded-lg border-[2px] border-[#2D2D43] bg-[#242129] bg-opacity-60 px-2 py-2 text-white placeholder:text-[#433E4B] focus:outline-none"
+										value={city}
+										onChange={(e) => {setCity(e.target.value)}}
+									/>
+								</div>
+								<div className="flex flex-col justify-start m-2">
+									<span className="text-[#938989] font-semibold">Zip code</span>
+									<input
+										required
+										className="rounded-lg border-[2px] border-[#2D2D43] bg-[#242129] bg-opacity-60 px-2 py-2 text-white placeholder:text-[#433E4B] focus:outline-none"
+										value={zip}
+										onChange={(e) => {setZip(e.target.value)}}
+									/>
+								</div>
+								<div className="flex flex-col justify-start m-2">
+									<span className="text-[#938989] font-semibold">Country</span>
+									<input
+										required
+										className="rounded-lg border-[2px] border-[#2D2D43] bg-[#242129] bg-opacity-60 px-2 py-2 text-white placeholder:text-[#433E4B] focus:outline-none"
+										value={country}
+										onChange={(e) => {setCountry(e.target.value)}}
+									/>
+								</div>
+								<div className="flex flex-col justify-start m-2">
+									<span className="text-[#938989] font-semibold">State</span>
+									<input
+										className="rounded-lg border-[2px] border-[#2D2D43] bg-[#242129] bg-opacity-60 px-2 py-2 text-white placeholder:text-[#433E4B] focus:outline-none"
+										value={state}
+										onChange={(e) => {setState(e.target.value)}}
+									/>
+								</div>
+							</div>
+							<button
+								className="py-4 px-8 z-[120] flex flex-row justify-center bg-[#008C1F2c] rounded-full mt-8 w-fit mx-auto"
+								onClick={() => {setShipping({
+									updated: true,
+									firstName: firstName,
+									lastName: lastName,
+									addr1: addr1,
+									addr2: addr2,
+									city: city,
+									country: country,
+									state: state
+								})}}	
+							>
+								<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
+									Save & Confirm
+								</span>
+							</button>
+						</div>
+					) 
+					}
 					</Dialog.Panel>
 				</Transition.Child>
 				</div>
