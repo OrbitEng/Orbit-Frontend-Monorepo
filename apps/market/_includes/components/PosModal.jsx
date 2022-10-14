@@ -17,16 +17,12 @@ export default function PosModal(props) {
 	//placeholder until I make the context
 	let shipping = 0;
 
-	useEffect(() => {
-		if(hasCookie('cart')) {
-			cart = getCookie('cart');
-		} else {
-			setCookie('cart', []);
-		}
-	}, [])
-
 	useEffect(async () => {
-		setBalance(await connection.connection.getBalance(wallet.publicKey))
+		try {
+			setBalance(await connection.connection.getBalance(wallet.publicKey))
+		} catch(e) {
+			console.log(e)
+		}
 	}, [connection])	
 	
 	return(
@@ -109,6 +105,7 @@ export default function PosModal(props) {
 								})
 							}	
 							</div>
+							{wallet.connected == true &&
 							<div className="rounded-lg flex flex-row px-4 py-2 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-between">
 								<div
 									className="flex flex-row gap-x-2 group cursor-pointer group basis-1/2 overflow-hidden"
@@ -119,7 +116,7 @@ export default function PosModal(props) {
 									</div>
 									<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden my-2 group-hover:opacity-0 transition duration-300">
 										<Image
-											src={wallet.wallet.adapter.icon}
+											src={wallet.wallet?.adapter?.icon}
 											width={50}
 											height={50}
 											objectFit="contain"
@@ -137,6 +134,7 @@ export default function PosModal(props) {
 									</div>
 								</div>
 							</div>
+							}
 							<div className="rounded-lg flex flex-row px-4 py-4 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-around overflow-hidden">
 								<div className="flex flex-col align-middle basis-2/5 flex-grow-0">
 									<h3 className="font-bold text-white">Name</h3>

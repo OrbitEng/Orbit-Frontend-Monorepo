@@ -90,7 +90,7 @@ function MyApp({ Component, pageProps }) {
     // probably a better way to do this
     if(hasCookie('cart')) {
       if(cart.total == 0) {
-        setCart(getCookie('cart'));
+        setCart(JSON.parse(getCookie('cart')));
       } else {
         setCookie('cart', cart);
       }
