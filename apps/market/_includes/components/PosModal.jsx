@@ -206,12 +206,18 @@ export default function PosModal(props) {
 							</div>
 							<div className="rounded-lg flex flex-col mt-4 justify-between px-8 border-[1px] border-[#5F5F5F] text-white font-bold divide-y-[1px] divide-[#5F5F5F]">
 								<div className="flex flex-row justify-between py-3">
-									<span>Balance:</span>
-									<span>{(balance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
+									<span className="my-auto">Balance:</span>
+									<div className="flex flex-col">
+										<span>{(balance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
+										<span className="text-xs font-normal">$----</span>
+									</div>
 								</div>
 								<div className="flex flex-row justify-between py-3">
-									<span>Amount Due:</span>
-									<span>{(props.cart.total/LAMPORTS_PER_SOL || 0) + " SOL"}</span>
+									<span className="my-auto">Amount Due:</span>
+									<div className="flex flex-col">
+										<span>{(props.cart.total/LAMPORTS_PER_SOL || 0) + " SOL"}</span>
+										<span className="text-xs font-normal">$----</span>
+									</div>
 								</div>
 							</div>
 							<button
