@@ -13,6 +13,7 @@ export default function CartSideMenu(props) {
 
 	useEffect(() => {
 		setCart({...cart, total: 0});
+		console.log(cart);
 		cart?.items?.map((item) => {
 			setCart(cart => ({items: cart.items, total: cart.price + item.price}))
 		})
@@ -76,9 +77,14 @@ export default function CartSideMenu(props) {
 																	<div key={index} className="flex flex-row rounded-md justify-between my-2">
 																		<div className="flex flex-row flex-shrink-0 mr-8">
 																			<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
-																				<div className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">
+																				<button 
+																					onClick={() => {
+																						setCart({...cart.slice(0,index), items,})
+																					}}
+																					className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs"
+																				>
 																					<XMarkIcon className="h-3 w-3 text-white stroke-[3px]"/>
-																				</div>
+																				</button>
 																				<Image 
 																					className="rounded-md"
 																					layout="fill"

@@ -69,6 +69,7 @@ export function HomeHeader(props) {
 	const [menuOpen, setMenuOpen] = useState(false);
 
 	const {cart, setCart} = useContext(CartCtx);
+	const Notifications = 5;
 
 	useEffect(async ()=>{
 		let temp_wallet = wallet;
@@ -137,8 +138,10 @@ export function HomeHeader(props) {
 					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]">
 						<EnvelopeIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 						{
-							(props.chatNotifications || props.chatNotifications > 0) &&
-							<div className="inline-flex absolute font-serif bg-red-500 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">{props.notifications > 999 ? "+999" : props.notifications}</div>
+
+							<span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+								{Notifications > 999 ? "+999" : Notifications}
+							</span>
 						}
 					</button>
 				</div>
@@ -154,14 +157,16 @@ export function HomeHeader(props) {
 							)
 						}
 					</div>
-					<button 
-						className="rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]"
+					<button
+						className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]"
 						onClick={() => setMenuOpen(true)}
 					>
 						<ShoppingCartIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 						{
-							(props.cartItems || props.cartItems > 0) &&
-							<div className="inline-flex absolute font-serif bg-red-500 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">{props.notifications > 999 ? "+999" : props.notifications}</div>
+							(cart || cart?.items > 0) &&
+							<span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+								{cart.items.length > 999 ? "+999" : cart.items.length}
+							</span>
 						}
 					</button>
 					<CartSideMenu open={menuOpen} setOpen={setMenuOpen} cartItems={cartItems}/>
