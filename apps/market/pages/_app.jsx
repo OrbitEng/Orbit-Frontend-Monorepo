@@ -82,7 +82,7 @@ function MyApp({ Component, pageProps }) {
       image:"/demologos.png",
       price: 12340000000,
     }],
-    total: 0
+    total: 0,
   });
 
   // This handles updating the cookies for cart useState changes

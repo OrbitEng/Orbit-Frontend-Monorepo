@@ -20,6 +20,7 @@ export default function CartSideMenu(props) {
 	}, [cart?.items?.length])
 	
 	let shipping = 0;
+	console.log(cart.total);
 
 	return (
 		<Transition.Root show={props.open} as={Fragment}>
@@ -79,7 +80,7 @@ export default function CartSideMenu(props) {
 																			<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
 																				<button 
 																					onClick={() => {
-																						setCart({...cart.slice(0,index), items,})
+																						setCart({items:[...cart.items.slice(0,index)], total: cart.total})
 																					}}
 																					className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs"
 																				>
