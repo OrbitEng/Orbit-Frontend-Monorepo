@@ -15,7 +15,7 @@ export default function PosModal(props) {
 	const [cart, setCart] = useContext(CartCtx);
 
 	//placeholder until I make the context
-	let shipping = 0;
+	let shipping = 1;
 
 	useEffect(() => {
 		if(hasCookie('cart')) {

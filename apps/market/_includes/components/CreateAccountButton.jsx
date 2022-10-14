@@ -39,7 +39,7 @@ export default function CreateAccountButton(props) {
 		<button
 			type="button"
 			onClick={openModal}
-			className="px-4 py-2 text-sm font-medium text-white focus:outline-none"
+			className="px-4 py-2 text-sm whitespace-nowrap font-medium text-white focus:outline-none"
 		>
 			Create Account
 		</button>
