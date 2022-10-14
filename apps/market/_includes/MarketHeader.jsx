@@ -139,7 +139,7 @@ export function HomeHeader(props) {
 						<EnvelopeIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 						{
 
-							<span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+							<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
 								{Notifications > 999 ? "+999" : Notifications}
 							</span>
 						}
@@ -164,7 +164,7 @@ export function HomeHeader(props) {
 						<ShoppingCartIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 						{
 							(cart || cart?.items > 0) &&
-							<span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+							<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
 								{cart.items.length > 999 ? "+999" : cart.items.length}
 							</span>
 						}
