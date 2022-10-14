@@ -1,5 +1,6 @@
 import 'styles/globals.css'
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { getCookie, hasCookie, setCookie } from 'cookies-next';
 
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -42,6 +43,8 @@ import TransactionClientCtx from '@contexts/TransactionClientCtx';
 import ProductCacheCtx from '@contexts/ProductCacheCtx';
 import VendorCacheCtx from '@contexts/VendorCacheCtx';
 
+import CartCtx from '@contexts/CartCtx';
+
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
@@ -59,6 +62,42 @@ function MyApp({ Component, pageProps }) {
 
   const [ productCache, setProductCache] = useState();
   const [ vendorCache, setVendorCache ] = useState();
+
+  const [cart, setCart] = useState({
+    items: [{
+      name:"100 Icon pack",
+      vendorUserName:"@testing123",
+      image:"/demologos.png",
+      price: 12340000000,
+    },
+    {
+      name:"100 Icon pack",
+      vendorUserName:"@testing123",
+      image:"/demologos.png",
+      price: 12340000000,
+    },
+    {
+      name:"100 Icon pack",
+      vendorUserName:"@testing123",
+      image:"/demologos.png",
+      price: 12340000000,
+    }],
+    total: 0
+  });
+
+  // This handles updating the cookies for cart useState changes
+  useEffect(() => {
+    // probably a better way to do this
+    if(hasCookie('cart')) {
+      if(cart.total == 0) {
+        setCart(getCookie('cart'));
+      } else {
+        setCookie('cart', cart);
+      }
+    } else {
+      setCookie('cart', cart)
+    }
+  }, [cart.items])
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet
@@ -105,7 +144,9 @@ function MyApp({ Component, pageProps }) {
                                   <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
                                     <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
                                       <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
-                                        <Component {...pageProps} />
+                                        <CartCtx.Provider value={{cart, setCart}} >
+                                          <Component {...pageProps} />
+                                        </CartCtx.Provider>
                                       </VendorCacheCtx.Provider>
                                     </ProductCacheCtx.Provider>
                                   </BundlrCtx.Provider>

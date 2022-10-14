@@ -28,6 +28,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import CreateAccountButton from '@includes/components/CreateAccountButton';
 import ProfileButton from '@includes/components/ProfileButton';
 import CartSideMenu from './components/CartSideMenu';
+import CartCtx from '@contexts/CartCtx';
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
@@ -66,6 +67,8 @@ export function HomeHeader(props) {
 
 	const [marketAccount, setMarketAccount] = useState(undefined);
 	const [menuOpen, setMenuOpen] = useState(false);
+
+	const {cart, setCart} = useContext(CartCtx);
 
 	useEffect(async ()=>{
 		let temp_wallet = wallet;

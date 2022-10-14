@@ -1,20 +1,24 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useContext, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { BoltIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from "next/image";
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import PosModal from './PosModal';
+import CartCtx from '@contexts/CartCtx';
 
 export default function CartSideMenu(props) {
 	const [cartTotal, setCartTotal] = useState(0);
 	const [openPos, setOpenPos] = useState(false);
+	const {cart, setCart} = useContext(CartCtx);
 
 	useEffect(() => {
-		setCartTotal(0);
-		props?.cartItems?.map((item) => {
-			setCartTotal(t => t + item.price)
+		setCart({...cart, total: 0});
+		cart?.tems?.map((item) => {
+			setCart(cart => ({items: cart.items, total: cart.price + item.price}))
 		})
-	}, [props.cartItems.length])
+	}, [cart?.items?.length])
+	
+	let shipping = 0;
 
 	return (
 		<Transition.Root show={props.open} as={Fragment}>

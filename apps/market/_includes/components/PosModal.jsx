@@ -4,32 +4,26 @@ import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon, PencilIcon, TrashIcon 
 import Image from "next/image"
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { getCookie, hasCookie, setCookie } from "cookies-next";
 
-const paymentTokens = [
-	{
-	  name: 'Solana',
-	  mainnetAddr: '11111111111111111111111111111111',
-	  devnetAddr: '11111111111111111111111111111111'
-	},
-	{
-	  name: 'USDC',
-	  mainnetAddr: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-	  devnetAddr: '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU'
-	},
-  ]
+import CartCtx from "@contexts/CartCtx";
 
 export default function PosModal(props) {
 	let wallet = useWallet();
-	let connection = useConnection()
-	const [balance, setBalance] = useState(0)
+	let connection = useConnection();
+	const [balance, setBalance] = useState(0);
+	const [cart, setCart] = useContext(CartCtx);
 
-	/* this is the shit for shipping and cart context
-		const [ cart, setCart ] = useContext(CartCtx);
-		const [ shipping, setShipping ] = useContext(ShippingCtx);
-	*/
+	//placeholder until I make the context
+	let shipping = 0;
 
-	const shipping = 0;
-	const cart = 0;
+	useEffect(() => {
+		if(hasCookie('cart')) {
+			cart = getCookie('cart');
+		} else {
+			setCookie('cart', []);
+		}
+	}, [])
 
 	useEffect(async () => {
 		setBalance(await connection.connection.getBalance(wallet.publicKey))
@@ -154,10 +148,15 @@ export default function PosModal(props) {
 								</div>
 								<div className="flex flex-col align-middle basis-1/5 flex-grow-0 my-auto">
 									<div className="flex flex-row justify-center">
-										<button className="rounded bg-[#212121] mx-1 p-1">
+										<button
+											className="rounded bg-[#212121] mx-1 p-1"
+
+										>
 											<PencilIcon className="h-4 w-4 text-white"/>
 										</button>
-										<button className="rounded bg-[#212121] mx-1 p-1">
+										<button 
+											className="rounded bg-[#212121] mx-1 p-1"
+										>
 											<TrashIcon className="h-4 w-4 text-red-500"/>
 										</button>
 									</div>
