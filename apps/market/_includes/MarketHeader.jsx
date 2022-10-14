@@ -70,6 +70,9 @@ export function HomeHeader(props) {
 
 	const {cart, setCart} = useContext(CartCtx);
 	const Notifications = 5;
+	useEffect(() => {
+		console.log("CART:\n" + JSON.stringify(cart));
+	}, [cart.items])
 
 	useEffect(async ()=>{
 		let temp_wallet = wallet;
@@ -163,7 +166,7 @@ export function HomeHeader(props) {
 					>
 						<ShoppingCartIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 						{
-							(cart || cart?.items > 0) &&
+							(cart && cart.items.length > 0) &&
 							<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
 								{cart.items.length > 999 ? "+999" : cart.items.length}
 							</span>
