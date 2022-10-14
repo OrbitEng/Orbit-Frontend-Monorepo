@@ -97,7 +97,7 @@ function MyApp({ Component, pageProps }) {
     } else {
       setCookie('cart', cart)
     }
-  }, [cart.items])
+  }, [])
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet

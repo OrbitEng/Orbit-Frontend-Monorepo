@@ -13,7 +13,7 @@ export default function CartSideMenu(props) {
 
 	useEffect(() => {
 		setCart({...cart, total: 0});
-		cart?.tems?.map((item) => {
+		cart?.items?.map((item) => {
 			setCart(cart => ({items: cart.items, total: cart.price + item.price}))
 		})
 	}, [cart?.items?.length])
@@ -71,7 +71,7 @@ export default function CartSideMenu(props) {
 												<div className="h-full scrollbar overflow-scroll flex flex-col px-4" aria-hidden="true" >
 													<div className="flex flex-col pb-auto h-full mb-4 border-y-[0.5px] border-[#535353] py-3">
 														{
-															props?.cartItems?.map((item, index) => {
+															cart?.items?.map((item, index) => {
 																return(
 																	<div key={index} className="flex flex-row rounded-md justify-between my-2">
 																		<div className="flex flex-row flex-shrink-0 mr-8">
@@ -103,7 +103,7 @@ export default function CartSideMenu(props) {
 													<div className="flex flex-col">
 														<div className="rounded-lg flex flex-row justify-between px-8 py-3 border-[1px] border-[#5F5F5F] text-white font-bold text-xl">
 															<span>Total</span>
-															<span>{cartTotal/LAMPORTS_PER_SOL + " SOL"}</span>
+															<span>{cart?.total/LAMPORTS_PER_SOL + " SOL"}</span>
 														</div>
 														<button
 															onClick={() => {

@@ -15,7 +15,7 @@ export default function PosModal(props) {
 	const [cart, setCart] = useContext(CartCtx);
 
 	//placeholder until I make the context
-	let shipping = 1;
+	let shipping = 0;
 
 	useEffect(() => {
 		if(hasCookie('cart')) {
@@ -125,9 +125,9 @@ export default function PosModal(props) {
 											objectFit="contain"
 										/>
 									</div>
-									<div className="flex flex-col align-middle my-auto group-hover:opacity-0 transition duration-300 flex-grow-0">
+									<div className="flex flex-col align-middle my-auto group-hover:opacity-0 transition duration-300 flex-grow-0 truncate">
 										<span className="text-[#A4A4A4] truncate text-xs">{wallet.wallet.adapter.name}</span>
-										<span className="font-semibold text-white truncate text-sm -mt-1">{wallet.publicKey.toString()}</span>
+										<span className="font-semibold text-white truncate text-sm -mt-1">{wallet.publicKey+""}</span>
 									</div>
 								</div>
 								<div className="align-middle bg-[#5F5F5F] backdrop-blur bg-opacity-20 flex flex-row gap-x-[6px] rounded px-2 my-auto basis-6/10">
