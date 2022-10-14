@@ -12,11 +12,11 @@ export default function CartSideMenu(props) {
 	const {cart, setCart} = useContext(CartCtx);
 
 	useEffect(() => {
-		setCart({...cart, total: 0});
-		console.log(cart);
+		let tmpTotal = 0;
 		cart?.items?.map((item) => {
-			setCart(cart => ({items: cart.items, total: cart.price + item.price}))
+			tmpTotal += item.price;
 		})
+		setCart(cart => ({items: cart.items, total: tmpTotal}))
 	}, [cart?.items?.length])
 	
 	let shipping = 0;

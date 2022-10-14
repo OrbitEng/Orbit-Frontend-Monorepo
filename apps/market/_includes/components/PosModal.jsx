@@ -76,14 +76,22 @@ export default function PosModal(props) {
 							</div>
 							<div className="flex flex-col border-y-[0.5px] border-[#535353] px-4">
 							{
-								props?.cartItems?.map((item, index) => {
+								cart?.items?.map((item, index) => {
 									return(
 										<div key={index} className="flex flex-row rounded-md justify-between my-2">
 											<div className="flex flex-row flex-shrink-0 mr-8">
 												<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
-													<div className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">
+													<button 
+														onClick={() => {
+															setCart({
+																items:[...cart.items.slice(0,index), ...cart.items.slice(index+1)],
+																total: cart.total
+															})
+														}}
+														className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs"
+													>
 														<XMarkIcon className="h-3 w-3 text-white stroke-[3px]"/>
-													</div>
+													</button>
 													<Image 
 														className="rounded-md"
 														layout="fill"
@@ -103,7 +111,7 @@ export default function PosModal(props) {
 										</div>
 									)
 								})
-							}	
+							}
 							</div>
 							{wallet.connected == true &&
 							<div className="rounded-lg flex flex-row px-4 py-2 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-between">
