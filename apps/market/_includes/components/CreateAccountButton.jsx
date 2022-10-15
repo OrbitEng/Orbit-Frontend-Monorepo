@@ -3,7 +3,7 @@ import { Fragment, useState, useContext } from 'react'
 
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import { MarketAccountFunctionalities } from '@functionalities/Accounts';
-import {SignupModal} from '@includes/components/SignupForum';
+import {SignupForm} from '@includes/components/SignupForm';
 
 export default function CreateAccountButton(props) {
 	let [isOpen, setIsOpen] = useState(false);
@@ -70,7 +70,7 @@ export default function CreateAccountButton(props) {
 					<div>
 						<div className="absolute -inset-0 w-full h-full bg-black z-0 rounded-2xl" />
 						<Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all">
-							<SignupModal/>
+							<SignupForm/>
 						</Dialog.Panel>
 					</div>
 				</Transition.Child>

@@ -67,7 +67,7 @@ export default function ProductsPage(props) {
 		
 		switch (productType){
 			case "commission":
-			case "template":
+			case "digital":
 				tp = await digitalMarketClient.GetDigitalProduct(productId);
 				break;
 			case "physical":
@@ -93,7 +93,7 @@ export default function ProductsPage(props) {
 	return (
 		<>
 			{ productType === "physical" && <DigitalProductLayout id={productId} product={dummyService} /> }
-			{ productType === "template" && <DigitalProductLayout id={productId} product={dummyService} /> }
+			{ productType === "digital" && <DigitalProductLayout id={productId} product={dummyService} /> }
 			{ productType === "commission" && <DigitalProductLayout id={productId} product={dummyService} /> }
 		</>
 	)

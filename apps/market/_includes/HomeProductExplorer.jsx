@@ -6,38 +6,49 @@ import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
 import ProductClientCtx from "@contexts/ProductClientCtx";
 
 export function HomeProductExplorer(props) {
-	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
-	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {productClient} = useContext(ProductClientCtx);
 
 	const [ digitalProducts, setDigitalProducts ] = useState();
 	const [ physicalProducts, setPhysicalProducts ] = useState();
+	const [ commissionProducts, setCommissionProducts ] = useState();
 
 	const updateDigitalProducts = async ()=>{
-		if(!digitalMarketClient)return;
+		if(!productClient)return;
 		setDigitalProducts(
-			await digitalMarketClient.GetMultipleDigitalProducts(
+			await productClient.GetMultipleDigitalProducts(
 				(await productClient.GetRecentMarketListings(
-					productClient.GenRecentCatalog("digital")
+					productClient.GenRecentListings("digital")
 				)).data.pubkeys
 			)
 		)
 	};
 
 	const updatePhysicalProducts = async ()=>{
-		if(!physicalMarketClient)return;
+		if(!productClient)return;
 		setPhysicalProducts(
-			await physicalMarketClient.GetMultiplePhysicalProducts(
+			await productClient.GetMultiplePhysicalProducts(
 				(await productClient.GetRecentMarketListings(
-					productClient.GenRecentCatalog("physical")
+					productClient.GenRecentListings("physical")
+				)).data.pubkeys
+			)
+		)
+	};
+
+	const updateCommissionProducts = async ()=>{
+		if(!productClient)return;
+		setCommissionProducts(
+			await productClient.GetMultipleCommissionProducts(
+				(await productClient.GetRecentMarketListings(
+					productClient.GenRecentListings("commission")
 				)).data.pubkeys
 			)
 		)
 	};
 
 	useEffect(async ()=>{
-		await updateDigitalProducts();
-		await updatePhysicalProducts();
+		// await updateDigitalProducts();
+		// await updatePhysicalProducts();
+		// await updateCommissionProducts();
 	},[updateDigitalProducts, updatePhysicalProducts])
 
 	return(
@@ -57,6 +68,12 @@ export function HomeProductExplorer(props) {
 				})}
 
 				{physicalProducts?.map((c, i) => {
+					return(
+						<ProductDisplayCardHome product={c} key={i}/>
+					)
+				})}
+
+				{commissionProducts?.map((c, i) => {
 					return(
 						<ProductDisplayCardHome product={c} key={i}/>
 					)

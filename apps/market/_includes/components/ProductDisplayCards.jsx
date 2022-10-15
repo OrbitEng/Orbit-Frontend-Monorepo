@@ -13,6 +13,7 @@ import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 
 import {ArQueryClient} from "data-transfer-clients";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities } from "@functionalities/Products";
+import ProductClientCtx from "@contexts/ProductClientCtx";
 
 export function EmptyProductDisplayCardHome(props) {
 	let paymentList = ["solana", "usdc"]
@@ -39,9 +40,8 @@ export function EmptyProductDisplayCardHome(props) {
 }
 
 export function ProductDisplayCardHome(props) {
-	const {digitalMarketClient} = useContext(DigitalMarketCtx);
-	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {productClient} = useContext(ProductClientCtx);
 	const {setProductCache} = useContext(ProductCacheCtx);
 	const {setVendorCache} = useContext(VendorCacheCtx);
 
@@ -64,60 +64,54 @@ export function ProductDisplayCardHome(props) {
 	const [digitalProductFuncs,] = useState(DigitalProductFunctionalities());
 	const [physicalProductFuncs,] = useState(PhysicalProductFunctionalities());
 
-	useEffect(async ()=>{
-		switch(props.type){
-			case "commission":
-				setGlowColor("bg-[#4541EE]");
-				setBorderColor("border-[#4541EE]");
-				setBgColor("card-service-bg");
-				buttonSet = (
-					<div className="flex flex-row justify-center mt-3">
-						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
-					</div>
-				);
-				if (digitalMarketClient) {
-					tp = await digitalMarketClient.GetDigitalProduct(props.address);
-					(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs?.ResolveProductInfo(tp.data.metadata.info));
-					(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs?.ResolveProductMedia(tp.data.metadata.media));
-				}
-				break;
-			case "template":
-				setGlowColor("bg-[#FF31B9]");
-				setBorderColor("border-[#FF31B9]");
-				setBgColor("card-service-bg");
-				if (digitalMarketClient) {
-					tp = await digitalMarketClient.GetDigitalProduct(props.address);
-					(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs?.ResolveProductInfo(tp.data.metadata.info));
-					(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs?.ResolveProductMedia(tp.data.metadata.media));
-				}
-				break;
-			case "physical":
-				setGlowColor("bg-[#4541EE]");
-				setBorderColor("border-[#4541EE]");
-				setBgColor("card-digital-bg");
-				if (physicalMarketClient) {
-					tp = await physicalMarketClient.GetPhysicalProduct(props.address);
-					tp.data.metadata.info = await physicalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
-					tp.data.metadata.images = await physicalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
-				}
-				break;
-			case "nft":
-				setGlowColor("bg-[#4541EE]");
-				setBorderColor("border-[#4541EE]");
-				setBgColor("card-digital-bg");
-				break;
-			default:
-				break;
-		};
+	// useEffect(async ()=>{
+	// 	switch(props.type){
+	// 		case "commission":
+	// 			setGlowColor("bg-[#4541EE]");
+	// 			setBorderColor("border-[#4541EE]");
+	// 			setBgColor("card-service-bg");
+	// 			buttonSet = (
+	// 				<div className="flex flex-row justify-center mt-3">
+	// 					<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
+	// 				</div>
+	// 			);
+	// 			tp = (await productClient.GetDigitalProduct(props.address)).data.metadata;
+	// 			(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs?.ResolveProductInfo(tp.data.metadata.info));
+	// 			(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs?.ResolveProductMedia(tp.data.metadata.media));
+	// 			break;
+	// 		case "digital":
+	// 			setGlowColor("bg-[#FF31B9]");
+	// 			setBorderColor("border-[#FF31B9]");
+	// 			setBgColor("card-service-bg");
+	// 			tp = (await productClient.GetDigitalProduct(props.address)).data.metadata;
+	// 			(tp===undefined) || (tp.data.metadata.info = await digitalProductFuncs?.ResolveProductInfo(tp.data.metadata.info));
+	// 			(tp===undefined) || (tp.data.metadata.images = await digitalProductFuncs?.ResolveProductMedia(tp.data.metadata.media));
+	// 			break;
+	// 		case "physical":
+	// 			setGlowColor("bg-[#4541EE]");
+	// 			setBorderColor("border-[#4541EE]");
+	// 			setBgColor("card-digital-bg");
+	// 			tp = await productClient.GetPhysicalProduct(props.address);
+	// 			tp.data.metadata.info = await physicalProductFuncs.ResolveProductInfo(tp.data.metadata.info);
+	// 			tp.data.metadata.images = await physicalProductFuncs.ResolveProductMedia(tp.data.metadata.media);
+	// 			break;
+	// 		case "nft":
+	// 			setGlowColor("bg-[#4541EE]");
+	// 			setBorderColor("border-[#4541EE]");
+	// 			setBgColor("card-digital-bg");
+	// 			break;
+	// 		default:
+	// 			break;
+	// 	};
 		
-		if(tp){
-			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
-			vendor.data.profilePic = GetPfp(vendor.data.profilePic);
-			tp.data.metadata.seller = vendor;
-			setVendor(vendor);
-		};
-		setProd(tp);
-	},[])
+	// 	if(tp){
+	// 		let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
+	// 		vendor.data.profilePic = GetPfp(vendor.data.profilePic);
+	// 		tp.data.metadata.seller = vendor;
+	// 		setVendor(vendor);
+	// 	};
+	// 	setProd(tp);
+	// },[])
 
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">

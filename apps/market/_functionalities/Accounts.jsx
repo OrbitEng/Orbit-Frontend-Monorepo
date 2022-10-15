@@ -18,8 +18,10 @@ export function MarketAccountFunctionalities(props){
     // CHECK HEADER
     // pfp is a file
     const CreateAccount = async(user_metadata, pfp = undefined, reflink = undefined)=>{
-        console.log("creating account", bundlrClient)
-
+        console.log("creating account")
+        if (reflink == ""){
+            reflink = undefined
+        }
         try{
             let pfp_link = "";
             if(pfp){
@@ -38,6 +40,7 @@ export function MarketAccountFunctionalities(props){
                 reflink
             );
         }catch(e){
+            console.log(e, "error")
             return "could not create your account at the current time. please try again later"
         }
     }
@@ -49,6 +52,13 @@ export function MarketAccountFunctionalities(props){
         );
 
         await marketAccountsClient.UpdatePfp(ar_addr);
+    }
+
+    const UpdateMetadata = async(user_metadata) =>{
+        let metadata_addr = await bundlrClient.UploadBuffer(
+            JSON.stringify(user_metadata)
+        );
+        await marketAccountsClient.UpdateMetadata(metadata_addr)
     }
 
     const SetReflink = async(reflink) => {
@@ -160,6 +170,7 @@ export function MarketAccountFunctionalities(props){
         GetPfp,
         GetMetadata,
         SetReflink,
+        UpdateMetadata,
         UnsetReflink,
         CreateReflink,
         DeleteReflink,

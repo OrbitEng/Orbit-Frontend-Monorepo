@@ -1,7 +1,6 @@
 import { HomeBanner } from '@includes/CardCarousel'
 import { ProductDisplayCard } from '@includes/components/ProductDisplayCards'
 import { PageSearchBar, HeaderSearchBar } from '@includes/components/SearchBar'
-import { HomeProductExplorer } from '@includes/HomeProductExplorer'
 import { HomeHeader } from '@includes/MarketHeader'
 import ProductShowcaseRow from '@includes/ProductShowcaseRow'
 import TopVendorsDisplay from '@includes/TopVendorsDisplay'
@@ -40,13 +39,13 @@ export function Home(props) {
 		if(!digitalMarketClient || !physicalMarketClient || !productClient) return;
 
 		let digital_catalog = await productClient.GetRecentMarketListings(
-			productClient.GenRecentCatalog("digital")
+			productClient.GenRecentListings("digital")
 		);
 		let commission_catalog = await productClient.GetRecentMarketListings(
-			productClient.GenRecentCatalog("commission")
+			productClient.GenRecentListings("commission")
 		);
 		let physical_catalog = await productClient.GetRecentMarketListings(
-			productClient.GenRecentCatalog("physical")
+			productClient.GenRecentListings("physical")
 		);
 
 
@@ -74,8 +73,8 @@ export function Home(props) {
 					<PageSearchBar ref={ref}/>
 					<TopVendorsDisplay />
 					<ProductShowcaseRow title="Physical Items" prod_type="physical" addresses={recentPhysicals} searchable />
-					<ProductShowcaseRow title="Digital Products" prod_type="template" addresses={recentTemplatess} searchable />
-					<ProductShowcaseRow title="Services" prod_type="commission" addresses={recentCommissions} searchable />
+					{/* <ProductShowcaseRow title="Digital Products" prod_type="digital" addresses={recentTemplatess} searchable />
+					<ProductShowcaseRow title="Services" prod_type="commission" addresses={recentCommissions} searchable /> */}
 					<NewsStand />
 				</div>
 				<MainFooter />

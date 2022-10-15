@@ -23,7 +23,7 @@ export default function ProfileButton(props) {
 	useEffect(() => {
 		if (wallet.connected && marketAccountsClient){
 			setMarketAccountAddr(
-				(marketAccountsClient.GenAccountAddress(wallet.publicKey))[0] || undefined
+				(marketAccountsClient.GenAccountAddress(wallet.publicKey)) || undefined
 			)
 		}
 		console.log("Market Account Addr: " + marketAccountAddr);

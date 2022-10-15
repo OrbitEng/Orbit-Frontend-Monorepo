@@ -1,11 +1,11 @@
 import { GenericLayout } from "@layouts/HeaderFooterGenericLayout";
-import {SignupForum} from "@includes/components/SignupForum";
+import {SignupForm} from "@includes/components/SignupForm";
 
 export default function Signup() {
 	return(
 		<GenericLayout>
 			<div className="mt-10 mb-20">
-				<SignupForum/>
+				<SignupForm/>
 			</div>
 		</GenericLayout>
 	)

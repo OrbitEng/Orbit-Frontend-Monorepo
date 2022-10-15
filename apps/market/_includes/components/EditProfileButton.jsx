@@ -3,7 +3,7 @@ import { useState, useContext, Fragment } from "react";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
-import { EditModal } from "@includes/components/SignupForum";
+import { EditModal } from "@includes/components/SignupForm";
 
 export default function EditProfileButton(props) {
 	let [isOpen, setIsOpen] = useState(false);
