@@ -15,8 +15,11 @@ export function PhysicalListingsModal(props){
     const openModal = async() => {
         setIsOpen(true)
     }
-    const handleSubmit = () => {
-		AddVendorPhysicalListings()
+    const handleSubmit = async () => {
+		await AddVendorPhysicalListings();
+        await props.setVendorPhysicalCatalog(
+            await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"))
+        )
 		closeModal()
 	}
     return (

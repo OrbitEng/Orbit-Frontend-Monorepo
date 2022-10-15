@@ -46,8 +46,7 @@ export function PhysicalUploadForm(props) {
 			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"));
 			if(vc && vc.data){
 				setVendorPhysicalCatalog(vc)
-			}else{
-            }
+			}
 		}catch(e){
             console.log(e)
 		}
