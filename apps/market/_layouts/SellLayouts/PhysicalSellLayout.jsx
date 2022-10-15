@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useContext, useEffect } from "react";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
@@ -9,9 +9,8 @@ import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
 import {PhysicalProductFunctionalities} from "@functionalities/Products";
-import { useEffect } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import { useContext } from "react";
+import { PhysicalListingsModal } from "@includes/components/InitListingsModal";
 import Link from "next/link";
 
 const token_addresses = {
@@ -44,14 +43,14 @@ export function PhysicalUploadForm(props) {
 
 	useEffect(async()=>{
 		try{
-			let vc = await productClient.GetVendorCatalog(
-				productClient.GenListingsAddress("physical")
-			);
+			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"));
 			if(vc && vc.data){
 				setVendorPhysicalCatalog(vc)
-			}
+			}else{
+                return <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/>
+            }
 		}catch(e){
-
+            return <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/>
 		}
 	},[])
 
@@ -270,6 +269,5 @@ export function PhysicalUploadForm(props) {
             </div>
             </main>
         </div>
-		
 	)
 }

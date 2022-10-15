@@ -12,9 +12,7 @@ export default function CreateAccountButton(props) {
 
 	const {CreateAccount} = MarketAccountFunctionalities();
 
-	const closeModal = async () => {
-		setIsOpen(false)
-	}
+	
 
 	const createAccount = async () => {
 		CreateAccount({nickname: nickName}, undefined, undefined);
@@ -25,14 +23,19 @@ export default function CreateAccountButton(props) {
 		)
 	}
 
-	const handleSubmit = () => {
-		createAccount()
-		closeModal()
+	const closeModal = async () => {
+		setIsOpen(false)
 	}
 
 	const openModal = async() => {
 		setIsOpen(true)
 	}
+	
+	const handleSubmit = () => {
+		createAccount()
+		closeModal()
+	}
+
 
   return (
     <div>
