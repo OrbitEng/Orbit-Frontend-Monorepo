@@ -44,9 +44,7 @@ export function PhysicalUploadForm(props) {
 	useEffect(async()=>{
 		try{
 			let vc = await productClient.GetVendorCatalog(
-				productClient.GenVendorListingsAddress(
-					productClient.market_account_address, "physical"
-				)[0]
+				productClient.GenListingsAddress("physical")
 			);
 			if(vc && vc.data){
 				setVendorPhysicalCatalog(vc)

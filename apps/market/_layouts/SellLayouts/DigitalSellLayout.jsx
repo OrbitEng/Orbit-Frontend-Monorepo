@@ -45,9 +45,7 @@ export function DigitalUploadForm(props) {
 	useEffect(async ()=>{
 		try{
 			let vc = await productClient.GetListingsStruct(
-				productClient.GenVendorListingsAddress(
-					productClient.market_account_address, "digital"
-				)[0]
+				productClient.GenListingsAddress("digital")
 			);
 			if(vc && vc.data){
 				setVendorDigitalCatalog(vc)
@@ -64,41 +62,55 @@ export function DigitalUploadForm(props) {
 
 	//////////////////////////////////////////////////
 	// Functions for managing product preview images
-	const [previewFiles, setPreviewFiles] = useState([]);
-	const prevFilesCallback = useCallback((acceptedFiles) => {
-		setPreviewFiles(cf => [...cf, ...acceptedFiles], ()=>{
-            console.log("called")
-            setBigPreviewSrc(cf[0])
-        });
-	}, [])
 
-	const deletePreviewFile = (filein) => {
-		let index = previewFiles.indexOf(filein);
-		if(index == -1){
-			return;
-		}
-		setPreviewFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
+	const [previewFiles, setPreviewFiles] = useState([]);
+
+    const deletePreviewFile = (filein) => {
+        let index = previewFiles.indexOf(filein);
+        if(index == -1){
+            return;
+        }
+        setPreviewFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
+    }
+
+	const prevFilesCallback = (acceptedFiles) => {
+		setPreviewFiles(cf => [...cf, ...acceptedFiles]);
+        setBigPreviewSrc(URL.createObjectURL(acceptedFiles[0]));
+        setDelFileFuncArgs(["deletePreviewFile", acceptedFiles[0]]);
 	}
 
-	const {getRootProps, getInputProps, open: openPreview} = useDropzone({onDrop: prevFilesCallback});
+	const {getRootProps: getPrevRootProps, getInputProps: getPrevInputProps, open: openPreview} = useDropzone({onDrop: prevFilesCallback});
 	
 
 	//////////////////////////////////////////////////
 	// Functions for managing product images
 	const [productFiles, setProductFiles] = useState([]);
-	const prodFilesCallback = useCallback((acceptedFiles) => {
-		setProductFiles(cf => [...cf, ...acceptedFiles])
-	}, [])
 
-	const deleteProductFile = (filein) => {
+	const deleteProductFile = useCallback((filein) => {
 		let index = productFiles.indexOf(filein);
 		if(index == -1){
 			return;
 		}
 		setProductFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
+	}, [productFiles])
+
+    const prodFilesCallback = (acceptedFiles) => {
+		setProductFiles(cf =>[...cf, ...acceptedFiles]);
+        setBigPreviewSrc(URL.createObjectURL(acceptedFiles[0]));
+        setDelFileFuncArgs(["deleteProductFile", acceptedFiles[0]]);
 	}
 
-	const {getRootProps: getProdRootProps, open: openProduct} = useDropzone({onDrop: prodFilesCallback})
+	const {getRootProps: getProdRootProps, getInputProps: getProdInputProps, open: openProduct} = useDropzone({onDrop: prodFilesCallback})
+
+    //////////////////////////
+    const [delFileFuncArgs, setDelFileFuncArgs] = useState([]);
+    const delFileFunc = useCallback(()=>{
+        if(delFileFuncArgs[0] == "deletePreviewFile"){
+            deletePreviewFile(delFileFuncArgs[1])
+        }else{
+            deleteProductFile(delFileFuncArgs[1])
+        }
+    }, [delFileFuncArgs, previewFiles, productFiles, deletePreviewFile, deleteProductFile])
 
 	return(
         <div className="w-full min-h-screen bg-transparent">
@@ -108,8 +120,8 @@ export function DigitalUploadForm(props) {
 			</Head>
             <main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
             <HomeHeader headerMiddle={searchBar}/>
-            <div className={"pt-14 lg:pt-32 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
-                <div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
+            <div className="pt-14 lg:pt-32 sm:-mt-32 w-full align-center min-h-view">
+                <div className="flex flex-col w-full mx-auto my-auto content-center w-1/3 min-h-screen">
                 <h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
                 <Link href={"/sell"}>
                 <button className="flex flex-row space-x-1 mb-10 align-middle">
@@ -118,48 +130,24 @@ export function DigitalUploadForm(props) {
                 </button>
                 </Link>
                 
-                <div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-10">
-                    <div className="w-full h-full col-span-7">
+                <div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-4 w-full">
+                    <div className="h-full col-span-3">
                         <div className="flex flex-col mb-2 leading-tight">
                             <h3 className="font-bold text-white text-xl">Upload Preview</h3>
                             <span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
                         </div>
+                        
                         <div className="flex flex-row">
-                            {
-                                !(previewFiles && previewFiles.length > 0) ? (
-                                    <div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-[75%] h-96 content-center align-middle py-12 px-20">
-                                        <input {...getInputProps()}/>
-                                        <div className="relative flex h-52 mx-16">
-                                            <Image
-                                                src="/PhotoIcon.png"
-                                                layout="fill"
-                                                objectFit="contain"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
-                                            <span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="relative rounded-2xl overflow-hidden h-96 content-center align-middle w-[75%]">
-                                        <Image
-                                            src={bigPreviewSrc || "/noneya"}
-                                            width={200}
-                                            height={200}
-                                            layout="fill"
-                                            objectFit="cover"
-                                        />
-                                    </div>
-                                )
-                            }
-                            <div className="flex flex-col scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-scroll overflow-y-scroll w-[20%] h-96 px-2 gap-y-3">
+                            <div className="flex flex-col scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-scroll overflow-y-scroll w-full h-96 px-2 gap-y-3">
                                 {
                                     previewFiles && previewFiles?.map((f,fi) => {
                                         return(
                                             <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
                                                 <button
-                                                    onClick={()=>{setBigPreviewSrc(URL.createObjectURL(f))}}
+                                                    onClick={()=>{
+                                                        setBigPreviewSrc(URL.createObjectURL(f));
+                                                        setDelFileFuncArgs(["deletePreviewFile", f]);
+                                                    }}
                                                 >
                                                     <Image
                                                         src={URL.createObjectURL(f) || "/"}
@@ -181,34 +169,80 @@ export function DigitalUploadForm(props) {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col col-span-5 flex-none flex-grow-0 h-full overflow-ellipsis">
-                        <div className="top-0 bg-transparent backdrop-blur-lg">
-                            <div className="flex flex-col mb-2 leading-tight">
+                    <div className="col-span-6 h-96">
+                        {
+                                !(bigPreviewSrc) ? (
+                                    <div {...getPrevRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl h-96 content-center align-middle py-12 px-20">
+                                        <input {...getPrevInputProps()}/>
+                                        <div className="relative flex h-52 mx-16">
+                                            <Image
+                                                src="/PhotoIcon.png"
+                                                layout="fill"
+                                                objectFit="contain"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
+                                            <span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="relative rounded-2xl overflow-hidden h-96 align-middle w-full">
+                                        <div className="z-10">
+                                            <Image
+                                                src={bigPreviewSrc || "/noneya"}
+                                                layout="fill"
+                                                objectFit="cover"
+                                            />
+                                        </div>
+                                        <button className="bottom-0 right-0 absolute z-50 p-1 align-middle my-auto mx-auto basis-1/4 justify-center border-2" onClick={()=>{
+                                            setBigPreviewSrc(undefined);
+                                            setDelFileFuncArgs(undefined);
+                                            delFileFunc()
+                                        }}>
+                                            <TrashIcon className="flex h-12 w-12"/>
+                                        </button>
+                                    </div>
+                                )
+                            }
+                    </div>
+                    <div className="flex flex-col col-span-3 flex-none flex-grow-0 h-full overflow-ellipsis ">
+                        <div className="top-0 bg-transparent backdrop-blur-lg ">
+                            <div className="flex flex-col mb-2 leading-tight items-end">
                                 <h3 className="font-bold text-white text-xl">Upload Product</h3>
                                 <span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
                             </div>
-                            <div className="flex justify-center bg-[#171717] rounded-2xl py-4 mx-auto w-full shadow-lg">
-                                <button className="bg-[#383838] font-bold text-white rounded-full mx-auto w-1/2 p-2" onClick={openProduct}>
-                                    Choose File
+                        </div>
+                        <div className="flex flex-row">
+                            <div className="flex flex-col scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-scroll overflow-y-scroll w-full h-96 px-2 gap-y-3">
+                                {
+                                    productFiles && productFiles?.map((f,fi) => {
+                                        return(
+                                            <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
+                                                <button
+                                                    onClick={()=>{
+                                                        setBigPreviewSrc(URL.createObjectURL(f));
+                                                        setDelFileFuncArgs(["deleteProductFile", f]);
+                                                    }}
+                                                >
+                                                    <Image
+                                                        src={URL.createObjectURL(f) || "/"}
+                                                        layout="fill"
+                                                        objectFit="cover"
+                                                    />
+                                                </button>
+                                            </div>
+                                        )
+                                    })
+                                }
+                                <button
+                                    className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]"
+                                    onClick={()=>{openProduct()}}
+                                >
+                                    <PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
+                                    <span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
                                 </button>
                             </div>
-                        </div>
-                        <div className="flex flex-col w-full h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
-                            {
-                                productFiles && productFiles?.map((f,fi) => {
-                                    return(
-                                        <div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate" key={f.name + fi}>
-                                            <span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
-                                                Uploaded file:{" "}
-                                                <span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">{f.name}{f.type}</span>
-                                            </span>
-                                            <button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{deleteProductFile(f)}}>
-                                                <TrashIcon className="flex text-white h-6 w-6"/>
-                                            </button>
-                                        </div>
-                                    )
-                                })
-                            }
                         </div>
                     </div>
                 </div>

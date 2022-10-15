@@ -33,8 +33,6 @@ export default function ProfileButton(props) {
 			<Menu.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle">
 				<Image
 					src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-					width={20}
-					height={20}
 					layout="fill"
 					objectfit="contain"
 				/>
@@ -58,8 +56,6 @@ export default function ProfileButton(props) {
 									<div className="relative flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden my-auto">
 										<Image 
 											src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-											width={20}
-											height={20}
 											layout="fill"
 											objectfit="contain"
 										/>
