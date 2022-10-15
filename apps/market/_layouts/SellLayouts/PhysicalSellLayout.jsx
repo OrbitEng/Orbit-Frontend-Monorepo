@@ -258,7 +258,7 @@ export function PhysicalUploadForm(props) {
                                 />
                             </div>
                             <div className="flex flex-col">
-                                <label htmlFor="description" className="text-white font-semibold text-xl">Stock</label>
+                                <label htmlFor="description" className="text-white font-semibold text-xl">Delivery</label>
                                 <input
                                     className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
                                     placeholder="Delivery ETA"
