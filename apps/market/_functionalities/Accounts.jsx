@@ -18,7 +18,7 @@ export function MarketAccountFunctionalities(props){
     // CHECK HEADER
     // pfp is a file
     const CreateAccount = async(user_metadata, pfp = undefined, reflink = undefined)=>{
-        console.log("creating account")
+
         if (reflink == ""){
             reflink = undefined
         }

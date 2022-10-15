@@ -73,6 +73,7 @@ export default function ProductsPage(props) {
 			return
 		}
 		let tp;
+		if(productId == "11111111111111111111111111111111") return;
 		
 		switch (productType){
 			case "commission":

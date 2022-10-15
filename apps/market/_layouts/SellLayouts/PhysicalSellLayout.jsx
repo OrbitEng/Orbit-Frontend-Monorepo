@@ -38,6 +38,7 @@ export function PhysicalUploadForm(props) {
 	const [description, setDescription] = useState();
 	
 	const [files, setFiles] = useState([]);
+    const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
 
 	const [vendorPhysicalCatalog, setVendorPhysicalCatalog] = useState();
 
@@ -58,6 +59,7 @@ export function PhysicalUploadForm(props) {
 
 	const onDrop = (acceptedFiles) => {
 		setFiles(cf => [...cf, ...acceptedFiles]);
+        setBigPreviewSrc(acceptedFiles[0]);
 	}
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop});
 
@@ -66,7 +68,8 @@ export function PhysicalUploadForm(props) {
 		if(index == -1){
 			return;
 		}
-		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
+		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)]);
+        if(bigPreviewSrc == filein) setBigPreviewSrc(undefined);
 	}
 
 	return(
@@ -87,26 +90,37 @@ export function PhysicalUploadForm(props) {
                 </button>
                 </Link>
                 <div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-10">
-                    <div className="w-full h-full col-span-7">
-                        <div className="flex flex-col mb-2 leading-tight">
-                            <h3 className="font-bold text-white text-xl">Upload Preview</h3>
-                            <span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
-                        </div>
-                        <div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full h-96 content-center align-middle py-12 px-28">
-                            <input {...getInputProps()}/>
-                            <div className="relative flex h-52 mx-16">
-                                <Image
-                                    src="/PhotoIcon.png"
-                                    layout="fill"
-                                    objectFit="contain"
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
-                                <span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
-                            </div>
-                        </div>
-                    </div>
+                        {
+                                bigPreviewSrc ? 
+                                    <div className="w-full h-full col-span-7 relative flex ">
+                                        <Image
+                                            src={URL.createObjectURL(bigPreviewSrc)}
+                                            layout="fill"
+                                            objectFit="contain"
+                                        />
+                                    </div>
+                                    :   
+                                    <div className="w-full h-full col-span-7">
+                                        <div className="flex flex-col mb-2 leading-tight">
+                                            <h3 className="font-bold text-white text-xl">Upload Preview</h3>
+                                            <span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
+                                        </div>
+                                        <div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full h-96 content-center align-middle py-12 px-28">
+                                            <input {...getInputProps()}/>
+                                                    <div className="relative flex h-52 mx-16">
+                                                        <Image
+                                                            src="/PhotoIcon.png"
+                                                            layout="fill"
+                                                            objectFit="contain"
+                                                        />
+                                                    </div>
+                                            <div className="flex flex-col">
+                                                <span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
+                                                <span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                    }
                     <div className="flex flex-col col-span-5 flex-none flex-grow-0 h-full overflow-ellipsis">
                         <div className="top-0 bg-transparent backdrop-blur-lg">
                             <div className="flex flex-col mb-2 leading-tight">
@@ -119,16 +133,19 @@ export function PhysicalUploadForm(props) {
                                 </button>
                             </div>
                         </div>
+                            
                         <div className="flex flex-col w-full h-76 my-4 gap-y-4 overflow-scroll scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
                             {
                                 files && files?.map((f,fi) => {
                                     return(
                                         <div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate" key={f.name + fi}>
-                                            <span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate">
+                                            <span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate" onClick={()=>{setBigPreviewSrc(f)}}>
                                                 Uploaded file:{" "}
                                                 <span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">{f.name}{f.type}</span>
                                             </span>
-                                            <button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{deleteFile(f)}}>
+                                            <button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{
+                                                deleteFile(f);
+                                            }}>
                                                 <TrashIcon className="flex text-white h-6 w-6"/>
                                             </button>
                                         </div>
@@ -139,7 +156,6 @@ export function PhysicalUploadForm(props) {
                     </div>
                 </div>
                 <div>
-
                 </div>
                 <form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct()}}>
                     <div className="flex flex-col">
