@@ -72,7 +72,7 @@ export function PhysicalUploadForm(props) {
 
 	return(
         <div>
-            { vendorPhysicalCatalog ? 
+            { vendorPhysicalCatalog ? <></> : <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/>}
                 <div className="w-full min-h-screen bg-transparent">
                     <Head>
                         <title>Orbit</title>
@@ -269,8 +269,8 @@ export function PhysicalUploadForm(props) {
                         </div>
                     </div>
                     </main>
-                </div> : <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/>
-            }
+                </div>
+            
         </div>        
     )
 }

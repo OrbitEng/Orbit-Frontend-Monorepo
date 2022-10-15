@@ -6,7 +6,7 @@ import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 export function PhysicalListingsModal(props){
     const {AddVendorPhysicalListings} = MarketAccountFunctionalities();
 
-    let [isOpen, setIsOpen] = useState(false);
+    let [isOpen, setIsOpen] = useState(true);
 
     const closeModal = async () => {
 		setIsOpen(false)
@@ -46,8 +46,18 @@ export function PhysicalListingsModal(props){
 				>
 					<div>
 						<div className="absolute -inset-0 w-full h-full bg-black z-0 rounded-2xl" />
-						<Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all">
-							
+						<Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] shadow-xl transition-all">
+							<div className='flex flex-col text-white w-96 h-96 content-center items-center justify-center place-items-center'>
+                                <div className='text-4xl font-bold my-8'>
+                                    <span className='text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]'> Hold on! </span>
+                                </div>
+                                <div>
+                                    Make a catalog first before you list!
+                                </div>
+                                <div>
+                                    That way, your products can be seen by everyone
+                                </div>
+                            </div>
 						</Dialog.Panel>
 					</div>
 				</Transition.Child>
