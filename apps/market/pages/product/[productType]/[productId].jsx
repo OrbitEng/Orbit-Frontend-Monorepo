@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 
-import { 
-	DigitalProductLayout,
-	DigitalCommissionLayout,
-	PhysicalProductLayout,
-} from "@layouts/ProductDisplaysLayout";
+
+import {DigitalProductLayout} from "@layouts/ProductLayouts/DigitalProductLayout";
+import {CommissionProductLayout} from "@layouts/ProductLayouts/CommissionProductLayout";
+import {PhysicalProductLayout} from "@layouts/ProductLayouts/PhysicalProductLayout";
 import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
