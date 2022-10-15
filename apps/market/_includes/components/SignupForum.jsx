@@ -3,7 +3,6 @@ import Image from "next/image";
 import { useState } from "react";
 
 export function SignupForum(props) {
-	const [userName, setUserName] = useState();
 	const [name, setName] = useState();
 	const [bio, setBio] = useState();
 
@@ -20,15 +19,7 @@ export function SignupForum(props) {
 				<UserCircleIcon className="h-44 w-44 text-white mx-auto" />
 			</div>
 			<div className="flex flex-col gap-y-4">
-				<div className="flex flex-col justify-start gap-y-2">
-					<label className="font-bold text-white text-xl">Username<span className="text-red-500">*</span></label>
-					<input
-						className="rounded-lg p-2 text-white text-lg border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-						placeholder="Enter Username"
-						value={userName}
-						onChange={(e) => {setUserName(e.target.value)}}
-					/>
-				</div>
+				
 				<div className="flex flex-col justify-start gap-y-2">
 					<label className="font-bold text-white text-xl">Name<span className="text-red-500">*</span></label>
 					<input
@@ -67,7 +58,6 @@ export function SignupForum(props) {
 
 
 export function SignupModal(props) {
-	const [userName, setUserName] = useState();
 	const [name, setName] = useState();
 	const [bio, setBio] = useState();
 
@@ -84,15 +74,7 @@ export function SignupModal(props) {
 				<UserCircleIcon className="h-32 w-32 text-white mx-auto" />
 			</div>
 			<div className="flex flex-col gap-y-3">
-				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-lg">Username<span className="text-red-500">*</span></label>
-					<input
-						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-						placeholder="Enter Username"
-						value={userName}
-						onChange={(e) => {setUserName(e.target.value)}}
-					/>
-				</div>
+				
 				<div className="flex flex-col justify-start gap-y-1">
 					<label className="font-bold text-white text-lg">Name<span className="text-red-500">*</span></label>
 					<input

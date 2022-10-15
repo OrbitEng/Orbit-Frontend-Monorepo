@@ -75,7 +75,7 @@ export function DigitalUploadForm(props) {
 	
 	useEffect(async ()=>{
 		try{
-			let vc = await catalogClient.GetVendorCatalog(
+			let vc = await productClient.GetListingsStruct(
 				productClient.GenVendorListingsAddress(
 					productClient.market_account_address, "digital"
 				)[0]
@@ -567,15 +567,11 @@ export function PhysicalUploadForm(props) {
 
 export function ServiceUploadForm(props) {
 	const {ListProduct, CreateCommissionsListingsCatalog} = CommissionProductFunctionalities();
-	const {catalogClient} = useContext(CatalogCtx);
 	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState();
+	const {productClient} = useContext(ProductClientCtx);
 	useEffect(async()=>{
 		try{
-			let vc = await catalogClient.GetVendorCatalog(
-				catalogClient.GenVendorListingsAddress(
-					catalogClient.market_account_address, "commissions"
-				)[0]
-			);
+			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("commission"));
 			if(vc && vc.data){
 				setVendorCommissionCatalog(vc)
 			}

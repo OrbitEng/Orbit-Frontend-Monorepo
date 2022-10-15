@@ -3,35 +3,37 @@ import { ProductDisplayCardHome } from "./components/ProductDisplayCards";
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
+import ProductClientCtx from "@contexts/ProductClientCtx";
 
 export function HomeProductExplorer(props) {
 	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
 	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {productClient} = useContext(ProductClientCtx);
 
 	const [ digitalProducts, setDigitalProducts ] = useState();
 	const [ physicalProducts, setPhysicalProducts ] = useState();
 
-	const updateDigitalProducts = useCallback(async ()=>{
+	const updateDigitalProducts = async ()=>{
 		if(!digitalMarketClient)return;
 		setDigitalProducts(
 			await digitalMarketClient.GetMultipleDigitalProducts(
-				(await catalogClient.GetCatalog(
-					(await digitalMarketClient.GenRecentCatalog())[0]
+				(await productClient.GetRecentMarketListings(
+					productClient.GenRecentCatalog("digital")
 				)).data.pubkeys
 			)
 		)
-	},[digitalMarketClient]);
+	};
 
-	const updatePhysicalProducts = useCallback(async ()=>{
+	const updatePhysicalProducts = async ()=>{
 		if(!physicalMarketClient)return;
 		setPhysicalProducts(
 			await physicalMarketClient.GetMultiplePhysicalProducts(
-				(await catalogClient.GetCatalog(
-					(await physicalMarketClient.GenRecentCatalog())[0]
+				(await productClient.GetRecentMarketListings(
+					productClient.GenRecentCatalog("physical")
 				)).data.pubkeys
 			)
 		)
-	},[physicalMarketClient]);
+	};
 
 	useEffect(async ()=>{
 		await updateDigitalProducts();

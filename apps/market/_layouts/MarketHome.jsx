@@ -39,15 +39,17 @@ export function Home(props) {
 	useEffect(async ()=>{
 		if(!digitalMarketClient || !physicalMarketClient || !productClient) return;
 
-		let digital_catalog = await productClient.GetModCatalog(
-			(await digitalMarketClient.GenRecentCatalog())[0]
+		let digital_catalog = await productClient.GetRecentMarketListings(
+			productClient.GenRecentCatalog("digital")
 		);
-		let commission_catalog = await productClient.GetModCatalog(
-			(await commissionMarketClient.GenRecentCatalog())[0]
+		let commission_catalog = await productClient.GetRecentMarketListings(
+			productClient.GenRecentCatalog("commission")
 		);
-		let physical_catalog = await productClient.GetModCatalog(
-			(await physicalMarketClient.GenRecentCatalog())[0]
+		let physical_catalog = await productClient.GetRecentMarketListings(
+			productClient.GenRecentCatalog("physical")
 		);
+
+
 
 		if(!(digital_catalog && digital_catalog.data) || !(commission_catalog && commission_catalog.data) || !(physical_catalog && physical_catalog.data)) return;
 

@@ -19,33 +19,6 @@ export default function TopVendorsDisplay(props) {
 
 	const [topVendors, setTopVendors] = useState();
 
-	useEffect(async ()=>{
-		if(!(marketAccountsClient && productClient)){
-			return
-		}
-
-		let top_vendors_addrs = await catalogClient.GetParty(
-			await productClient.GenTopVendorsAddress()
-		);
-
-		let top_vendors = await marketAccountsClient.GetMultipleMarketAccounts(
-			top_vendors_addrs
-		);
-
-		let metadatas = await Promise.all(top_vendors.map((vendor) =>{
-			return ArQueryClient.FetchData(enc_common.utos(vendor.metadata));
-		}));
-
-		// idk what metadata looks like yet in terms of json struct
-		setTopVendors(top_vendors?.map((vendor, index) =>{
-			return {
-				name: JSON.parse(metadatas[index]).nickname,
-				address: top_vendors_addrs[index].toString(),
-				sales: vendor?.transactions.toNumber(),
-				profilepic: enc_common.utos(vendor?.profilePic)
-			}
-		}))
-	}, []);
 
 	let undefVendorsArr = Array.of(1,2,3,4,5,6)
 	// fetch the top 8 vendors and display here

@@ -11,7 +11,6 @@ export default function AdminLayout(){
     const {physicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {commissionMarketClient} = useContext(CommissionMarketCtx);
 	const {digitalMarketClient} = useContext(DigitalMarketCtx);
-	const {catalogClient} = useContext(CatalogCtx);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx)
 
 	return(
@@ -56,7 +55,7 @@ export default function AdminLayout(){
 				<div>
 					Initialize Top Vendors Catalog
 				</div>
-				<button className="bg-white m-2 border-2 w-32 h-12 text-black" onClick={e => {catalogClient.InitTopVendor()}}>
+				<button className="bg-white m-2 border-2 w-32 h-12 text-black" onClick={e => {productClient.InitTopVendor()}}>
 					button
 				</button>
 			</div>

@@ -5,10 +5,7 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import {enc_common, file_common} from "browser-clients";
-
-import { ChatClient } from "data-transfer-clients";
 
 export function MarketAccountFunctionalities(props){
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
@@ -27,7 +24,7 @@ export function MarketAccountFunctionalities(props){
             let pfp_link = "";
             if(pfp){
                 pfp_link = await bundlrClient.UploadBuffer(
-                    enc_common.utos(new Uint8Array.from((pfp).arrayBuffer())) + "<<" + pfp.type
+                    enc_common.utos(new Uint8Array.from(pfp.arrayBuffer())) + "<<" + pfp.type
                 );
             }
 
