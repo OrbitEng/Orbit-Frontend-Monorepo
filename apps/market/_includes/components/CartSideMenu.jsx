@@ -12,10 +12,11 @@ export default function CartSideMenu(props) {
 	const {cart, setCart} = useContext(CartCtx);
 
 	useEffect(() => {
-		setCart({...cart, total: 0});
+		let tmpTotal = 0;
 		cart?.items?.map((item) => {
-			setCart(cart => ({items: cart.items, total: cart.price + item.price}))
+			tmpTotal += item.price;
 		})
+		setCart(cart => ({items: cart.items, total: tmpTotal}))
 	}, [cart?.items?.length])
 	
 	let shipping = 0;
@@ -60,7 +61,15 @@ export default function CartSideMenu(props) {
 										</div>
 										<div className="flex flex-row justify-between align-baseline px-4 sm:px-6 mt-3 sm:mt-5">
 											<Dialog.Title className="text-4xl font-bold text-white">Cart</Dialog.Title>
-											<button className="flex flex-row bg-transparent text-[#2581EC] font-semibold align-baseline">
+											<button
+												className="flex flex-row bg-transparent text-[#2581EC] font-semibold align-baseline"
+												onClick={() => {
+													setCart({
+														items:[],
+														total: 0
+													})
+												}}
+											>
 												<XMarkIcon className="h-4 w-4 my-auto stroke-2" />
 												<span className="my-auto">Clear</span>
 											</button>
@@ -76,9 +85,17 @@ export default function CartSideMenu(props) {
 																	<div key={index} className="flex flex-row rounded-md justify-between my-2">
 																		<div className="flex flex-row flex-shrink-0 mr-8">
 																			<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
-																				<div className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs">
+																				<button 
+																					onClick={() => {
+																						setCart({
+																							items:[...cart.items.slice(0,index), ...cart.items.slice(index+1)],
+																							total: cart.total
+																						})
+																					}}
+																					className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs"
+																				>
 																					<XMarkIcon className="h-3 w-3 text-white stroke-[3px]"/>
-																				</div>
+																				</button>
 																				<Image 
 																					className="rounded-md"
 																					layout="fill"
@@ -116,7 +133,7 @@ export default function CartSideMenu(props) {
 																Buy Now
 															</span>
 														</button>
-														<PosModal openPos={openPos} setOpenPos={setOpenPos} cartItems={props.cartItems} cartTotal={cartTotal} />
+														<PosModal openPos={openPos} setOpenPos={setOpenPos} cart={cart} setCart={setCart} />
 													</div>
 												</div>
 											</div>
