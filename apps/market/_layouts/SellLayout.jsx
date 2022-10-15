@@ -12,6 +12,7 @@ import {DigitalProductFunctionalities, PhysicalProductFunctionalities, Commissio
 import { useEffect } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import { useContext } from "react";
+import Link from "next/link";
 
 const token_addresses = {
 	mainnet: {
@@ -26,7 +27,6 @@ const token_addresses = {
 
 export function SellLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
-	const [ selectedCategory, setSelectedCategory ] = useState(null);
 
     return(
 		<div className="w-full min-h-screen bg-transparent">
@@ -36,19 +36,8 @@ export function SellLayout(props){
 			</Head>
 			<main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
 				<HomeHeader headerMiddle={searchBar}/>
-				<div className={(selectedCategory == null ? "-mt-14 sm:-mt-32" : "") + " max-w-7xl align-center mx-auto min-h-view"}>
-					{
-						(selectedCategory == null || selectedCategory == undefined) ? 
-						(
-							<CategorySelect cat={{selectedCategory, setSelectedCategory}} />	
-						) : (
-							<>
-							{(selectedCategory == "digital") && <DigitalUploadForm cat={[selectedCategory, setSelectedCategory]} />}
-							{(selectedCategory == "physical") && <PhysicalUploadForm cat={[selectedCategory, setSelectedCategory]} />}
-							{(selectedCategory == "commission") && <CommissionUploadForm cat={[selectedCategory, setSelectedCategory]} />}
-							</>
-						)
-					}
+				<div className={"-mt-14 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
+					<CategorySelect/>
 					<MainFooter />
 				</div>
 			</main>
@@ -131,10 +120,13 @@ export function DigitalUploadForm(props) {
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
-			<button className="flex flex-row space-x-1 mb-10 align-middle" onClick={() => setSelectedCategory(null)}>
+			<Link href={"/sell"}>
+			<button className="flex flex-row space-x-1 mb-10 align-middle">
 				<ArrowLeftIcon className="h-5 w-5 text-[#767676] my-auto" />
 				<div className="text-[#767676] text-xl my-auto">Back to Categories</div>
 			</button>
+			</Link>
+			
 			<div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-10">
 				<div className="w-full h-full col-span-7">
 					<div className="flex flex-col mb-2 leading-tight">
@@ -354,7 +346,6 @@ export function PhysicalUploadForm(props) {
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
 	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
-	const [selectedCategory, setSelectedCategory] = props.cat;
 	
 	const [files, setFiles] = useState([]);
 
@@ -393,10 +384,12 @@ export function PhysicalUploadForm(props) {
 	return(
 		<div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
 			<h1 className="text-white font-bold text-4xl mt-10">Create New Physical Product</h1>
-			<button className="flex flex-row space-x-1 mb-10 align-middle" onClick={() => setSelectedCategory(null)}>
+			<Link href={"/sell"}>
+			<button className="flex flex-row space-x-1 mb-10 align-middle">
 				<ArrowLeftIcon className="h-5 w-5 text-[#767676] my-auto" />
 				<div className="text-[#767676] text-xl my-auto">Back to Categories</div>
 			</button>
+			</Link>
 			<div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-10">
 				<div className="w-full h-full col-span-7">
 					<div className="flex flex-col mb-2 leading-tight">
@@ -584,12 +577,11 @@ export function CommissionUploadForm(props) {
 }
 
 function CategorySelect(props) {
-	const {selectedCategory, setSelectedCategory} = props.cat;
 	return(
 		<div className="flex flex-row justify-around w-full mx-auto h-[100vh] gap-24 content-center my-auto">
+			<Link href={"/sell/physical"}>
 			<div
 				className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
-				onClick={() => setSelectedCategory("physical")}
 			>
 				<div className="bg-[#26308F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 transition duration-700" />
 				<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-2xl">
@@ -610,9 +602,11 @@ function CategorySelect(props) {
 					</div>
 				</div>
 			</div>
+			</Link>
+			
+			<Link href={"/sell/commission"}>
 			<div
 				className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
-				onClick={() => setSelectedCategory("commission")}
 			>
 				<div className="bg-[#4E268F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 transition duration-700" />
 				<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-2xl">
@@ -633,9 +627,11 @@ function CategorySelect(props) {
 					</div>
 				</div>
 			</div>
+			</Link>
+
+			<Link href={"/sell/digital"}>
 			<div
 				className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
-				onClick={() => setSelectedCategory("digital")}
 			>
 				<div className="bg-[#81268F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 duration-700 transition" />
 				<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-2xl">
@@ -656,6 +652,7 @@ function CategorySelect(props) {
 					</div>
 				</div>
 			</div>
+			</Link>
 		</div>
 	)
 }
