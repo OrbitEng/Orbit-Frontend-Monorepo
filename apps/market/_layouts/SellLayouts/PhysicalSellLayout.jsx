@@ -39,7 +39,7 @@ export function PhysicalUploadForm(props) {
 	const [files, setFiles] = useState([]);
     const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
 
-	const [vendorPhysicalCatalog, setVendorPhysicalCatalog] = useState();
+	const [vendorPhysicalCatalog, setVendorPhysicalCatalog] = useState("");
 
 	useEffect(async()=>{
 		try{
@@ -48,9 +48,9 @@ export function PhysicalUploadForm(props) {
 				setVendorPhysicalCatalog(vc)
 			}
 		}catch(e){
-            console.log(e)
+            setVendorPhysicalCatalog(undefined)
 		}
-	},[])
+	},[productClient])
 
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 
@@ -71,7 +71,7 @@ export function PhysicalUploadForm(props) {
 
 	return(
         <div>
-            { vendorPhysicalCatalog ? <></> : <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/>}
+            { vendorPhysicalCatalog == undefined ? <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/> : <></>}
                 <div className="w-full min-h-screen bg-transparent">
                     <Head>
                         <title>Orbit</title>
