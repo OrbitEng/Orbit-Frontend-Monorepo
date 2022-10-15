@@ -60,7 +60,7 @@ export function PhysicalListingsModal(props){
                                 </div>
                                 <div className='flex flex-row w-full h-[10%] justify-center gap-x-8 mt-16'>
 									<div className='w-full border-2 hover:scale-[105%] ml-8'>
-										<div onClick={()=>{AddVendorPhysicalListings()}}>
+										<div onClick={async ()=>{await AddVendorPhysicalListings()}}>
 											<span>Create</span>
 										</div>
 									</div>
