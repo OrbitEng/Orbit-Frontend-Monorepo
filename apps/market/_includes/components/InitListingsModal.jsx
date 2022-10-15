@@ -57,6 +57,12 @@ export function PhysicalListingsModal(props){
                                 <div>
                                     That way, your products can be seen by everyone
                                 </div>
+                                <div>
+                                    
+                                </div>
+                                <button onClick={()=>{AddVendorPhysicalListing()}}>
+
+                                </button>
                             </div>
 						</Dialog.Panel>
 					</div>
