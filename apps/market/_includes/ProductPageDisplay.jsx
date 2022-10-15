@@ -44,17 +44,19 @@ const handleCurrency = (priceStruct) => {
 /* 
 Props: {
 	product.address: Pubkey, (address of the product account)
-	product.data.metadatamedia: [ string... ],
+	product.data.metadata.media: [ string... ],
 	product.data.metadata.info: [name, desc]
-	product.data.medata.available: bool,
 
-	product.data.quantity: string, (can be left blank) // only available for physical products
+	// phys only
+	product.data.quantity: string, (can be left blank)
+
+	// digital only
 	product.data.digitalFileType: string, (Maybe should make enum?)
 	
 	product.data.metadata.price: num (this is the number of tokens)
 	product.data.metadata.currency: string string (this is the mint address for a token)
 
-	product.data.description: string,
+	product.data.metadata.info: {name: str, info: str},
 	product.data.metadata.seller: {
 		data.profilePic: url string, (can be left blank)
 		data.metadata.name: string,
@@ -62,14 +64,14 @@ Props: {
 	}
 }
 */
-export function ProductDisplay(props) {
+export function DigitalProductDisplay(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
 	console.log(props);
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">
 			<div className="bg-white flex rounded-3xl bg-opacity-5 h-full w-1/2 p-10">
-				<Carousel 
+			<Carousel 
 					className="w-full"
 					responsive={responsive} 
 					arrows={true}
@@ -86,10 +88,8 @@ export function ProductDisplay(props) {
 					itemClass="carousel-item-padding-40px"
 				>
 					{
-						props.prodInfo?.metadata?.media?.map((url, index) => {
-							let type = url.split(":", 2)[1].split(",",2)[0].split(";")[0].split("/")[0];
-							switch(type){
-								case "text":
+						props.prodInfo?.data?.metadata?.media?.map((url, index) => {
+								if(url.indexOf("data:image") == 0){
 									return <div className="flex mx-auto justify-center" key={index}>
 												<Image 
 													src={url}
@@ -98,15 +98,32 @@ export function ProductDisplay(props) {
 													height={400}
 												/>
 											</div>
-								case "video":
+								}else
+								if(url.indexOf("data:audio") == 0){
+
+								}else
+								if(url.indexOf("data:text") == 0){
+									
+								}else
+								if(url.indexOf("data:video") == 0){
 									return 	<video
-												autoplay
-												width='500'
-												height='500'
-											>
-												<source src="/blue.mp4" />
-											</video>
-							}
+													autoplay
+													width='500'
+													height='500'
+												>
+													<source src="/blue.mp4" />
+												</video>
+								}else
+								{
+									return <div className="flex mx-auto justify-center" key={index}>
+												<Image 
+													src={url}
+													layout="fixed"
+													width={400}
+													height={400}
+												/>
+											</div>
+								}
 						})
 					}
 				</Carousel>
@@ -118,18 +135,18 @@ export function ProductDisplay(props) {
 							className="rounded-full"
 							alt="market profile picture"
 							layout="fixed"
-							src={props.prodInfo?.seller?.sellerImg || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+							src={props.prodInfo?.data?.metadata?.seller?.data?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 							height={48}
 							width={64}
 						/>
 						<div className="flex flex-col w-5/6 mx-auto align-middle my-auto">
-							<span className="flex text-gray-100 leading-none font-bold">{props.prodInfo?.seller?.sellerName || "NULL"}</span>
-							<span className="flex text-gray-300 text-sm">{props.prodInfo?.seller?.sellerAddr?.slice(0,10) + "..."}</span>
+							<span className="flex text-gray-100 leading-none font-bold">{props.prodInfo?.data?.metadata?.seller?.sellerName || "Jackimus"}</span>
+							<span className="flex text-gray-300 text-sm">{(props.prodInfo?.data?.metadata?.seller?.address?.slice(0,10) + "...") || "DMgY6wi2FV..."}</span>
 						</div>
 					</div>
 				</div>	
 				<div className="flex flex-col mt-10 gap-y-2" >
-					<h1 className="font-bold text-4xl text-white ml-3">{props.prodInfo?.itemName || "NULL PRODUCT" }</h1>
+					<h1 className="font-bold text-4xl text-white ml-3">{props.prodInfo?.data?.metadata.info.name || "NULL PRODUCT" }</h1>
 					<div className="flex flex-row gap-3">
 						<div className="rounded-full font-bold bg-[#261832] text-[#72478C] px-3 py-2">
 							{"availability " + (props.prodInfo?.stock?.toString() || "∞") }
@@ -137,7 +154,7 @@ export function ProductDisplay(props) {
 						<div className="rounded-full font-bold bg-[#311132] text-[#7D348F] px-3 py-2">
 							{
 								props.prodInfo?.type ?
-									(props.prodInfo?.type?.charAt(0)?.toUpperCase() + "" +props.prodInfo?.type?.slice(1))
+									(props.prodInfo?.type?.charAt(0)?.toUpperCase() + "" + (props.prodInfo?.type?.slice(1).replace("Product","").replaceAll(/([A-Z])/g, (g1)=>{return ` ${g1}`})))
 									: "Custom Product Type"
 							}
 						</div>

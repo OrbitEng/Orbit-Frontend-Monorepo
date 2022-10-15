@@ -20,24 +20,36 @@ import ProductClientCtx from "@contexts/ProductClientCtx";
 const dummyPhys = {}
 
 const dummyCommission = {
-	imageUrls: [ "/demologos.png", "/demologos.png", "/demologos.png" ],
-	itemName: "10x custom logo pack",
-	stock: null,
-	type: "commission",
-	price: {
-		value: 12345.99,
-		currency: "sol"
-	}, 
-	description: `We are a professional team of icon design specialists. We promise to deliver high-quality icons for whatever the required concepts are:\n\n
-	1. You will get professional and beautiful icons (consistent in size and style).\n
-	2. Icons will be purely made with original and creative ideas.\n
-	3. In case You are not satisfied. We provide multiple revisions with full support for our clients.\n
-	Order now! and get your beautiful icons designed. If you have any other questions, We are available 24/7, don't hesitate to contact us.`,
-	seller: {
-		sellerImg: null, 
-		sellerName: "dummySeller",
-		sellerAddr: "E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM"
-	}
+	address: "11111111111111111111111111111111",
+	data: {
+		metadata: {
+			media: [ "/demologos.png", "/demologos.png", "/demologos.png" ],
+			info: {
+				name: "10x custom logo pack",
+				description: `We are a professional team of icon design specialists. We promise to deliver high-quality icons for whatever the required concepts are:\n\n
+				1. You will get professional and beautiful icons (consistent in size and style).\n
+				2. Icons will be purely made with original and creative ideas.\n
+				3. In case You are not satisfied. We provide multiple revisions with full support for our clients.\n
+				Order now! and get your beautiful icons designed. If you have any other questions, We are available 24/7, don't hesitate to contact us.`
+			},
+			price: 12345.99,
+			currency: "sol", 
+			seller: {
+				address: "E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM",
+				data: {
+					profilePic: "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y", 
+					metadata: {
+						name: "dummySeller",
+						bio: "autobiography here lorem ipsum all abt the dollarsss"
+					},
+				},
+				type: "MarketAccount"
+			}
+		},
+		quantity: "812",
+		digitalFileType: {Image: {}}
+	},
+	type: "CommissionProduct"
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,12 +78,27 @@ export default function ProductsPage(props) {
 		switch (productType){
 			case "commission":
 				tp = await productClient.GetCommissionProduct(productId);
+				if(!tp){
+					return;
+				}
+				tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
+				tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
 				break;
 			case "digital":
 				tp = await productClient.GetDigitalProduct(productId);
+				if(!tp){
+					return;
+				}
+				tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
+				tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
 				break;
 			case "physical":
 				tp = await productClient.GetPhysicalProduct(productId);
+				if(!tp){
+					return;
+				}
+				tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
+				tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
 				break;
 			default:
 				break;

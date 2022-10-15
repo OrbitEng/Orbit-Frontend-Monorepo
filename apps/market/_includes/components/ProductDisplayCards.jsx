@@ -152,7 +152,7 @@ export function ProductDisplayCardHome(props) {
 								<span className="font-bold text-white">{prod?.data.metadata.info.name}</span>
 								<div className="flex flex-row gap-1 mt-1">
 									<div className="bg-[#201B31] align-middle font-semibold rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem]">
-										{(props.type?.charAt(0)?.toUpperCase() + "" +props.type?.slice(1))}
+										{(props.type?.charAt(0)?.toUpperCase() + "" +props.type?.slice(1).replace("Product","").replaceAll(/([A-Z])/g, (g1)=>{return ` ${g1}`}))}
 									</div>
 									{
 										prod?.data.metadata.currency && 

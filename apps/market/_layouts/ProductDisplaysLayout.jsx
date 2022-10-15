@@ -7,7 +7,7 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
-import { ProductDisplay } from "@includes/ProductPageDisplay";
+import { DigitalProductDisplay } from "@includes/ProductPageDisplay";
 
 export function DigitalProductLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -21,7 +21,7 @@ export function DigitalProductLayout(props){
 			<main className="bg-[url('/bgWallpaper.png')]">
 				<HomeHeader headerMiddle={searchBar}/>
 				<div className="max-w-7xl align-center mx-auto">
-					<ProductDisplay
+					<DigitalProductDisplay
 						prodInfo={props.product}
 					/>
 				</div>

@@ -56,7 +56,7 @@ function Vendor(props) {
 					<>
 						<div className="text-white font-bold text-xl align-middle my-auto flex flex-col justify-start">
 							<span className={"-mb-[6px]"}>{props?.vendor?.nickname}</span>
-							<span className="text-[#535353] text-sm font-normal">{props?.sellerAddr?.slice(0,10) + "..."}</span>
+							<span className="text-[#535353] text-sm font-normal">{(props?.sellerAddr?.slice(0,10) + "...")  || "DMgY6wi2FV..."}</span>
 						</div>
 						<div className="text-white text-sm align-middle my-auto flex flex-col justify-start">
 							<span className="-mb-[3px]">Total Sales</span>

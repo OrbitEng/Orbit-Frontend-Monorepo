@@ -6,7 +6,7 @@ import { LargeExplore } from "@includes/ProductExplorer";
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import EditProfileButton from "@includes/components/EditProfileButton";
 
-export function SellerAccountDisplay(props) {
+export function AccountDisplay(props) {
 	console.log(props?.sellerAddr)
 	let wallet = useWallet();
 

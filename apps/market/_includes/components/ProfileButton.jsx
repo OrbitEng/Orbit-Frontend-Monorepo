@@ -6,13 +6,12 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { ArrowRightOnRectangleIcon, ChevronRightIcon, StarIcon, TruckIcon, UserCircleIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 export default function ProfileButton(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const [ balance, setBalance ] = useState(0);
-	const [marketAccountAddr, setMarketAccountAddr] = useState()
+	const [ marketAccountAddr, setMarketAccountAddr ] = useState()
 	let wallet = useWallet();
 	let connection = useConnection()
 
@@ -48,7 +47,7 @@ export default function ProfileButton(props) {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="absolute flex flex-col top-24 p-5 -right-4 bg-[#8E84FF] backdrop-filter backdrop-blur bg-opacity-20 rounded-lg shadow-lg w-64">
+				<Menu.Items className="absolute flex flex-col top-8 p-5 -right-4 bg-[#8E84FF] backdrop-filter backdrop-blur bg-opacity-20 rounded-lg shadow-lg w-64">
 					<Menu.Item>
 						{({active}) => (
 							<Link 
@@ -138,10 +137,10 @@ export default function ProfileButton(props) {
 									className="flex flex-row gap-x-2 group cursor-pointer group"
 								>
 									<div className="flex flex-row gap-x-2 absolute transition duration-300 opacity-0 group-hover:opacity-100">
-										<button onClick={() => wallet.disconnect()} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg w-fit text-center my-2 transition duration-300">Disconnect</button>
-										<button onClick={() => navigator.clipboard.writeText(wallet.publicKey.toString())} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg w-fit text-center my-2 transition duration-300">Copy</button>
+										<button onClick={() => wallet.disconnect()} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg max-w-1/2 text-center my-2 transition duration-300">Disconnect</button>
+										<button onClick={() => navigator.clipboard.writeText(wallet.publicKey.toString())} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg max-w-1/2 text-center my-2 transition duration-300">Copy</button>
 									</div>
-									<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden my-2 group-hover:opacity-0 transition duration-300">
+									<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden my-2 group-hover:opacity-0 transition duration-300 ">
 										<Image
 											src={wallet.wallet.adapter.icon}
 											width={50}
@@ -149,9 +148,9 @@ export default function ProfileButton(props) {
 											objectFit="contain"
 										/>
 									</div>
-									<div className="flex flex-col align-middle my-auto group-hover:opacity-0 transition duration-300">
+									<div className="flex flex-col align-middle my-auto group-hover:opacity-0 transition duration-300 w-4/5">
 										<span className="text-[#A4A4A4] w-1/4 truncate text-xs">{wallet.wallet.adapter.name}</span>
-										<span className="font-semibold text-white truncate text-sm w-1/4 -mt-1">{wallet.publicKey.toString()}</span>
+										<span className="font-semibold text-white truncate text-sm max-w-full -mt-1">{wallet.publicKey.toString().slice(0,10) + "..."}</span>
 									</div>
 								</div>
 							</div>
