@@ -27,13 +27,15 @@ const token_addresses = {
 export function PhysicalUploadForm(props) {
     const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
 
-	const {ListProduct, CreatePhysicalListingsCatalog} = PhysicalProductFunctionalities();
+	const {ListProduct} = PhysicalProductFunctionalities();
 	const {productClient} = useContext(ProductClientCtx);
 
-	const [prodName, setProdName] = useState("");
 	const [price, setProdPrice] = useState();
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
 	const [currency, setCurrency] = useState("solana");
+	const [prodName, setProdName] = useState("");
+    const [delivery, setDelivery] = useState();
+    const [quantity, setQuantity] = useState();
 	const [description, setDescription] = useState();
 	
 	const [files, setFiles] = useState([]);
@@ -156,7 +158,9 @@ export function PhysicalUploadForm(props) {
                         </div>
                         <div>
                         </div>
-                        <form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct()}}>
+                        <form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct(
+                            currency, price, delivery, prodName, description, quantity, files
+                        )}}>
                             <div className="flex flex-col">
                                 <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
                                 <input
@@ -165,6 +169,7 @@ export function PhysicalUploadForm(props) {
                                     type="text"
                                     id="title"
                                     name="title"
+                                    onChange={(e)=>{setProdName(e.target.value)}}
                                 />
                             </div>
                             <div className="flex flex-col h-full">
@@ -249,6 +254,19 @@ export function PhysicalUploadForm(props) {
                                     min="1"
                                     id="qty"
                                     name="qty"
+                                    onChange={(e)=>{setQuantity(e.target.value)}}
+                                />
+                            </div>
+                            <div className="flex flex-col">
+                                <label htmlFor="description" className="text-white font-semibold text-xl">Stock</label>
+                                <input
+                                    className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+                                    placeholder="Delivery ETA"
+                                    type="number"
+                                    min="1"
+                                    id="delivery"
+                                    name="delivery"
+                                    onChange={(e)=>{setDelivery(e.target.value)}}
                                 />
                             </div>
                             <div className="flex flex-col">
