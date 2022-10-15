@@ -45,7 +45,7 @@ export function SellLayout(props){
 							<>
 							{(selectedCategory == "digital") && <DigitalUploadForm cat={[selectedCategory, setSelectedCategory]} />}
 							{(selectedCategory == "physical") && <PhysicalUploadForm cat={[selectedCategory, setSelectedCategory]} />}
-							{(selectedCategory == "service") && <ServiceUploadForm cat={[selectedCategory, setSelectedCategory]} />}
+							{(selectedCategory == "commission") && <CommissionUploadForm cat={[selectedCategory, setSelectedCategory]} />}
 							</>
 						)
 					}
@@ -565,7 +565,7 @@ export function PhysicalUploadForm(props) {
 	)
 }
 
-export function ServiceUploadForm(props) {
+export function CommissionUploadForm(props) {
 	const {ListProduct, CreateCommissionsListingsCatalog} = CommissionProductFunctionalities();
 	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState();
 	const {productClient} = useContext(ProductClientCtx);
@@ -612,7 +612,7 @@ function CategorySelect(props) {
 			</div>
 			<div
 				className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
-				onClick={() => setSelectedCategory("service")}
+				onClick={() => setSelectedCategory("commission")}
 			>
 				<div className="bg-[#4E268F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 transition duration-700" />
 				<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-2xl">
@@ -624,7 +624,7 @@ function CategorySelect(props) {
 							width={50}
 						/>
 					</div>
-					<h1 className="text-3xl font-bold text-white mx-auto text-center">Services</h1>
+					<h1 className="text-3xl font-bold text-white mx-auto text-center">Commissions</h1>
 					<p className="text-xl text-[#6A6A6A] mx-auto justify-center mt-4 leading-tight text-center">
 						Freelance and take comissions through Orbit, your buisness has never been easier!
 					</p>

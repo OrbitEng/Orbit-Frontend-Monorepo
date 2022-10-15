@@ -6,6 +6,36 @@ import BundlrCtx from "@contexts/BundlrCtx";
 
 import { ArQueryClient } from "data-transfer-clients";
 
+export function ProductCommonUtils(props){
+    const {productClient} = useContext(ProductClientCtx);
+    
+    /**
+     * should return [name, desc]
+     */
+     const ResolveProductInfo = async(product_addr) => {
+        let arclient = new ArQueryClient();
+        let product = await productClient.GetDigitalProduct(product_addr);
+        if(!(product.data && product.data.metadata.info)){
+            return undefined
+        }
+        return (await arclient.FetchData(product.data.metadata.info)).split("||");
+    };
+
+    const ResolveProductMedia = async(product_addr) => {
+        let arclient = new ArQueryClient();
+        let product = await productClient.GetPhysicalProduct(product_addr);
+        if(!(product.data && product.data.metadata.media)){
+            return undefined
+        }
+        return arclient.GetImagesData(product.data.metadata.media);
+    }
+
+    return{
+        ResolveProductInfo,
+        ResolveProductMedia
+    }
+}
+
 export function DigitalProductFunctionalities(props){
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
@@ -153,27 +183,6 @@ export function DigitalProductFunctionalities(props){
         )).filter(prod => prod.data != undefined);
     }
 
-    const ResolveProductMedia = async(product_addr) => {
-        let arclient = new ArQueryClient();
-        let product = await productClient.GetDigitalProduct(product_addr);
-        if(!(product.data && product.data.metadata.media)){
-            return undefined
-        }
-        return arclient.GetImagesData(product.data.metadata.media);
-    }
-
-    /**
-     * should return [name, desc]
-     */
-    const ResolveProductInfo = async(product_addr) => {
-        let arclient = new ArQueryClient();
-        let product = await productClient.GetDigitalProduct(product_addr);
-        if(!(product.data && product.data.metadata.info)){
-            return undefined
-        }
-        return (await arclient.FetchData(product.data.metadata.info)).split("||");
-    };
-
     return {
         CreateDigitalListingsCatalog,
         ListProduct,
@@ -183,9 +192,7 @@ export function DigitalProductFunctionalities(props){
         ChangeCurrency,
         SetMedia,
         SetInfo,
-        GetAllVendorDigitalProducts,
-        ResolveProductMedia,
-        ResolveProductInfo
+        GetAllVendorDigitalProducts
     }
 }
 
@@ -335,27 +342,6 @@ export function PhysicalProductFunctionalities(props){
         )).filter(prod => prod.data != undefined);
     };
 
-    const ResolveProductMedia = async(product_addr) => {
-        let arclient = new ArQueryClient();
-        let product = await productClient.GetPhysicalProduct(product_addr);
-        if(!(product.data && product.data.metadata.media)){
-            return undefined
-        }
-        return arclient.GetImagesData(product.data.metadata.media);
-    }
-
-    /**
-     * should return [name, desc]
-     */
-    const ResolveProductInfo = async(product_addr) => {
-        let arclient = new ArQueryClient();
-        let product = await productClient.GetPhysicalProduct(product_addr);
-        if(!(product.data && product.data.metadata.info)){
-            return undefined
-        }
-        return (await arclient.FetchData(product.data.metadata.info)).split("||");
-    };
-
     return {
         CreatePhysicalListingsCatalog,
         ListProduct,
@@ -365,9 +351,7 @@ export function PhysicalProductFunctionalities(props){
         ChangeCurrency,
         SetMedia,
         SetInfo,
-        GetAllVendorPhysicalProducts,
-        ResolveProductMedia,
-        ResolveProductInfo
+        GetAllVendorPhysicalProducts
     }
 }
 
@@ -490,27 +474,6 @@ export function CommissionProductFunctionalities(props){
         )).filter(prod => prod.data != undefined);
     };
 
-    const ResolveProductMedia = async(product_addr) => {
-        let arclient = new ArQueryClient();
-        let product = await productClient.GetCommissionProduct(product_addr);
-        if(!(product.data && product.data.metadata.media)){
-            return undefined
-        }
-        return arclient.GetImagesData(product.data.metadata.media);
-    }
-
-    /**
-     * should return [name, desc]
-     */
-    const ResolveProductInfo = async(product_addr) => {
-        let arclient = new ArQueryClient();
-        let product = await productClient.GetCommissionProduct(product_addr);
-        if(!(product.data && product.data.metadata.info)){
-            return undefined
-        }
-        return (await arclient.FetchData(product.data.metadata.info)).split("||");
-    };
-
     return {
         CreateCommissionsListingsCatalog,
         ListProduct,
@@ -519,8 +482,6 @@ export function CommissionProductFunctionalities(props){
         ChangeCurrency,
         SetMedia,
         SetInfo,
-        GetAllVendorCommissionProducts,
-        ResolveProductMedia,
-        ResolveProductInfo
+        GetAllVendorCommissionProducts
     }
 }

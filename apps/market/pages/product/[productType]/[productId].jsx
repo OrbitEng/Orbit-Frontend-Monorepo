@@ -2,11 +2,9 @@ import { useRouter } from "next/router";
 
 import { 
 	DigitalProductLayout,
-	DigitalServiceLayout,
+	DigitalCommissionLayout,
 	PhysicalProductLayout,
-} from "@layouts/ProductDisplays";
-import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
-import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
+} from "@layouts/ProductDisplaysLayout";
 import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
@@ -14,17 +12,18 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 
 import { useState, useEffect, useContext } from "react";
+import ProductClientCtx from "@contexts/ProductClientCtx";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Dummy Products
 // TODO: remove later
 const dummyPhys = {}
 
-const dummyService = {
+const dummyCommission = {
 	imageUrls: [ "/demologos.png", "/demologos.png", "/demologos.png" ],
 	itemName: "10x custom logo pack",
 	stock: null,
-	type: "service",
+	type: "commission",
 	price: {
 		value: 12345.99,
 		currency: "sol"
@@ -47,8 +46,7 @@ export default function ProductsPage(props) {
 	const router = useRouter();
 	const { productType, productId } = router.query;
 
-	const {digitalMarketClient} = useContext(DigitalMarketCtx);
-	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {productClient} = useContext(ProductClientCtx)
 	const {productCache} = useContext(ProductCacheCtx);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
 
@@ -67,21 +65,26 @@ export default function ProductsPage(props) {
 		
 		switch (productType){
 			case "commission":
+				tp = await productClient.GetCommissionProduct(productId);
+				break;
 			case "digital":
-				tp = await digitalMarketClient.GetDigitalProduct(productId);
+				tp = await productClient.GetDigitalProduct(productId);
 				break;
 			case "physical":
-				tp = await physicalMarketClient.GetPhysicalProduct(productId);
-				break;
-			case "nft":
+				tp = await productClient.GetPhysicalProduct(productId);
 				break;
 			default:
 				break;
 		};
 
 		if(tp){
-			let vendor = await marketAccountsClient.GetAccount(tp.data.metadata.seller)
-			vendor.data.profilePic = GetPfp(vendor.data.profilePic);
+			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
+			if(!vendor_listings_struct) return;
+			let vendor = await marketAccountsClient.GetAccount(
+				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
+			);
+			vendor.data.profilePic = await GetPfp(vendor.data.profilePic);
+			vendor.data.metadata = await GetMetadata(vendor.data.metadata)
 			tp.data.metadata.seller = vendor;
 			setVendor(vendor);
 		};
@@ -92,9 +95,9 @@ export default function ProductsPage(props) {
 	// todo: add nfts later
 	return (
 		<>
-			{ productType === "physical" && <DigitalProductLayout id={productId} product={dummyService} /> }
-			{ productType === "digital" && <DigitalProductLayout id={productId} product={dummyService} /> }
-			{ productType === "commission" && <DigitalProductLayout id={productId} product={dummyService} /> }
+			{((productType == "physical") && <DigitalProductLayout id={productId} product={dummyCommission} />) ||
+			((productType == "digital") && <DigitalProductLayout id={productId} product={dummyCommission} />) ||
+			(productType == "commission") && <DigitalProductLayout id={productId} product={dummyCommission} /> }
 		</>
 	)
 }

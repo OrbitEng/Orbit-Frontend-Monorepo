@@ -159,10 +159,10 @@ export function MarketAccountFunctionalities(props){
         return (await (new ArQueryClient()).GetImageData(ar_addr))[0];
     }
 
-    const GetMetadata = useCallback(()=>{
-        let data = (new ArQueryClient()).FetchData(ar_addr);
+    const GetMetadata = async(ar_addr)=>{
+        let data = await (new ArQueryClient()).FetchData(ar_addr);
         return JSON.parse(data)
-    }, [])
+    }
 
     return {
         CreateAccount,

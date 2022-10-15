@@ -32,7 +32,8 @@ const responsive = {
  * @param {num} value how many tokens is this product worth
  */
 const handleCurrency = (priceStruct) => {
-	
+	// usdc 6 decimals (listed in idk what the fuck)
+	// sol 9 decimals (listed in lamports)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +44,7 @@ const handleCurrency = (priceStruct) => {
 /* 
 Props: {
 	product.address: Pubkey, (address of the product account)
-	product.data.metadata.images: [ string... ],
+	product.data.metadatamedia: [ string... ],
 	product.data.metadata.info: [name, desc]
 	product.data.medata.available: bool,
 

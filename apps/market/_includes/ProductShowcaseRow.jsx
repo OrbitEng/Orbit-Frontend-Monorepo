@@ -55,39 +55,39 @@ export default function ProductShowcaseRow(props) {
 					</button>
 				</div>
 			</div>
-				<Carousel 
-					responsive={responsive} 
-					arrows={true}
-					swipeable={false}
-					draggable={false}
-					showDots={false}
-					infinite={false}
-					autoPlay={false}
-					autoPlaySpeed={1000}
-					keyBoardControl={true}
-					transitionDuration={500}
-					removeArrowOnDeviceType={["tablet", "mobile"]}
-					deviceType={"desktop"}
-					dotListClass="custom-dot-list-style"
-					itemClass="carousel-item-padding-40px"
-				>
-					{
-						(props?.addresses !== undefined || props?.addresses?.length === 0) ?
-							props?.addresses?.map((addr, index) => {
-								return (
-									<ProductDisplayCardHome 
-										address={addr} // address of prod listing
-										type = {props.prod_type}
-										key = {index}
-									/>
-								)
-							})
-							:
-							undefProdsArr.map((undef, ki) => {
-								return <EmptyProductDisplayCardHome key={ki}/>
-							})
-					}
-				</Carousel>
+			<Carousel 
+				responsive={responsive} 
+				arrows={true}
+				swipeable={false}
+				draggable={false}
+				showDots={false}
+				infinite={false}
+				autoPlay={false}
+				autoPlaySpeed={1000}
+				keyBoardControl={true}
+				transitionDuration={500}
+				removeArrowOnDeviceType={["tablet", "mobile"]}
+				deviceType={"desktop"}
+				dotListClass="custom-dot-list-style"
+				itemClass="carousel-item-padding-40px"
+			>
+				{
+					(props.addresses && props.addresses.length) ?
+						props.addresses.map((addr, index) => {
+							return (
+								<ProductDisplayCardHome 
+									address={addr} // address of prod listing
+									type = {props.prod_type}
+									key = {index}
+								/>
+							)
+						})
+						:
+						undefProdsArr.map((undef, ki) => {
+							return <EmptyProductDisplayCardHome key={ki}/>
+						})
+				}
+			</Carousel>
 			</div>
 	)
 }

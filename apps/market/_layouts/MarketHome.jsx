@@ -27,9 +27,13 @@ export function Home(props) {
 	const {commissionMarketClient} = useContext(CommissionMarketCtx);
 	const {productClient} = useContext(ProductClientCtx);
 
-	const [recentCommissions, setRecentCommissions] = useState();
-	const [recentTemplatess, setRecentTemplatess] = useState();
-	const [recentPhysicals, setRecentPhysicals] = useState();
+	const [recentCommissions, setRecentCommissions] = useState(["11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111"]);
+	const [recentDigitals, setRecentDigitals] = useState(["11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111"]);
+	const [recentPhysicals, setRecentPhysicals] = useState(["11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111"]);
+
+	// const [recentCommissions, setRecentCommissions] = useState();
+	// const [recentDigitals, setRecentDigitals] = useState();
+	// const [recentPhysicals, setRecentPhysicals] = useState();
 
 	useEffect(() => {
 		searchBarVisible ? setHeaderMiddle(<NavBar />) : setHeaderMiddle(<HeaderSearchBar />)
@@ -47,16 +51,19 @@ export function Home(props) {
 		let physical_catalog = await productClient.GetRecentMarketListings(
 			productClient.GenRecentListings("physical")
 		);
+		
+		digital_catalog.data.pubkeys = digital_catalog.data.pubkeys.filter( pk => pk.toString() != "11111111111111111111111111111111");
+		commission_catalog.data.pubkeys = commission_catalog.data.pubkeys.filter( pk => pk.toString() != "11111111111111111111111111111111");
+		physical_catalog.data.pubkeys = physical_catalog.data.pubkeys.filter( pk => pk.toString() != "11111111111111111111111111111111");
 
 
-
-		if(!(digital_catalog && digital_catalog.data) || !(commission_catalog && commission_catalog.data) || !(physical_catalog && physical_catalog.data)) return;
+		if(!(digital_catalog.data.pubkeys.length) || !(commission_catalog.data.pubkeys.length) || !(physical_catalog.data.pubkeys.length)) return;
 
 		setRecentCommissions(commission_catalog.data.pubkeys);
-		setRecentTemplatess(digital_catalog.data.pubkeys);
+		setRecentDigitals(digital_catalog.data.pubkeys);
 		setRecentPhysicals(physical_catalog.data.pubkeys);
 
-	}, [digitalMarketClient, physicalMarketClient]);
+	}, [digitalMarketClient, physicalMarketClient, commissionMarketClient]);
 
 
 
@@ -73,8 +80,8 @@ export function Home(props) {
 					<PageSearchBar ref={ref}/>
 					<TopVendorsDisplay />
 					<ProductShowcaseRow title="Physical Items" prod_type="physical" addresses={recentPhysicals} searchable />
-					{/* <ProductShowcaseRow title="Digital Products" prod_type="digital" addresses={recentTemplatess} searchable />
-					<ProductShowcaseRow title="Services" prod_type="commission" addresses={recentCommissions} searchable /> */}
+					<ProductShowcaseRow title="Digital Products" prod_type="digital" addresses={recentDigitals} searchable />
+					<ProductShowcaseRow title="Commissions" prod_type="commission" addresses={recentCommissions} searchable />
 					<NewsStand />
 				</div>
 				<MainFooter />

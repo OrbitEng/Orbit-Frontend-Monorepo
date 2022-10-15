@@ -39,7 +39,7 @@ export function PhysicalProductLayout(props) {
 	)
 }
 
-export function DigitalServiceLayout(props) {
+export function DigitalCommissionLayout(props) {
 	return(
 		<div>
 			coming soon

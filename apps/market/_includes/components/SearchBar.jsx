@@ -29,7 +29,7 @@ export function HeaderSearchBar(props) {
 					</Combobox>
 				</div>
 				<div className="relative flex flex-row ml-4 gap-x-3 justify-center text-xs sm:text-base mt-2">
-					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">🔮 Services</button>
+					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">🔮 Commissions</button>
 					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">👾 Digital Products</button>
 					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">📦 Physical Products</button>
 					<button className="font-bold rounded-full p-1 text-xs text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition hover:scale-[104%] duration-200 ease-in-out">🎨 NFTs</button>
@@ -58,7 +58,7 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 				</Combobox>
 			</div>
 			<div className="flex flex-row ml-4 gap-x-3 justify-center text-xs sm:text-base mt-4">
-				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">🔮 Services</button>
+				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">🔮 Commissions</button>
 				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">👾 Digital Products</button>
 				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">📦 Physical Products</button>
 				<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">🎨 NFTs</button>

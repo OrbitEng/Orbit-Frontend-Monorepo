@@ -99,7 +99,6 @@ export function SignupForm(props) {
 }
 
 export function EditModal(props) {
-	const [userName, setUserName] = useState();
 	const [name, setName] = useState();
 	const [bio, setBio] = useState();
 
@@ -120,15 +119,6 @@ export function EditModal(props) {
 			</div>
 			<button className="bg-[#222429] text-white font-semibold text-lg mx-auto px-3 py-1 rounded-full mb-4">Choose Avatar</button>
 			<div className="flex flex-col gap-y-3">
-				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-lg">Username<span className="text-red-500">*</span></label>
-					<input
-						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-						placeholder="Enter Username"
-						value={userName}
-						onChange={(e) => {setUserName(e.target.value)}}
-					/>
-				</div>
 				<div className="flex flex-col justify-start gap-y-1">
 					<label className="font-bold text-white text-lg">Name<span className="text-red-500">*</span></label>
 					<input

@@ -25,7 +25,7 @@ export function MainFooter(){
                         <Link href={"/"}>Home</Link>
                         <Link href={"/explore/physical"}>Physical</Link>
                         <Link href={"/explore/digital"}>Digital</Link>
-                        <Link href={"/explore/services"}>Services</Link>
+                        <Link href={"/explore/commissions"}>Commissions</Link>
                     </div>
                 </div>
                 <div className='grid grid-col grow justify-center text-center align-top mb-auto'>
