@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { useState, useCallback } from "react";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
@@ -28,7 +29,7 @@ export function SellLayout(props){
 			</Head>
 			<main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
 				<HomeHeader headerMiddle={searchBar}/>
-				<div className={"-mt-14 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
+				<div className={"pt-14 lg:pt-32 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
 				<div className="flex flex-row justify-around w-full mx-auto h-[100vh] gap-24 content-center my-auto">
 					<Link href={"/sell/physical"}>
 					<div
@@ -104,8 +105,8 @@ export function SellLayout(props){
 						</div>
 					</div>
 					</Link>
-				</div>
-				<MainFooter />
+					</div>
+					<MainFooter />
 				</div>
 			</main>
 		</div>

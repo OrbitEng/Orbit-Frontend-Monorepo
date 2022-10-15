@@ -8,13 +8,26 @@ import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, 
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
-import {DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities} from "@functionalities/Products";
+import {DigitalProductFunctionalities} from "@functionalities/Products";
 import { useEffect } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import { useContext } from "react";
 import Link from "next/link";
 
+const token_addresses = {
+	mainnet: {
+		"solana": "11111111111111111111111111111111",
+		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+	},
+	devnet: {
+		"solana": "11111111111111111111111111111111",
+		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+	}
+}
+
 export function DigitalUploadForm(props) {
+    const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
+
 	const {ListProduct, CreateDigitalListingsCatalog} = DigitalProductFunctionalities();
 	const {productClient} = useContext(ProductClientCtx);
 
@@ -53,7 +66,10 @@ export function DigitalUploadForm(props) {
 	// Functions for managing product preview images
 	const [previewFiles, setPreviewFiles] = useState([]);
 	const prevFilesCallback = useCallback((acceptedFiles) => {
-		setPreviewFiles(cf => [...cf, ...acceptedFiles]);
+		setPreviewFiles(cf => [...cf, ...acceptedFiles], ()=>{
+            console.log("called")
+            setBigPreviewSrc(cf[0])
+        });
 	}, [])
 
 	const deletePreviewFile = (filein) => {
@@ -92,7 +108,7 @@ export function DigitalUploadForm(props) {
 			</Head>
             <main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
             <HomeHeader headerMiddle={searchBar}/>
-            <div className={"-mt-14 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
+            <div className={"pt-14 lg:pt-32 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
                 <div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
                 <h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
                 <Link href={"/sell"}>
@@ -137,22 +153,21 @@ export function DigitalUploadForm(props) {
                                     </div>
                                 )
                             }
-                            <div className="flex flex-col overflow-scroll w-[20%] h-96 px-2 overflow-y-scroll gap-y-3">
+                            <div className="flex flex-col scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-scroll overflow-y-scroll w-[20%] h-96 px-2 gap-y-3">
                                 {
                                     previewFiles && previewFiles?.map((f,fi) => {
                                         return(
-                                            <button
-                                                className="relative h-24 w-full border-white border-2 rounded-lg overflow-hidden"
-                                                onClick={()=>{setBigPreviewSrc(URL.createObjectURL(f))}}
-                                            >
-                                                <Image
-                                                    src={URL.createObjectURL(f) || "/"}
-                                                    width={100}
-                                                    height={100}
-                                                    layout="fill"
-                                                    objectFit="cover"
-                                                />
-                                            </button>
+                                            <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
+                                                <button
+                                                    onClick={()=>{setBigPreviewSrc(URL.createObjectURL(f))}}
+                                                >
+                                                    <Image
+                                                        src={URL.createObjectURL(f) || "/"}
+                                                        layout="fill"
+                                                        objectFit="cover"
+                                                    />
+                                                </button>
+                                            </div>
                                         )
                                     })
                                 }

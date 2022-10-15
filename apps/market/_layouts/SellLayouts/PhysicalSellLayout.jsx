@@ -8,13 +8,26 @@ import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, 
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
-import {DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities} from "@functionalities/Products";
+import {PhysicalProductFunctionalities} from "@functionalities/Products";
 import { useEffect } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import { useContext } from "react";
 import Link from "next/link";
 
+const token_addresses = {
+	mainnet: {
+		"solana": "11111111111111111111111111111111",
+		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+	},
+	devnet: {
+		"solana": "11111111111111111111111111111111",
+		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+	}
+}
+
 export function PhysicalUploadForm(props) {
+    const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
+
 	const {ListProduct, CreatePhysicalListingsCatalog} = PhysicalProductFunctionalities();
 	const {productClient} = useContext(ProductClientCtx);
 
@@ -66,7 +79,7 @@ export function PhysicalUploadForm(props) {
 			</Head>
             <main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
             <HomeHeader headerMiddle={searchBar}/>
-            <div className={"-mt-14 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
+            <div className={"pt-14 lg:pt-32 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
                 <div className="flex flex-col w-full mx-auto my-auto content-center max-w-5xl min-h-screen">
                 <h1 className="text-white font-bold text-4xl mt-10">Create New Physical Product</h1>
                 <Link href={"/sell"}>

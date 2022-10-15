@@ -8,13 +8,26 @@ import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, 
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
-import {DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities} from "@functionalities/Products";
+import {CommissionProductFunctionalities} from "@functionalities/Products";
 import { useEffect } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import { useContext } from "react";
 import Link from "next/link";
 
+const token_addresses = {
+	mainnet: {
+		"solana": "11111111111111111111111111111111",
+		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+	},
+	devnet: {
+		"solana": "11111111111111111111111111111111",
+		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
+	}
+}
+
 export function CommissionUploadForm(props) {
+    const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
+    
 	const {ListProduct, CreateCommissionsListingsCatalog} = CommissionProductFunctionalities();
 	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState();
 	const {productClient} = useContext(ProductClientCtx);
