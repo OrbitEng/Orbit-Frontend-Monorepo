@@ -35,7 +35,7 @@ export default function PosModal(props) {
 	
 	return(
 		<Transition appear show={props.openPos} as={Fragment}>
-			<Dialog as="div" className="relative z-[120]" onClose={() => props.setOpenPos(false)}>
+			<Dialog as="div" className="relative z-[120]" onClose={() => props.setOpenPos(true)}>
 			<Transition.Child
 				as={Fragment}
 				enter="ease-out duration-300"

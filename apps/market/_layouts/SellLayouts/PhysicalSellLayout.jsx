@@ -10,7 +10,7 @@ import { Listbox } from "@headlessui/react";
 
 import {PhysicalProductFunctionalities} from "@functionalities/Products";
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import { PhysicalListingsModal } from "@includes/components/InitListingsModal";
+import { CatalogWarnModal } from "@includes/components/InitListingsModal";
 import Link from "next/link";
 
 const token_addresses = {
@@ -76,7 +76,7 @@ export function PhysicalUploadForm(props) {
 
 	return(
         <div>
-            { (vendorPhysicalCatalog == undefined) ? <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/> : <></>}
+            {(vendorPhysicalCatalog == undefined) && <CatalogWarnModal category={"physical"} setCatalog={setVendorPhysicalCatalog}/>}
                 <div className="w-full min-h-screen bg-transparent">
                     <Head>
                         <title>Orbit</title>
