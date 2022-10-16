@@ -1,5 +1,6 @@
 import { useContext, useState, useCallback } from "react";
-
+import {PublicKey} from "@solana/web3.js";
+import { BN } from "@project-serum/anchor";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
@@ -53,7 +54,7 @@ export function DigitalProductFunctionalities(props){
         description,
         files,
         fileType = "Image",
-        add_to_recent = false
+        add_to_recent
     ) => {
         let buffers = await Promise.all(
             files.map((fil)=>{
@@ -81,9 +82,9 @@ export function DigitalProductFunctionalities(props){
                 info: desc_url,
                 ownerCatalog: listings_addr,
                 index: next_index,
-                currency: currency,
-                price: price,
-                deliveryEstimate: deliveryEstimate,
+                currency: new PublicKey(currency),
+                price: new BN(price),
+                deliveryEstimate: new BN(deliveryEstimate),
                 media: media_url
             },
             fileType,
@@ -214,7 +215,8 @@ export function PhysicalProductFunctionalities(props){
         name,
         description,
         quantity,
-        files
+        files,
+        add_to_recent
     ) => {
 
         console.log("awaiting buffers");
@@ -244,14 +246,15 @@ export function PhysicalProductFunctionalities(props){
             next_index, listings_addr, "physical"
         )
 
+        console.log("calling rpc", arguments)
         await productClient.ListPhysicalProduct(
             prod_addr,
             {
                 info: desc_url,
                 ownerCatalog: listings_addr,
                 index: next_index,
-                currency: currency,
-                price: price,
+                currency: new PublicKey(currency),
+                price: new BN(price),
                 deliveryEstimate: deliveryEstimate,
                 media: media_url
             },
@@ -413,9 +416,9 @@ export function CommissionProductFunctionalities(props){
                 info: desc_url,
                 ownerCatalog: listings_addr,
                 index: next_index,
-                currency: currency,
-                price: price,
-                deliveryEstimate: deliveryEstimate,
+                currency: new PublicKey(currency),
+                price: new BN(price),
+                deliveryEstimate: new BN(deliveryEstimate),
                 media: media_url
             },
             add_to_recent

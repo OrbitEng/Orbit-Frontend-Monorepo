@@ -30,13 +30,13 @@ export function PhysicalUploadForm(props) {
 	const {ListProduct} = PhysicalProductFunctionalities();
 	const {productClient} = useContext(ProductClientCtx);
 
-	const [price, setProdPrice] = useState();
-	const [takeHomeMoney, setTakeHomeMoney] = useState();
+	const [price, setProdPrice] = useState(200);
+	const [takeHomeMoney, setTakeHomeMoney] = useState(190);
 	const [currency, setCurrency] = useState("solana");
-	const [prodName, setProdName] = useState("");
-    const [delivery, setDelivery] = useState();
-    const [quantity, setQuantity] = useState();
-	const [description, setDescription] = useState("");
+	const [prodName, setProdName] = useState("books");
+    const [delivery, setDelivery] = useState(14);
+    const [quantity, setQuantity] = useState(180);
+	const [description, setDescription] = useState("selling books");
     const [listRecent, setListRecent] = useState(false);
 	
 	const [files, setFiles] = useState([]);
@@ -280,14 +280,14 @@ export function PhysicalUploadForm(props) {
                                     onChange={(e)=>{setDescription(e.target.value)}}
                                 />
                             </div>
-                            <div className="w-full flex flex-row text-white justify-center">
-                                <input type={"checkbox"} onChange={()=>{setListRecent(!listRecent)}}/>
+                            <div className="w-full flex flex-row text-white justify-center" onClick={()=>{setListRecent(!listRecent)}}>
+                                <input type={"checkbox"} checked={listRecent}  className=""/>
                                 <span className="mx-8">have product displayed in "recent listings" on the front page</span>
                             </div>
                             <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
                                 <button className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" onClick={()=>{
                                     ListProduct(
-                                        currency, price, delivery, prodName, description, quantity, files, listRecent
+                                        token_addresses[currency], price, delivery, prodName, description, quantity, files, listRecent
                                     )
                                 }}>
                                     Upload
