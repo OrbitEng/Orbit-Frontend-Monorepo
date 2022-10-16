@@ -5,7 +5,7 @@ import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 import Link from 'next/link';
 
 export function CatalogWarnModal(props){
-    const {AddVendorPhysicalListings} = MarketAccountFunctionalities();
+    const {AddVendorPhysicalListings, AddVendorCommissionListings, AddVendorDigitalListings} = MarketAccountFunctionalities();
 
     const [isOpen, setIsOpen] = useState(true);
 
@@ -50,7 +50,7 @@ export function CatalogWarnModal(props){
 				handleSubmitFunction = handleSubmitPhysical;
 				break;
 			case "digital":
-				handleSubmitFunction =handleSubmitDigital;
+				handleSubmitFunction = handleSubmitDigital;
 				break;
 			case "commission":
 				handleSubmitFunction = handleSubmitComission;
