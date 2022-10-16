@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
-
+import { CatalogWarnModal } from "@includes/components/InitListingsModal";
 import {DigitalProductFunctionalities} from "@functionalities/Products";
 import { useEffect } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
@@ -114,6 +114,7 @@ export function DigitalUploadForm(props) {
 
 	return(
         <div className="w-full min-h-screen bg-transparent">
+            {(vendorDigitalCatalog == undefined) && <CatalogWarnModal category={"digital"} setCatalog={setVendorDigitalCatalog}/>}
             <Head>
 				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
@@ -247,9 +248,7 @@ export function DigitalUploadForm(props) {
                     </div>
                 </div>
                 
-                {
-                    vendorDigitalCatalog ? (
-                        <form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct()}}>
+                    <form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct()}}>
                         <div className="flex flex-col">
                             <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
                             <input
@@ -347,15 +346,6 @@ export function DigitalUploadForm(props) {
                             <input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
                         </div>
                         </form>
-                    ) : (
-                        <div>
-                            <div>
-                                Make a catalog to start listing physical products!
-                            </div>
-                            <button onClick={CreateDigitalCatalog} className="w-32 h-32"/>
-                        </div>
-                    )
-                }
                 </div>
             </div>
             </main>

@@ -42,7 +42,7 @@ export function CatalogWarnModal(props){
 		closeModal()
 	}
 
-	let handleSubmitFunction = undefined;
+	const [handleSubmitFunction, setHandleSubmitFunction] = useState(handleSubmitPhysical);
 
 	useEffect(() => {
 		switch(props.category) {
