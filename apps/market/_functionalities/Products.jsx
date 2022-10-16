@@ -219,34 +219,27 @@ export function PhysicalProductFunctionalities(props){
         add_to_recent
     ) => {
 
-        console.log("awaiting buffers");
         let buffers = await Promise.all(
             files.map((fil)=>{
                 return fil.arrayBuffer();
             })
         );
 
-        console.log("uploading buffers");
         let media_url = await bundlrClient.UploadBuffer(buffers);
-        console.log("uploading metadata");
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
 
-        console.log("genning addr");
         let listings_addr = await productClient.GenListingsAddress("physical");
 
-        console.log("getting next index")
         let next_index = productClient.FindNextAvailableAddress(
             (await productClient.GetListingsStruct(
                 listings_addr
             )).data
         );
 
-        console.log("generating")
         let prod_addr = productClient.GenProductAddress(
             next_index, listings_addr, "physical"
         )
 
-        console.log("calling rpc", arguments)
         await productClient.ListPhysicalProduct(
             prod_addr,
             {

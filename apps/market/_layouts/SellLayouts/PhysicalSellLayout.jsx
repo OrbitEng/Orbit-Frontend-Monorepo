@@ -30,13 +30,13 @@ export function PhysicalUploadForm(props) {
 	const {ListProduct} = PhysicalProductFunctionalities();
 	const {productClient} = useContext(ProductClientCtx);
 
-	const [price, setProdPrice] = useState(200);
-	const [takeHomeMoney, setTakeHomeMoney] = useState(190);
+	const [price, setProdPrice] = useState();
+	const [takeHomeMoney, setTakeHomeMoney] = useState();
 	const [currency, setCurrency] = useState("solana");
-	const [prodName, setProdName] = useState("books");
+	const [prodName, setProdName] = useState("");
     const [delivery, setDelivery] = useState(14);
-    const [quantity, setQuantity] = useState(180);
-	const [description, setDescription] = useState("selling books");
+    const [quantity, setQuantity] = useState(0);
+	const [description, setDescription] = useState("");
     const [listRecent, setListRecent] = useState(false);
 	
 	const [files, setFiles] = useState([]);
