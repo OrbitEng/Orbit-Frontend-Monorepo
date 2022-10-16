@@ -63,12 +63,12 @@ export function DigitalProductFunctionalities(props){
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
-        let listings_addr = productClient.GetListingsStruct("digital");
+        let listings_addr = productClient.GenListingsAddress("digital");
 
         let next_index = productClient.FindNextAvailableAddress(
-            await productClient.GetListingsStruct(
+            (await productClient.GetListingsStruct(
                 listings_addr
-            )
+            )).data
         );
 
         let prod_addr = productClient.GenProductAddress(
@@ -105,9 +105,9 @@ export function DigitalProductFunctionalities(props){
 
     const ChangeAvailability = async(prod_addr, available = false) =>{
         if (available){
-            await productClient.MarkProdAvailable(prod_addr, productClient.GenListingsAddres("digital"));
+            await productClient.MarkProdAvailable(prod_addr, productClient.GenListingsAddress("digital"));
         }else{
-            await productClient.MarkProdUnavailable(prod_addr, productClient.GenListingsAddres("digital"));
+            await productClient.MarkProdUnavailable(prod_addr, productClient.GenListingsAddress("digital"));
         }
     }
 
@@ -115,7 +115,7 @@ export function DigitalProductFunctionalities(props){
         
         return productClient.ChangeProductPrice(
             prod_addr,
-            productClient.GenListingsAddres("digital"),
+            productClient.GenListingsAddress("digital"),
             new_price
         )
     }
@@ -124,7 +124,7 @@ export function DigitalProductFunctionalities(props){
         
         return productClient.UpdateCurrency(
             prod_addr,
-            productClient.GenListingsAddres("digital"),
+            productClient.GenListingsAddress("digital"),
             new_currency
         )
     }
@@ -141,7 +141,7 @@ export function DigitalProductFunctionalities(props){
 
         productClient.SetMedia(
             prod_addr,
-            productClient.GenListingsAddres("digital"),
+            productClient.GenListingsAddress("digital"),
             tx_id
         )
     }
@@ -151,7 +151,7 @@ export function DigitalProductFunctionalities(props){
 
         productClient.SetProdInfo(
             prod_addr,
-            productClient.GenListingsAddres("digital"),
+            productClient.GenListingsAddress("digital"),
             tx_url
         )
     }
@@ -217,24 +217,31 @@ export function PhysicalProductFunctionalities(props){
         files
     ) => {
 
+        console.log("awaiting buffers");
         let buffers = await Promise.all(
             files.map((fil)=>{
                 return fil.arrayBuffer();
             })
         );
 
+        console.log("uploading buffers");
         let media_url = await bundlrClient.UploadBuffer(buffers);
+        console.log("uploading metadata");
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
-        let listings_addr = productClient.GetListingsStruct("digital");
 
+        console.log("genning addr");
+        let listings_addr = await productClient.GenListingsAddress("physical");
+
+        console.log("getting next index")
         let next_index = productClient.FindNextAvailableAddress(
-            await productClient.GetListingsStruct(
+            (await productClient.GetListingsStruct(
                 listings_addr
-            )
+            )).data
         );
 
+        console.log("generating")
         let prod_addr = productClient.GenProductAddress(
-            next_index, listings_addr, "digital"
+            next_index, listings_addr, "physical"
         )
 
         await productClient.ListPhysicalProduct(
@@ -255,9 +262,9 @@ export function PhysicalProductFunctionalities(props){
 
     const ChangeAvailability = async(prod_addr, available = false) =>{
         if (available){
-            await productClient.MarkProdAvailable(prod_addr, productClient.GenListingsAddres("physical"));
+            await productClient.MarkProdAvailable(prod_addr, productClient.GenListingsAddress("physical"));
         }else{
-            await productClient.MarkProdUnavailable(prod_addr, productClient.GenListingsAddres("physical"));
+            await productClient.MarkProdUnavailable(prod_addr, productClient.GenListingsAddress("physical"));
         }
     }
 
@@ -265,7 +272,7 @@ export function PhysicalProductFunctionalities(props){
 
         return productClient.ChangeProductPrice(
             prod_addr,
-            productClient.GenListingsAddres("physical"),
+            productClient.GenListingsAddress("physical"),
             new_price
         )
     }
@@ -273,7 +280,7 @@ export function PhysicalProductFunctionalities(props){
 
         return productClient.ChangeProductQuantity(
             prod_addr,
-            productClient.GenListingsAddres("physical"),
+            productClient.GenListingsAddress("physical"),
             new_quantity
         )
     }
@@ -281,7 +288,7 @@ export function PhysicalProductFunctionalities(props){
 
         return productClient.UpdateCurrency(
             prod_addr,
-            productClient.GenListingsAddres("physical"),
+            productClient.GenListingsAddress("physical"),
             new_currency
         )
     };
@@ -298,7 +305,7 @@ export function PhysicalProductFunctionalities(props){
 
         return productClient.SetMedia(
             prod_addr,
-            productClient.GenListingsAddres("physical"),
+            productClient.GenListingsAddress("physical"),
             tx_id
         )
 
@@ -310,7 +317,7 @@ export function PhysicalProductFunctionalities(props){
 
         productClient.SetProdInfo(
             prod_addr,
-            productClient.GenListingsAddres("physical"),
+            productClient.GenListingsAddress("physical"),
             tx_url
         )
     }
@@ -372,7 +379,8 @@ export function CommissionProductFunctionalities(props){
         deliveryEstimate = 14,
         name,
         description,
-        files
+        files,
+        add_to_recent
     ) => {
 
         let buffers = await Promise.all(
@@ -384,12 +392,33 @@ export function CommissionProductFunctionalities(props){
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
 
-        await productClient.ListProduct(
-            desc_url,
-            currency,
-            price,
-            deliveryEstimate,
-            media_url
+        console.log("genning addr");
+        let listings_addr = await productClient.GenListingsAddress("commission");
+
+        console.log("getting next index")
+        let next_index = productClient.FindNextAvailableAddress(
+            (await productClient.GetListingsStruct(
+                listings_addr
+            )).data
+        );
+
+        console.log("generating")
+        let prod_addr = productClient.GenProductAddress(
+            next_index, listings_addr, "commission"
+        )
+
+        await productClient.ListCommissionProduct(
+            prod_addr,
+            {
+                info: desc_url,
+                ownerCatalog: listings_addr,
+                index: next_index,
+                currency: currency,
+                price: price,
+                deliveryEstimate: deliveryEstimate,
+                media: media_url
+            },
+            add_to_recent
         )
     }
 
@@ -405,7 +434,7 @@ export function CommissionProductFunctionalities(props){
 
         return productClient.ChangeProductPrice(
             prod_addr,
-            productClient.GenListingsAddres("commission"),
+            productClient.GenListingsAddress("commission"),
             new_price
         )
     }
@@ -414,7 +443,7 @@ export function CommissionProductFunctionalities(props){
 
         return productClient.UpdateCurrency(
             prod_addr,
-            productClient.GenListingsAddres("commission"),
+            productClient.GenListingsAddress("commission"),
             new_currency
         )
     };
@@ -431,7 +460,7 @@ export function CommissionProductFunctionalities(props){
 
         return productClient.SetMedia(
             prod_addr,
-            productClient.GenListingsAddres("commission"),
+            productClient.GenListingsAddress("commission"),
             tx_id
         )
 
@@ -443,7 +472,7 @@ export function CommissionProductFunctionalities(props){
 
         productClient.SetProdInfo(
             prod_addr,
-            productClient.GenListingsAddres("commission"),
+            productClient.GenListingsAddress("commission"),
             tx_url
         )
     }
