@@ -1,11 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState, useContext, useEffect } from 'react'
-
+import { Fragment, useState, useContext, useCallback } from 'react'
 import { MarketAccountFunctionalities } from '@functionalities/Accounts';
+import ProductClientCtx from '@contexts/ProductClientCtx';
 import Link from 'next/link';
 
 export function CatalogWarnModal(props){
     const {AddVendorPhysicalListings, AddVendorCommissionListings, AddVendorDigitalListings} = MarketAccountFunctionalities();
+    const {productClient} = useContext(ProductClientCtx)
 
     const [isOpen, setIsOpen] = useState(true);
 
@@ -17,46 +18,30 @@ export function CatalogWarnModal(props){
         setIsOpen(true)
     }
 
-    const handleSubmitPhysical = async () => {
-		console.log("fuck")
-		await AddVendorPhysicalListings();
-        await props.setCatalog(
-            await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"))
-        )
-		closeModal()
-	}
-
-	const handleSubmitComission = async () => {
-		await AddVendorCommissionListings();
-        await props.setCatalog(
-            await productClient.GetListingsStruct(productClient.GenListingsAddress("commission"))
-        )
-		closeModal()
-	}
-
-	const handleSubmitDigital = async () => {
-		await AddVendorDigitalListings();
-        await props.setCatalog(
-            await productClient.GetListingsStruct(productClient.GenListingsAddress("digital"))
-        )
-		closeModal()
-	}
-
-	const [handleSubmitFunction, setHandleSubmitFunction] = useState(handleSubmitPhysical);
-
-	useEffect(() => {
+	const handleSubmitFunction = useCallback(async () => {
+        if(!(props.category && props.setCatalog && productClient))return;
 		switch(props.category) {
 			case "physical":
-				handleSubmitFunction = handleSubmitPhysical;
+				await AddVendorPhysicalListings();
+                await props.setCatalog(
+                    await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"))
+                )
 				break;
-			case "digital":
-				handleSubmitFunction = handleSubmitDigital;
-				break;
-			case "commission":
-				handleSubmitFunction = handleSubmitComission;
-				break;
+            case "commission":
+                await AddVendorCommissionListings();
+                await props.setCatalog(
+                    await productClient.GetListingsStruct(productClient.GenListingsAddress("commission"))
+                )
+                break;
+            case "digital":
+                await AddVendorDigitalListings();
+                await props.setCatalog(
+                    await productClient.GetListingsStruct(productClient.GenListingsAddress("digital"))
+                )
+                break;
 		}
-	}, [props.setCatalog, props.category])
+        closeModal()
+	}, [props.setCatalog, props.category, productClient])
 
     return (
         <div>
@@ -99,7 +84,7 @@ export function CatalogWarnModal(props){
                                 <div className='flex flex-row w-full justify-evenly pt-6 pb-2'>
 									<button 
 										className='flex border-[1px] border-[#5B5B5B] font-bold hover:scale-[105%] px-4 py-2 rounded-lg'
-										onClick={() => {handleSubmitFunction()}}
+										onClick={handleSubmitFunction}
 									>
 										<span>Create</span>
 									</button>

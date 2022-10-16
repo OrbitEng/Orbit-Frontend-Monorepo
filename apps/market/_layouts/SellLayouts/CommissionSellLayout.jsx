@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useContext } from "react";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
@@ -9,9 +9,8 @@ import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
 import {CommissionProductFunctionalities} from "@functionalities/Products";
-import { useEffect } from "react";
+import { CatalogWarnModal } from "@includes/components/InitListingsModal";
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import { useContext } from "react";
 import Link from "next/link";
 
 const token_addresses = {
@@ -29,28 +28,32 @@ export function CommissionUploadForm(props) {
     const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
     
 	const {ListProduct, CreateCommissionsListingsCatalog} = CommissionProductFunctionalities();
-	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState();
+	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState("");
 	const {productClient} = useContext(ProductClientCtx);
+
 	useEffect(async()=>{
+        if(!productClient)return;
 		try{
 			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("commission"));
 			if(vc && vc.data){
 				setVendorCommissionCatalog(vc)
 			}
 		}catch(e){
-
+            console.log("init listing render err: ", e)
+            setVendorCommissionCatalog(undefined)
 		}
-	},[])
+	},[productClient])
 
 	return(
         <div className="w-full min-h-screen bg-transparent">
+			{(vendorCommissionCatalog == undefined) && <CatalogWarnModal category={"commission"} setCatalog={setVendorCommissionCatalog}/>}
             <Head>
 				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
             <main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
             <HomeHeader headerMiddle={searchBar}/>
-            <div className={"-mt-14 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
+            <div className="w-full min-h-screen">
                 SHIT GOES HERE
             </div>
             </main>

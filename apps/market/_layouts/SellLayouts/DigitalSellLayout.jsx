@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useEffect, useContext, useState, useCallback } from "react";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
@@ -9,9 +9,7 @@ import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 import { CatalogWarnModal } from "@includes/components/InitListingsModal";
 import {DigitalProductFunctionalities} from "@functionalities/Products";
-import { useEffect } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import { useContext } from "react";
 import Link from "next/link";
 
 const token_addresses = {
