@@ -29,7 +29,7 @@ export function SellLayout(props){
 			</Head>
 			<main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
 				<HomeHeader headerMiddle={searchBar}/>
-				<div className={"pt-14 lg:pt-32 sm:-mt-32 max-w-7xl align-center mx-auto min-h-view"}>
+				<div className="-mt-24 max-w-7xl align-center mx-auto min-h-[100vh]">
 				<div className="flex flex-row justify-around w-full mx-auto h-[100vh] gap-24 content-center my-auto">
 					<Link href={"/sell/physical"}>
 					<div
@@ -55,7 +55,6 @@ export function SellLayout(props){
 						</div>
 					</div>
 					</Link>
-					
 					<Link href={"/sell/commission"}>
 					<div
 						className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
@@ -80,7 +79,6 @@ export function SellLayout(props){
 						</div>
 					</div>
 					</Link>
-
 					<Link href={"/sell/digital"}>
 					<div
 						className="flex group relative rounded-2xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
