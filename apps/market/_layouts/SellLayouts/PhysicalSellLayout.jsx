@@ -44,12 +44,14 @@ export function PhysicalUploadForm(props) {
 	const [vendorPhysicalCatalog, setVendorPhysicalCatalog] = useState("");
 
 	useEffect(async()=>{
+        if(!productClient)return;
 		try{
 			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"));
 			if(vc && vc.data){
 				setVendorPhysicalCatalog(vc)
 			}
 		}catch(e){
+            console.log("init listing render err: ", e)
             setVendorPhysicalCatalog(undefined)
 		}
 	},[productClient])
@@ -73,7 +75,7 @@ export function PhysicalUploadForm(props) {
 
 	return(
         <div>
-            { vendorPhysicalCatalog == undefined ? <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/> : <></>}
+            { (vendorPhysicalCatalog == undefined) ? <PhysicalListingsModal setVendorPhysicalCatalog={setVendorPhysicalCatalog}/> : <></>}
                 <div className="w-full min-h-screen bg-transparent">
                     <Head>
                         <title>Orbit</title>
@@ -158,9 +160,7 @@ export function PhysicalUploadForm(props) {
                         </div>
                         <div>
                         </div>
-                        <form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct(
-                            currency, price, delivery, prodName, description, quantity, files
-                        )}}>
+                        <div className="flex flex-col gap-y-6 mb-32">
                             <div className="flex flex-col">
                                 <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
                                 <input
@@ -280,9 +280,15 @@ export function PhysicalUploadForm(props) {
                                 />
                             </div>
                             <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
-                                <input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
+                                <button className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" onClick={()=>{
+                                    ListProduct(
+                                        currency, price, delivery, prodName, description, quantity, files
+                                    )
+                                }}>
+                                    Upload
+                                </button>
                             </div>	
-                        </form>
+                        </div>
                         </div>
                     </div>
                     </main>
