@@ -138,7 +138,7 @@ export function EditModal(props) {
 								<Image
 									src={URL.createObjectURL(uploadedPfp)}
 									layout="fill"
-									objectFit="contain"
+									objectFit="cover"
 								/>
 							</div>
 						</div>

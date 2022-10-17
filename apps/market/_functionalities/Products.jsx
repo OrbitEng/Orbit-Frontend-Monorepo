@@ -136,7 +136,7 @@ export function DigitalProductFunctionalities(props){
         
         let buffers = (await Promise.all(
             files.map(async (fil)=>{      
-                return enc_common.utos(new Uint8Array.from(await fil.arrayBuffer())) + "<<" + fil.type;
+                return enc_common.utos(new Uint8Array(await fil.arrayBuffer())) + "<<" + fil.type;
             })
         )).join("||")
 
@@ -296,7 +296,7 @@ export function PhysicalProductFunctionalities(props){
 
         let buffers = (await Promise.all(
             files.map(async (fil)=>{      
-                return enc_common.utos(new Uint8Array.from(await fil.arrayBuffer())) + "<<" + fil.type;
+                return enc_common.utos(new Uint8Array(await fil.arrayBuffer())) + "<<" + fil.type;
             })
         )).join("||")
 
@@ -452,7 +452,7 @@ export function CommissionProductFunctionalities(props){
 
         let buffers = (await Promise.all(
             files.map(async (fil)=>{      
-                return enc_common.utos(new Uint8Array.from(await fil.arrayBuffer())) + "<<" + fil.type;
+                return enc_common.utos(new Uint8Array(await fil.arrayBuffer())) + "<<" + fil.type;
             })
         )).join("||")
 
