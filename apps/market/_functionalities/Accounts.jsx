@@ -103,34 +103,34 @@ export function MarketAccountFunctionalities(props){
     /// :BUYER
     const AddBuyerPhysicalTransactions = async() => {
         return marketAccountsClient.AddBuyerPhysicalTransactions(
-            transactionClient.GetBuyerOpenTransactions("physical")
+            transactionClient.GenBuyerTransactionLog("physical")
         );
     }
     const AddBuyerDigitalTransactions = async() => {
         return marketAccountsClient.AddBuyerDigitalTransactions(
-            transactionClient.GetBuyerOpenTransactions("digital")
+            transactionClient.GenBuyerTransactionLog("digital")
         );
     }
     const AddBuyerCommissionTransactions = async() => {
         return marketAccountsClient.AddBuyerCommissionTransactions(
-            transactionClient.GetBuyerOpenTransactions("commission")
+            transactionClient.GenBuyerTransactionLog("commission")
         );
     }
 
     /// :SELLER
     const AddSellerPhysicalTransactions = async() => {
         return marketAccountsClient.AddSellerPhysicalTransactions(
-            transactionClient.GetSellerOpenTransactions("physical")
+            transactionClient.GenSellerTransactionLog("physical")
         );
     }
     const AddSellerDigitalTransactions = async() => {
         return marketAccountsClient.AddSellerDigitalTransactions(
-            transactionClient.GetSellerOpenTransactions("digital")
+            transactionClient.GenSellerTransactionLog("digital")
         );
     }
     const AddSellerCommissionTransactions = async() => {
         return marketAccountsClient.AddSellerCommissionTransactions(
-            transactionClient.GetSellerOpenTransactions("commission")
+            transactionClient.GenSellerTransactionLog("commission")
         );
     }
 

@@ -7,29 +7,10 @@ import { EditModal } from "@includes/components/SignupForm";
 
 export default function EditProfileButton(props) {
 	let [isOpen, setIsOpen] = useState(false);
-	const [nickName, setNickName] = useState("");
-	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
-
-	const {SetPfp} = MarketAccountFunctionalities();
 
 	const closeModal = async () => {
 		setIsOpen(false)
 	}
-
-	const EditAccount = async () => {
-		CreateAccount({nickname: nickName}, undefined, undefined);
-		props.setMarketAccount(
-			await marketAccountsClient.GetAccount(
-				marketAccountsClient.GenAccountAddress(props.connectedWallet.publicKey)[0]
-			)
-		)
-	}
-
-	const handleSubmit = () => {
-		createAccount()
-		closeModal()
-	}
-
 	const openModal = async() => {
 		setIsOpen(true)
 	}

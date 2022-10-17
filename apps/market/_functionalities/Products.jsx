@@ -68,7 +68,7 @@ export function DigitalProductFunctionalities(props){
         let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
         let listings_addr = productClient.GenListingsAddress("digital");
 
-        let next_index = productClient.FindNextAvailableAddress(
+        let next_index = productClient.FindNextAvailableListingsAddress(
             (await productClient.GetListingsStruct(
                 listings_addr
             )).data
@@ -233,11 +233,13 @@ export function PhysicalProductFunctionalities(props){
 
         let listings_addr = await productClient.GenListingsAddress("physical");
 
-        let next_index = productClient.FindNextAvailableAddress(
+        let next_index = productClient.FindNextAvailableListingsAddress(
             (await productClient.GetListingsStruct(
                 listings_addr
             )).data
         );
+
+        next_index = 0;
 
         let prod_addr = productClient.GenProductAddress(
             next_index, listings_addr, "physical"
@@ -396,7 +398,7 @@ export function CommissionProductFunctionalities(props){
         let listings_addr = await productClient.GenListingsAddress("commission");
 
         console.log("getting next index")
-        let next_index = productClient.FindNextAvailableAddress(
+        let next_index = productClient.FindNextAvailableListingsAddress(
             (await productClient.GetListingsStruct(
                 listings_addr
             )).data

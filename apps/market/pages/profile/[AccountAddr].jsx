@@ -8,7 +8,7 @@ export default function AccountPage() {
 
 	return(
 		<GenericLayout>
-			<AccountDisplay items={["bruh"]} accountAddr={AccountAddr} />
+			<AccountDisplay accountAddr={AccountAddr} />
 		</GenericLayout>
 	)
 }

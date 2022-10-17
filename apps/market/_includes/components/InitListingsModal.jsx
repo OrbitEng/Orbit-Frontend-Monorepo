@@ -2,11 +2,18 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState, useContext, useCallback } from 'react'
 import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 import ProductClientCtx from '@contexts/ProductClientCtx';
+import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import Link from 'next/link';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 export function CatalogWarnModal(props){
-    const {AddVendorPhysicalListings, AddVendorCommissionListings, AddVendorDigitalListings} = MarketAccountFunctionalities();
+    const {
+		AddVendorPhysicalListings, AddVendorCommissionListings, AddVendorDigitalListings,
+		AddSellerPhysicalTransactions, AddSellerDigitalTransactions, AddSellerCommissionTransactions
+	} = MarketAccountFunctionalities();
     const {productClient} = useContext(ProductClientCtx)
+	const {transactionClient} = useContext(TransactionClientCtx);
+	const wallet = useWallet();
 
     const [isOpen, setIsOpen] = useState(true);
 
@@ -19,29 +26,58 @@ export function CatalogWarnModal(props){
     }
 
 	const handleSubmitFunction = useCallback(async () => {
-        if(!(props.category && props.setCatalog && productClient))return;
+		console.log(wallet);
+		if(!(productClient && productClient.wallet.publicKey && transactionClient && transactionClient.wallet.publicKey && wallet.connected)) return;
 		switch(props.category) {
 			case "physical":
-				await AddVendorPhysicalListings();
-                await props.setCatalog(
-                    await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"))
-                )
+				if(props.setCatalog){
+					await AddVendorPhysicalListings();
+					await props.setCatalog(
+						await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"))
+					)
+				}
+
+				if(props.setTxLog){
+					await AddSellerPhysicalTransactions();
+					await props.setTxLog(
+						await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("physical"))
+					)
+				}
+
 				break;
-            case "commission":
-                await AddVendorCommissionListings();
-                await props.setCatalog(
-                    await productClient.GetListingsStruct(productClient.GenListingsAddress("commission"))
-                )
-                break;
-            case "digital":
-                await AddVendorDigitalListings();
-                await props.setCatalog(
-                    await productClient.GetListingsStruct(productClient.GenListingsAddress("digital"))
-                )
-                break;
+			case "digital":
+				if(props.setCatalog){
+					await AddVendorDigitalListings();
+					await props.setCatalog(
+						await productClient.GetListingsStruct(productClient.GenListingsAddress("digital"))
+					)
+				}
+
+				if(props.setTxLog){
+					await AddSellerDigitalTransactions();
+					await props.setTxLog(
+						await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("digital"))
+					)
+				}
+				break;
+			case "commission":
+				if(props.setCatalog){
+					await AddVendorCommissionListings();
+					await props.setCatalog(
+						await productClient.GetListingsStruct(productClient.GenListingsAddress("commission"))
+					)
+				}
+				
+				if(props.setTxLog){
+					await AddSellerCommissionTransactions();
+					await props.setTxLog(
+						await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("commission"))
+					)
+				}
+				break;
 		}
         closeModal()
-	}, [props.setCatalog, props.category, productClient])
+	}, [props.setCatalog, props.setTxLog, props.category, productClient, transactionClient, wallet])
 
     return (
         <div>

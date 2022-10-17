@@ -1,37 +1,55 @@
 import { useState, useContext, useEffect } from "react";
 import Image from "next/image";
-import { useWallet } from "@solana/wallet-adapter-react";
 import { LargeExplore } from "@includes/ProductExplorer";
 
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
+import ProductClientCtx from "@contexts/ProductClientCtx";
 import EditProfileButton from "@includes/components/EditProfileButton";
 
 export function AccountDisplay(props) {
-	console.log(props?.accountAddr)
-	let wallet = useWallet();
 
-	const [marketAccount, setMarketAccount] = useState()
+	const [marketAccount, setMarketAccount] = useState();
 	const [isSelf, setIsSelf] = useState(false);
-	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
+	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {productClient} = useContext(ProductClientCtx)
+
+	const [physicalListings, setPhysicalListings] = useState()
+	const [digitalListings, setDigitalListings] = useState()
+	const [commissionListings, setCommissionListings] = useState()
 
 	useEffect(()=>{
-		if(wallet.connected && marketAccountsClient && (props.accountAddr == marketAccountsClient.GenAccountAddress(wallet.publicKey.toString()))){
+		if(marketAccountsClient && marketAccountsClient.wallet && (props.accountAddr == marketAccountsClient.GenAccountAddress().toString())){
 			setIsSelf(true)
 		};
-	},[wallet.publicKey, props.accountAddr, marketAccountsClient])
+	},[props.accountAddr, marketAccountsClient])
 
 	useEffect(async () => {
 		if (!(marketAccountsClient && props.accountAddr)) return;
 
-		let market_account = await marketAccountsClient.GetAccount(props.accountAddr);
+		let market_account
+		try{
+			market_account = await marketAccountsClient.GetAccount(props.accountAddr);
+		}catch(e){
+			return;
+		}
 
-		console.log(market_account)
+		setMarketAccount(market_account);
+		if(market_account.data.digitalListings.toString() != "11111111111111111111111111111111"){
+			let listings = await productClient.GetListingsStruct(market_account.data.digitalListings);
+			console.log(productClient.FindAllListings(listings.data))
+		}
+		if(market_account.data.physicalListings.toString() != "11111111111111111111111111111111"){
+			let listings = await productClient.GetListingsStruct(market_account.data.physicalListings);
+			console.log(productClient.FindAllListings(listings.data));
+		}
+		if(market_account.data.commissionListings.toString() != "11111111111111111111111111111111"){
+			let listings = await productClient.GetListingsStruct(market_account.data.commissionListings);
+			console.log(productClient.FindAllListings(listings.data))
+		}
 
-		setMarketAccount(
-			market_account
-		);
-		console.log(marketAccount);
-	}, [marketAccountsClient, wallet.publicKey, props.accountAddr])
+	}, [marketAccountsClient, props.accountAddr, productClient])
+
+
 
 	return(
 		<div className="flex flex-col max-w-6xl mx-auto">
@@ -54,7 +72,7 @@ export function AccountDisplay(props) {
 					<p className="text-[#5B5B5B]">{props?.bio || "King of the hill is my favorite game, im always in first no matter what case it is"}</p>
 				</div>
 			</div>
-			<LargeExplore items={props.items}/>
+			<LargeExplore items={["bruh"]} />
 		</div>
 	)
 }

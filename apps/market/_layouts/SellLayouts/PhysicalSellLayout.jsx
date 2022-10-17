@@ -9,9 +9,12 @@ import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
 import {PhysicalProductFunctionalities} from "@functionalities/Products";
-import ProductClientCtx from "@contexts/ProductClientCtx";
 import { CatalogWarnModal } from "@includes/components/InitListingsModal";
+import ProductClientCtx from "@contexts/ProductClientCtx";
+import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import Link from "next/link";
+
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const token_addresses = {
 	mainnet: {
@@ -26,9 +29,11 @@ const token_addresses = {
 
 export function PhysicalUploadForm(props) {
     const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
+    const wallet = useWallet();
 
 	const {ListProduct} = PhysicalProductFunctionalities();
 	const {productClient} = useContext(ProductClientCtx);
+	const {transactionClient} = useContext(TransactionClientCtx);
 
 	const [price, setProdPrice] = useState();
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
@@ -42,20 +47,29 @@ export function PhysicalUploadForm(props) {
 	const [files, setFiles] = useState([]);
     const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
 
-	const [vendorPhysicalCatalog, setVendorPhysicalCatalog] = useState("");
+	const [vendorPhysicalListings, setVendorPhysicalListings] = useState();
+	const [vendorPhysicalTx, setVendorPhysicalTx] = useState();
+    
 
 	useEffect(async()=>{
-        if(!productClient)return;
+        if(!(productClient && productClient.wallet.publicKey && transactionClient && transactionClient.wallet.publicKey && wallet.connected))return;
 		try{
 			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"));
 			if(vc && vc.data){
-				setVendorPhysicalCatalog(vc)
+				setVendorPhysicalListings(vc)
 			}
 		}catch(e){
             console.log("init listing render err: ", e)
-            setVendorPhysicalCatalog(undefined)
 		}
-	},[productClient])
+        try{
+            let vtx = await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("physical"));
+            if(vtx && vtx.data){
+                setVendorPhysicalTx(vtx)
+            }
+        }catch(e){
+            console.log("init logs render err: ", e)
+		}
+	},[productClient, transactionClient, wallet.connected])
 
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 
@@ -76,7 +90,7 @@ export function PhysicalUploadForm(props) {
 
 	return(
         <div>
-            {(vendorPhysicalCatalog == undefined) && <CatalogWarnModal category={"physical"} setCatalog={setVendorPhysicalCatalog}/>}
+            {((vendorPhysicalListings == undefined) || (vendorPhysicalTx == undefined)) && <CatalogWarnModal category={"physical"} setCatalog={vendorPhysicalListings ? undefined : setVendorPhysicalListings} setTxLog={vendorPhysicalTx ? undefined : setVendorPhysicalTx}/>}
                 <div className="w-full min-h-screen bg-transparent">
                     <Head>
                         <title>Orbit</title>

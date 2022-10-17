@@ -10,6 +10,8 @@ import { Listbox } from "@headlessui/react";
 import { CatalogWarnModal } from "@includes/components/InitListingsModal";
 import {DigitalProductFunctionalities} from "@functionalities/Products";
 import ProductClientCtx from "@contexts/ProductClientCtx";
+import TransactionClientCtx from "@contexts/TransactionClientCtx";
+import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 
 const token_addresses = {
@@ -28,6 +30,8 @@ export function DigitalUploadForm(props) {
 
 	const {ListProduct, CreateDigitalListingsCatalog} = DigitalProductFunctionalities();
 	const {productClient} = useContext(ProductClientCtx);
+    const {transactionClient} = useContext(TransactionClientCtx);
+    const wallet = useWallet();
 
 	const [prodName, setProdName] = useState("");
 	const [price, setProdPrice] = useState();
@@ -37,21 +41,29 @@ export function DigitalUploadForm(props) {
 	const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
 
 	const [vendorDigitalCatalog, setVendorDigitalCatalog] = useState();
+    const [vendorDigitalTx, setVendorDigitalTx] = useState();
 
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 	
 	useEffect(async ()=>{
+        if(!(productClient && productClient.wallet.publicKey && transactionClient && transactionClient.wallet.publicKey && wallet.connected))return;
 		try{
-			let vc = await productClient.GetListingsStruct(
-				productClient.GenListingsAddress("digital")
-			);
+			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("digital"));
 			if(vc && vc.data){
 				setVendorDigitalCatalog(vc)
 			}
 		}catch(e){
-
+            console.log("init listing render err: ", e)
 		}
-	}, []);
+        try{
+            let vtx = await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("digital"));
+            if(vtx && vtx.data){
+                setVendorDigitalTx(vtx)
+            }
+        }catch(e){
+            console.log("init logs render err: ", e)
+        }
+	}, [transactionClient, productClient, wallet && wallet.connected]);
 
 	const CreateDigitalCatalog = useCallback(()=>{
 		CreateDigitalListingsCatalog();
@@ -112,7 +124,7 @@ export function DigitalUploadForm(props) {
 
 	return(
         <div className="w-full min-h-screen bg-transparent">
-            {(vendorDigitalCatalog == undefined) && <CatalogWarnModal category={"digital"} setCatalog={setVendorDigitalCatalog}/>}
+            {((vendorDigitalCatalog == undefined) || (vendorDigitalTx == undefined)) && <CatalogWarnModal category={"digital"} setCatalog={vendorDigitalCatalog ? undefined : setVendorDigitalCatalog} setTxLog={vendorDigitalTx ? undefined : setVendorDigitalTx}/>}
             <Head>
 				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
