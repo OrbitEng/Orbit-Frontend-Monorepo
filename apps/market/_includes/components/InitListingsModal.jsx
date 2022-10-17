@@ -46,7 +46,7 @@ export function CatalogWarnModal(props){
     return (
         <div>
             <Transition appear show={isOpen} as={Fragment}>
-			<Dialog as="div" className="relative z-[100]" onClose={closeModal}>
+			<Dialog as="div" className="relative z-[100]" onClose={() => {}} static={true}>
 			<Transition.Child
 				as={Fragment}
 				enter="ease-out duration-300"
@@ -72,7 +72,7 @@ export function CatalogWarnModal(props){
 					<div>
 						<Dialog.Panel className="w-full max-w-xl rounded-2xl transform overflow-hidden backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] shadow-xl">
 							<div className='flex flex-col text-white w-max max-w-md h-fit text-center p-6'>
-                                <div className='text-4xl font-bold my-2 mx-auto flex'>
+                                <div className='text-5xl font-bold my-2 mx-auto flex'>
                                     <span className='text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]'> Hold on! </span>
                                 </div>
                                 <span>

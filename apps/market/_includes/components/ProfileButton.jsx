@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { ArrowRightOnRectangleIcon, ChevronRightIcon, StarIcon, TruckIcon, UserCircleIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -29,15 +29,16 @@ export default function ProfileButton(props) {
 	}, [wallet.publicKey])
 
 	return(
-		<Menu>
-			<Menu.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle ">
+		<Popover>
+			<Popover.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle ">
 				<Image
 					src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 					layout="fill"
 					objectfit="contain"
 				/>
-			</Menu.Button>
+			</Popover.Button>
 			<Transition
+				className="backdrop-filter backdrop-blur"
 				enter="transition ease-out duration-100"
 				enterFrom="transform opacity-0 scale-95"
 				enterTo="transform opacity-100 scale-100"
@@ -45,35 +46,32 @@ export default function ProfileButton(props) {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Menu.Items className="absolute flex flex-col top-8 p-5 -right-4 bg-[#8E84FF] backdrop-filter backdrop-blur bg-opacity-20 rounded-lg shadow-lg w-64">
-					<Menu.Item>
-						{({active}) => (
-							<Link 
-								className="m-1"
-								href={"/profile/" + marketAccountAddr.toString() || ""}
-							>
-								<div className="flex flex-row my-auto gap-x-2 cursor-pointer group">
-									<div className="relative flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden my-auto">
-										<Image 
-											src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-											layout="fill"
-											objectfit="contain"
-										/>
-									</div>
-									<div className="flex flex-col align-middle my-auto w-8/12">
-										<span className="truncate text-[#848484]">{props?.account?.nickname || "@nickname"}</span>
-										<span className="truncate text-white font-bold -mt-2 text-lg">{marketAccountAddr.toString() || "accountAddr"}</span>
-									</div>
-									<div className="relative flex align-middle my-auto">
-										<ChevronRightIcon className="stroke-2 text-[#BEBEBE] h-7 w-7 my-1" />
-									</div>
+				<Popover.Panel className="absolute flex flex-col p-5 top-2 -right-4 bg-[#8E84FF] bg-opacity-20 rounded-lg shadow-lg w-64">
+					<Popover.Group>
+						<Link 
+							className="m-1"
+							href={"/profile/" + marketAccountAddr?.toString() || ""}
+						>
+							<div className="flex flex-row my-auto gap-x-2 cursor-pointer group">
+								<div className="relative flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden my-auto">
+									<Image 
+										src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+										layout="fill"
+										objectfit="contain"
+									/>
 								</div>
-							</Link>
-						)}
-					</Menu.Item>
+								<div className="flex flex-col align-middle my-auto w-8/12">
+									<span className="truncate text-[#848484]">{props?.account?.nickname || "@nickname"}</span>
+									<span className="truncate text-white font-bold -mt-2 text-lg">{marketAccountAddr?.toString() || "accountAddr"}</span>
+								</div>
+								<div className="relative flex align-middle my-auto">
+									<ChevronRightIcon className="stroke-2 text-[#BEBEBE] h-7 w-7 my-1" />
+								</div>
+							</div>
+						</Link>
+					</Popover.Group>
 					<div className="flex flex-col mt-5 gap-y-2 ml-2">
-						<Menu.Item>
-						{({ active }) => (
+						<Popover.Group>
 							<button className="cursor-pointer group">
 								<Link href="/profile">
 									<div className="flex flex-row align-middle gap-x-4">
@@ -82,10 +80,8 @@ export default function ProfileButton(props) {
 									</div>
 								</Link>
 							</button>
-						)}
-						</Menu.Item>
-						<Menu.Item>
-						{({ active }) => (
+						</Popover.Group>
+						<Popover.Group>
 							<button className="cursor-pointer group">
 								<Link href="/orders">
 									<div className="flex flex-row align-middle gap-x-4">
@@ -94,10 +90,8 @@ export default function ProfileButton(props) {
 									</div>
 								</Link>
 							</button>
-						)}
-						</Menu.Item>
-						<Menu.Item>
-						{({ active }) => (
+						</Popover.Group>
+						<Popover.Group>
 							<button className="cursor-pointer group">
 								<Link href="/referrals">
 									<div className="flex flex-row align-middle gap-x-4">
@@ -106,10 +100,8 @@ export default function ProfileButton(props) {
 									</div>
 								</Link>
 							</button>
-						)}
-						</Menu.Item>
-						<Menu.Item>
-						{({ active }) => (
+						</Popover.Group>
+						<Popover.Group>
 							<button className="cursor-pointer group">
 								<Link href="/favorites">
 									<div className="flex flex-row align-middle gap-x-4">
@@ -118,8 +110,7 @@ export default function ProfileButton(props) {
 									</div>
 								</Link>
 							</button>
-						)}
-						</Menu.Item>
+						</Popover.Group>
 					</div>
 					<div className="flex flex-col rounded-lg border-[#525252] border-[1.5px] h-fill mt-5 mb-3 p-2 px-5 divide-y-[1.5px] divide-[#525252]">
 							<div className="flex flex-col justify-start">
@@ -175,8 +166,8 @@ export default function ProfileButton(props) {
 							<span className="my-auto">Logout</span>
 							<ArrowRightOnRectangleIcon className="h-6 w-6 my-auto" />
 					</button>
-				</Menu.Items>
+				</Popover.Panel>
 			</Transition>
-		</Menu>
+		</Popover>
 	)
 }

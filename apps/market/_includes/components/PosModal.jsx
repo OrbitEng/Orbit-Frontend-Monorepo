@@ -194,13 +194,13 @@ export default function PosModal(props) {
 								</div>
 							: 
 								<button
-									className="flex flex-row align-middle bg-transparent"
+									className="flex flex-row align-middle bg-transparent justify-center mx-auto"
 									onClick={() => {setOpenShippingForm(true)}}
 								>
-									<div className="my-auto rounded-full bg-[#2E813B] bg-opacity-30 p-1 mr-2">
+									<div className="my-auto mx-auto rounded-full bg-[#2E813B] bg-opacity-30 p-1 mr-2">
 										<PlusIcon className="h-6 w-6 text-[#2E813B] opacity-70" />
 									</div>
-									<span className="font-semibold text-white my-auto text-sm">Add Shipping Address</span>
+									<span className="font-semibold text-white my-auto text-sm mx-auto">Add Shipping Address</span>
 								</button>
 							}
 							</div>

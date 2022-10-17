@@ -111,13 +111,13 @@ export function PhysicalUploadForm(props) {
                                                 </div>
                                                 <div {...getRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl w-full h-96 content-center align-middle py-12 px-28">
                                                     <input {...getInputProps()}/>
-                                                            <div className="relative flex h-52 mx-16">
-                                                                <Image
-                                                                    src="/PhotoIcon.png"
-                                                                    layout="fill"
-                                                                    objectFit="contain"
-                                                                />
-                                                            </div>
+                                                        <div className="relative flex h-52 mx-16">
+                                                            <Image
+                                                                src="/PhotoIcon.png"
+                                                                layout="fill"
+                                                                objectFit="contain"
+                                                            />
+                                                        </div>
                                                     <div className="flex flex-col">
                                                         <span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
                                                         <span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
