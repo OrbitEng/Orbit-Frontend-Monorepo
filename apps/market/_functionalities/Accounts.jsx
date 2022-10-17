@@ -18,7 +18,6 @@ export function MarketAccountFunctionalities(props){
     // CHECK HEADER
     // pfp is a file
     const CreateAccount = async(user_metadata, pfp = undefined, reflink = undefined)=>{
-
         if (reflink == ""){
             reflink = undefined
         }
@@ -45,8 +44,7 @@ export function MarketAccountFunctionalities(props){
         }
     }
 
-    const SetPfp = async()=>{
-        let file = await file_common.GetFile();
+    const SetPfp = async(file)=>{
         let ar_addr = await bundlrClient.UploadBuffer(
             enc_common.utos(new Uint8Array.from((file).arrayBuffer())) + "<<" + file.type
         );
