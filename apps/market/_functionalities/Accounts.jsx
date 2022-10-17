@@ -49,7 +49,7 @@ export function MarketAccountFunctionalities(props){
             enc_common.utos(new Uint8Array(await file.arrayBuffer())) + "<<" + file.type
         );
 
-        await marketAccountsClient.UpdatePfp(ar_addr);
+        await marketAccountsClient.UpdatePFP(ar_addr);
     }
 
     const UpdateMetadata = async(user_metadata) =>{
