@@ -56,6 +56,8 @@ export function DigitalProductFunctionalities(props){
         fileType = "Image",
         add_to_recent
     ) => {
+        if(files.length <= 0) return;
+        
         let buffers = await Promise.all(
             files.map((fil)=>{
                 return fil.arrayBuffer();
@@ -218,6 +220,7 @@ export function PhysicalProductFunctionalities(props){
         files,
         add_to_recent
     ) => {
+        if(files.length <= 0) return;
 
         let buffers = await Promise.all(
             files.map((fil)=>{
@@ -378,6 +381,7 @@ export function CommissionProductFunctionalities(props){
         files,
         add_to_recent
     ) => {
+        if(files.length <= 0) return;
 
         let buffers = await Promise.all(
             files.map((fil)=>{

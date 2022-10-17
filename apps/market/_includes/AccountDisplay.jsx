@@ -7,20 +7,31 @@ import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import EditProfileButton from "@includes/components/EditProfileButton";
 
 export function AccountDisplay(props) {
-	console.log(props?.sellerAddr)
+	console.log(props?.accountAddr)
 	let wallet = useWallet();
 
 	const [marketAccount, setMarketAccount] = useState()
+	const [isSelf, setIsSelf] = useState(false);
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 
-	useEffect(() => {
-		if (wallet.connected && marketAccountsClient){
-			setMarketAccount(
-				(marketAccountsClient.GenAccountAddress(wallet.publicKey))[0] || undefined
-			)
-		}
+	useEffect(()=>{
+		if(wallet.connected && marketAccountsClient && (props.accountAddr == marketAccountsClient.GenAccountAddress(wallet.publicKey.toString()))){
+			setIsSelf(true)
+		};
+	},[wallet.publicKey, props.accountAddr, marketAccountsClient])
+
+	useEffect(async () => {
+		if (!(marketAccountsClient && props.accountAddr)) return;
+
+		let market_account = await marketAccountsClient.GetAccount(props.accountAddr);
+
+		console.log(market_account)
+
+		setMarketAccount(
+			market_account
+		);
 		console.log(marketAccount);
-	}, [wallet.publicKey])
+	}, [marketAccountsClient, wallet.publicKey, props.accountAddr])
 
 	return(
 		<div className="flex flex-col max-w-6xl mx-auto">
@@ -37,11 +48,9 @@ export function AccountDisplay(props) {
 						<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{props?.username || "@UserNamePlaceHolder"}</span>
 						</div>
-						{props?.sellerAddr?.toString() != marketAccount ||  (
-							<EditProfileButton/>
-						)}
+						{isSelf ? <EditProfileButton/>: <></>}
 					</div>	
-					<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.name || "NamePlaceholder"}</span>
+					<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.metadata?.name || "NamePlaceholder"}</span>
 					<p className="text-[#5B5B5B]">{props?.bio || "King of the hill is my favorite game, im always in first no matter what case it is"}</p>
 				</div>
 			</div>

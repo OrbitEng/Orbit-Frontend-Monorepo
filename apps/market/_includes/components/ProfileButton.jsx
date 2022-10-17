@@ -30,7 +30,7 @@ export default function ProfileButton(props) {
 
 	return(
 		<Menu>
-			<Menu.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle">
+			<Menu.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle ">
 				<Image
 					src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 					layout="fill"
@@ -64,7 +64,7 @@ export default function ProfileButton(props) {
 										<span className="truncate text-[#848484]">{props?.account?.nickname || "@nickname"}</span>
 										<span className="truncate text-white font-bold -mt-2 text-lg">{marketAccountAddr.toString() || "accountAddr"}</span>
 									</div>
-									<div classname="relative flex align-middle my-auto">
+									<div className="relative flex align-middle my-auto">
 										<ChevronRightIcon className="stroke-2 text-[#BEBEBE] h-7 w-7 my-1" />
 									</div>
 								</div>
