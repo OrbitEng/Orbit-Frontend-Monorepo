@@ -33,7 +33,7 @@ export default function CartSideMenu(props) {
 				leaveFrom="opacity-100"
 				leaveTo="opacity-0"
 				>
-					<div className="fixed inset-0 bg-opacity-100 transition-opacity backdrop-blur" />
+					<div className="fixed inset-0 bg-opacity-100 transition-opacity backdrop-blur-xl" />
 				</Transition.Child>
 				<div className="fixed inset-0 overflow-hidden">
 					<div className="absolute inset-0 overflow-hidden">
@@ -48,7 +48,7 @@ export default function CartSideMenu(props) {
 								leaveTo="translate-x-full"
 							>
 								<Dialog.Panel className="pointer-events-auto relative w-screen max-w-lg flex">
-									<div className="flex h-[90%] w-[85%] flex-col overflow-hidden bg-gradient-to-tr from-[#0F0E20] to-[#2E2C42] py-6 shadow-xl my-auto px-5 rounded-xl">
+									<div className="flex h-[90%] w-[85%] flex-col overflow-hidden bg-gradient-to-t from-[#32254E78] to-[#26232C9C] border-t border-x border-[#545454] border-opacity-30 py-6 shadow-xl my-auto px-5 rounded-xl">
 										<div className="relative top-0 right-0 flex pt-1 pr-4 justify-end">
 											<button
 												type="button"
@@ -70,8 +70,8 @@ export default function CartSideMenu(props) {
 													})
 												}}
 											>
-												<XMarkIcon className="h-4 w-4 my-auto stroke-2" />
-												<span className="my-auto">Clear</span>
+												<XMarkIcon className="h-4 w-4 mt-auto mb-1 stroke-2" />
+												<span className="mt-auto">Clear</span>
 											</button>
 										</div>
 										<div className="relative mt-6 flex-1 px-4 sm:px-6">
@@ -126,7 +126,7 @@ export default function CartSideMenu(props) {
 															onClick={() => {
 																setOpenPos(true)
 															}}
-															className="py-4 z-[120] flex flex-row justify-center bg-gradient-to-tr from-[#464255] via-[#2D2A35] to-[#2D2A35] rounded-lg mt-4 border-t-[1px] border-x-[1px] border-[#5F5F5F]"
+															className="py-4 z-[120] flex flex-row justify-center bg-gradient-to-tr from-[#464255A6] via-[#2D2A35A6] to-[#2D2A35A6] rounded-lg mt-4"
 														>
 															<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
 																<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />

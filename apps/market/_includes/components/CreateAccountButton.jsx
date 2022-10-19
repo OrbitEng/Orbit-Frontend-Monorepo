@@ -12,8 +12,6 @@ export default function CreateAccountButton(props) {
 
 	const {CreateAccount} = MarketAccountFunctionalities();
 
-	
-
 	const createAccount = async () => {
 		CreateAccount({nickname: nickName}, undefined, undefined);
 		props.setMarketAccount(
