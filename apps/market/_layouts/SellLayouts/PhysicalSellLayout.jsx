@@ -74,8 +74,19 @@ export function PhysicalUploadForm(props) {
 	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
 
 	const onDrop = (acceptedFiles) => {
-		setFiles(cf => [...cf, ...acceptedFiles]);
-        setBigPreviewSrc(acceptedFiles[0]);
+        acceptedFiles.forEach((fin)=>{
+            const afr = new FileReader()
+            afr.onload = () => {
+                setFiles(cf => [...cf, ...afr.result]);
+            }
+            afr.readAsDataURL(fin);
+        });
+
+        const bfr = new FileReader()
+		bfr.onload = () => {
+			setBigPreviewSrc(bfr.result)
+		}
+		bfr.readAsDataURL(acceptedFiles[0]);
 	}
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop});
 
@@ -85,6 +96,7 @@ export function PhysicalUploadForm(props) {
 			return;
 		}
 		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)]);
+        
         if(bigPreviewSrc == filein) setBigPreviewSrc(undefined);
 	}
 
@@ -112,7 +124,7 @@ export function PhysicalUploadForm(props) {
                                         bigPreviewSrc ? 
                                             <div className="w-full h-full col-span-7 relative flex ">
                                                 <Image
-                                                    src={URL.createObjectURL(bigPreviewSrc)}
+                                                    src={bigPreviewSrc}
                                                     layout="fill"
                                                     objectFit="contain"
                                                 />

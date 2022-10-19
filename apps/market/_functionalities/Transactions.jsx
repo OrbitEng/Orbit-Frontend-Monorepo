@@ -695,11 +695,10 @@ export function CommissionFunctionalities(){
     /// COMISSION SPECIFIC
 
     const CommitPreview = async(
-        tx_addr
+        tx_addr,
+        preview_file_dataurl
     ) =>{
-        let ar_addr = await bundlrClient.UploadBuffer(
-            URL.createObjectURL(await file_common.GetFile())
-        );
+        let ar_addr = await bundlrClient.UploadBuffer(preview_file_dataurl);
 
         await commissionMarketClient.CommitPreview(
             tx_addr,

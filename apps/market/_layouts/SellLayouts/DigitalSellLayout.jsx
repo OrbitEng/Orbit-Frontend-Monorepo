@@ -84,9 +84,22 @@ export function DigitalUploadForm(props) {
     }
 
 	const prevFilesCallback = (acceptedFiles) => {
-		setPreviewFiles(cf => [...cf, ...acceptedFiles]);
-        setBigPreviewSrc(URL.createObjectURL(acceptedFiles[0]));
-        setDelFileFuncArgs(["deletePreviewFile", acceptedFiles[0]]);
+        acceptedFiles.forEach((fin)=>{
+            const afr = new FileReader()
+            afr.onload = () => {
+                setPreviewFiles(cf => [...cf, ...afr.result]);
+            }
+            afr.readAsDataURL(fin);
+        });
+
+        const bfr = new FileReader()
+		bfr.onload = () => {
+			setBigPreviewSrc(bfr.result)
+            setDelFileFuncArgs(["deletePreviewFile", bfr.result]);
+		}
+		bfr.readAsDataURL(acceptedFiles[0]);
+
+
 	}
 
 	const {getRootProps: getPrevRootProps, getInputProps: getPrevInputProps, open: openPreview} = useDropzone({onDrop: prevFilesCallback});
@@ -105,9 +118,20 @@ export function DigitalUploadForm(props) {
 	}, [productFiles])
 
     const prodFilesCallback = (acceptedFiles) => {
-		setProductFiles(cf =>[...cf, ...acceptedFiles]);
-        setBigPreviewSrc(URL.createObjectURL(acceptedFiles[0]));
-        setDelFileFuncArgs(["deleteProductFile", acceptedFiles[0]]);
+        acceptedFiles.forEach((fin)=>{
+            const afr = new FileReader()
+            afr.onload = () => {
+                setProductFiles(cf => [...cf, ...afr.result]);
+            }
+            afr.readAsDataURL(fin);
+        });
+
+        const bfr = new FileReader()
+		bfr.onload = () => {
+			setBigPreviewSrc(bfr.result)
+            setDelFileFuncArgs(["deleteProductFile", bfr.result]);
+		}
+		bfr.readAsDataURL(acceptedFiles[0]);
 	}
 
 	const {getRootProps: getProdRootProps, getInputProps: getProdInputProps, open: openProduct} = useDropzone({onDrop: prodFilesCallback})
@@ -156,12 +180,12 @@ export function DigitalUploadForm(props) {
                                             <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
                                                 <button
                                                     onClick={()=>{
-                                                        setBigPreviewSrc(URL.createObjectURL(f));
+                                                        setBigPreviewSrc((f));
                                                         setDelFileFuncArgs(["deletePreviewFile", f]);
                                                     }}
                                                 >
                                                     <Image
-                                                        src={URL.createObjectURL(f) || "/"}
+                                                        src={(f) || "/"}
                                                         layout="fill"
                                                         objectFit="cover"
                                                     />
@@ -232,12 +256,12 @@ export function DigitalUploadForm(props) {
                                             <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
                                                 <button
                                                     onClick={()=>{
-                                                        setBigPreviewSrc(URL.createObjectURL(f));
+                                                        setBigPreviewSrc((f));
                                                         setDelFileFuncArgs(["deleteProductFile", f]);
                                                     }}
                                                 >
                                                     <Image
-                                                        src={URL.createObjectURL(f) || "/"}
+                                                        src={(f) || "/"}
                                                         layout="fill"
                                                         objectFit="cover"
                                                     />

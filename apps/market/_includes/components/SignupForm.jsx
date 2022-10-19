@@ -14,7 +14,11 @@ export function SignupForm(props) {
 
 	const [pfp, setPfp] = useState();
 	const pfpFileCallback = useCallback((acceptedFiles) => {
-		setPfp(acceptedFiles[0]);
+		const reader = new FileReader()
+		reader.onload = () => {
+			setPfp(reader.result)
+		}
+		reader.readAsDataURL(acceptedFiles[0]);
 	}, [])
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop: pfpFileCallback});
 
@@ -44,7 +48,7 @@ export function SignupForm(props) {
 					pfp ? 
 					<div className="h-32 w-32">
 						<Image
-							src={URL.createObjectURL(pfp) || "/"}
+							src={pfp || "/"}
 							width={100}
 							height={100}
 							layout="fill"
@@ -112,25 +116,29 @@ export function EditModal(props) {
 	const [uploadedPfp, setUploadedPfp] = useState();
 
 	useEffect(()=>{
-		if(props.currentAccount && props.currentAccount.data.metadata.name){
+		if(props.currentAccount && props.currentAccount.data.metadata){
 			setName(props.currentAccount.data.metadata.name)
 		}
-		if(props.currentAccount && props.currentAccount.data.metadata.bio){
+		if(props.currentAccount && props.currentAccount.data.metadata){
 			setBio(props.currentAccount.data.metadata.bio)
 		}
 	},[props.currentAccount])
 
 	const pfpFileCallback = useCallback((acceptedFiles) => {
-		setUploadedPfp(acceptedFiles[0]);
+		const reader = new FileReader()
+		reader.onload = () => {
+			setUploadedPfp(reader.result)
+		}
+		reader.readAsDataURL(acceptedFiles[0])
 	}, [])
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop: pfpFileCallback});
 
-	const updateProfileCallback = useCallback(()=>{
+	const updateProfileCallback = useCallback(async ()=>{
 		if(uploadedPfp != undefined){
-			SetPfp(uploadedPfp)
+			await SetPfp(uploadedPfp)
 		}
 		if(props.currentAccount && (bio || name)){
-			UpdateMetadata({
+			await UpdateMetadata({
 				name: name,
 				bio: bio
 			})
@@ -151,7 +159,7 @@ export function EditModal(props) {
 						<div className="relative w-32 h-32 overflow-hidden rounded-full">
 							<div className="w-full h-full">
 								<Image
-									src={URL.createObjectURL(uploadedPfp)}
+									src={uploadedPfp}
 									layout="fill"
 									objectFit="cover"
 								/>

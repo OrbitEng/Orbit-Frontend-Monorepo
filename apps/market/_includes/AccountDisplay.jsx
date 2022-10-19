@@ -55,6 +55,7 @@ export function AccountDisplay(props) {
 		let market_account
 		try{
 			market_account = await marketAccountsClient.GetAccount(props.accountAddr);
+			console.log(market_account)
 			market_account.data.profilePic = await GetPfp(market_account.data.profilePic);
 			market_account.data.metadata = await GetMetadata(market_account.data.metadata);
 		}catch(e){
