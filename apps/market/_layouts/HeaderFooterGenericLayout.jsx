@@ -7,7 +7,6 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
-import { DigitalProductDisplay } from "@includes/ProductPageDisplay";
 
 export function GenericLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);

@@ -146,7 +146,7 @@ export function EditModal(props) {
 	},[uploadedPfp, bio, name, props.currentAccount])
 
 	return(
-		<div className="flex flex-col rounded-xl max-w-lg bg-[#141619] py-10 px-[4rem] mx-auto w-full">
+		<div className="flex flex-col rounded-xl max-w-md bg-[#141619] py-10 px-[4rem] mx-auto w-full">
 			<h1 className="text-3xl text-white font-bold">Edit Profile</h1>
 			<span className="text-[#848484]">
 				Update your profile to look just the way you like it!
