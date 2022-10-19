@@ -176,11 +176,11 @@ export function EditModal(props) {
 						</div>
 						:
 						<div>
-							<div className="flex flex-shrink-0 relative h-32 w-32 overflow-hidden rounded-full z-0">
+							<div className="relative h-32 w-32 overflow-hidden rounded-full z-0">
 								<Image
 									src={props?.currentAccount?.data?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 									layout="fill"
-									objectFit="contain"
+									objectFit="cover"
 								/>
 							</div>
 							<div className="absolute bottom-0 right-0 h-8 w-9 z-50">
