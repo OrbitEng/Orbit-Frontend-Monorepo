@@ -99,21 +99,7 @@ export function SignupForm(props) {
 				</div>
 				<button
 					className="flex flex-row mt-6 w-full rounded-lg align-middle my-auto py-5 bg-white bg-opacity-10 hover:scale-105 transition duration-200"
-<<<<<<< Updated upstream
-					onClick={()=>{
-						CreateAccount(
-							{
-								name: nickName,
-								bio: biography
-							},
-							pfp,
-							reflink
-						);
-						props.setOpen(false);
-					}}
-=======
 					onClick={createAccountCallback}
->>>>>>> Stashed changes
 				>
 					<span className="mx-auto text-2xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D55CFF] to-[#8BBAFF]">Sign Up!</span>
 				</button>
