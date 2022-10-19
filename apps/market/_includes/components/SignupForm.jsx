@@ -5,17 +5,20 @@ import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
+import UserAccountCtx from "@contexts/UserAccountCtx";
+import { useContext } from "react";
 
 export function SignupForm(props) {
 	const [nickName, setName] = useState("");
 	const [biography, setBio] = useState("");
 	const [reflink, setReflink] = useState("");
 	const {CreateAccount} = MarketAccountFunctionalities();
+	const {setUserAccount} = useContext(UserAccountCtx);
 
 	const [pfp, setPfp] = useState("");
 
 	const createAccountCallback = async ()=>{
-		await CreateAccount(
+		let acc = await CreateAccount(
 			{
 				name: nickName,
 				bio: biography
@@ -24,6 +27,8 @@ export function SignupForm(props) {
 			reflink
 		);
 		props.setOpen(false);
+		props.setMarketAccount(acc);
+		setUserAccount(acc);
 	}
 
 	const pfpFileCallback = useCallback((acceptedFiles) => {

@@ -22,20 +22,21 @@ export function MarketAccountFunctionalities(props){
         }
         let pfp_link = "";
         if(pfp != ""){
-            console.log("uploading pfp")
             pfp_link = await bundlrClient.UploadBuffer(pfp);
         }
 
-        console.log("uploading metadata")
         let metadata_addr = await bundlrClient.UploadBuffer(
             JSON.stringify(user_metadata)
         );
 
-        console.log("creating account")
         await marketAccountsClient.CreateAccount(
             metadata_addr,
             pfp_link,
             reflink
+        );
+
+        return await marketAccountsClient.GetAccount(
+            marketAccountsClient.GenAccountAddress()
         );
         // try{
             

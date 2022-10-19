@@ -98,7 +98,6 @@ export function HomeHeader(props) {
 			
 			let bundlr_client = new BundlrClient(temp_wallet);
 			await bundlr_client.bundlr.ready();
-			console.log(bundlr_client)
 			setBundlrClient(bundlr_client);
 		}
 		try{
@@ -112,6 +111,7 @@ export function HomeHeader(props) {
 					account.data.metadata = await GetMetadata(account.data.metadata)
 					setMarketAccount(account)
 					setUserAccount(account)
+					console.log(account)
 				}
 			}
 		}catch(e){

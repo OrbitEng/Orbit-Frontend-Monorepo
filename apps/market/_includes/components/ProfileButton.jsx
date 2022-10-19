@@ -22,7 +22,7 @@ export default function ProfileButton(props) {
 		<Popover>
 			<Popover.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle ">
 				<Image
-					src={(props.selfAccount?.data?.profilePic?.charAt(0) == '/' || props?.selfAccount?.data?.profilePic?.charAt(0) == 'h') || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+					src={((props?.selfAccount?.data?.profilePic?.charAt(0) == "/" || props?.selfAccount?.data?.profilePic?.slice(0,4) == "http" || props?.selfAccount?.data?.profilePic?.slice(0,4) == "data") && props.selfAccount.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 					w={10}
 					h={10}
 					layout="fill"
@@ -47,7 +47,7 @@ export default function ProfileButton(props) {
 							<div className="flex flex-row my-auto gap-x-2 cursor-pointer group">
 								<div className="relative flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden my-auto">
 									<Image 
-										src={(props?.selfAccount?.data?.profilePic?.charAt(0) == "/" || props?.selfAccount?.data?.profilePic?.charAt(0) == "h") || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+										src={((props?.selfAccount?.data?.profilePic?.charAt(0) == "/" || props?.selfAccount?.data?.profilePic?.slice(0,4) == "http" || props?.selfAccount?.data?.profilePic?.slice(0,4) == "data") && props.selfAccount.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 										layout="fill"
 										objectfit="contain"
 									/>
@@ -65,7 +65,7 @@ export default function ProfileButton(props) {
 					<div className="flex flex-col mt-5 gap-y-2 ml-2">
 						<Popover.Group>
 							<button className="cursor-pointer group">
-								<Link href="/profile">
+								<Link href={"/profile/"+props.selfAccount?.address?.toString()}>
 									<div className="flex flex-row align-middle gap-x-4">
 										<UserCircleIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
 										<span className="text-white font-bold text-lg my-auto">Profile</span>

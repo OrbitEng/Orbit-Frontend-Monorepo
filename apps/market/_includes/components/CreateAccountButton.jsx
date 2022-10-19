@@ -1,13 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState, useContext } from 'react'
 
-import { useWallet } from '@solana/wallet-adapter-react';
 import {SignupForm} from '@includes/components/SignupForm';
 
 export default function CreateAccountButton(props) {
 	let [isOpen, setIsOpen] = useState(false);
-	let wallet = useWallet()
-	console.log(wallet.publicKey.toString())
 
 	const closeModal = async () => {
 		setIsOpen(false)
@@ -52,7 +49,7 @@ export default function CreateAccountButton(props) {
 					leaveTo="opacity-0 scale-95"
 				>
 					<Dialog.Panel className="w-full bg-transparent max-w-[30rem] transform overflow-hidden rounded-2xl text-left align-middle transition-all">
-						<SignupForm setOpen={setIsOpen}/>
+						<SignupForm setOpen={setIsOpen} setMarketAccount={props.setMarketAccount}/>
 					</Dialog.Panel>
 				</Transition.Child>
 				</div>

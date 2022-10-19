@@ -7,7 +7,8 @@ import Carousel from "react-multi-carousel"
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import Image from 'next/image'
 import { EditPhysicalProductModal } from "@includes/components/EditListingsModal";
-import { useWallet } from "@solana/wallet-adapter-react";
+
+import UserAccountCtx from "@contexts/UserAccountCtx";
 import 'react-multi-carousel/lib/styles.css'
 
 const responsive = {
@@ -30,20 +31,20 @@ const responsive = {
 
 export function PhysicalProductDisplay(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
-	const wallet = useWallet();
+	const {userAccount} = useContext(UserAccountCtx)
 
 	const [isOwner, setIsOwner] = useState(false);
 
 	useEffect(()=>{
-		if(!(props.prodInfo.data && props.prodInfo.data.metadata.seller && props.prodInfo.data.metadata.seller.data.wallet && wallet.publicKey)){
+		if(!(props.prodInfo.data && props.prodInfo.data.metadata.seller && props.prodInfo.data.metadata.seller.data.wallet && userAccount)){
 			return;
 		}
 
-		if(wallet.publicKey.toString() == props.prodInfo.data.metadata.seller.data.wallet.toString()){
+		if(userAccount.data.wallet.toString() == props.prodInfo.data.metadata.seller.data.wallet.toString()){
 			setIsOwner(true)
 		}
 
-	}, [wallet.publicKey, props?.prodInfo])
+	}, [userAccount, props?.prodInfo])
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">
