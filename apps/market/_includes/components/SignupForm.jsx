@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { useEffect } from "react";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 export function SignupForm(props) {
 	const [nickName, setName] = useState();
@@ -18,15 +19,25 @@ export function SignupForm(props) {
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop: pfpFileCallback});
 
 	return(
-		<div className="rounded-xl max-w-xl bg-[#141619] py-10 px-20 mx-auto">
-			<h1 className="text-4xl text-white font-bold">Sign Up</h1>
-			<span className="text-[#848484]">
-			You account is the key to the Orbit market network. Create an account to list and buy products!
+		<div className="rounded-2xl max-w-lg bg-gradient-to-t from-[#32254E78] to-[#26232C9C] border-t border-x border-[#545454] border-opacity-30 py-10 px-16 mx-auto">
+			<div className="relative top-0 right-0 flex pt-1 justify-end">
+				<button
+					type="button"
+					className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
+					onClick={() => props.setOpen(false)}
+				>
+					<span className="sr-only">Close panel</span>
+					<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
+				</button>
+			</div>
+			<h1 className="text-4xl text-white font-bold mb-1">Sign Up</h1>
+			<span className="text-[#848484] font-bold">
+				Create an account to list and buy products!
 			</span>
 			<div className="group cursor-pointer relative my-5 mx-auto justify-center w-fit" {...getRootProps()}>
 				<input {...getInputProps()}  onClick={open}/>
-				<div className="flex absolute bottom-5 right-5 bg-blue-500 rounded-full h-8 w-8 align-middle">
-					<PlusIcon className="h-5 w-5 text-white my-auto mx-auto stroke-2"/>
+				<div className="flex absolute bottom-4 right-4 bg-blue-500 rounded-full h-8 w-8 align-middle">
+					<PlusIcon className="h-5 w-5 text-white my-auto mx-auto stroke-[4px]"/>
 				</div>
 				
 				{
@@ -44,54 +55,48 @@ export function SignupForm(props) {
 			</div>
 			<div className="flex flex-col gap-y-4">
 				
-				<div className="flex flex-col justify-start gap-y-2">
+				<div className="flex flex-col justify-start gap-y-1">
 					<label className="font-bold text-white text-xl">Name<span className="text-red-500">*</span></label>
 					<input
-						className="rounded-lg p-2 text-white text-lg border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						required
+						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Name"
 						value={nickName}
 						onChange={(e) => {setName(e.target.value)}}
 					/>
 				</div>
 				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-lg">Bio</label>
+					<label className="font-bold text-white text-xl">Referral Link</label>
+					<input
+						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						placeholder="Enter Referral Link"
+						value={reflink}
+						onChange={(e) => {setReflink(e.target.value)}}
+					/>
+				</div>
+				<div className="flex flex-col justify-start gap-y-1">
+					<label className="font-bold text-white text-xl">Bio</label>
 					<textarea
-						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Bio"
 						value={biography}
 						onChange={(e) => {setBio(e.target.value)}}
 					/>
 				</div>
-				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-lg">Were you referred by someone?</label>
-					<input
-						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-						placeholder="referral link"
-						value={reflink}
-						onChange={(e) => {setReflink(e.target.value)}}
-					/>
-				</div>
 				<button
-				className="flex flex-row gap-x-2 mt-6 mx-auto text-lg rounded-full font-bold text-white bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent align-middle my-auto px-4 py-2"
-				onClick={()=>{
-					CreateAccount(
-						{
-							name: nickName,
-							bio: biography
-						},
-						pfp,
-						reflink
-					);
-				}}
+					className="flex flex-row mt-6 w-full rounded-lg align-middle my-auto py-5 bg-white bg-opacity-10 hover:scale-105 transition duration-200"
+					onClick={()=>{
+						CreateAccount(
+							{
+								name: nickName,
+								bio: biography
+							},
+							pfp,
+							reflink
+						);
+					}}
 				>
-					<div className="relative flex flex-shrink-0 h-6 w-6 align-middle my-auto">
-						<Image
-							src="/orbit.png"
-							layout="fill"
-							objectFit="contain"
-						/>
-					</div>
-					Sign Up
+					<span className="mx-auto text-2xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D55CFF] to-[#8BBAFF]">Sign Up!</span>
 				</button>
 			</div>
 		</div>

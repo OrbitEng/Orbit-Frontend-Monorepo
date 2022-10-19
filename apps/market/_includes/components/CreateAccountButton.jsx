@@ -57,7 +57,7 @@ export default function CreateAccountButton(props) {
 				leaveFrom="opacity-100"
 				leaveTo="opacity-0"
 			>
-				<div className="fixed inset-0 backdrop-blur" />
+				<div className="fixed inset-0 backdrop-blur-lg" />
 			</Transition.Child>
 			<div className="fixed inset-0 overflow-y-auto">
 				<div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -70,12 +70,9 @@ export default function CreateAccountButton(props) {
 					leaveFrom="opacity-100 scale-100"
 					leaveTo="opacity-0 scale-95"
 				>
-					<div>
-						<div className="absolute -inset-0 w-full h-full bg-black z-0 rounded-2xl" />
-						<Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all">
-							<SignupForm/>
-						</Dialog.Panel>
-					</div>
+					<Dialog.Panel className="w-full bg-transparent max-w-[30rem] transform overflow-hidden rounded-2xl text-left align-middle transition-all">
+						<SignupForm setOpen={setIsOpen}/>
+					</Dialog.Panel>
 				</Transition.Child>
 				</div>
 			</div>
