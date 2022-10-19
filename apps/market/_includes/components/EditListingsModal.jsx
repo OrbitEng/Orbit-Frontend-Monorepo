@@ -18,11 +18,11 @@ export function EditPhysicalProductModal(props){
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const closeModal = async () => {
-		setIsOpen(false)
-	}
-
-    const openModal = async() => {
+    function closeModal() {
+        setIsOpen(false)
+    }
+    
+    function openModal() {
         setIsOpen(true)
     }
 
@@ -41,7 +41,7 @@ export function EditPhysicalProductModal(props){
                 <PencilIcon className="text-white h-4 w-4 my-auto stroke-2"/>
             </button>
             <Transition appear show={isOpen} as={Fragment}>
-			<Dialog as="div" className="relative z-[100]" onClose={() => {}} static={true}>
+			<Dialog as="div" className="relative z-[100]" onClose={closeModal} static={true}>
 			<Transition.Child
 				as={Fragment}
 				enter="ease-out duration-300"
@@ -64,9 +64,9 @@ export function EditPhysicalProductModal(props){
 					leaveFrom="opacity-100 scale-100"
 					leaveTo="opacity-0 scale-95"
 				>
-					<div>
+					
 						<Dialog.Panel className="w-full max-w-xl rounded-2xl transform overflow-hidden backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] shadow-xl">
-							<div className='flex flex-col text-white w-max max-w-md h-fit text-center p-6'>
+							<div className='flex flex-col text-white w-full max-w-md h-fit text-center'>
                                 <div className='text-5xl font-bold my-2 mx-auto flex'>
                                     <span className='text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]'> Hold on! </span>
                                 </div>
@@ -134,7 +134,7 @@ export function EditPhysicalProductModal(props){
                                 </div>
                             </div>
 						</Dialog.Panel>
-					</div>
+					
 				</Transition.Child>
 				</div>
 			</div>
@@ -158,11 +158,11 @@ export function EditDigitalProductModal(props){
 
     const [isOpen, setIsOpen] = useState(false);
 
-    const closeModal = async () => {
+    function closeModal(){
 		setIsOpen(false)
 	}
 
-    const openModal = async() => {
+    function openModal(){
         setIsOpen(true)
     }
 
@@ -183,7 +183,7 @@ export function EditDigitalProductModal(props){
             <div className='flex flex-col rounded-2xl max-w-md bg-gradient-to-t from-[#32254E78] to-[#26232C9C] border-t border-x border-[#545454] border-opacity-30 py-10 px-[4rem] mx-auto w-full'>
 
                     <Transition appear show={isOpen} as={Fragment}>
-                    <Dialog as="div" className="relative z-[100]" onClose={closeModal} static={true}>
+                    <Dialog as="div" className="relative z-[100]" onClose={closeModal}>
                     <Transition.Child
                         as={Fragment}
                         enter="ease-out duration-300"
@@ -206,15 +206,17 @@ export function EditDigitalProductModal(props){
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <div>
+                            
                                 <Dialog.Panel className="w-full max-w-xl rounded-2xl transform overflow-hidden backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] shadow-xl">
-                                    <button
-                                        type="button"
-                                        className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
-                                        onClick={closeModal}
-                                    >
-                                        <span className="sr-only">Close panel</span>
-                                    </button>
+                                    <div className="relative top-0 right-0 flex pt-1 pr-4 justify-end">
+                                        <button
+                                            type="button"
+                                            className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            <span className="sr-only">Close panel</span>
+                                        </button>
+                                    </div>
                                     <div className='flex flex-col text-white w-max max-w-md h-fit text-center p-6'>
                                         <div className='text-5xl font-bold my-2 mx-auto flex'>
                                             <span className='text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]'> Hold on! </span>
@@ -283,7 +285,7 @@ export function EditDigitalProductModal(props){
                                         </div>
                                     </div>
                                 </Dialog.Panel>
-                            </div>
+                            
                         </Transition.Child>
                         </div>
                     </div>
