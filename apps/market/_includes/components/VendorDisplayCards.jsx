@@ -7,7 +7,7 @@ export function Vendor(props) {
 			<div className="relative h-12 w-12 rounded-full overflow-hidden">
 				<Image 
 					layout="fill"
-					src={props.vendor.profilepic}
+					src={props.vendor.profilePic}
 					objectFit="contain"
 				/>
 			</div>

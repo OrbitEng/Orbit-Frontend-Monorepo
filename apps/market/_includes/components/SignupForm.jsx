@@ -169,7 +169,7 @@ export function EditModal(props) {
 						<div>
 							<div className="flex flex-shrink-0 relative h-32 w-32 overflow-hidden rounded-full z-0">
 								<Image
-									src={props?.currentAccount?.data?.profilepic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+									src={props?.currentAccount?.data?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 									layout="fill"
 									objectFit="contain"
 								/>
