@@ -1,11 +1,28 @@
 import Image from "next/image";
 import { useState } from "react";
-import ProductShowcaseRow from "@includes/ProductShowcaseRow";
 import { ChevronDownIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "./components/ProductDisplayCards";
+import { useEffect } from "react";
 
 export function LargeExplore(props) {
 	const [sortMethod, setSortMethod] = useState("recent");
+
+	const [prodsToDisplay, setProdsToDisplay] = useState(Array(16).fill(<EmptyProductDisplayCardHome/>));
+
+	useEffect(()=>{
+		console.log(props.items, props.category)
+		if(!(props.items && props.category)) return;
+		let a = props.items.map((elem)=>(
+			<div>
+				<ProductDisplayCardHome
+					address = {elem.address}
+					type = {props.category}
+					key = {elem.address}
+				/>
+			</div>
+		));
+		setProdsToDisplay(a.length < 16 ? a.concat(Array(16-props.items.length).fill(<EmptyProductDisplayCardHome/>)) : a)
+	}, [props.items, props.category])
 
 	return(
 		<div className="flex flex-col mx-auto w-full mt-6">
@@ -53,22 +70,7 @@ export function LargeExplore(props) {
 					</div>
 				):(
 					<div className="grid grid-flow-row grid-cols-4 mt-4 mb-28">
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
-						<EmptyProductDisplayCardHome />
+						{prodsToDisplay}
 					</div>
 				)
 			}

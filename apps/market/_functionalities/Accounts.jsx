@@ -1,6 +1,6 @@
 import { useContext, useCallback } from "react";
 
-import ArQueryClient from "data-transfer-clients";
+import {ArQueryClient} from "data-transfer-clients";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";
@@ -154,12 +154,21 @@ export function MarketAccountFunctionalities(props){
     /// INFO FETCHING
 
     const GetPfp = async(ar_addr)=>{
-        return (await (new ArQueryClient()).GetImageData(ar_addr))[0];
+        try{
+            return (await (new ArQueryClient()).GetImageData(ar_addr))[0];
+        }catch{
+            return undefined
+        }
     }
 
     const GetMetadata = async(ar_addr)=>{
-        let data = await (new ArQueryClient()).FetchData(ar_addr);
-        return JSON.parse(data)
+        try{
+
+            let data = await (new ArQueryClient()).FetchData(ar_addr);
+            return JSON.parse(data)
+        }catch{
+            return undefined
+        }
     }
 
     return {

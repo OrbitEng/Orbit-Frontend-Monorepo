@@ -13,22 +13,14 @@ export function ProductCommonUtils(props){
     /**
      * should return [name, desc]
      */
-     const ResolveProductInfo = async(product_addr) => {
+     const ResolveProductInfo = async(metadata_addr) => {
         let arclient = new ArQueryClient();
-        let product = await productClient.GetDigitalProduct(product_addr);
-        if(!(product.data && product.data.metadata.info)){
-            return undefined
-        }
-        return (await arclient.FetchData(product.data.metadata.info)).split("||");
+        return (await arclient.FetchData(metadata_addr)).split("||");
     };
 
-    const ResolveProductMedia = async(product_addr) => {
+    const ResolveProductMedia = async(media_addr) => {
         let arclient = new ArQueryClient();
-        let product = await productClient.GetPhysicalProduct(product_addr);
-        if(!(product.data && product.data.metadata.media)){
-            return undefined
-        }
-        return arclient.GetImagesData(product.data.metadata.media);
+        return arclient.GetImageData(media_addr);
     }
 
     return{
@@ -162,27 +154,16 @@ export function DigitalProductFunctionalities(props){
     ////////////////////////////////////////////////
     /// FETCHING UTILS
 
-    const GetAllVendorDigitalProducts = async(market_acc) =>{
-        let listings_addr = (await marketAccountsClient.GetAccount(market_acc)).data.digitalVendorCatalog;
+    const GetAllVendorDigitalProducts = async(listings_addr) =>{
         let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
-        if(!listings_struct){
-            return ""
-        }
-
-        let all_prods = listings_struct.addressAvailable[0].toString(2) + listings_struct.addressAvailable[1].toString(2) + listings_struct.addressAvailable[2].toString(2) + listings_struct.addressAvailable[3].toString(2);
-        let indexes = [];
-        for(let i = 0; i < 256; i++){
-            if(all_prods[i] == "0"){
-                indexes.push(
-                    productClient.GenProductAddress(
-                        i, listings_addr, "digital"
-                    )
-                )
-            }
-        };
+        let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
+            return productClient.GenProductAddress(
+                ind, listings_addr, "digital"
+            )
+        })
 
         return (await productClient.GetMultipleDigitalProducts(
-            (await Promise.all(indexes)).map(n => n[0])
+            indexes
         )).filter(prod => prod.data != undefined);
     }
 
@@ -238,8 +219,6 @@ export function PhysicalProductFunctionalities(props){
                 listings_addr
             )).data
         );
-
-        next_index = 0;
 
         let prod_addr = productClient.GenProductAddress(
             next_index, listings_addr, "physical"
@@ -326,27 +305,19 @@ export function PhysicalProductFunctionalities(props){
     /////////////////////////////////////////////////
     /// FETCHING UTILS
 
-    const GetAllVendorPhysicalProducts = async(market_acc) =>{
-        let listings_addr = (await marketAccountsClient.GetAccount(market_acc)).data.physicalVendorCatalog;
+    const GetAllVendorPhysicalProducts = async(listings_addr) =>{
         let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
         if(!listings_struct){
             return ""
         }
-
-        let all_prods = listings_struct.addressAvailable[0].toString(2) + listings_struct.addressAvailable[1].toString(2) + listings_struct.addressAvailable[2].toString(2) + listings_struct.addressAvailable[3].toString(2);
-        let indexes = [];
-        for(let i = 0; i < 256; i++){
-            if(all_prods[i] == "0"){
-                indexes.push(
-                    productClient.GenProductAddress(
-                        i, listings_addr, "physical"
-                    )
-                )
-            }
-        };
+        let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
+            return productClient.GenProductAddress(
+                ind, listings_addr, "physical"
+            )
+        })
 
         return (await productClient.GetMultiplePhysicalProducts(
-            (await Promise.all(indexes)).map(n => n[0])
+            indexes
         )).filter(prod => prod.data != undefined);
     };
 
@@ -481,27 +452,20 @@ export function CommissionProductFunctionalities(props){
 
     /// BUYER UTILS
 
-    const GetAllVendorCommissionProducts = async(market_acc) =>{
-        let listings_addr = (await marketAccountsClient.GetAccount(market_acc)).data.commissionVendorCatalog;
+    const GetAllVendorCommissionProducts = async(listings_addr) =>{
         let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
         if(!listings_struct){
             return ""
         }
 
-        let all_prods = listings_struct.addressAvailable[0].toString(2) + listings_struct.addressAvailable[1].toString(2) + listings_struct.addressAvailable[2].toString(2) + listings_struct.addressAvailable[3].toString(2);
-        let indexes = [];
-        for(let i = 0; i < 256; i++){
-            if(all_prods[i] == "0"){
-                indexes.push(
-                    productClient.GenProductAddress(
-                        i, listings_addr, "commission"
-                    )
-                )
-            }
-        };
+        let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
+            return productClient.GenProductAddress(
+                ind, listings_addr, "commission"
+            )
+        })
 
         return (await productClient.GetMultipleCommissionProducts(
-            (await Promise.all(indexes)).map(n => n[0])
+            indexes
         )).filter(prod => prod.data != undefined);
     };
 

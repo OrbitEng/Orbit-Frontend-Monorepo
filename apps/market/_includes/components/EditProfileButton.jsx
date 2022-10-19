@@ -52,7 +52,7 @@ export default function EditProfileButton(props) {
 					<div>
 						<div className="absolute -inset-0 w-full h-full bg-black z-0 rounded-2xl" />
 						<Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all">
-							<EditModal/>
+							<EditModal currentAccount={props.currentAccount}/>
 						</Dialog.Panel>
 					</div>
 				</Transition.Child>

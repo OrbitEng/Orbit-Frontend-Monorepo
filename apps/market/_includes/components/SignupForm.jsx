@@ -3,6 +3,7 @@ import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import Image from "next/image";
 import { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+import { useEffect } from "react";
 
 export function SignupForm(props) {
 	const [nickName, setName] = useState();
@@ -105,6 +106,15 @@ export function EditModal(props) {
 
 	const [uploadedPfp, setUploadedPfp] = useState();
 
+	useEffect(()=>{
+		if(props.currentAccount && props.currentAccount.data.metadata.name){
+			setName(props.currentAccount.data.metadata.name)
+		}
+		if(props.currentAccount && props.currentAccount.data.metadata.bio){
+			setBio(props.currentAccount.data.metadata.bio)
+		}
+	},[props.currentAccount])
+
 	const pfpFileCallback = useCallback((acceptedFiles) => {
 		setUploadedPfp(acceptedFiles[0]);
 	}, [])
@@ -114,13 +124,13 @@ export function EditModal(props) {
 		if(uploadedPfp != undefined){
 			SetPfp(uploadedPfp)
 		}
-		if(bio && name){
+		if(props.currentAccount && (bio || name)){
 			UpdateMetadata({
 				name: name,
 				bio: bio
 			})
 		}
-	},[uploadedPfp, bio, name])
+	},[uploadedPfp, bio, name, props.currentAccount])
 
 	return(
 		<div className="flex flex-col rounded-xl max-w-lg bg-[#141619] py-10 px-[4rem] mx-auto w-full">
@@ -146,7 +156,7 @@ export function EditModal(props) {
 						<div>
 							<div className="flex flex-shrink-0 relative h-32 w-32 overflow-hidden rounded-full z-0">
 								<Image
-									src={props?.vendor?.profilepic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+									src={props?.currentAccount?.data?.profilepic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 									layout="fill"
 									objectFit="contain"
 								/>

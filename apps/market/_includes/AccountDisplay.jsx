@@ -1,21 +1,47 @@
 import { useState, useContext, useEffect } from "react";
+import { Listbox } from "@headlessui/react";
 import Image from "next/image";
 import { LargeExplore } from "@includes/ProductExplorer";
 
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import ProductClientCtx from "@contexts/ProductClientCtx";
+import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import EditProfileButton from "@includes/components/EditProfileButton";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from "@functionalities/Products";
 
 export function AccountDisplay(props) {
+	const { GetAllVendorPhysicalProducts } = PhysicalProductFunctionalities();
+	const { GetAllVendorDigitalProducts } = DigitalProductFunctionalities();
+	const { GetAllVendorCommissionProducts } = CommissionProductFunctionalities();
+	
+	const {GetPfp, GetMetadata} = MarketAccountFunctionalities();
 
 	const [marketAccount, setMarketAccount] = useState();
 	const [isSelf, setIsSelf] = useState(false);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {productClient} = useContext(ProductClientCtx)
+	const {productClient} = useContext(ProductClientCtx);
 
-	const [physicalListings, setPhysicalListings] = useState()
-	const [digitalListings, setDigitalListings] = useState()
-	const [commissionListings, setCommissionListings] = useState()
+	const [listingsExplorerCategory, setListingsExplorerCategory] = useState();
+	const [displayOption, setDisplayOption] = useState("Digital");
+
+	const [physicalListings, setPhysicalListings] = useState();
+	const [digitalListings, setDigitalListings] = useState();
+	const [commissionListings, setCommissionListings] = useState();
+
+	useEffect(()=>{
+		switch(displayOption){
+			case "Physical":
+				setListingsExplorerCategory(physicalListings)
+				break;
+			case "Digital":
+				setListingsExplorerCategory(digitalListings)
+				break;
+			case "Commission":
+				setListingsExplorerCategory(commissionListings)
+				break;
+		}
+	},[displayOption])
 
 	useEffect(()=>{
 		if(marketAccountsClient && marketAccountsClient.wallet && (props.accountAddr == marketAccountsClient.GenAccountAddress().toString())){
@@ -29,22 +55,25 @@ export function AccountDisplay(props) {
 		let market_account
 		try{
 			market_account = await marketAccountsClient.GetAccount(props.accountAddr);
+			market_account.data.profilePic = await GetPfp(market_account.data.profilePic);
+			market_account.data.metadata = await GetMetadata(market_account.data.metadata);
 		}catch(e){
+			console.log(e)
 			return;
 		}
 
 		setMarketAccount(market_account);
-		if(market_account.data.digitalListings.toString() != "11111111111111111111111111111111"){
-			let listings = await productClient.GetListingsStruct(market_account.data.digitalListings);
-			console.log(productClient.FindAllListings(listings.data))
-		}
 		if(market_account.data.physicalListings.toString() != "11111111111111111111111111111111"){
-			let listings = await productClient.GetListingsStruct(market_account.data.physicalListings);
-			console.log(productClient.FindAllListings(listings.data));
+			let listings = await GetAllVendorPhysicalProducts(market_account.data.physicalListings);
+			setPhysicalListings(listings);
+		}
+		if(market_account.data.digitalListings.toString() != "11111111111111111111111111111111"){
+			let listings = await GetAllVendorDigitalProducts(market_account.data.digitalListings);
+			setDigitalListings(listings);
 		}
 		if(market_account.data.commissionListings.toString() != "11111111111111111111111111111111"){
-			let listings = await productClient.GetListingsStruct(market_account.data.commissionListings);
-			console.log(productClient.FindAllListings(listings.data))
+			let listings = await GetAllVendorCommissionProducts(market_account.data.commissionListings);
+			setCommissionListings(listings);
 		}
 
 	}, [marketAccountsClient, props.accountAddr, productClient])
@@ -66,13 +95,44 @@ export function AccountDisplay(props) {
 						<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{props?.username || "@UserNamePlaceHolder"}</span>
 						</div>
-						{isSelf ? <EditProfileButton/>: <></>}
+						{isSelf ? <EditProfileButton currentAccount={marketAccount}/>: <></>}
 					</div>	
 					<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.metadata?.name || "NamePlaceholder"}</span>
 					<p className="text-[#5B5B5B]">{props?.bio || "King of the hill is my favorite game, im always in first no matter what case it is"}</p>
 				</div>
 			</div>
-			<LargeExplore items={["bruh"]} />
+			<div className="text-white text-3xl">
+				<div className="flex flex-col w-1/5 h-full justify-center">
+					<Listbox value={displayOption} onChange={setDisplayOption}>
+						<div className="flex relative w-3/4 text-xl h-1/2 justify-end">
+							<Listbox.Button className="flex w-full h-full bg-[#242424] rounded-lg p-1 justify-center">
+								<div className="flex flex-row align-middle w-full">
+									<span className="w-3/4 align-middle font-normal">
+										{displayOption}
+									</span>
+									<ChevronDownIcon className="text-white h-5 w-1/4 my-auto align-middle"/>
+								</div>
+							</Listbox.Button>
+							<Listbox.Options className="w-full text-center absolute transition rounded-md bg-[#242424] z-50">
+								{
+									["Physical","Digital","Commission"].map((category, id)=>(
+										<Listbox.Option
+											key={id}
+											value = {category}
+											className={({active})=>{
+												return `py-1.5 w-full ${active? "bg-[#2c2c2c] ring-1 ring-[#574878] ring-inset rounded-sm" : ""}`
+											}}
+										>
+											{category}
+										</Listbox.Option>
+									))
+								}
+							</Listbox.Options>
+						</div>
+					</Listbox>
+				</div>
+			</div>
+			<LargeExplore items={listingsExplorerCategory} category={displayOption.toLowerCase()} />
 		</div>
 	)
 }

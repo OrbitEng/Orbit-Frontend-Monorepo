@@ -71,7 +71,7 @@ export function ProductDisplayCardHome(props) {
 						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
 					</div>
 				);
-				tp = (await productClient.GetDigitalProduct(props.address));
+				tp = (await productClient.GetCommissionProduct(props.address));
 				if(!tp){
 					return;
 				}
@@ -105,8 +105,9 @@ export function ProductDisplayCardHome(props) {
 				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);
 			vendor.data.profilePic = await GetPfp(vendor.data.profilePic);
-			vendor.data.metadata = await GetMetadata(vendor.data.metadata)
+			vendor.data.metadata = await GetMetadata(vendor.data.metadata);
 			tp.data.metadata.seller = vendor;
+			console.log(vendor)
 			setVendor(vendor);
 		};
 		setProd(tp);
@@ -129,19 +130,19 @@ export function ProductDisplayCardHome(props) {
 										width={30}
 									/>
 									<div className="flex flex-col w-5/6 mx-auto">
-										<span className="flex text-gray-100 leading-none text-sm font-bold">{vendor?.data.metadata.name || "Jack"}</span>
-										<span className="flex text-gray-300 text-xs">{(vendor && (vendor.address.slice(0,10) + "...")) || "DMgY6wi2FV..."}</span>
+										<span className="flex text-gray-100 leading-none text-sm font-bold">{vendor?.data?.metadata?.name || "Jack"}</span>
+										<span className="flex text-gray-300 text-xs">{(vendor?.address?.toString().slice(0,10) + "...") || "DMgY6wi2FV..."}</span>
 									</div>
 								</div>
 							</div>
 							<div className="relative mx-auto content-center my-2 overflow-visible">
 								<div className={"absolute -bottom-3 -left-3 z-40 p-2  text-white font-bold bg-[#080B1A] bg-opacity-80 rounded-full border-[1px] text-ellipsis " + borderColor}>
-									<span className="text-sm">{prod?.data.metadata.price || "12.345"}</span>
+									<span className="text-sm">{prod?.data?.metadata?.price || "12.345"}</span>
 								</div>
 								<div className="max overflow-hidden">
 									<Image
 										alt="product image"
-										src={prod?.data.metadata.media[0] || "/demologos.png"}
+										src={prod?.data?.metadata?.media[0] || "/demologos.png"}
 										layout="intrinsic"
 										height={200}
 										width={200}
@@ -149,17 +150,17 @@ export function ProductDisplayCardHome(props) {
 								</div>
 							</div>
 							<div className="flex flex-col mt-4 justify-start w-4/5">
-								<span className="font-bold text-white">{prod?.data.metadata.info.name}</span>
+								<span className="font-bold text-white">{prod?.data?.metadata?.info?.name}</span>
 								<div className="flex flex-row gap-1 mt-1">
 									<div className="bg-[#201B31] align-middle font-semibold rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem]">
-										{(props.type?.charAt(0)?.toUpperCase() + "" +props.type?.slice(1).replace("Product","").replaceAll(/([A-Z])/g, (g1)=>{return ` ${g1}`}))}
+										{props.type?.charAt(0)?.toUpperCase() + "" +props.type?.slice(1).replace("Product","").replaceAll(/([A-Z])/g, (g1)=>{return ` ${g1}`})}
 									</div>
 									{
-										prod?.data.metadata.currency && 
-										<div className="flex bg-[#201B31] rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem]" key={index}>
+										prod?.data?.metadata?.currency && 
+										<div className="flex bg-[#201B31] rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem]">
 											<Image
 												layout="fixed"
-												src={"/" + prod.data.metadata.currency + "LogoSmall.png"}
+												src={"/" + prod?.data?.metadata?.currency + "LogoSmall.png"}
 												height={16}
 												width={16}
 											/>
