@@ -87,8 +87,6 @@ export function HomeHeader(props) {
 			temp_wallet = {};
 		}
 
-		console.log(temp_wallet, temp_wallet?.publicKey?.toString())
-
 		const provider =  new anchor.AnchorProvider(connection, temp_wallet, anchor.AnchorProvider.defaultOptions());
 
 		let accounts_client = new MarketAccountsClient(temp_wallet, connection, provider);

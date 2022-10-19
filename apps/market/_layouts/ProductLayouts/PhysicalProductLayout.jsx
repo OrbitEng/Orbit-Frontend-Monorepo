@@ -42,6 +42,8 @@ export function PhysicalProductDisplay(props) {
 
 		if(userAccount.data.wallet.toString() == props.prodInfo.data.metadata.seller.data.wallet.toString()){
 			setIsOwner(true)
+		}else{
+			setIsOwner(false)
 		}
 
 	}, [userAccount, props?.prodInfo])
