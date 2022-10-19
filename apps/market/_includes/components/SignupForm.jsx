@@ -58,30 +58,29 @@ export function SignupForm(props) {
 				}
 			</div>
 			<div className="flex flex-col gap-y-4">
-				
 				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-xl">Name<span className="text-red-500">*</span></label>
+					<label className="font-bold text-white text-lg">Name<span className="text-red-500">*</span></label>
 					<input
 						required
-						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-lg p-3 text-white border-[1px] border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Name"
 						value={nickName}
 						onChange={(e) => {setName(e.target.value)}}
 					/>
 				</div>
 				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-xl">Referral Link</label>
+					<label className="font-bold text-white text-lg">Referral Link</label>
 					<input
-						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-lg p-3 text-white border-[1px] border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Referral Link"
 						value={reflink}
 						onChange={(e) => {setReflink(e.target.value)}}
 					/>
 				</div>
 				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-xl">Bio</label>
+					<label className="font-bold text-white text-lg">Bio</label>
 					<textarea
-						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-lg p-3 text-white border-[1px] border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Bio"
 						value={biography}
 						onChange={(e) => {setBio(e.target.value)}}
@@ -146,9 +145,19 @@ export function EditModal(props) {
 	},[uploadedPfp, bio, name, props.currentAccount])
 
 	return(
-		<div className="flex flex-col rounded-xl max-w-md bg-[#141619] py-10 px-[4rem] mx-auto w-full">
+		<div className="flex flex-col rounded-2xl max-w-md bg-gradient-to-t from-[#32254E78] to-[#26232C9C] border-t border-x border-[#545454] border-opacity-30 py-10 px-[4rem] mx-auto w-full">
+			<div className="relative top-0 right-0 flex pt-1 pr-4 justify-end">
+				<button
+					type="button"
+					className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
+					onClick={() => props.setOpen(false)}
+				>
+					<span className="sr-only">Close panel</span>
+					<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
+				</button>
+			</div>
 			<h1 className="text-3xl text-white font-bold">Edit Profile</h1>
-			<span className="text-[#848484]">
+			<span className="text-[#848484] font-bold">
 				Update your profile to look just the way you like it!
 			</span>
 			<div className="group cursor-pointer relative mt-5 mb-2 mx-auto justify-center w-fit" {...getRootProps()}>
@@ -180,12 +189,12 @@ export function EditModal(props) {
 						</div>
 					}
 				</div>
-			<button className="bg-[#222429] text-white font-semibold text-lg mx-auto px-3 py-1 rounded-full mb-4" onClick={open}>Choose Avatar</button>
+			<button className="bg-[#2C2F36] text-white font-semibold mx-auto px-3 py-2 rounded-2xl mb-3 mt-1 " onClick={open}>Choose Avatar</button>
 			<div className="flex flex-col gap-y-3">
 				<div className="flex flex-col justify-start gap-y-1">
 					<label className="font-bold text-white text-lg">Name<span className="text-red-500">*</span></label>
 					<input
-						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Name"
 						value={name}
 						onChange={(e) => {setName(e.target.value)}}
@@ -194,13 +203,13 @@ export function EditModal(props) {
 				<div className="flex flex-col justify-start gap-y-1">
 					<label className="font-bold text-white text-lg">Bio</label>
 					<textarea
-						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Bio"
 						value={bio}
 						onChange={(e) => {setBio(e.target.value)}}
 					/>
 				</div>
-				<button className="flex flex-row mt-6 mx-auto text-lg rounded-full font-bold text-white bg-[#1773EB] align-middle my-auto px-6 py-2" onClick={updateProfileCallback}>
+				<button className="flex flex-row mt-6 mx-auto text-md rounded-full font-bold text-white bg-[#1773EB] align-middle my-auto px-6 py-2" onClick={updateProfileCallback}>
 					Update Profile
 				</button>
 			</div>
