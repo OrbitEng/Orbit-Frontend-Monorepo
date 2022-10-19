@@ -58,30 +58,29 @@ export function SignupForm(props) {
 				}
 			</div>
 			<div className="flex flex-col gap-y-4">
-				
 				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-xl">Name<span className="text-red-500">*</span></label>
+					<label className="font-bold text-white text-lg">Name<span className="text-red-500">*</span></label>
 					<input
 						required
-						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-lg p-3 text-white border-[1px] border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Name"
 						value={nickName}
 						onChange={(e) => {setName(e.target.value)}}
 					/>
 				</div>
 				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-xl">Referral Link</label>
+					<label className="font-bold text-white text-lg">Referral Link</label>
 					<input
-						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-lg p-3 text-white border-[1px] border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Referral Link"
 						value={reflink}
 						onChange={(e) => {setReflink(e.target.value)}}
 					/>
 				</div>
 				<div className="flex flex-col justify-start gap-y-1">
-					<label className="font-bold text-white text-xl">Bio</label>
+					<label className="font-bold text-white text-lg">Bio</label>
 					<textarea
-						className="rounded-lg p-3 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-lg p-3 text-white border-[1px] border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Bio"
 						value={biography}
 						onChange={(e) => {setBio(e.target.value)}}
@@ -195,7 +194,7 @@ export function EditModal(props) {
 				<div className="flex flex-col justify-start gap-y-1">
 					<label className="font-bold text-white text-lg">Name<span className="text-red-500">*</span></label>
 					<input
-						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Name"
 						value={name}
 						onChange={(e) => {setName(e.target.value)}}
@@ -204,7 +203,7 @@ export function EditModal(props) {
 				<div className="flex flex-col justify-start gap-y-1">
 					<label className="font-bold text-white text-lg">Bio</label>
 					<textarea
-						className="rounded-lg p-2 text-white border-2 border-[#40444F] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+						className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
 						placeholder="Enter Bio"
 						value={bio}
 						onChange={(e) => {setBio(e.target.value)}}

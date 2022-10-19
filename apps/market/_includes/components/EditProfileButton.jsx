@@ -49,7 +49,7 @@ export default function EditProfileButton(props) {
 					leaveTo="opacity-0 scale-95"
 				>
 					<Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl text-left align-middle shadow-xl transition-all">
-						<EditModal currentAccount={props.currentAccount}/>
+						<EditModal currentAccount={props.currentAccount} setOpen={setIsOpen} />
 					</Dialog.Panel>
 				</Transition.Child>
 				</div>
