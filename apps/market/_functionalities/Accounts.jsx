@@ -5,7 +5,6 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import {enc_common, file_common} from "browser-clients";
 
 export function MarketAccountFunctionalities(props){
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
@@ -21,25 +20,29 @@ export function MarketAccountFunctionalities(props){
         if (reflink == ""){
             reflink = undefined
         }
-        try{
-            let pfp_link = "";
-            if(pfp){
-                pfp_link = await bundlrClient.UploadBuffer(pfp);
-            }
-
-            let metadata_addr = await bundlrClient.UploadBuffer(
-                JSON.stringify(user_metadata)
-            );
-
-            await marketAccountsClient.CreateAccount(
-                metadata_addr,
-                pfp_link,
-                reflink
-            );
-        }catch(e){
-            console.log(e, "error")
-            return "could not create your account at the current time. please try again later"
+        let pfp_link = "";
+        if(pfp != ""){
+            console.log("uploading pfp")
+            pfp_link = await bundlrClient.UploadBuffer(pfp);
         }
+
+        console.log("uploading metadata")
+        let metadata_addr = await bundlrClient.UploadBuffer(
+            JSON.stringify(user_metadata)
+        );
+
+        console.log("creating account")
+        await marketAccountsClient.CreateAccount(
+            metadata_addr,
+            pfp_link,
+            reflink
+        );
+        // try{
+            
+        // }catch(e){
+        //     console.log(e, "error")
+        //     return "could not create your account at the current time. please try again later"
+        // }
     }
 
     const SetPfp = async(file)=>{

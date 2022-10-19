@@ -1,25 +1,13 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState, useContext } from 'react'
 
-import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
-import { MarketAccountFunctionalities } from '@functionalities/Accounts';
+import { useWallet } from '@solana/wallet-adapter-react';
 import {SignupForm} from '@includes/components/SignupForm';
 
 export default function CreateAccountButton(props) {
 	let [isOpen, setIsOpen] = useState(false);
-	const [nickName, setNickName] = useState("");
-	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
-
-	const {CreateAccount} = MarketAccountFunctionalities();
-
-	const createAccount = async () => {
-		CreateAccount({nickname: nickName}, undefined, undefined);
-		props.setMarketAccount(
-			await marketAccountsClient.GetAccount(
-				marketAccountsClient.GenAccountAddress(props.connectedWallet.publicKey)
-			)
-		)
-	}
+	let wallet = useWallet()
+	console.log(wallet.publicKey.toString())
 
 	const closeModal = async () => {
 		setIsOpen(false)
@@ -27,11 +15,6 @@ export default function CreateAccountButton(props) {
 
 	const openModal = async() => {
 		setIsOpen(true)
-	}
-	
-	const handleSubmit = () => {
-		createAccount()
-		closeModal()
 	}
 
 

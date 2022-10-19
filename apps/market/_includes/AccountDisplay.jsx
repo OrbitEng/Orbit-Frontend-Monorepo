@@ -9,6 +9,7 @@ import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import EditProfileButton from "@includes/components/EditProfileButton";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from "@functionalities/Products";
+import UserAccountCtx from "@contexts/UserAccountCtx";
 
 export function AccountDisplay(props) {
 	const { GetAllVendorPhysicalProducts } = PhysicalProductFunctionalities();
@@ -16,6 +17,7 @@ export function AccountDisplay(props) {
 	const { GetAllVendorCommissionProducts } = CommissionProductFunctionalities();
 	
 	const {GetPfp, GetMetadata} = MarketAccountFunctionalities();
+	const {userAccount} = useContext(UserAccountCtx);
 
 	const [marketAccount, setMarketAccount] = useState();
 	const [isSelf, setIsSelf] = useState(false);
@@ -44,10 +46,10 @@ export function AccountDisplay(props) {
 	},[displayOption, physicalListings, digitalListings, commissionListings])
 
 	useEffect(()=>{
-		if(marketAccountsClient && marketAccountsClient.wallet && (props.accountAddr == marketAccountsClient.GenAccountAddress().toString())){
+		if(userAccount && props.accountAddr && (props.accountAddr == userAccount.address.toString())){
 			setIsSelf(true)
 		};
-	},[props.accountAddr, marketAccountsClient])
+	},[props.accountAddr, userAccount])
 
 	useEffect(async () => {
 		if (!(marketAccountsClient && props.accountAddr)) return;

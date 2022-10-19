@@ -103,7 +103,7 @@ export function PhysicalProductDisplay(props) {
 					}
 				</Carousel>
 			</div>
-			<div className={"bg-white rounded-3xl bg-opacity-5 h-full w-1/2 p-10 flex flex-col gap-y-5 text-ellipsis" + (descriptionOpen ? "overflow-y-auto" : " overflow-hidden")}>
+			<div className={"bg-white rounded-3xl bg-opacity-5 h-full w-1/2 p-10 flex flex-col gap-y-5 text-ellipsis " + (descriptionOpen ? " overflow-y-auto" : " overflow-hidden")}>
 				<div className="flex w-56 items-center content-center rounded-full shadow-lg bg-gradient-to-r from-[#222222] to-selleridproductpagetrans">
 					<div className="flex content-start rounded-full mx-2 py-1 pr-4 gap-2">
 						<Image 
@@ -131,7 +131,7 @@ export function PhysicalProductDisplay(props) {
 					</div>
 					<div className="flex flex-row gap-3">
 						<div className="rounded-full font-bold bg-[#261832] text-[#72478C] px-3 py-2">
-							{"availability " + (props.prodInfo?.stock?.toString() || "∞") }
+							{"availability " + (props.prodInfo?.data?.quantity?.toString() || "∞") }
 						</div>
 						<div className="rounded-full font-bold bg-[#311132] text-[#7D348F] px-3 py-2">
 							{

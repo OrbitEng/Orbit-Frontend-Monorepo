@@ -56,12 +56,6 @@ export function Home(props) {
 		commission_catalog.data.pubkeys = commission_catalog.data.pubkeys.filter( pk => pk.toString() != "11111111111111111111111111111111");
 		physical_catalog.data.pubkeys = physical_catalog.data.pubkeys.filter( pk => pk.toString() != "11111111111111111111111111111111");
 
-		console.log(
-			digital_catalog.data.pubkeys,
-			commission_catalog.data.pubkeys,
-			physical_catalog.data.pubkeys,
-		)
-
 
 		if(!(digital_catalog.data.pubkeys.length) || !(commission_catalog.data.pubkeys.length) || !(physical_catalog.data.pubkeys.length)) return;
 

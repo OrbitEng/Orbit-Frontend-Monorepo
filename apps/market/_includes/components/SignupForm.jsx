@@ -7,12 +7,25 @@ import { useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
 export function SignupForm(props) {
-	const [nickName, setName] = useState();
-	const [biography, setBio] = useState();
-	const [reflink, setReflink] = useState();
+	const [nickName, setName] = useState("");
+	const [biography, setBio] = useState("");
+	const [reflink, setReflink] = useState("");
 	const {CreateAccount} = MarketAccountFunctionalities();
 
-	const [pfp, setPfp] = useState();
+	const [pfp, setPfp] = useState("");
+
+	const createAccountCallback = async ()=>{
+		await CreateAccount(
+			{
+				name: nickName,
+				bio: biography
+			},
+			pfp,
+			reflink
+		);
+		props.setOpen(false);
+	}
+
 	const pfpFileCallback = useCallback((acceptedFiles) => {
 		const reader = new FileReader()
 		reader.onload = () => {
@@ -46,11 +59,9 @@ export function SignupForm(props) {
 				
 				{
 					pfp ? 
-					<div className="h-32 w-32">
+					<div className="h-32 w-32 relative">
 						<Image
 							src={pfp || "/"}
-							width={100}
-							height={100}
 							layout="fill"
 							objectFit="cover"
 						/>
@@ -88,6 +99,7 @@ export function SignupForm(props) {
 				</div>
 				<button
 					className="flex flex-row mt-6 w-full rounded-lg align-middle my-auto py-5 bg-white bg-opacity-10 hover:scale-105 transition duration-200"
+<<<<<<< Updated upstream
 					onClick={()=>{
 						CreateAccount(
 							{
@@ -99,6 +111,9 @@ export function SignupForm(props) {
 						);
 						props.setOpen(false);
 					}}
+=======
+					onClick={createAccountCallback}
+>>>>>>> Stashed changes
 				>
 					<span className="mx-auto text-2xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D55CFF] to-[#8BBAFF]">Sign Up!</span>
 				</button>

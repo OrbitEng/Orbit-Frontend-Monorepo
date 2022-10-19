@@ -35,7 +35,6 @@ export function ProductCommonUtils(props){
 }
 
 export function DigitalProductFunctionalities(props){
-    const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {productClient} = useContext(ProductClientCtx);
 

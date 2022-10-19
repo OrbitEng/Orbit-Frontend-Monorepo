@@ -11,7 +11,6 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 export default function ProfileButton(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const [ balance, setBalance ] = useState(0);
-	const [ marketAccountAddr, setMarketAccountAddr ] = useState()
 	let wallet = useWallet();
 	let connection = useConnection()
 
@@ -150,7 +149,8 @@ export default function ProfileButton(props) {
 							</div>
 					</div>
 					<button 
-						onClick={() => {
+						onClick={async () => {
+							await wallet.disconnect()
 							setMarketAccountsClient(undefined);
 							props?.setMarketAccount(undefined);
 						}} 

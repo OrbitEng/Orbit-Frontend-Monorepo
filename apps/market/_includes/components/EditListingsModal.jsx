@@ -21,13 +21,13 @@ export function EditPhysicalProductModal(props){
         if(!props.selectedProduct) return;
         console.log(props.selectedProduct)
         setNewQuantity(props.selectedProduct.data.quantity)
-        setNewAvailability(props.selectedProduct.data.metadata.availablity && props.selectedProduct.data.metadata.availablity)
+        setNewAvailability(props.selectedProduct.data.metadata.availability)
         setNewPrice(props.selectedProduct.data.metadata.price.toNumber())
         setNewCurrency(props.selectedProduct.data.metadata.currency.toString())
         setNewMedia(props.selectedProduct.data.metadata.media && props.selectedProduct.data.metadata.media)
         setNewName(props.selectedProduct.data.metadata.info && props.selectedProduct.data.metadata.info.name && props.selectedProduct.data.metadata.info.name)
         setNewDescription(props.selectedProduct.data.metadata.info && props.selectedProduct.data.metadata.info.description && props.selectedProduct.data.metadata.info.description)
-    },[props.selectedProduct, props.selectedProduct.data.metadata.availablity])
+    },[props.selectedProduct])
 
 
     const [isOpen, setIsOpen] = useState(false);

@@ -20,6 +20,7 @@ import TransactionClientCtx from '@contexts/TransactionClientCtx';
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
+import UserAccountCtx from '@contexts/UserAccountCtx';
 
 import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 
@@ -67,6 +68,7 @@ export function HomeHeader(props) {
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 	const {productClient, setProductClient} = useContext(ProductClientCtx);
 	const {transactionClient, setTransactionClient} = useContext(TransactionClientCtx);
+	const {userAccount, setUserAccount} = useContext(UserAccountCtx);
 
 	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
 
@@ -85,40 +87,50 @@ export function HomeHeader(props) {
 			temp_wallet = {};
 		}
 
-		const provider =  new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
+		console.log(temp_wallet, temp_wallet?.publicKey?.toString())
 
-		let accounts_client = new MarketAccountsClient(wallet, connection, provider);
+		const provider =  new anchor.AnchorProvider(connection, temp_wallet, anchor.AnchorProvider.defaultOptions());
+
+		let accounts_client = new MarketAccountsClient(temp_wallet, connection, provider);
 		let account_address = "";
-		if (wallet && wallet.publicKey){
-			account_address = (accounts_client.GenAccountAddress(wallet.publicKey));
+		if (temp_wallet && temp_wallet.publicKey){
+			account_address = (accounts_client.GenAccountAddress(temp_wallet.publicKey));
+			
+			let bundlr_client = new BundlrClient(temp_wallet);
+			await bundlr_client.bundlr.ready();
+			console.log(bundlr_client)
+			setBundlrClient(bundlr_client);
 		}
 		try{
 			if(account_address != ""){
 				let account = await accounts_client.GetAccount(account_address);
 				if(!(account && account.data)){
-					
+					setMarketAccount(undefined)
+					setUserAccount(undefined)
 				}else{
 					account.data.profilePic = await GetPfp(account.data.profilePic);
 					account.data.metadata = await GetMetadata(account.data.metadata)
 					setMarketAccount(account)
+					setUserAccount(account)
 				}
 			}
 		}catch(e){
 			console.log(e)
+			setMarketAccount(undefined)
+			setUserAccount(undefined)
 		}
 
-		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
-		setDisputeProgramClient(new DisputeClient(wallet, connection, provider));
-		setPhysicalMarketClient(new PhysicalMarketClient(wallet, connection, provider));
-		setCommissionMarketClient(new CommissionMarketClient(wallet, connection, provider))
-		setProductClient(new ProductClient(wallet, connection, provider));
-		setTransactionClient(new TransactionClient(wallet, connection, provider));
-		setBundlrClient(new BundlrClient(wallet));
+		setDigitalMarketClient(new DigitalMarketClient(temp_wallet, connection, provider));
+		setDisputeProgramClient(new DisputeClient(temp_wallet, connection, provider));
+		setPhysicalMarketClient(new PhysicalMarketClient(temp_wallet, connection, provider));
+		setCommissionMarketClient(new CommissionMarketClient(temp_wallet, connection, provider))
+		setProductClient(new ProductClient(temp_wallet, connection, provider));
+		setTransactionClient(new TransactionClient(temp_wallet, connection, provider));
 		setMatrixClient(new ChatClient());
 
 		setMarketAccountsClient(accounts_client);
 		
-	}, [wallet.connected])
+	}, [wallet.connected, wallet.publicKey])
 
 	return(
 		<header className="mx-auto max-w-7xl h-14 lg:h-32 top-0 sticky flex flex-row justify-between bg-transparent backdrop-blur z-50 overflow-visible w-full">
@@ -155,12 +167,12 @@ export function HomeHeader(props) {
 					</button>
 				</div>
 				<div className="flex flex-row px-2 gap-3">
-					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full">
+					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full relative">
 						{
 							!wallet.connected ? ( 
 								<WalletMultiButton />
 							) : (
-								marketAccount ? <ProfileButton selfAccount={marketAccount} /> :
+								marketAccount ? <ProfileButton selfAccount={marketAccount} setMarketAccount={setMarketAccount}/> :
 								// add market account set here
 								<CreateAccountButton setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
 							)
