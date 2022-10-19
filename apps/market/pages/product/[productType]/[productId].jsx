@@ -8,6 +8,7 @@ import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 
+import { ProductCommonUtils } from "@functionalities/Products";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 
 import { useState, useEffect, useContext } from "react";
@@ -60,12 +61,13 @@ export default function ProductsPage(props) {
 	const {productClient} = useContext(ProductClientCtx)
 	const {productCache} = useContext(ProductCacheCtx);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
 
 	// fetch product somewhere in here from query
 	const [prod, setProd] = useState();
 	const [vendor, setVendor] = useState();
 
-	const {GetPfp} = MarketAccountFunctionalities()
+	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
 
 	useEffect(async ()=>{
 		if(productCache && productCache.address.toString() == productId){
@@ -73,7 +75,7 @@ export default function ProductsPage(props) {
 			return
 		}
 		let tp;
-		if(productId == "11111111111111111111111111111111") return;
+		if(!productId || (productId == "11111111111111111111111111111111")) return;
 		
 		switch (productType){
 			case "commission":
@@ -81,30 +83,26 @@ export default function ProductsPage(props) {
 				if(!tp){
 					return;
 				}
-				tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
-				tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
 				break;
 			case "digital":
 				tp = await productClient.GetDigitalProduct(productId);
 				if(!tp){
 					return;
 				}
-				tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
-				tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
 				break;
 			case "physical":
 				tp = await productClient.GetPhysicalProduct(productId);
 				if(!tp){
 					return;
 				}
-				tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
-				tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
 				break;
 			default:
 				break;
 		};
 
 		if(tp){
+			tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
+			tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
 			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
 			let vendor = await marketAccountsClient.GetAccount(
@@ -122,9 +120,9 @@ export default function ProductsPage(props) {
 	// todo: add nfts later
 	return (
 		<>
-			{((productType == "physical") && <DigitalProductLayout id={productId} product={dummyCommission} />) ||
-			((productType == "digital") && <DigitalProductLayout id={productId} product={dummyCommission} />) ||
-			(productType == "commission") && <DigitalProductLayout id={productId} product={dummyCommission} /> }
+			{((productType == "physical") && <PhysicalProductLayout id={productId} product={prod ? prod : dummyCommission} />) ||
+			((productType == "digital") && <DigitalProductLayout id={productId} product={prod ? prod : dummyCommission} />) ||
+			(productType == "commission") && <CommissionProductLayout id={productId} product={prod ? prod : dummyCommission} /> }
 		</>
 	)
 }
