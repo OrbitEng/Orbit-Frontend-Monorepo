@@ -1,5 +1,14 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import Head from "next/head";
+import { HeaderSearchBar } from "@includes/components/SearchBar";
+import { HomeHeader } from "@includes/MarketHeader";
+import { MainFooter } from "@includes/Footer";
+import Carousel from "react-multi-carousel"
+import { ChevronUpIcon } from "@heroicons/react/24/outline";
+import Image from 'next/image'
+import { EditPhysicalProductModal } from "@includes/components/EditListingsModal";
+import { useWallet } from "@solana/wallet-adapter-react";
+import 'react-multi-carousel/lib/styles.css'
 
 const responsive = {
 	desktop: {
@@ -19,17 +28,25 @@ const responsive = {
 	}
 };
 
-import { HeaderSearchBar } from "@includes/components/SearchBar";
-import { HomeHeader } from "@includes/MarketHeader";
-import { MainFooter } from "@includes/Footer";
-import Carousel from "react-multi-carousel"
-import Image from 'next/image'
-import { ChevronUpIcon } from "@heroicons/react/24/outline";
-import 'react-multi-carousel/lib/styles.css'
-
 export function PhysicalProductDisplay(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
+	const wallet = useWallet();
+
+	const [isOwner, setIsOwner] = useState(false);
+	
 	console.log(props);
+
+	useEffect(()=>{
+		if(!(props.prodInfo.data && props.prodInfo.data.metadata.seller && props.prodInfo.data.metadata.seller.data.wallet && wallet.publicKey)){
+			return;
+		}
+		console.log(wallet.publicKey.toString(), props.prodInfo.data.metadata.seller.data.wallet.toString())
+
+		if(wallet.publicKey.toString() == props.prodInfo.data.metadata.seller.data.wallet.toString()){
+			setIsOwner(true)
+		}
+
+	}, [wallet.publicKey, props?.prodInfo])
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">
@@ -89,7 +106,7 @@ export function PhysicalProductDisplay(props) {
 					}
 				</Carousel>
 			</div>
-			<div className={"bg-white rounded-3xl bg-opacity-5 h-full w-1/2 p-10 flex flex-col gap-y-5 text-ellipsis" + (descriptionOpen ? " overflow-scroll" : " overflow-hidden")}>
+			<div className={"bg-white rounded-3xl bg-opacity-5 h-full w-1/2 p-10 flex flex-col gap-y-5 text-ellipsis" + (descriptionOpen ? "overflow-y-auto" : " overflow-hidden")}>
 				<div className="flex w-56 items-center content-center rounded-full shadow-lg bg-gradient-to-r from-[#222222] to-selleridproductpagetrans">
 					<div className="flex content-start rounded-full mx-2 py-1 pr-4 gap-2">
 						<Image 
@@ -101,13 +118,20 @@ export function PhysicalProductDisplay(props) {
 							width={64}
 						/>
 						<div className="flex flex-col w-5/6 mx-auto align-middle my-auto">
-							<span className="flex text-gray-100 leading-none font-bold">{props.prodInfo?.data?.metadata?.seller?.sellerName || "Jackimus"}</span>
+							<span className="flex text-gray-100 leading-none font-bold">{props.prodInfo?.data?.metadata?.seller?.data?.metadata?.name || "Jackimus"}</span>
 							<span className="flex text-gray-300 text-sm">{(props.prodInfo?.data?.metadata?.seller?.address?.toString().slice(0,10) + "...") || "DMgY6wi2FV..."}</span>
 						</div>
 					</div>
-				</div>	
+				</div>
 				<div className="flex flex-col mt-10 gap-y-2" >
-					<h1 className="font-bold text-4xl text-white ml-3">{props.prodInfo?.data?.metadata.info.name || "NULL PRODUCT" }</h1>
+					<div className="flex flex-row w-full h-full content-center">
+						<h1 className="font-bold text-4xl text-white ml-3">{props.prodInfo?.data?.metadata.info.name || "NULL PRODUCT" }</h1>
+						{isOwner  && 
+							<div className="">
+								<EditPhysicalProductModal selectedProduct={props.prodInfo}/>
+							</div>
+						}
+					</div>
 					<div className="flex flex-row gap-3">
 						<div className="rounded-full font-bold bg-[#261832] text-[#72478C] px-3 py-2">
 							{"availability " + (props.prodInfo?.stock?.toString() || "∞") }
@@ -122,9 +146,9 @@ export function PhysicalProductDisplay(props) {
 					</div>
 					<div className="font-semibold align-top ml-3">
 						<span className="text-white text-lg align-top mr-2">Price:{' '}</span>
-						<span className="text-[#5a5a5a] text-4xl align-top">
+						<span className="text-[#5a5a5a] text-3xl align-top">
 							{
-								(props.prodInfo?.price?.value || "Custom")
+								(props.prodInfo?.data?.metadata?.price?.toString() || "Custom")
 							}
 						</span>
 					</div>
@@ -144,7 +168,7 @@ export function PhysicalProductDisplay(props) {
 						) 
 					}
 				</div>
-				<div className="flex flex-col bg-[#484848] bg-opacity-10 rounded-3xl p-10 w-full bottom-0">
+				<div className="flex flex-col bg-[#484848] bg-opacity-10 rounded-3xl p-10 w-full bottom-0 overflow-hidden">
 					<button
 						className="text-xl text-white font-bold flex flex-row border-b-[1px] border-[#636363] w-full"
 						onClick={() => {setDescriptionOpen(!descriptionOpen)}}
@@ -152,7 +176,7 @@ export function PhysicalProductDisplay(props) {
 						Description
 						<ChevronUpIcon className={"h-4 w-4 my-auto ml-auto justify-self-end stroke-[2px] transition translate" + (descriptionOpen ? " rotate-180" : " rotate-0") } />
 					</button>
-					<p className="text-[#838383] whitespace-pre-line transition transform">
+					<p className="text-[#838383] whitespace-pre-line transition w-full">
 						{
 							// this is super scuffed
 							descriptionOpen ? props.prodInfo?.description : props.prodInfo?.description?.slice(0,218) + "..." 

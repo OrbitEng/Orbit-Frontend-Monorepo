@@ -2,8 +2,8 @@ import { Dialog, Transition } from "@headlessui/react"
 import { useState, useContext, Fragment } from "react";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
-import { PencilIcon } from "@heroicons/react/24/outline";
 import { EditModal } from "@includes/components/SignupForm";
+import { PencilIcon } from "@heroicons/react/24/outline";
 
 export default function EditProfileButton(props) {
 	let [isOpen, setIsOpen] = useState(false);

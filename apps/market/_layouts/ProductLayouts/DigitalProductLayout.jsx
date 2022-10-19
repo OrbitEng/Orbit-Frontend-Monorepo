@@ -91,7 +91,7 @@ export function DigitalProductDisplay(props) {
 					}
 				</Carousel>
 			</div>
-			<div className={"bg-white rounded-3xl bg-opacity-5 h-full w-1/2 p-10 flex flex-col gap-y-5 text-ellipsis" + (descriptionOpen ? " overflow-scroll" : " overflow-hidden")}>
+			<div className={"bg-white rounded-3xl bg-opacity-5 h-full w-1/2 p-10 flex flex-col gap-y-5 text-ellipsis" + (descriptionOpen ? " overflow-y-auto" : " overflow-hidden")}>
 				<div className="flex w-56 items-center content-center rounded-full shadow-lg bg-gradient-to-r from-[#222222] to-selleridproductpagetrans">
 					<div className="flex content-start rounded-full mx-2 py-1 pr-4 gap-2">
 						<Image 
