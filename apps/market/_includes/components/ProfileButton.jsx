@@ -19,22 +19,15 @@ export default function ProfileButton(props) {
 		setBalance(await connection.connection.getBalance(wallet.publicKey))
 	}, [connection])
 
-	useEffect(() => {
-		if (wallet.connected && marketAccountsClient){
-			setMarketAccountAddr(
-				(marketAccountsClient.GenAccountAddress(wallet.publicKey)) || undefined
-			)
-		}
-		console.log("Market Account Addr: " + marketAccountAddr);
-	}, [wallet.publicKey])
-
 	return(
 		<Popover>
 			<Popover.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle ">
 				<Image
-					src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+					src={props?.selfAccount?.data?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+					w={10}
+					h={10}
 					layout="fill"
-					objectfit="contain"
+					objectfit="cover"
 				/>
 			</Popover.Button>
 			<Transition
@@ -50,19 +43,19 @@ export default function ProfileButton(props) {
 					<Popover.Group>
 						<Link 
 							className="m-1"
-							href={"/profile/" + marketAccountAddr?.toString() || ""}
+							href={"/profile/" + props?.selfAccount?.address?.toString() || ""}
 						>
 							<div className="flex flex-row my-auto gap-x-2 cursor-pointer group">
 								<div className="relative flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden my-auto">
 									<Image 
-										src={props?.missing_thing || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+										src={(props?.selfAccount?.data?.profilePic && props?.selfAccount?.data?.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 										layout="fill"
 										objectfit="contain"
 									/>
 								</div>
 								<div className="flex flex-col align-middle my-auto w-8/12">
-									<span className="truncate text-[#848484]">{props?.account?.nickname || "@nickname"}</span>
-									<span className="truncate text-white font-bold -mt-2 text-lg">{marketAccountAddr?.toString() || "accountAddr"}</span>
+									<span className="truncate text-[#848484]">{("@0x"+props.selfAccount?.address?.toString().slice(0,10)) || "@addr"}</span>
+									<span className="truncate text-white font-bold -mt-2 text-lg">{(props.selfAccount?.data?.metadata?.name && props.selfAccount?.data?.metadata?.name) || "nickname"}</span>
 								</div>
 								<div className="relative flex align-middle my-auto">
 									<ChevronRightIcon className="stroke-2 text-[#BEBEBE] h-7 w-7 my-1" />

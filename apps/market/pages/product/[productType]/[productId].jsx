@@ -78,6 +78,7 @@ export default function ProductsPage(props) {
 		let tp;
 		if(!productId || (productId == "11111111111111111111111111111111")) return;
 		
+		if(!productClient) return;
 		switch (productType){
 			case "commission":
 				tp = await productClient.GetCommissionProduct(productId);
@@ -115,7 +116,7 @@ export default function ProductsPage(props) {
 			setVendor(vendor);
 		};
 		setProd(tp);
-	},[])
+	},[productType, productId, productCache, productClient])
 
 	// here I'm just using the digital layout because it's the same for pretty much everything...
 	// todo: add nfts later

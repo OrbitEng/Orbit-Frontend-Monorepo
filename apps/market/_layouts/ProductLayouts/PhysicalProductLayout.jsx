@@ -51,7 +51,7 @@ export function PhysicalProductDisplay(props) {
 					itemClass="carousel-item-padding-40px"
 				>
 					{
-						props.prodInfo?.data?.metadata && props.prodInfo?.data?.metadata?.media?.map((url, index) => {
+						(props.prodInfo?.data?.metadata && props.prodInfo?.data?.metadata?.media) ? props.prodInfo?.data?.metadata?.media?.map((url, index) => {
 								if(url.indexOf("data:image") == 0){
 									return <div className="flex mx-auto justify-center" key={index}>
 												<Image 
@@ -73,21 +73,19 @@ export function PhysicalProductDisplay(props) {
 													autoplay
 													width='500'
 													height='500'
+													key={index}
 												>
 													<source src="/blue.mp4" />
 												</video>
-								}else
-								{
-									return <div className="flex mx-auto justify-center" key={index}>
-												<Image 
-													src={url}
-													layout="fixed"
-													width={400}
-													height={400}
-												/>
-											</div>
 								}
-						})
+						}) : <div className="flex mx-auto justify-center">
+								<Image 
+									src={"/demologos.png"}
+									layout="fixed"
+									width={400}
+									height={400}
+								/>
+							</div>
 					}
 				</Carousel>
 			</div>
