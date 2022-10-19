@@ -57,8 +57,8 @@ export default function CreateAccountButton(props) {
 			>
 				<div className="fixed inset-0 backdrop-blur-lg" />
 			</Transition.Child>
-			<div className="fixed inset-0 overflow-y-auto">
-				<div className="flex min-h-full items-center justify-center p-4 text-center">
+			<div className="fixed inset-0 overflow-y-auto bg-transparent">
+				<div className="flex min-h-full items-center justify-center p-4 text-center bg-transparent">
 				<Transition.Child
 					as={Fragment}
 					enter="ease-out duration-300"

@@ -190,7 +190,7 @@ export function EditModal(props) {
 						</div>
 					}
 				</div>
-			<button className="bg-[#222429] text-white font-semibold text-lg mx-auto px-3 py-1 rounded-full mb-4" onClick={open}>Choose Avatar</button>
+			<button className="bg-[#2C2F36] text-white font-semibold mx-auto px-3 py-2 rounded-2xl mb-3 mt-1 " onClick={open}>Choose Avatar</button>
 			<div className="flex flex-col gap-y-3">
 				<div className="flex flex-col justify-start gap-y-1">
 					<label className="font-bold text-white text-lg">Name<span className="text-red-500">*</span></label>
