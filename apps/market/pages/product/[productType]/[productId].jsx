@@ -71,6 +71,7 @@ export default function ProductsPage(props) {
 
 	useEffect(async ()=>{
 		if(productCache && productCache.address.toString() == productId){
+			console.log("cached", productCache)
 			setProd(productCache);
 			return
 		}

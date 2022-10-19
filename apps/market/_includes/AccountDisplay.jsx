@@ -86,20 +86,20 @@ export function AccountDisplay(props) {
 			<div className="flex flex-row gap-x-8 my-10">
 				<div className="flex flex-shrink-0 relative h-44 w-44 overflow-hidden rounded-full">
 					<Image
-						src={props?.vendor?.profilepic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+						src={marketAccount?.data?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 						layout="fill"
-						objectFit="contain"
+						objectFit="cover"
 					/>
 				</div>
 				<div className="flex flex-col my-auto">
 					<div className="flex flex-row gap-x-2">
 						<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
-							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{props?.username || "@UserNamePlaceHolder"}</span>
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{("@0x" + marketAccount?.address?.toString().slice(0,10)) || "@UserNamePlaceHolder"}</span>
 						</div>
 						{isSelf ? <EditProfileButton currentAccount={marketAccount}/>: <></>}
 					</div>	
 					<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.metadata?.name || "NamePlaceholder"}</span>
-					<p className="text-[#5B5B5B]">{props?.bio || "King of the hill is my favorite game, im always in first no matter what case it is"}</p>
+					<p className="text-[#5B5B5B]">{marketAccount?.data.metadata?.bio || "King of the hill is my favorite game, im always in first no matter what case it is"}</p>
 				</div>
 			</div>
 			<div className="text-white text-3xl">

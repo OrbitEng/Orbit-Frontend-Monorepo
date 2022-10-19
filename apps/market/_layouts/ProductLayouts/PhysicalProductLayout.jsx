@@ -51,7 +51,7 @@ export function PhysicalProductDisplay(props) {
 					itemClass="carousel-item-padding-40px"
 				>
 					{
-						props.prodInfo?.data?.metadata?.media?.map((url, index) => {
+						props.prodInfo?.data?.metadata && props.prodInfo?.data?.metadata?.media?.map((url, index) => {
 								if(url.indexOf("data:image") == 0){
 									return <div className="flex mx-auto justify-center" key={index}>
 												<Image 

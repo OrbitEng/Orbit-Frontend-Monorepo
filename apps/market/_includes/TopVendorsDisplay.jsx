@@ -47,7 +47,7 @@ function Vendor(props) {
 			<div className="relative h-12 w-12 rounded-full overflow-hidden z-10">
 				<Image 
 					layout="fill"
-					src={props?.vendor?.profilepic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+					src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 					objectFit="contain"
 				/>
 			</div>
