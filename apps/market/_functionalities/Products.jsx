@@ -186,7 +186,6 @@ export function DigitalProductFunctionalities(props){
 }
 
 export function PhysicalProductFunctionalities(props){
-    const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {productClient} = useContext(ProductClientCtx);
     

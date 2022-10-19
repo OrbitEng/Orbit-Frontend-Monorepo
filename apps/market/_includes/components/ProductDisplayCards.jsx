@@ -103,6 +103,7 @@ export function ProductDisplayCardHome(props) {
 
 			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
+			tp.data.metadata.availability = productClient.FindProductAvailability(tp.data, vendor_listings_struct)
 			let vendor = await marketAccountsClient.GetAccount(
 				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);

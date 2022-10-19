@@ -3,6 +3,7 @@ import { Fragment, useState, useContext, useCallback } from 'react'
 import ProductClientCtx from '@contexts/ProductClientCtx';
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from '@functionalities/Products';
 import { PencilIcon } from "@heroicons/react/24/outline";
+import { useEffect } from 'react';
 
 export function EditPhysicalProductModal(props){
     const {ChangeQuantity, ChangeAvailability, ChangePrice, ChangeCurrency, SetMedia, SetInfo} = PhysicalProductFunctionalities();
@@ -13,7 +14,20 @@ export function EditPhysicalProductModal(props){
     const [newPrice, setNewPrice] = useState();
     const [newCurrency, setNewCurrency] = useState();
     const [newMedia, setNewMedia] = useState();
-    const [newInfo, setNewInfo] = useState();
+    const [newName, setNewName] = useState();
+    const [newDescription, setNewDescription] = useState();
+
+    useEffect(()=>{
+        if(!props.selectedProduct) return;
+        console.log(props.selectedProduct)
+        setNewQuantity(props.selectedProduct.data.quantity)
+        setNewAvailability(props.selectedProduct.data.metadata.availablity && props.selectedProduct.data.metadata.availablity)
+        setNewPrice(props.selectedProduct.data.metadata.price.toNumber())
+        setNewCurrency(props.selectedProduct.data.metadata.currency.toString())
+        setNewMedia(props.selectedProduct.data.metadata.media && props.selectedProduct.data.metadata.media)
+        setNewName(props.selectedProduct.data.metadata.info && props.selectedProduct.data.metadata.info.name && props.selectedProduct.data.metadata.info.name)
+        setNewDescription(props.selectedProduct.data.metadata.info && props.selectedProduct.data.metadata.info.description && props.selectedProduct.data.metadata.info.description)
+    },[props.selectedProduct, props.selectedProduct.data.metadata.availablity])
 
 
     const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +41,8 @@ export function EditPhysicalProductModal(props){
     }
 
 	const handleSubmitFunction = useCallback(async () => {
-		
+        if(!props.selectedProduct) return;
+
         closeModal()
 	}, [props.selectedProduct, productClient])
 
@@ -73,7 +88,7 @@ export function EditPhysicalProductModal(props){
                                 <div>
                                     <textarea
                                         className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-                                        placeholder="Enter FileType"
+                                        placeholder={newQuantity?.toString()}
                                         value={newQuantity}
                                         onChange={(e) => {setNewQuantity(e.target.value)}}
                                     />
@@ -81,7 +96,7 @@ export function EditPhysicalProductModal(props){
                                 <div>
                                     <textarea
                                         className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-                                        placeholder="Enter Availability"
+                                        placeholder={newAvailability?.toString()}
                                         value={newAvailability}
                                         onChange={(e) => {setNewAvailability(e.target.value)}}
                                     />
@@ -89,7 +104,7 @@ export function EditPhysicalProductModal(props){
                                 <div>
                                     <textarea
                                         className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-                                        placeholder="Enter Price"
+                                        placeholder={newPrice?.toString()}
                                         value={newPrice}
                                         onChange={(e) => {setNewPrice(e.target.value)}}
                                     />
@@ -97,7 +112,7 @@ export function EditPhysicalProductModal(props){
                                 <div>
                                     <textarea
                                         className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-                                        placeholder="Enter Currency"
+                                        placeholder={newCurrency?.toString()}
                                         value={newCurrency}
                                         onChange={(e) => {setNewCurrency(e.target.value)}}
                                     />
@@ -105,7 +120,7 @@ export function EditPhysicalProductModal(props){
                                 <div>
                                     <textarea
                                         className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-                                        placeholder="Enter Media"
+                                        placeholder={newMedia?.toString()}
                                         value={newMedia}
                                         onChange={(e) => {setNewMedia(e.target.value)}}
                                     />
@@ -113,9 +128,17 @@ export function EditPhysicalProductModal(props){
                                 <div>
                                     <textarea
                                         className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
-                                        placeholder="Enter Info"
-                                        value={newInfo}
-                                        onChange={(e) => {setNewInfo(e.target.value)}}
+                                        placeholder={newName?.toString()}
+                                        value={newName}
+                                        onChange={(e) => {setNewName(e.target.value)}}
+                                    />
+                                </div>
+                                <div>
+                                    <textarea
+                                        className="rounded-xl p-3 text-md text-white border-[1px] border-[#444457] bg-[#222429] placeholder:font-bold placeholder:text-[#454545]"
+                                        placeholder={newDescription?.toString()}
+                                        value={newDescription}
+                                        onChange={(e) => {setNewDescription(e.target.value)}}
                                     />
                                 </div>
                                 <div className='flex flex-row w-full justify-evenly pt-6 pb-2'>

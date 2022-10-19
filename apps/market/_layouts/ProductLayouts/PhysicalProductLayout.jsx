@@ -33,14 +33,11 @@ export function PhysicalProductDisplay(props) {
 	const wallet = useWallet();
 
 	const [isOwner, setIsOwner] = useState(false);
-	
-	console.log(props);
 
 	useEffect(()=>{
 		if(!(props.prodInfo.data && props.prodInfo.data.metadata.seller && props.prodInfo.data.metadata.seller.data.wallet && wallet.publicKey)){
 			return;
 		}
-		console.log(wallet.publicKey.toString(), props.prodInfo.data.metadata.seller.data.wallet.toString())
 
 		if(wallet.publicKey.toString() == props.prodInfo.data.metadata.seller.data.wallet.toString()){
 			setIsOwner(true)
