@@ -24,9 +24,7 @@ export function MarketAccountFunctionalities(props){
         try{
             let pfp_link = "";
             if(pfp){
-                pfp_link = await bundlrClient.UploadBuffer(
-                    URL.createObjectURL(pfp)
-                );
+                pfp_link = await bundlrClient.UploadBuffer(pfp);
             }
 
             let metadata_addr = await bundlrClient.UploadBuffer(
@@ -45,9 +43,7 @@ export function MarketAccountFunctionalities(props){
     }
 
     const SetPfp = async(file)=>{
-        let ar_addr = await bundlrClient.UploadBuffer(
-            URL.createObjectURL(file)
-        );
+        let ar_addr = await bundlrClient.UploadBuffer(file);
 
         await marketAccountsClient.UpdatePFP(ar_addr);
     }
@@ -163,7 +159,6 @@ export function MarketAccountFunctionalities(props){
 
     const GetMetadata = async(ar_addr)=>{
         try{
-
             let data = await (new ArQueryClient()).FetchData(ar_addr);
             return JSON.parse(data)
         }catch{

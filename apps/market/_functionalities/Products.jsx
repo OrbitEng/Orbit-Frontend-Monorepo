@@ -55,9 +55,7 @@ export function DigitalProductFunctionalities(props){
     ) => {
         if(files.length <= 0) return;
         
-        let buffers = files.map((fil)=>{
-            return URL.createObjectURL(fil)
-        }).join(">UwU<");
+        let buffers = files.join(">UwU<");
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(
@@ -134,9 +132,7 @@ export function DigitalProductFunctionalities(props){
 
     const SetMedia = async(prod_addr, files) =>{
         
-        let buffers = files.map(async (fil)=>{      
-            return URL.createObjectURL(fil)
-        }).join(">UwU<")
+        let buffers = files.join(">UwU<")
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -212,9 +208,7 @@ export function PhysicalProductFunctionalities(props){
     ) => {
         if(files.length <= 0) return;
 
-        let buffers =files.map(async (fil)=>{      
-            return URL.createObjectURL(fil)
-        }).join(">UwU<");
+        let buffers =files.join(">UwU<");
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(JSON.stringify({
@@ -285,9 +279,7 @@ export function PhysicalProductFunctionalities(props){
 
     const SetMedia = async(prod_addr, files) =>{
 
-        let buffers = files.map(async (fil)=>{      
-            return URL.createObjectURL(fil)
-        }).join(">UwU<")
+        let buffers = files.join(">UwU<")
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -367,9 +359,7 @@ export function CommissionProductFunctionalities(props){
     ) => {
         if(files.length <= 0) return;
 
-        let buffers = files.map(async (fil)=>{      
-            return URL.createObjectURL(fil)
-        }).join(">UwU<")
+        let buffers = files.join(">UwU<")
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
         let desc_url = await bundlrClient.UploadBuffer(JSON.stringify({
@@ -432,9 +422,7 @@ export function CommissionProductFunctionalities(props){
 
     const SetMedia = async(prod_addr, files) =>{
 
-        let buffers = files.map(async (fil)=>{      
-            return URL.createObjectURL(fil)
-        }).join(">UwU<")
+        let buffers = files.join(">UwU<")
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
