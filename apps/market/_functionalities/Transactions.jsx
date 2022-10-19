@@ -220,9 +220,9 @@ export function DigitalFunctionalities(){
     }
 
     // CommitInitKeys, CommitLink bundled together
-    const UploadProductFile = async(tx_addr) =>{
+    const UploadProductFile = async(tx_addr, datafile, xslices, yslices) =>{
 
-        let [ar_addr, kps] = await bundlrClient.UploadImageFinal(await file_common.GetFile());
+        let [ar_addr, kps] = await bundlrClient.UploadImageFinal(datafile, xslices, yslices);
 
         await digitalMarketClient.CommitInitKeys(
             kps.map(k => k.publicKey),
@@ -338,7 +338,7 @@ export function DigitalFunctionalities(){
 
     const DecryptImage = async(tx_addr) =>{
 
-        let raw_blocks = await (new ArQueryClient()).FetchData( (await digitalMarketClient.GetTransaction(tx_addr)).metadata.dataAddress ).split("||");
+        let raw_blocks = await (new ArQueryClient()).FetchData( (await digitalMarketClient.GetTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
 
         return file_client.AssembleImage(
             raw_blocks[0],
@@ -596,8 +596,8 @@ export function CommissionFunctionalities(){
     /// SELLER COMMITS
 
     // commit keys and commit link together
-    const UploadProductFile = async(tx_addr) =>{
-        let [ar_addr, kps] = await bundlrClient.UploadImageFinal(await file_common.GetFile());
+    const UploadProductFile = async(tx_addr, datafile, xslices, yslices) =>{
+        let [ar_addr, kps] = await bundlrClient.UploadImageFinal(datafile, xslices, yslices);
 
         await commissionMarketClient.CommitInitKeys(
             kps.map(k => k.publicKey),
@@ -698,7 +698,7 @@ export function CommissionFunctionalities(){
         tx_addr
     ) =>{
         let ar_addr = await bundlrClient.UploadBuffer(
-            enc_common.utos(new Uint8Array((await file_common.GetFile()).arrayBuffer()))
+            URL.createObjectURL(await file_common.GetFile())
         );
 
         await commissionMarketClient.CommitPreview(
@@ -745,7 +745,7 @@ export function CommissionFunctionalities(){
 
     const DecryptImage = async(tx_addr) =>{
 
-        let raw_blocks = await (new ArQueryClient()).FetchData( (await commissionMarketClient.GetTransaction(tx_addr)).metadata.dataAddress ).split("||");
+        let raw_blocks = await (new ArQueryClient()).FetchData( (await commissionMarketClient.GetTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
 
         return file_client.AssembleImage(
             raw_blocks[0],

@@ -25,7 +25,7 @@ export function MarketAccountFunctionalities(props){
             let pfp_link = "";
             if(pfp){
                 pfp_link = await bundlrClient.UploadBuffer(
-                    enc_common.utos(new Uint8Array(await pfp.arrayBuffer())) + "<<" + pfp.type
+                    URL.createObjectURL(pfp)
                 );
             }
 
@@ -46,7 +46,7 @@ export function MarketAccountFunctionalities(props){
 
     const SetPfp = async(file)=>{
         let ar_addr = await bundlrClient.UploadBuffer(
-            enc_common.utos(new Uint8Array(await file.arrayBuffer())) + "<<" + file.type
+            URL.createObjectURL(file)
         );
 
         await marketAccountsClient.UpdatePFP(ar_addr);

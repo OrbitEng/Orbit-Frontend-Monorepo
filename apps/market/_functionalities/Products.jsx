@@ -15,7 +15,12 @@ export function ProductCommonUtils(props){
      */
      const ResolveProductInfo = async(metadata_addr) => {
         let arclient = new ArQueryClient();
-        return (await arclient.FetchData(metadata_addr)).split("||");
+        let data = (await arclient.FetchData(metadata_addr)).split(">UwU<");
+        // let data = JSON.parse(await arclient.FetchData(metadata_addr));
+        return {
+            name: data[0],
+            description: data[1]
+        };
     };
 
     const ResolveProductMedia = async(media_addr) => {
@@ -50,14 +55,17 @@ export function DigitalProductFunctionalities(props){
     ) => {
         if(files.length <= 0) return;
         
-        let buffers = await Promise.all(
-            files.map((fil)=>{
-                return fil.arrayBuffer();
-            })
-        );
+        let buffers = files.map((fil)=>{
+            return URL.createObjectURL(fil)
+        }).join(">UwU<");
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
-        let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
+        let desc_url = await bundlrClient.UploadBuffer(
+            JSON.stringify({
+                name: name,
+                description: description
+            })
+        );
         let listings_addr = productClient.GenListingsAddress("digital");
 
         let next_index = productClient.FindNextAvailableListingsAddress(
@@ -126,11 +134,9 @@ export function DigitalProductFunctionalities(props){
 
     const SetMedia = async(prod_addr, files) =>{
         
-        let buffers = (await Promise.all(
-            files.map(async (fil)=>{      
-                return enc_common.utos(new Uint8Array(await fil.arrayBuffer())) + "<<" + fil.type;
-            })
-        )).join("||")
+        let buffers = files.map(async (fil)=>{      
+            return URL.createObjectURL(fil)
+        }).join(">UwU<")
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -142,7 +148,10 @@ export function DigitalProductFunctionalities(props){
     }
 
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
-        let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
+        let tx_url = await bundlrClient.UploadBuffer(JSON.stringify({
+                name: name,
+                description: desc
+            }))
 
         productClient.SetProdInfo(
             prod_addr,
@@ -203,14 +212,15 @@ export function PhysicalProductFunctionalities(props){
     ) => {
         if(files.length <= 0) return;
 
-        let buffers = await Promise.all(
-            files.map((fil)=>{
-                return fil.arrayBuffer();
-            })
-        );
+        let buffers =files.map(async (fil)=>{      
+            return URL.createObjectURL(fil)
+        }).join(">UwU<");
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
-        let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
+        let desc_url = await bundlrClient.UploadBuffer(JSON.stringify({
+            name: name,
+            description: description
+        }));
 
         let listings_addr = await productClient.GenListingsAddress("physical");
 
@@ -275,11 +285,9 @@ export function PhysicalProductFunctionalities(props){
 
     const SetMedia = async(prod_addr, files) =>{
 
-        let buffers = (await Promise.all(
-            files.map(async (fil)=>{      
-                return enc_common.utos(new Uint8Array(await fil.arrayBuffer())) + "<<" + fil.type;
-            })
-        )).join("||")
+        let buffers = files.map(async (fil)=>{      
+            return URL.createObjectURL(fil)
+        }).join(">UwU<")
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -293,7 +301,10 @@ export function PhysicalProductFunctionalities(props){
 
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
 
-        let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
+        let tx_url = await bundlrClient.UploadBuffer(JSON.stringify({
+                name: name,
+                description: desc
+            }))
 
         productClient.SetProdInfo(
             prod_addr,
@@ -356,26 +367,24 @@ export function CommissionProductFunctionalities(props){
     ) => {
         if(files.length <= 0) return;
 
-        let buffers = await Promise.all(
-            files.map((fil)=>{
-                return fil.arrayBuffer();
-            })
-        );
+        let buffers = files.map(async (fil)=>{      
+            return URL.createObjectURL(fil)
+        }).join(">UwU<")
 
         let media_url = await bundlrClient.UploadBuffer(buffers);
-        let desc_url = await bundlrClient.UploadBuffer(name + "||" + description);
+        let desc_url = await bundlrClient.UploadBuffer(JSON.stringify({
+                name: name,
+                description: description
+            }));
 
-        console.log("genning addr");
         let listings_addr = await productClient.GenListingsAddress("commission");
 
-        console.log("getting next index")
         let next_index = productClient.FindNextAvailableListingsAddress(
             (await productClient.GetListingsStruct(
                 listings_addr
             )).data
         );
 
-        console.log("generating")
         let prod_addr = productClient.GenProductAddress(
             next_index, listings_addr, "commission"
         )
@@ -423,11 +432,9 @@ export function CommissionProductFunctionalities(props){
 
     const SetMedia = async(prod_addr, files) =>{
 
-        let buffers = (await Promise.all(
-            files.map(async (fil)=>{      
-                return enc_common.utos(new Uint8Array(await fil.arrayBuffer())) + "<<" + fil.type;
-            })
-        )).join("||")
+        let buffers = files.map(async (fil)=>{      
+            return URL.createObjectURL(fil)
+        }).join(">UwU<")
 
         let tx_id = await bundlrClient.UploadBuffer(buffers);
 
@@ -441,7 +448,10 @@ export function CommissionProductFunctionalities(props){
 
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
 
-        let tx_url = await bundlrClient.UploadBuffer(name + "||" + desc)
+        let tx_url = await bundlrClient.UploadBuffer(JSON.stringify({
+                name: name,
+                description: desc
+            }))
 
         productClient.SetProdInfo(
             prod_addr,

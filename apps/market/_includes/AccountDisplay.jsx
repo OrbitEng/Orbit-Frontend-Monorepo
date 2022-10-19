@@ -23,7 +23,7 @@ export function AccountDisplay(props) {
 	const {productClient} = useContext(ProductClientCtx);
 
 	const [listingsExplorerCategory, setListingsExplorerCategory] = useState();
-	const [displayOption, setDisplayOption] = useState("Digital");
+	const [displayOption, setDisplayOption] = useState("Physical");
 
 	const [physicalListings, setPhysicalListings] = useState();
 	const [digitalListings, setDigitalListings] = useState();
@@ -41,7 +41,7 @@ export function AccountDisplay(props) {
 				setListingsExplorerCategory(commissionListings)
 				break;
 		}
-	},[displayOption])
+	},[displayOption, physicalListings, digitalListings, commissionListings])
 
 	useEffect(()=>{
 		if(marketAccountsClient && marketAccountsClient.wallet && (props.accountAddr == marketAccountsClient.GenAccountAddress().toString())){

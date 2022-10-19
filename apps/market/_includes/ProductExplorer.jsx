@@ -10,7 +10,6 @@ export function LargeExplore(props) {
 	const [prodsToDisplay, setProdsToDisplay] = useState(Array(16).fill(<EmptyProductDisplayCardHome/>));
 
 	useEffect(()=>{
-		console.log(props.items, props.category)
 		if(!(props.items && props.category)) return;
 		let a = props.items.map((elem)=>(
 			<div>
