@@ -10,6 +10,7 @@ import { useCallback, useContext, useEffect } from 'react';
 const {DigitalMarketClient, PhysicalMarketClient, CommissionMarketClient, DisputeClient, MarketAccountsClient, ProductClient, TransactionClient} = require("orbit-clients");
 const {BundlrClient, ChatClient} = require("data-transfer-clients");
 
+
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
@@ -19,6 +20,8 @@ import TransactionClientCtx from '@contexts/TransactionClientCtx';
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
+
+import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -65,6 +68,8 @@ export function HomeHeader(props) {
 	const {productClient, setProductClient} = useContext(ProductClientCtx);
 	const {transactionClient, setTransactionClient} = useContext(TransactionClientCtx);
 
+	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
+
 	const [marketAccount, setMarketAccount] = useState(undefined);
 	const [menuOpen, setMenuOpen] = useState(false);
 
@@ -93,12 +98,13 @@ export function HomeHeader(props) {
 				if(!(account && account.data)){
 					
 				}else{
-					console.log(account);
+					account.data.profilePic = await GetPfp(account.data.profilePic);
+					account.data.metadata = await GetMetadata(account.data.metadata)
 					setMarketAccount(account)
 				}
 			}
 		}catch(e){
-			
+			console.log(e)
 		}
 
 		setDigitalMarketClient(new DigitalMarketClient(wallet, connection, provider));
@@ -154,7 +160,7 @@ export function HomeHeader(props) {
 							!wallet.connected ? ( 
 								<WalletMultiButton />
 							) : (
-								marketAccount ? <ProfileButton setMarketAccount={setMarketAccount} /> :
+								marketAccount ? <ProfileButton selfAccount={marketAccount} /> :
 								// add market account set here
 								<CreateAccountButton setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
 							)
