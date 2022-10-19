@@ -146,9 +146,19 @@ export function EditModal(props) {
 	},[uploadedPfp, bio, name, props.currentAccount])
 
 	return(
-		<div className="flex flex-col rounded-xl max-w-md bg-[#141619] py-10 px-[4rem] mx-auto w-full">
+		<div className="flex flex-col rounded-2xl max-w-md bg-gradient-to-t from-[#32254E78] to-[#26232C9C] border-t border-x border-[#545454] border-opacity-30 py-10 px-[4rem] mx-auto w-full">
+			<div className="relative top-0 right-0 flex pt-1 pr-4 justify-end">
+				<button
+					type="button"
+					className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
+					onClick={() => props.setOpen(false)}
+				>
+					<span className="sr-only">Close panel</span>
+					<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
+				</button>
+			</div>
 			<h1 className="text-3xl text-white font-bold">Edit Profile</h1>
-			<span className="text-[#848484]">
+			<span className="text-[#848484] font-bold">
 				Update your profile to look just the way you like it!
 			</span>
 			<div className="group cursor-pointer relative mt-5 mb-2 mx-auto justify-center w-fit" {...getRootProps()}>
@@ -200,7 +210,7 @@ export function EditModal(props) {
 						onChange={(e) => {setBio(e.target.value)}}
 					/>
 				</div>
-				<button className="flex flex-row mt-6 mx-auto text-lg rounded-full font-bold text-white bg-[#1773EB] align-middle my-auto px-6 py-2" onClick={updateProfileCallback}>
+				<button className="flex flex-row mt-6 mx-auto text-md rounded-full font-bold text-white bg-[#1773EB] align-middle my-auto px-6 py-2" onClick={updateProfileCallback}>
 					Update Profile
 				</button>
 			</div>
