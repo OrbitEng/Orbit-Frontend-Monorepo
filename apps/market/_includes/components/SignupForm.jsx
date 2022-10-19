@@ -97,6 +97,7 @@ export function SignupForm(props) {
 							pfp,
 							reflink
 						);
+						props.setOpen(false);
 					}}
 				>
 					<span className="mx-auto text-2xl font-sans font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#D55CFF] to-[#8BBAFF]">Sign Up!</span>
@@ -166,7 +167,7 @@ export function EditModal(props) {
 					{
 						(uploadedPfp != undefined) ?
 						<div className="relative w-32 h-32 overflow-hidden rounded-full">
-							<div className="w-full h-full">
+							<div className="w-full h-full rounded-full overflow-hidden">
 								<Image
 									src={uploadedPfp}
 									layout="fill"

@@ -79,8 +79,6 @@ export function AccountDisplay(props) {
 
 	}, [marketAccountsClient, props.accountAddr, productClient])
 
-
-
 	return(
 		<div className="flex flex-col max-w-6xl mx-auto">
 			<div className="flex flex-row gap-x-8 my-10">
