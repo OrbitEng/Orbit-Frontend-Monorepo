@@ -86,7 +86,7 @@ export function AccountDisplay(props) {
 			<div className="flex flex-row gap-x-8 my-10">
 				<div className="flex flex-shrink-0 relative h-44 w-44 overflow-hidden rounded-full">
 					<Image
-						src={(marketAccount?.data?.profilePic?.charAt(0) == '/' || marketAccount?.data?.profilePic?.charAt(0) == 'h') || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+						src={((marketAccount?.data?.profilePic?.charAt(0) == '/' || marketAccount?.data?.profilePic?.slice(0,4) == 'http' || marketAccount?.data?.profilePic?.slice(0,4) == 'data') && marketAccount.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 						layout="fill"
 						objectFit="cover"
 					/>
