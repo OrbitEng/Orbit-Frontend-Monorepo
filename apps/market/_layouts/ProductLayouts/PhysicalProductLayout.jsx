@@ -126,7 +126,8 @@ export function PhysicalProductDisplay(props) {
 				<div className="flex flex-col mt-10 gap-y-2" >
 					<div className="flex flex-row w-full h-full content-center">
 						<h1 className="font-bold text-4xl text-white ml-3">{props.prodInfo?.data?.metadata.info.name || "NULL PRODUCT" }</h1>
-						{isOwner  && 
+						{
+							isOwner  && 
 							<div className="">
 								<EditPhysicalProductModal selectedProduct={props.prodInfo}/>
 							</div>

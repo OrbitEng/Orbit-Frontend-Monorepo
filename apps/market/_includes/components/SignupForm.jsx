@@ -187,7 +187,7 @@ export function EditModal(props) {
 							<div className="relative h-32 w-32 overflow-hidden rounded-full z-0">
 								<Image
 
-									src={(props?.currentAccount?.data?.profilePic?.charAt(0) == '/' || props?.currentAccount?.data?.profilePic?.charAt(0) == 'h') || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+									src={((props?.currentAccount?.data?.profilePic?.charAt(0) == '/' || props?.currentAccount?.data?.profilePic?.slice(0,4) == 'http' || props?.currentAccount?.data?.profilePic?.slice(0,4) == 'data') && props?.currentAccount?.data?.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 									layout="fill"
 									objectFit="cover"
 								/>
