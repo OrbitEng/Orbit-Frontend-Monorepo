@@ -7,7 +7,7 @@ export function HeaderSearchBar(props) {
 	const [ query, setQuery ] = useState()
 
 	return(
-		<div className="flex flex-col p-auto my-auto py-auto align-middle justify-center w-2/5 mx-auto overflow-visible">
+		<div className="flex flex-col px-12 lg:px-36 my-auto py-auto align-middle justify-center w-full overflow-visible">
 			<Transition
 				show={true}
 				appear={true}
