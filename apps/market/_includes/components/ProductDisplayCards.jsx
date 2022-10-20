@@ -13,7 +13,6 @@ import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 
 export function EmptyProductDisplayCardHome(props) {
-	let paymentList = ["solana", "usdc"]
 
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 transition duration-700">

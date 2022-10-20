@@ -13,6 +13,7 @@ import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 
 import { useState, useEffect, useContext } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
+import { PublicKey } from "@solana/web3.js";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Dummy Products
@@ -81,22 +82,37 @@ export default function ProductsPage(props) {
 		if(!(productClient && marketAccountsClient)) return;
 		switch (productType){
 			case "commission":
-				tp = await productClient.GetCommissionProduct(productId);
-				if(!tp){
-					return;
+				try{
+					tp = await productClient.GetCommissionProduct(productId);
+					if(!tp){
+						return;
+					}
+				}catch(e){
+					console.log("error", e)
 				}
+				
 				break;
 			case "digital":
-				tp = await productClient.GetDigitalProduct(productId);
-				if(!tp){
-					return;
+				try{
+					tp = await productClient.GetDigitalProduct(productId);
+					if(!tp){
+						return;
+					}
+				}catch(e){
+					console.log("error", e)
 				}
+				
 				break;
 			case "physical":
-				tp = await productClient.GetPhysicalProduct(productId);
-				if(!tp){
-					return;
+				try{
+					tp = await productClient.GetPhysicalProduct(productId);
+					if(!tp){
+						return;
+					}
+				}catch(e){
+					console.log("error", e)
 				}
+				
 				break;
 			default:
 				break;

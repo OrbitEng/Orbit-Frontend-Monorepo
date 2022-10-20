@@ -77,7 +77,7 @@ export function PhysicalUploadForm(props) {
         acceptedFiles.forEach((fin)=>{
             const afr = new FileReader()
             afr.onload = () => {
-                setFiles(cf => [...cf, ...afr.result]);
+                setFiles(cf => [...cf, afr.result]);
             }
             afr.readAsDataURL(fin);
         });

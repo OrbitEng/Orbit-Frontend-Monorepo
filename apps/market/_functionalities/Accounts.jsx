@@ -35,7 +35,7 @@ export function MarketAccountFunctionalities(props){
             reflink
         );
 
-        return await marketAccountsClient.GetAccount(
+        return marketAccountsClient.GetAccount(
             marketAccountsClient.GenAccountAddress()
         );
         // try{
@@ -155,7 +155,8 @@ export function MarketAccountFunctionalities(props){
 
     const GetPfp = async(ar_addr)=>{
         try{
-            return (await (new ArQueryClient()).GetImageData(ar_addr))[0];
+            let data = (await (new ArQueryClient()).GetImageData(ar_addr))[0];
+            return data
         }catch{
             return undefined
         }

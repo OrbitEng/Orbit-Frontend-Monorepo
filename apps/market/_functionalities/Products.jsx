@@ -113,7 +113,7 @@ export function DigitalProductFunctionalities(props){
 
     const ChangePrice = async(prod_addr, new_price = 0) =>{
         
-        return productClient.ChangeProductPrice(
+        return productClient.UpdateProductPrice(
             prod_addr,
             productClient.GenListingsAddress("digital"),
             new_price
@@ -252,7 +252,7 @@ export function PhysicalProductFunctionalities(props){
 
     const ChangePrice = async(prod_addr, new_price = 0) =>{
 
-        return productClient.ChangeProductPrice(
+        return productClient.UpdateProductPrice(
             prod_addr,
             productClient.GenListingsAddress("physical"),
             new_price
@@ -260,9 +260,8 @@ export function PhysicalProductFunctionalities(props){
     }
     const ChangeQuantity = async(prod_addr, new_quantity = 0) =>{
 
-        return productClient.ChangeProductQuantity(
+        return productClient.UpdateProductQuantity(
             prod_addr,
-            productClient.GenListingsAddress("physical"),
             new_quantity
         )
     }
@@ -402,7 +401,7 @@ export function CommissionProductFunctionalities(props){
 
     const ChangePrice = async(prod_addr, new_price = 0) =>{
 
-        return productClient.ChangeProductPrice(
+        return productClient.UpdateProductPrice(
             prod_addr,
             productClient.GenListingsAddress("commission"),
             new_price

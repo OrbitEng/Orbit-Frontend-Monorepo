@@ -87,7 +87,7 @@ export function DigitalUploadForm(props) {
         acceptedFiles.forEach((fin)=>{
             const afr = new FileReader()
             afr.onload = () => {
-                setPreviewFiles(cf => [...cf, ...afr.result]);
+                setPreviewFiles(cf => [...cf, afr.result]);
             }
             afr.readAsDataURL(fin);
         });
@@ -121,7 +121,7 @@ export function DigitalUploadForm(props) {
         acceptedFiles.forEach((fin)=>{
             const afr = new FileReader()
             afr.onload = () => {
-                setProductFiles(cf => [...cf, ...afr.result]);
+                setProductFiles(cf => [...cf, afr.result]);
             }
             afr.readAsDataURL(fin);
         });
