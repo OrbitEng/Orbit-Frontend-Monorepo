@@ -148,6 +148,7 @@ export function EditModal(props) {
 				name: name,
 				bio: bio
 			})
+			props.setOpen(false)
 		}
 	},[uploadedPfp, bio, name, props.currentAccount])
 
