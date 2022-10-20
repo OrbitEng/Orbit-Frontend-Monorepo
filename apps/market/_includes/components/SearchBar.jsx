@@ -50,7 +50,7 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 		<Transition
 			appear={true}
 			show={true}
-			enter="transition transform transition-opacity transition-transform transition-all duration-[1200ms] ease-in-out delay-[400ms]"
+			enter="transition transform transition-opacity transition-transform transition-all duration-[1200ms] ease-in-out delay-[600ms]"
 			enterFrom="opacity-0 -translate-y-10"
 			enterTo="opacity-100 -translate-y-0"
 			leave="transform duration-200 transition ease-in-out"

@@ -54,7 +54,7 @@ export function ProductDisplayCardHome(props) {
 	)
 
 	const [prod, setProd] = useState();
-	const [vendor, setVendor] = useState();
+	const [vendorUS, setVendorUS] = useState();
 
 	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
 
@@ -109,9 +109,11 @@ export function ProductDisplayCardHome(props) {
 			vendor.data.profilePic = await GetPfp(vendor.data.profilePic);
 			vendor.data.metadata = await GetMetadata(vendor.data.metadata);
 			tp.data.metadata.seller = vendor;
-			setVendor(vendor);
+			setVendorUS(vendor);
 		};
 		console.log(tp)
+		console.log(vendorUS)
+		console.log("fuck")
 		setProd(tp);
 	},[])
 
@@ -122,26 +124,25 @@ export function ProductDisplayCardHome(props) {
 				<div className={glowColor + " absolute -inset-0 rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-700 group-hover:duration-700 animate-tilt"} onClick={()=>{setProductCache(prod); setVendorCache(vendor)}}/>
 					<Link href={"/product/" + props.type + "/" + props.address.toString()} >
 						<div className={bgColor + " relative py-4 rounded-lg leading-none flex flex-col items-center overflow-hidden"}>
-							<div className="flex items-center content-center border-[#4F4F4F] border-2 border-opacity-30 rounded-full shadow bg-gradient-to-r to-[#120D20] from-[#19112E]">
-								<div className="flex content-start rounded-full mx-2 py-1 pr-4 gap-2">
+							<div className="flex justify-start w-[200px] px-2 gap-x-2 border-[#4F4F4F] border-2 border-opacity-30 rounded-full shadow bg-gradient-to-r to-[#120D20] from-[#19112E]">
+								<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden rounded-full my-2">
 									<Image 
-										className="rounded-full flex"
-										alt="market profile picture"
-										src={vendor?.data.profilePic  || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-										height={10}
-										width={30}
+										alt="The profile picture of the item seller"
+										src={vendorUS?.data.profilePic  || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+										layout="fill"
+										objectFit="contain"
 									/>
-									<div className="flex flex-col w-5/6 mx-auto">
-										<span className="flex text-gray-100 leading-none text-sm font-bold">{(vendor?.data.metadata && vendor.data.metadata.name) || "Jack"}</span>
-										<span className="flex text-gray-300 text-xs">{(vendor?.address.toString().slice(0,10) + "...") || "DMgY6wi2FV..."}</span>
-									</div>
+								</div>
+								<div className="flex flex-col my-auto">
+									<span className="flex text-gray-100 leading-none text-sm font-bold">{(vendorUS?.data.metadata && vendorUS.data.metadata.name) || "Jack"}</span>
+									<span className="flex text-gray-300 text-xs">{(vendorUS?.address.toString().slice(0,10) + "...") || "DMgY6wi2FV..."}</span>
 								</div>
 							</div>
 							<div className="relative mx-auto content-center my-2 overflow-visible">
 								<div className={"absolute -bottom-3 -left-3 z-40 p-2  text-white font-bold bg-[#080B1A] bg-opacity-80 rounded-full border-[1px] text-ellipsis " + borderColor}>
 									<span className="text-sm">{prod?.data?.metadata?.price?.toString() || "12.345"}</span>
 								</div>
-								<div className="max overflow-hidden">
+								<div className="overflow-hidden">
 									<Image
 										alt="product image"
 										src={(prod?.data?.metadata?.media && prod?.data.metadata.media[0]) || "/demologos.png"}
