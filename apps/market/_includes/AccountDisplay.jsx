@@ -94,7 +94,7 @@ export function AccountDisplay(props) {
 				<div className="flex flex-col my-auto">
 					<div className="flex flex-row gap-x-2">
 						<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
-							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{("@0x" + marketAccount?.address?.toString().slice(0,10)) || "@UserNamePlaceHolder"}</span>
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{("@0x" + marketAccount?.address?.toString()) || "@UserNamePlaceHolder"}</span>
 						</div>
 						{isSelf ? <EditProfileButton currentAccount={marketAccount}/>: <></>}
 					</div>	
