@@ -42,7 +42,6 @@ export function SellLayout(props){
 									src="/emojis/globeEmojiImage.png"
 									layout="fill"
 									objectFit="contain"
-									width={50}
 								/>
 							</div>
 							<h1 className="text-3xl font-bold text-white mx-auto text-center">Physical</h1>
@@ -66,7 +65,6 @@ export function SellLayout(props){
 									src="/emojis/filesEmojiImage.png"
 									layout="fill"
 									objectFit="contain"
-									width={50}
 								/>
 							</div>
 							<h1 className="text-3xl font-bold text-white mx-auto text-center">Commissions</h1>
@@ -90,7 +88,6 @@ export function SellLayout(props){
 									src="/emojis/wrenchEmojiImage.png"
 									layout="fill"
 									objectFit="contain"
-									width={50}
 								/>
 							</div>
 							<h1 className="text-3xl font-bold text-white mx-auto text-center">Digital</h1>

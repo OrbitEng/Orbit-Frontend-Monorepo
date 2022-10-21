@@ -281,7 +281,7 @@ export function DigitalUploadForm(props) {
                         </div>
                     </div>
                     
-                        <form className="flex flex-col gap-y-6 mb-32" onSubmit={async ()=>{await ListProduct()}}>
+                        <form className="flex flex-col gap-y-6 w-1/3 mb-32" onSubmit={async ()=>{await ListProduct()}}>
                             <div className="flex flex-col">
                                 <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
                                 <input
