@@ -39,7 +39,6 @@ export function DigitalProductFunctionalities(props){
     }
 
     const ListProduct = async(
-        currency = "11111111111111111111111111111111",
         price,
         deliveryEstimate = 14,
         name,
@@ -77,8 +76,7 @@ export function DigitalProductFunctionalities(props){
                 info: desc_url,
                 ownerCatalog: listings_addr,
                 index: next_index,
-                currency: new PublicKey(currency),
-                price: new BN(price),
+                    price: new BN(price),
                 deliveryEstimate: new BN(deliveryEstimate),
                 media: media_url
             },
@@ -116,14 +114,6 @@ export function DigitalProductFunctionalities(props){
         )
     }
 
-    const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
-        
-        return productClient.UpdateCurrency(
-            prod_addr,
-            productClient.GenListingsAddress("digital"),
-            new_currency
-        )
-    }
 
     const SetMedia = async(prod_addr, files) =>{
         
@@ -173,7 +163,6 @@ export function DigitalProductFunctionalities(props){
         SetFileType,
         ChangeAvailability,
         ChangePrice,
-        ChangeCurrency,
         SetMedia,
         SetInfo,
         GetAllVendorDigitalProducts
@@ -191,7 +180,6 @@ export function PhysicalProductFunctionalities(props){
     }
 
     const ListProduct = async(
-        currency = "11111111111111111111111111111111",
         price,
         deliveryEstimate = 14,
         name,
@@ -228,8 +216,7 @@ export function PhysicalProductFunctionalities(props){
                 info: desc_url,
                 ownerCatalog: listings_addr,
                 index: next_index,
-                currency: new PublicKey(currency),
-                price: new BN(price),
+                    price: new BN(price),
                 deliveryEstimate: deliveryEstimate,
                 media: media_url
             },
@@ -261,14 +248,6 @@ export function PhysicalProductFunctionalities(props){
             new_quantity
         )
     }
-    const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
-
-        return productClient.UpdateCurrency(
-            prod_addr,
-            productClient.GenListingsAddress("physical"),
-            new_currency
-        )
-    };
 
     const SetMedia = async(prod_addr, files) =>{
 
@@ -307,11 +286,11 @@ export function PhysicalProductFunctionalities(props){
             return ""
         }
         let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
+            console.log(ind);
             return productClient.GenProductAddress(
-                63, listings_addr, "physical"
+                ind, listings_addr, "physical"
             )
-        })
-        console.log(indexes.map(p => p.toString()))
+        });
 
         return (await productClient.GetMultiplePhysicalProducts(
             indexes
@@ -324,7 +303,6 @@ export function PhysicalProductFunctionalities(props){
         ChangePrice,
         ChangeAvailability,
         ChangeQuantity,
-        ChangeCurrency,
         SetMedia,
         SetInfo,
         GetAllVendorPhysicalProducts
@@ -343,7 +321,6 @@ export function CommissionProductFunctionalities(props){
     }
 
     const ListProduct = async(
-        currency = "11111111111111111111111111111111",
         price,
         deliveryEstimate = 14,
         name,
@@ -379,8 +356,7 @@ export function CommissionProductFunctionalities(props){
                 info: desc_url,
                 ownerCatalog: listings_addr,
                 index: next_index,
-                currency: new PublicKey(currency),
-                price: new BN(price),
+                    price: new BN(price),
                 deliveryEstimate: new BN(deliveryEstimate),
                 media: media_url
             },
@@ -404,15 +380,6 @@ export function CommissionProductFunctionalities(props){
             new_price
         )
     }
-    
-    const ChangeCurrency = async(prod_addr, new_currency = "11111111111111111111111111111111") =>{
-
-        return productClient.UpdateCurrency(
-            prod_addr,
-            productClient.GenListingsAddress("commission"),
-            new_currency
-        )
-    };
 
     const SetMedia = async(prod_addr, files) =>{
 
@@ -466,7 +433,6 @@ export function CommissionProductFunctionalities(props){
         ListProduct,
         ChangePrice,
         ChangeAvailability,
-        ChangeCurrency,
         SetMedia,
         SetInfo,
         GetAllVendorCommissionProducts

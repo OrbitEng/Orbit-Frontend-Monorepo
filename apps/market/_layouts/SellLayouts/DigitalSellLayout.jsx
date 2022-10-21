@@ -36,7 +36,6 @@ export function DigitalUploadForm(props) {
 	const [prodName, setProdName] = useState("");
 	const [price, setProdPrice] = useState();
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
-	const [currency, setCurrency] = useState("solana");
 	const [description, setDescription] = useState();
 	const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
 
@@ -310,55 +309,6 @@ export function DigitalUploadForm(props) {
                                             }}
                                         />
                                         <div className="px-3 text-[#8E8E8E] align-middle my-auto">{(takeHomeMoney || "0.00")}</div>
-                                    </div>
-                                    <div className="flex flex-col w-1/6 h-full justify-center">
-                                        <Listbox value={currency} onChange={setCurrency}>
-                                            <div className="flex relative w-3/4 text-xl h-1/2 justify-end">
-                                                <Listbox.Button className="flex w-full h-full bg-[#242424] rounded-lg p-1 justify-center">{
-                                                    <div className="flex flex-row align-middle">
-                                                        <span className="my-auto align-middle">
-                                                            <Image
-                                                                layout="fixed"
-                                                                src={"/" + currency + "SvgLogo.svg"}
-                                                                height={16}
-                                                                width={16}
-                                                            />
-                                                        </span>
-                                                        <span className="align-middle my-auto mx-1 font-medium">{
-                                                            (currency === "usdc") ?
-                                                            currency.toUpperCase() :
-                                                            currency?.charAt(0).toUpperCase() + currency.slice(1)
-                                                        }</span>
-                                                        <ChevronDownIcon className="text-white h-5 w-5 my-auto align-middle"/>
-                                                    </div>
-                                                }</Listbox.Button>
-                                                <Listbox.Options className="w-full text-center absolute -bottom-6 transition rounded-b bg-[#242424]">
-                                                    {
-                                                        Object.keys(tokenlist).filter(tn => tn != currency).map((tokenname, index)=>{
-                                                            return (
-                                                                <Listbox.Option
-                                                                    key = {index}
-                                                                    value = {tokenname}
-                                                                    className={({active})=>{
-                                                                        `w-full py-1 ${active? "bg-[#2c2c2c] font-medium rounded-b" : ""}`
-                                                                    }}
-                                                                >
-                                                                    {({selected})=>{
-                                                                        return (
-                                                                            <div className="font-medium">{
-                                                                                (tokenname === "usdc") ?
-                                                                                (tokenname.toUpperCase()) :
-                                                                                (tokenname.charAt(0).toUpperCase() + tokenname.slice(1))
-                                                                            }</div>
-                                                                        )
-                                                                    }}
-                                                                </Listbox.Option>
-                                                            )
-                                                        })
-                                                    }
-                                                </Listbox.Options>
-                                            </div>
-                                        </Listbox>
                                     </div>
                                 </div>
                                 <div className="flex flex-row gap-x-1 align-middle mt-1">

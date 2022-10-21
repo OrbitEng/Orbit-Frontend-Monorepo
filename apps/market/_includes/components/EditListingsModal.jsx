@@ -20,7 +20,7 @@ const token_addresses = {
 }
 
 export function EditPhysicalProductModal(props){
-    const {ChangeQuantity, ChangeAvailability, ChangePrice, ChangeCurrency, SetMedia, SetInfo} = PhysicalProductFunctionalities();
+    const {ChangeQuantity, ChangeAvailability, ChangePrice, SetMedia, SetInfo} = PhysicalProductFunctionalities();
     const {productClient} = useContext(ProductClientCtx);
 
     const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
@@ -28,7 +28,6 @@ export function EditPhysicalProductModal(props){
     const [newQuantity, setNewQuantity] = useState(0);
     const [newAvailability, setNewAvailability] = useState(false);
     const [newPrice, setNewPrice] = useState(0);
-    const [newCurrency, setNewCurrency] = useState("solana");
     const [newMedia, setNewMedia] = useState([]);
     const [newName, setNewName] = useState("");
     const [newDescription, setNewDescription] = useState("");
@@ -39,7 +38,6 @@ export function EditPhysicalProductModal(props){
         setNewQuantity(props.selectedProduct.data.quantity && props.selectedProduct.data.quantity)
         setNewAvailability(props.selectedProduct.data.metadata.availability && props.selectedProduct.data.metadata.availability)
         setNewPrice(props.selectedProduct.data.metadata.price && props.selectedProduct.data.metadata.price.toNumber && props.selectedProduct.data.metadata.price.toNumber())
-        setNewCurrency(props.selectedProduct.data.metadata.currency.toString() == "11111111111111111111111111111111" ? "solana" : "usdc")
         setNewMedia(props.selectedProduct.data.metadata.media ? props.selectedProduct.data.metadata.media : [])
         setNewName(props.selectedProduct.data.metadata.info && props.selectedProduct.data.metadata.info.name && props.selectedProduct.data.metadata.info.name)
         setNewDescription(props.selectedProduct.data.metadata.info && props.selectedProduct.data.metadata.info.description && props.selectedProduct.data.metadata.info.description)
@@ -94,9 +92,6 @@ export function EditPhysicalProductModal(props){
         if (newPrice != props.selectedProduct.data.metadata.price.toNumber()){
             await ChangePrice(props.selectedProduct.address, newPrice)
         }
-        if (token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME][newCurrency] != props.selectedProduct.data.metadata.currency.toString()){
-            await ChangeCurrency(props.selectedProduct.address, token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME][newCurrency])
-        }
         if ((newMedia.length > 0) && (newMedia != props.selectedProduct.data.metadata.media)){
             await SetMedia(props.selectedProduct.address, newMedia)
         }
@@ -104,7 +99,7 @@ export function EditPhysicalProductModal(props){
             await SetInfo(props.selectedProduct.address, newName, newDescription)
         }
         closeModal()
-	}, [props.selectedProduct, productClient, newQuantity, newAvailability, newPrice, newCurrency, newMedia, newName, newDescription])
+	}, [props.selectedProduct, productClient, newQuantity, newAvailability, newPrice, newMedia, newName, newDescription])
 
     return (
         <div>
@@ -199,49 +194,6 @@ export function EditPhysicalProductModal(props){
                                                         setNewPrice(e.target.value)
                                                     }}
                                                 />
-                                            </div>
-                                            <div className="flex flex-col w-1/6 h-full justify-center">
-                                                <Listbox value={newCurrency} onChange={setNewCurrency}>
-                                                    <div className="flex relative w-3/4 text-xl h-1/2 justify-end">
-                                                        <Listbox.Button className="flex w-full h-full rounded-lg p-1 justify-center">{
-                                                            <div className="flex flex-row align-middle">
-                                                                <span className="my-auto align-middle">
-                                                                    <Image
-                                                                        layout="fixed"
-                                                                        src={"/" + newCurrency + "SvgLogo.svg"}
-                                                                        height={16}
-                                                                        width={16}
-                                                                    />
-                                                                </span>
-                                                                <span className="align-middle my-auto mx-1 font-medium">{
-                                                                    (newCurrency === "usdc") ?
-                                                                    newCurrency.toUpperCase() :
-                                                                    newCurrency?.charAt(0).toUpperCase() + newCurrency.slice(1)
-                                                                }</span>
-                                                                <ChevronDownIcon className="text-white h-5 w-5 my-auto align-middle"/>
-                                                            </div>
-                                                        }</Listbox.Button>
-                                                        <Listbox.Options className="w-full text-center absolute -bottom-6 transition rounded-b">
-                                                            {
-                                                                Object.keys(tokenlist).filter(tn => tn != newCurrency).map((tokenname, index)=>{
-                                                                    return (
-                                                                        <Listbox.Option
-                                                                            key = {index}
-                                                                            value = {tokenname}
-                                                                            className="w-full py-1"
-                                                                        >
-                                                                            <div className="font-medium  bg-[#242424]">{
-                                                                                        (tokenname === "usdc") ?
-                                                                                        (tokenname.toUpperCase()) :
-                                                                                        (tokenname.charAt(0).toUpperCase() + tokenname.slice(1))
-                                                                                    }</div>
-                                                                        </Listbox.Option>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </Listbox.Options>
-                                                    </div>
-                                                </Listbox>
                                             </div>
                                         </div>
                                     </div>

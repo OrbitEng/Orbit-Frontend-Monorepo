@@ -34,7 +34,6 @@ const dummyCommission = {
 				Order now! and get your beautiful icons designed. If you have any other questions, We are available 24/7, don't hesitate to contact us.`
 			},
 			price: 12345.99,
-			currency: "sol", 
 			seller: {
 				address: "E5EP2qkdXmPwXA9ANzoG69Gmj86Jdqepjw2XrQDGj9sM",
 				data: {

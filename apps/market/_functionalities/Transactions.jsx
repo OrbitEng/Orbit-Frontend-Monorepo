@@ -118,7 +118,8 @@ export function DigitalFunctionalities(){
     /// :SPL
     const OpenTransactionSpl = async(
         product,
-        use_discount
+        use_discount,
+        currency
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -142,15 +143,12 @@ export function DigitalFunctionalities(){
             next_open_seller_index,
             seller_tx_log_addr,
             listings_addr,
-            
             next_open_buyer_index,
             buyer_tx_log_addr,
             buyer_account_addr,
-
             product_addr,
-            product.currency,
+            currency,
             product.price,
-            
             use_discount
         )
 
@@ -476,7 +474,8 @@ export function CommissionFunctionalities(){
     /// :SPL
     const OpenTransactionSpl = async(
         product,
-        use_discount
+        use_discount,
+        currency
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -506,7 +505,7 @@ export function CommissionFunctionalities(){
             buyer_account_addr,
 
             product_addr,
-            product.currency,
+            currency,
             product.price,
             
             use_discount
@@ -896,7 +895,8 @@ export function PhysicalFunctionalities(){
     /// :SPL
     const OpenTransactionSpl = async(
         product,
-        use_discount
+        use_discount,
+        currency
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -926,7 +926,7 @@ export function PhysicalFunctionalities(){
             buyer_account_addr,
 
             product_addr,
-            product.currency,
+            currency,
             product.price,
             
             use_discount

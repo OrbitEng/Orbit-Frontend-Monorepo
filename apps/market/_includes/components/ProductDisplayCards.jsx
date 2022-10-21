@@ -94,11 +94,6 @@ export function ProductDisplayCardHome(props) {
 		if(tp){
 			tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
 			tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
-			if(tp.data.metadata.currency.toString() == "11111111111111111111111111111111"){
-				tp.data.metadata.currency = "solana"
-			}else{
-				tp.data.metadata.currency = "usdc"
-			}
 
 			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
@@ -155,17 +150,6 @@ export function ProductDisplayCardHome(props) {
 									<div className="bg-[#201B31] align-middle font-semibold rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem]">
 										{props.type?.charAt(0)?.toUpperCase() + "" +props.type?.slice(1).replace("Product","").replaceAll(/([A-Z])/g, (g1)=>{return ` ${g1}`})}
 									</div>
-									{
-										prod?.data?.metadata?.currency && 
-										<div className="flex bg-[#201B31] rounded-md drop-shadow-md p-1 text-[#8B8B8B] text-[.8rem]">
-											<Image
-												layout="fixed"
-												src={"/" + prod?.data?.metadata?.currency + "LogoSmall.png"}
-												height={16}
-												width={16}
-											/>
-										</div>
-									}
 								</div>
 							</div>
 						{prodButton}
