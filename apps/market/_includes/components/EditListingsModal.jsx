@@ -78,9 +78,8 @@ export function EditPhysicalProductModal(props){
     const handleUnlistFunction = useCallback(async () => {
         await productClient.UnlistProduct(
             props.selectedProduct.address,
-            props.selectedProduct.data.ownerCatalog
+            props.selectedProduct.data.metadata.ownerCatalog
         );
-        props.selectedProduct = {};
         closeModal()
 	}, [props.selectedProduct, productClient])
 
@@ -269,7 +268,6 @@ export function EditPhysicalProductModal(props){
                                     <div className="flex flex-row text-white py-2 relative">
                                         {
                                             newMedia && newMedia.map((f,fi) => {
-                                                console.log(f)
                                                 return(
                                                     <div className="relative group shrink-0 h-[138px] w-[138px] rounded-sm overflow-hidden border-white border-2" key={fi}>
                                                         <Image

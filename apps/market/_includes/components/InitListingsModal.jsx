@@ -26,7 +26,6 @@ export function CatalogWarnModal(props){
     }
 
 	const handleSubmitFunction = useCallback(async () => {
-		console.log(wallet);
 		if(!(productClient && productClient.wallet.publicKey && transactionClient && transactionClient.wallet.publicKey && wallet.connected)) return;
 		switch(props.category) {
 			case "physical":

@@ -54,7 +54,7 @@ export function AccountDisplay(props) {
 	useEffect(async () => {
 		if (!(marketAccountsClient && props.accountAddr)) return;
 
-		let market_account
+		let market_account;
 		try{
 			market_account = await marketAccountsClient.GetAccount(props.accountAddr);
 			console.log(market_account)

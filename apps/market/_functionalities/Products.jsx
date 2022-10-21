@@ -15,12 +15,8 @@ export function ProductCommonUtils(props){
      */
      const ResolveProductInfo = async(metadata_addr) => {
         let arclient = new ArQueryClient();
-        let data = (await arclient.FetchData(metadata_addr)).split(">UwU<");
-        // let data = JSON.parse(await arclient.FetchData(metadata_addr));
-        return {
-            name: data[0],
-            description: data[1]
-        };
+        return JSON.parse(await arclient.FetchData(metadata_addr));
+        
     };
 
     const ResolveProductMedia = async(media_addr) => {
@@ -312,9 +308,10 @@ export function PhysicalProductFunctionalities(props){
         }
         let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
             return productClient.GenProductAddress(
-                ind, listings_addr, "physical"
+                63, listings_addr, "physical"
             )
         })
+        console.log(indexes.map(p => p.toString()))
 
         return (await productClient.GetMultiplePhysicalProducts(
             indexes

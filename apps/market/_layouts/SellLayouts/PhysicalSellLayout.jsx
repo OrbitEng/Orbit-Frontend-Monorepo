@@ -307,14 +307,14 @@ export function PhysicalUploadForm(props) {
                                 />
                             </div>
                             <div className="w-full flex flex-row text-white justify-center" onClick={()=>{setListRecent(!listRecent)}}>
-                                <input type={"checkbox"} checked={listRecent}  className=""/>
+                                <input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
                                 <span className="mx-8">have product displayed in "recent listings" on the front page</span>
                             </div>
                             <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
-                                <button className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" onClick={()=>{
-                                    ListProduct(
+                                <button className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" onClick={async ()=>{
+                                    await ListProduct(
                                         token_addresses[currency], price, delivery, prodName, description, quantity, files, listRecent
-                                    )
+                                    );
                                 }}>
                                     Upload
                                 </button>

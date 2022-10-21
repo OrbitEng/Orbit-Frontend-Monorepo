@@ -38,12 +38,6 @@ export function MarketAccountFunctionalities(props){
         return marketAccountsClient.GetAccount(
             marketAccountsClient.GenAccountAddress()
         );
-        // try{
-            
-        // }catch(e){
-        //     console.log(e, "error")
-        //     return "could not create your account at the current time. please try again later"
-        // }
     }
 
     const SetPfp = async(file)=>{

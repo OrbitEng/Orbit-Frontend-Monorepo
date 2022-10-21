@@ -111,11 +111,8 @@ export function ProductDisplayCardHome(props) {
 			tp.data.metadata.seller = vendor;
 			setVendorUS(vendor);
 		};
-		console.log(tp)
-		console.log(vendorUS)
-		console.log("fuck")
 		setProd(tp);
-	},[])
+	},[productClient, marketAccountsClient, props.address])
 
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">
