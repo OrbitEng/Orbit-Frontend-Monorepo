@@ -147,7 +147,7 @@ export function DigitalUploadForm(props) {
     }, [delFileFuncArgs, previewFiles, productFiles, deletePreviewFile, deleteProductFile])
 
 	return(
-        <div className="w-full min-h-screen bg-transparent">
+        <div className="w-full min-h-screen h-full bg-transparent">
             {((vendorDigitalCatalog == undefined) || (vendorDigitalTx == undefined)) && <CatalogWarnModal category={"digital"} setCatalog={vendorDigitalCatalog ? undefined : setVendorDigitalCatalog} setTxLog={vendorDigitalTx ? undefined : setVendorDigitalTx}/>}
             <Head>
 				<title>Orbit</title>
@@ -155,233 +155,233 @@ export function DigitalUploadForm(props) {
 			</Head>
             <main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
             <HomeHeader headerMiddle={searchBar}/>
-            <div className="pt-14 lg:pt-32 sm:-mt-32 w-full align-center min-h-view">
-                <div className="flex flex-col w-full mx-auto my-auto content-center w-1/3 min-h-screen">
-                <h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
-                <Link href={"/sell"}>
-                <button className="flex flex-row space-x-1 mb-10 align-middle">
-                    <ArrowLeftIcon className="h-5 w-5 text-[#767676] my-auto" />
-                    <div className="text-[#767676] text-xl my-auto">Back to Categories</div>
-                </button>
-                </Link>
-                
-                <div className="grid grid-flow-row grid-cols-12 grid-rows-1 justify-between mb-12 overflow-hidden text-ellipsis gap-x-4 w-full">
-                    <div className="h-full col-span-3">
-                        <div className="flex flex-col mb-2 leading-tight">
-                            <h3 className="font-bold text-white text-xl">Upload Preview</h3>
-                            <span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
-                        </div>
-                        
-                        <div className="flex flex-row">
-                            <div className="flex flex-col scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-scroll overflow-y-scroll w-full h-96 px-2 gap-y-3">
-                                {
-                                    previewFiles && previewFiles?.map((f,fi) => {
-                                        return(
-                                            <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
-                                                <button
-                                                    onClick={()=>{
-                                                        setBigPreviewSrc((f));
-                                                        setDelFileFuncArgs(["deletePreviewFile", f]);
-                                                    }}
-                                                >
-                                                    <Image
-                                                        src={(f) || "/"}
-                                                        layout="fill"
-                                                        objectFit="cover"
-                                                    />
-                                                </button>
-                                            </div>
-                                        )
-                                    })
-                                }
-                                <button
-                                    className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]"
-                                    onClick={()=>{openPreview()}}
-                                >
-                                    <PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
-                                    <span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-span-6 h-96">
-                        {
-                                !(bigPreviewSrc) ? (
-                                    <div {...getPrevRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl h-96 content-center align-middle py-12 px-20">
-                                        <input {...getPrevInputProps()}/>
-                                        <div className="relative flex h-52 mx-16">
-                                            <Image
-                                                src="/PhotoIcon.png"
-                                                layout="fill"
-                                                objectFit="contain"
-                                            />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
-                                            <span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="relative rounded-2xl overflow-hidden h-96 align-middle w-full">
-                                        <div className="z-10">
-                                            <Image
-                                                src={bigPreviewSrc || "/noneya"}
-                                                layout="fill"
-                                                objectFit="cover"
-                                            />
-                                        </div>
-                                        <button className="bottom-0 right-0 absolute z-50 p-1 align-middle my-auto mx-auto basis-1/4 justify-center border-2" onClick={()=>{
-                                            setBigPreviewSrc(undefined);
-                                            setDelFileFuncArgs(undefined);
-                                            delFileFunc()
-                                        }}>
-                                            <TrashIcon className="flex h-12 w-12"/>
-                                        </button>
-                                    </div>
-                                )
-                            }
-                    </div>
-                    <div className="flex flex-col col-span-3 flex-none flex-grow-0 h-full overflow-ellipsis ">
-                        <div className="top-0 bg-transparent backdrop-blur-lg ">
-                            <div className="flex flex-col mb-2 leading-tight items-end">
-                                <h3 className="font-bold text-white text-xl">Upload Product</h3>
+            <div className="pt-14 lg:pt-32 sm:-mt-32 w-full align-center min-h-screen  place-items-center">
+                <div className="flex flex-col w-full mx-auto my-auto content-center min-h-screen place-items-center">
+                    <h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
+                    <Link href={"/sell"}>
+                    <button className="flex flex-row space-x-1 mb-10 align-middle">
+                        <ArrowLeftIcon className="h-5 w-5 text-[#767676] my-auto" />
+                        <div className="text-[#767676] text-xl my-auto">Back to Categories</div>
+                    </button>
+                    </Link>
+                    
+                    <div className="flex flex-row justify-between mb-12 overflow-hidden text-ellipsis gap-x-4 w-[100vh] h-full border-2 place-items-center">
+                        <div className="h-full w-[20%]">
+                            <div className="flex flex-col mb-2 leading-tight">
+                                <h3 className="font-bold text-white text-xl">Upload Preview</h3>
                                 <span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
                             </div>
+                            
+                            <div className="flex flex-row">
+                                <div className="flex flex-col scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-scroll overflow-y-scroll w-full h-96 px-2 gap-y-3">
+                                    {
+                                        previewFiles && previewFiles?.map((f,fi) => {
+                                            return(
+                                                <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
+                                                    <button
+                                                        onClick={()=>{
+                                                            setBigPreviewSrc((f));
+                                                            setDelFileFuncArgs(["deletePreviewFile", f]);
+                                                        }}
+                                                    >
+                                                        <Image
+                                                            src={(f) || "/"}
+                                                            layout="fill"
+                                                            objectFit="cover"
+                                                        />
+                                                    </button>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                    <button
+                                        className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]"
+                                        onClick={()=>{openPreview()}}
+                                    >
+                                        <PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
+                                        <span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div className="flex flex-row">
-                            <div className="flex flex-col scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-scroll overflow-y-scroll w-full h-96 px-2 gap-y-3">
-                                {
-                                    productFiles && productFiles?.map((f,fi) => {
-                                        return(
-                                            <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
-                                                <button
-                                                    onClick={()=>{
-                                                        setBigPreviewSrc((f));
-                                                        setDelFileFuncArgs(["deleteProductFile", f]);
-                                                    }}
-                                                >
-                                                    <Image
-                                                        src={(f) || "/"}
-                                                        layout="fill"
-                                                        objectFit="cover"
-                                                    />
-                                                </button>
+                        <div className="w-[60%] h-96">
+                            {
+                                    !(bigPreviewSrc) ? (
+                                        <div {...getPrevRootProps()} className="flex flex-col border-4 border-dashed border-[#3D3D3D] rounded-2xl h-96 content-center place-items-center align-middle py-12 px-20">
+                                            <input {...getPrevInputProps()}/>
+                                            <div className="relative flex h-52 mx-16 w-full place-items-center">
+                                                <Image
+                                                    src="/PhotoIcon.png"
+                                                    layout="fill"
+                                                    objectFit="contain"
+                                                />
                                             </div>
-                                        )
-                                    })
+                                            <div className="flex flex-col">
+                                                <span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-white">Drag & Drop Files</span>	
+                                                <span className="align-middle mx-auto text-[#AD61E8] font-bold">Or import png,svg,mp4,gif</span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="relative rounded-2xl overflow-hidden h-96 align-middle w-full">
+                                            <div className="z-10">
+                                                <Image
+                                                    src={bigPreviewSrc || "/noneya"}
+                                                    layout="fill"
+                                                    objectFit="cover"
+                                                />
+                                            </div>
+                                            <button className="bottom-0 right-0 absolute z-50 p-1 align-middle my-auto mx-auto basis-1/4 justify-center border-2" onClick={()=>{
+                                                setBigPreviewSrc(undefined);
+                                                setDelFileFuncArgs(undefined);
+                                                delFileFunc()
+                                            }}>
+                                                <TrashIcon className="flex h-12 w-12"/>
+                                            </button>
+                                        </div>
+                                    )
                                 }
-                                <button
-                                    className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]"
-                                    onClick={()=>{openProduct()}}
-                                >
-                                    <PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
-                                    <span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
-                                </button>
+                        </div>
+                        <div className="flex flex-col  w-[20%] flex-none flex-grow-0 h-full overflow-ellipsis ">
+                            <div className="top-0 bg-transparent backdrop-blur-lg ">
+                                <div className="flex flex-col mb-2 leading-tight items-end">
+                                    <h3 className="font-bold text-white text-xl">Upload Product</h3>
+                                    <span className="text-[#767676] mb-2">Formats: jpg, mp4, png</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-row">
+                                <div className="flex flex-col scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-scroll overflow-y-scroll w-full h-96 px-2 gap-y-3">
+                                    {
+                                        productFiles && productFiles?.map((f,fi) => {
+                                            return(
+                                                <div className="relative shrink-0 h-[100px] w-full rounded-lg overflow-hidden border-white border-2">
+                                                    <button
+                                                        onClick={()=>{
+                                                            setBigPreviewSrc((f));
+                                                            setDelFileFuncArgs(["deleteProductFile", f]);
+                                                        }}
+                                                    >
+                                                        <Image
+                                                            src={(f) || "/"}
+                                                            layout="fill"
+                                                            objectFit="cover"
+                                                        />
+                                                    </button>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                    <button
+                                        className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-24 w-full transition duration-200 hover:border-[#8E8E8E]"
+                                        onClick={()=>{openProduct()}}
+                                    >
+                                        <PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
+                                        <span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                    <form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct()}}>
-                        <div className="flex flex-col">
-                            <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
-                            <input
-                                className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
-                                placeholder="Enter Title"
-                                type="text"
-                                id="title"
-                                name="title"
-                            />
-                        </div>
-                        <div className="flex flex-col h-full">
-                            <label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
-                            <div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
-                                <div className="p-3 flex flex-col focus:outline-0 grow">
-                                    <input
-                                        className="px-3 pt-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg grow"
-                                        placeholder="0.00"
-                                        type="number"
-                                        min="0"
-                                        id="price"
-                                        name="price"
-                                        onChange={(e)=>{
-                                            setProdPrice(e.target.value)
-                                            setTakeHomeMoney((e.target.value*95)/100)
-                                        }}
-                                    />
-                                    <div className="px-3 text-[#8E8E8E] align-middle my-auto">{(takeHomeMoney || "0.00")}</div>
+                    
+                        <form className="flex flex-col gap-y-6 mb-32" onSubmit={()=>{ListProduct()}}>
+                            <div className="flex flex-col">
+                                <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
+                                <input
+                                    className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+                                    placeholder="Enter Title"
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                />
+                            </div>
+                            <div className="flex flex-col h-full">
+                                <label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
+                                <div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
+                                    <div className="p-3 flex flex-col focus:outline-0 grow">
+                                        <input
+                                            className="px-3 pt-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg grow"
+                                            placeholder="0.00"
+                                            type="number"
+                                            min="0"
+                                            id="price"
+                                            name="price"
+                                            onChange={(e)=>{
+                                                setProdPrice(e.target.value)
+                                                setTakeHomeMoney((e.target.value*95)/100)
+                                            }}
+                                        />
+                                        <div className="px-3 text-[#8E8E8E] align-middle my-auto">{(takeHomeMoney || "0.00")}</div>
+                                    </div>
+                                    <div className="flex flex-col w-1/6 h-full justify-center">
+                                        <Listbox value={currency} onChange={setCurrency}>
+                                            <div className="flex relative w-3/4 text-xl h-1/2 justify-end">
+                                                <Listbox.Button className="flex w-full h-full bg-[#242424] rounded-lg p-1 justify-center">{
+                                                    <div className="flex flex-row align-middle">
+                                                        <span className="my-auto align-middle">
+                                                            <Image
+                                                                layout="fixed"
+                                                                src={"/" + currency + "SvgLogo.svg"}
+                                                                height={16}
+                                                                width={16}
+                                                            />
+                                                        </span>
+                                                        <span className="align-middle my-auto mx-1 font-medium">{
+                                                            (currency === "usdc") ?
+                                                            currency.toUpperCase() :
+                                                            currency?.charAt(0).toUpperCase() + currency.slice(1)
+                                                        }</span>
+                                                        <ChevronDownIcon className="text-white h-5 w-5 my-auto align-middle"/>
+                                                    </div>
+                                                }</Listbox.Button>
+                                                <Listbox.Options className="w-full text-center absolute -bottom-6 transition rounded-b bg-[#242424]">
+                                                    {
+                                                        Object.keys(tokenlist).filter(tn => tn != currency).map((tokenname, index)=>{
+                                                            return (
+                                                                <Listbox.Option
+                                                                    key = {index}
+                                                                    value = {tokenname}
+                                                                    className={({active})=>{
+                                                                        `w-full py-1 ${active? "bg-[#2c2c2c] font-medium rounded-b" : ""}`
+                                                                    }}
+                                                                >
+                                                                    {({selected})=>{
+                                                                        return (
+                                                                            <div className="font-medium">{
+                                                                                (tokenname === "usdc") ?
+                                                                                (tokenname.toUpperCase()) :
+                                                                                (tokenname.charAt(0).toUpperCase() + tokenname.slice(1))
+                                                                            }</div>
+                                                                        )
+                                                                    }}
+                                                                </Listbox.Option>
+                                                            )
+                                                        })
+                                                    }
+                                                </Listbox.Options>
+                                            </div>
+                                        </Listbox>
+                                    </div>
                                 </div>
-                                <div className="flex flex-col w-1/6 h-full justify-center">
-                                    <Listbox value={currency} onChange={setCurrency}>
-                                        <div className="flex relative w-3/4 text-xl h-1/2 justify-end">
-                                            <Listbox.Button className="flex w-full h-full bg-[#242424] rounded-lg p-1 justify-center">{
-                                                <div className="flex flex-row align-middle">
-                                                    <span className="my-auto align-middle">
-                                                        <Image
-                                                            layout="fixed"
-                                                            src={"/" + currency + "SvgLogo.svg"}
-                                                            height={16}
-                                                            width={16}
-                                                        />
-                                                    </span>
-                                                    <span className="align-middle my-auto mx-1 font-medium">{
-                                                        (currency === "usdc") ?
-                                                        currency.toUpperCase() :
-                                                        currency?.charAt(0).toUpperCase() + currency.slice(1)
-                                                    }</span>
-                                                    <ChevronDownIcon className="text-white h-5 w-5 my-auto align-middle"/>
-                                                </div>
-                                            }</Listbox.Button>
-                                            <Listbox.Options className="w-full text-center absolute -bottom-6 transition rounded-b bg-[#242424]">
-                                                {
-                                                    Object.keys(tokenlist).filter(tn => tn != currency).map((tokenname, index)=>{
-                                                        return (
-                                                            <Listbox.Option
-                                                                key = {index}
-                                                                value = {tokenname}
-                                                                className={({active})=>{
-                                                                    `w-full py-1 ${active? "bg-[#2c2c2c] font-medium rounded-b" : ""}`
-                                                                }}
-                                                            >
-                                                                {({selected})=>{
-                                                                    return (
-                                                                        <div className="font-medium">{
-                                                                            (tokenname === "usdc") ?
-                                                                            (tokenname.toUpperCase()) :
-                                                                            (tokenname.charAt(0).toUpperCase() + tokenname.slice(1))
-                                                                        }</div>
-                                                                    )
-                                                                }}
-                                                            </Listbox.Option>
-                                                        )
-                                                    })
-                                                }
-                                            </Listbox.Options>
-                                        </div>
-                                    </Listbox>
+                                <div className="flex flex-row gap-x-1 align-middle mt-1">
+                                    <InformationCircleIcon className="h-5 w-5 text-yellow-400 my-auto" />
+                                    <span className="font-semibold text-[#767676] align-middle my-auto">Sale Fee: 5%</span>
                                 </div>
                             </div>
-                            <div className="flex flex-row gap-x-1 align-middle mt-1">
-                                <InformationCircleIcon className="h-5 w-5 text-yellow-400 my-auto" />
-                                <span className="font-semibold text-[#767676] align-middle my-auto">Sale Fee: 5%</span>
+                            <div className="flex flex-col">
+                                <label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
+                                <textarea
+                                    className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
+                                    id="description"
+                                    name="description"
+                                    placeholder="What are you selling?"
+                                    onChange={(e)=>{setDescription(e.target.value)}}
+                                />
                             </div>
-                        </div>
-                        <div className="flex flex-col">
-                            <label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
-                            <textarea
-                                className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
-                                id="description"
-                                name="description"
-                                placeholder="What are you selling?"
-                                onChange={(e)=>{setDescription(e.target.value)}}
-                            />
-                        </div>
-                        <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
-                            <input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
-                        </div>
-                        </form>
+                            <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
+                                <input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
+                            </div>
+                            </form>
+                    </div>
                 </div>
-            </div>
             </main>
         </div>
 		
