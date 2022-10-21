@@ -8,22 +8,11 @@ import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, 
 import { useDropzone } from "react-dropzone";
 
 
-const token_addresses = {
-	mainnet: {
-		"solana": "11111111111111111111111111111111",
-		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-	},
-	devnet: {
-		"solana": "11111111111111111111111111111111",
-		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
-	}
-}
-
 export function EditPhysicalProductModal(props){
     const {ChangeQuantity, ChangeAvailability, ChangePrice, SetMedia, SetInfo} = PhysicalProductFunctionalities();
     const {productClient} = useContext(ProductClientCtx);
 
-    const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
+    
 
     const [newQuantity, setNewQuantity] = useState(0);
     const [newAvailability, setNewAvailability] = useState(false);

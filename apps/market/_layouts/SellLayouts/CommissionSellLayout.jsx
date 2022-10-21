@@ -15,16 +15,6 @@ import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 
-const token_addresses = {
-	mainnet: {
-		"solana": "11111111111111111111111111111111",
-		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-	},
-	devnet: {
-		"solana": "11111111111111111111111111111111",
-		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
-	}
-}
 
 export function CommissionUploadForm(props) {
     const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -43,17 +33,23 @@ export function CommissionUploadForm(props) {
 			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("commission"));
 			if(vc && vc.data){
 				setVendorCommissionCatalog(vc);
+			}else{
+				setVendorCommissionCatalog()
 			}
 		}catch(e){
-            console.log("init listing render err: ", e)
+            console.log("init listing render err: ", e);
+			setVendorCommissionCatalog()
 		}
 		try{
 			let vtx = await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("commission"));
 			if(vtx && vtx.data){
 				setVendorCommissionTx(vtx);
+			}else{
+				setVendorCommissionTx()
 			}
 		}catch(e){
-			console.log("init logs render err: ", e)	
+			console.log("init logs render err: ", e);
+			setVendorCommissionTx()
 		}
 	}, [transactionClient, productClient, wallet && wallet.connected])
 

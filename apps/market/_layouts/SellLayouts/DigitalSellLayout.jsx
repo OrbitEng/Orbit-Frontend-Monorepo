@@ -14,16 +14,6 @@ import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
 
-const token_addresses = {
-	mainnet: {
-		"solana": "11111111111111111111111111111111",
-		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-	},
-	devnet: {
-		"solana": "11111111111111111111111111111111",
-		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
-	}
-}
 
 export function DigitalUploadForm(props) {
     const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -42,7 +32,7 @@ export function DigitalUploadForm(props) {
 	const [vendorDigitalCatalog, setVendorDigitalCatalog] = useState();
     const [vendorDigitalTx, setVendorDigitalTx] = useState();
 
-	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
+	
 	
 	useEffect(async ()=>{
         if(!(productClient && productClient.wallet.publicKey && transactionClient && transactionClient.wallet.publicKey && wallet.connected))return;
@@ -50,24 +40,26 @@ export function DigitalUploadForm(props) {
 			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("digital"));
 			if(vc && vc.data){
 				setVendorDigitalCatalog(vc)
-			}
+			}else{
+                setVendorDigitalCatalog()
+            }
 		}catch(e){
-            console.log("init listing render err: ", e)
+            console.log("init listing render err: ", e);
+            setVendorDigitalCatalog();
 		}
         try{
             let vtx = await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("digital"));
             if(vtx && vtx.data){
                 setVendorDigitalTx(vtx)
+            }else{
+                setVendorDigitalTx()
             }
         }catch(e){
-            console.log("init logs render err: ", e)
+            console.log("init logs render err: ", e);
+            setVendorDigitalTx();
         }
 	}, [transactionClient, productClient, wallet && wallet.connected]);
 
-	const CreateDigitalCatalog = useCallback(()=>{
-		CreateDigitalListingsCatalog();
-		setVendorDigitalCatalog(true);
-	},[])
 
 	//////////////////////////////////////////////////
 	// Functions for managing product preview images

@@ -16,16 +16,6 @@ import Link from "next/link";
 
 import { useWallet } from "@solana/wallet-adapter-react";
 
-const token_addresses = {
-	mainnet: {
-		"solana": "11111111111111111111111111111111",
-		"usdc": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-	},
-	devnet: {
-		"solana": "11111111111111111111111111111111",
-		"usdc":"4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"
-	}
-}
 
 export function PhysicalUploadForm(props) {
     const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -44,10 +34,11 @@ export function PhysicalUploadForm(props) {
     const [listRecent, setListRecent] = useState(false);
 	
 	const [files, setFiles] = useState([]);
+    const [fileName, setFileNames] = useState([]);
     const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
 
-	const [vendorPhysicalListings, setVendorPhysicalListings] = useState();
-	const [vendorPhysicalTx, setVendorPhysicalTx] = useState();
+	const [vendorPhysicalListings, setVendorPhysicalListings] = useState("");
+	const [vendorPhysicalTx, setVendorPhysicalTx] = useState("");
     
 
 	useEffect(async()=>{
@@ -56,21 +47,29 @@ export function PhysicalUploadForm(props) {
 			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"));
 			if(vc && vc.data){
 				setVendorPhysicalListings(vc)
-			}
+			}else{
+                setVendorPhysicalListings()
+            }
+            
 		}catch(e){
             console.log("init listing render err: ", e)
+            setVendorPhysicalListings()
 		}
         try{
             let vtx = await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("physical"));
             if(vtx && vtx.data){
                 setVendorPhysicalTx(vtx)
+            }else{
+                setVendorPhysicalTx()
             }
+            
         }catch(e){
             console.log("init logs render err: ", e)
+            setVendorPhysicalTx()
 		}
 	},[productClient, transactionClient, wallet.connected])
 
-	const tokenlist = token_addresses[process.env.NEXT_PUBLIC_CLUSTER_NAME];
+	
 
 	const onDrop = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
@@ -79,6 +78,8 @@ export function PhysicalUploadForm(props) {
                 setFiles(cf => [...cf, afr.result]);
             }
             afr.readAsDataURL(fin);
+
+            setFileNames(fn => [...fn, fin.name+fin.type]);
         });
 
         const bfr = new FileReader()
@@ -95,6 +96,7 @@ export function PhysicalUploadForm(props) {
 			return;
 		}
 		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)]);
+        setFileNames(fn => [...fn.slice(0,index), ...fn.slice(index+1)]);
         
         if(bigPreviewSrc == filein) setBigPreviewSrc(undefined);
 	}
@@ -169,8 +171,8 @@ export function PhysicalUploadForm(props) {
                                             return(
                                                 <div className="flex flex-row flex-none w-full bg-[#171717] rounded-full py-3 px-2 justify-around truncate" key={f.name + fi}>
                                                     <span className="flex flex-none justify-center flex-row gap-x-1 text-white font-semibold basis-3/4 align-middle mx-auto my-auto truncate" onClick={()=>{setBigPreviewSrc(f)}}>
-                                                        Uploaded file:{" "}
-                                                        <span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">{f.name}{f.type}</span>
+                                                        Uploaded file:
+                                                        <span className="font-semibold basis-1/2 flex-none text-[#AD61E8] truncate">{fileName[fi]}</span>
                                                     </span>
                                                     <button className="flex flex-grow-0 p-1 align-middle my-auto mx-auto basis-1/4 justify-center" onClick={()=>{
                                                         deleteFile(f);
