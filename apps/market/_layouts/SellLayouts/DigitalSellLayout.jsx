@@ -165,7 +165,7 @@ export function DigitalUploadForm(props) {
                     </button>
                     </Link>
                     
-                    <div className="flex flex-row justify-between mb-12 overflow-hidden text-ellipsis gap-x-4 w-[100vh] h-full border-2 place-items-center">
+                    <div className="flex flex-row justify-between mb-12 overflow-hidden text-ellipsis gap-x-4 w-[100vh] h-full place-items-center">
                         <div className="h-full w-[20%]">
                             <div className="flex flex-col mb-2 leading-tight">
                                 <h3 className="font-bold text-white text-xl">Upload Preview</h3>
