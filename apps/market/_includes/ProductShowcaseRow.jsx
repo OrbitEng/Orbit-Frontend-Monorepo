@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { 
 	ProductDisplayCardHome,
 	EmptyProductDisplayCardHome
-} from "@includes/components/ProductDisplayCards";
+} from "@includes/components/cards/ProductDisplayCards";
 
 import Carousel from "react-multi-carousel";
 import 'react-multi-carousel/lib/styles.css'

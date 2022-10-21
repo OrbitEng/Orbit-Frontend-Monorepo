@@ -5,7 +5,7 @@ import { LargeExplore } from "@includes/ProductExplorer";
 
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import EditProfileButton from "@includes/components/EditProfileButton";
+import EditProfileButton from "@includes/components/buttons/EditProfileButton";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from "@functionalities/Products";

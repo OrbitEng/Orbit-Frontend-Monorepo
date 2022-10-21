@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { BoltIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import Image from "next/image";
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
-import PosModal from './PosModal';
+import PosModal from './components/modals/PosModal';
 import CartCtx from '@contexts/CartCtx';
 
 export default function CartSideMenu(props) {

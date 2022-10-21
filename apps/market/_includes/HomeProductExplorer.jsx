@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useContext } from "react";
-import { ProductDisplayCardHome } from "./components/ProductDisplayCards";
+import { ProductDisplayCardHome } from "./components/cards/ProductDisplayCards";
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';

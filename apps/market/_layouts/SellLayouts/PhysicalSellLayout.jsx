@@ -9,7 +9,7 @@ import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
 import {PhysicalProductFunctionalities} from "@functionalities/Products";
-import { CatalogWarnModal } from "@includes/components/InitListingsModal";
+import { CatalogWarnModal } from "@includes/components/modals/InitListingsModal";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import Link from "next/link";

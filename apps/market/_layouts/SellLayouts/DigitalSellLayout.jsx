@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
-import { CatalogWarnModal } from "@includes/components/InitListingsModal";
+import { CatalogWarnModal } from "@includes/components/modals/InitListingsModal";
 import {DigitalProductFunctionalities} from "@functionalities/Products";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";

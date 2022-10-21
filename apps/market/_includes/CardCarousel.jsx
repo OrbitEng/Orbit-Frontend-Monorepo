@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { Rerousel } from 'rerousel'
-import { BetaCard } from '@includes/components/LargeCards'
+import { BetaCard } from '@includes/components/cards/LargeCards'
 import { Transition } from '@headlessui/react';
 
 export function HomeBanner(props) {

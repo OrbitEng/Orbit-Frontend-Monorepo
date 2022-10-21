@@ -29,9 +29,9 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
-import CreateAccountButton from '@includes/components/CreateAccountButton';
-import ProfileButton from '@includes/components/ProfileButton';
-import CartSideMenu from './components/CartSideMenu';
+import CreateAccountButton from '@includes/components/buttons/CreateAccountButton';
+import ProfileButton from '@includes/components/buttons/ProfileButton';
+import CartSideMenu from './CartSideMenu';
 import CartCtx from '@contexts/CartCtx';
 
 export function HomeHeader(props) {

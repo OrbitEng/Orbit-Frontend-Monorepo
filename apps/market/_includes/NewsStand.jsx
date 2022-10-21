@@ -4,11 +4,11 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 // this is just a temp placeholder
 // we want to get the NewsCards here instead
-import { ProductDisplayCardHome } from "@includes/components/ProductDisplayCards";
+import { ProductDisplayCardHome } from "@includes/components/cards/ProductDisplayCards";
 
 import Carousel from "react-multi-carousel";
 import 'react-multi-carousel/lib/styles.css'
-import NewsCard from "./components/NewsCards";
+import NewsCard from "./components/cards/NewsCards";
 
 const responsive = {
 	desktop: {

@@ -1,5 +1,5 @@
 import { HomeBanner } from '@includes/CardCarousel'
-import { ProductDisplayCard } from '@includes/components/ProductDisplayCards'
+import { ProductDisplayCard } from '@includes/components/cards/ProductDisplayCards'
 import { PageSearchBar, HeaderSearchBar } from '@includes/components/SearchBar'
 import { HomeHeader } from '@includes/MarketHeader'
 import ProductShowcaseRow from '@includes/ProductShowcaseRow'
