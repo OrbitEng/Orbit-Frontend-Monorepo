@@ -28,7 +28,7 @@ const responsive = {
 	}
 };
 
-export function DigitalProductDisplay(props) {
+export function DigitalProductLayout(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
 
 	return(
@@ -162,28 +162,6 @@ export function DigitalProductDisplay(props) {
 					</p>
 				</div>
 			</div>
-		</div>
-	)
-}
-
-export function DigitalProductLayout(props){
-	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
-
-    return(
-		<div className="w-full min-h-screen bg-transparent">
-			<Head>
-				<title>Orbit</title>
-				<link rel="icon" href="orbit.png" />
-			</Head>
-			<main className="bg-[url('/bgWallpaper.png')]">
-				<HomeHeader headerMiddle={searchBar}/>
-				<div className="max-w-7xl align-center mx-auto">
-					<DigitalProductDisplay
-						prodInfo={props.product}
-					/>
-				</div>
-				<MainFooter />
-			</main>
 		</div>
 	)
 }

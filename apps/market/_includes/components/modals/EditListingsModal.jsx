@@ -97,6 +97,7 @@ export function EditPhysicalProductModal(props){
                 onClick={openModal}
                 className="rounded-full h-fit mt-2 p-2 flex bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747]"
             >
+                <span className='px-2 text-white '>Edit Listing</span>
                 <PencilIcon className="text-white h-4 w-4 my-auto stroke-2"/>
             </button>
             <Transition appear show={isOpen} as={Fragment}>

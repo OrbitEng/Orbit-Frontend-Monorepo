@@ -1,5 +1,8 @@
 import { useRouter } from "next/router";
-
+import Head from "next/head";
+import { HeaderSearchBar } from "@includes/components/SearchBar";
+import { HomeHeader } from "@includes/MarketHeader";
+import { MainFooter } from "@includes/Footer";
 
 import {DigitalProductLayout} from "@layouts/ProductLayouts/DigitalProductLayout";
 import {CommissionProductLayout} from "@layouts/ProductLayouts/CommissionProductLayout";
@@ -137,10 +140,20 @@ export default function ProductsPage(props) {
 	// here I'm just using the digital layout because it's the same for pretty much everything...
 	// todo: add nfts later
 	return (
-		<>
-			{((productType == "physical") && <PhysicalProductLayout id={productId} product={prod ? prod : dummyCommission} />) ||
-			((productType == "digital") && <DigitalProductLayout id={productId} product={prod ? prod : dummyCommission} />) ||
-			(productType == "commission") && <CommissionProductLayout id={productId} product={prod ? prod : dummyCommission} /> }
-		</>
+		<div className="w-full min-h-screen bg-transparent">
+			<Head>
+				<title>Orbit</title>
+				<link rel="icon" href="orbit.png" />
+			</Head>
+			<main className="bg-[url('/bgWallpaper.png')]">
+				<HomeHeader headerMiddle={HeaderSearchBar}/>
+				<div className="max-w-7xl align-center mx-auto">
+					{((productType == "physical") && <PhysicalProductLayout prodInfo={prod ? prod : dummyCommission} />) ||
+					((productType == "digital") && <DigitalProductLayout prodInfo={prod ? prod : dummyCommission} />) ||
+					(productType == "commission") && <CommissionProductLayout prodInfo={prod ? prod : dummyCommission} /> }
+				</div>
+				<MainFooter />
+			</main>
+		</div>
 	)
 }

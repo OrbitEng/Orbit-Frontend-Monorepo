@@ -1,12 +1,8 @@
 import { useState, useContext, useEffect } from "react";
-import Head from "next/head";
-import { HeaderSearchBar } from "@includes/components/SearchBar";
-import { HomeHeader } from "@includes/MarketHeader";
-import { MainFooter } from "@includes/Footer";
 import Carousel from "react-multi-carousel"
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import Image from 'next/image'
-import { EditPhysicalProductModal } from "@includes/components/EditListingsModal";
+import { EditPhysicalProductModal } from "@includes/components/modals/EditListingsModal";
 
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import 'react-multi-carousel/lib/styles.css'
@@ -29,7 +25,7 @@ const responsive = {
 	}
 };
 
-export function PhysicalProductDisplay(props) {
+export function PhysicalProductLayout(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
 	const {userAccount} = useContext(UserAccountCtx)
 
@@ -126,12 +122,6 @@ export function PhysicalProductDisplay(props) {
 				<div className="flex flex-col mt-10 gap-y-2" >
 					<div className="flex flex-row w-full h-full content-center">
 						<h1 className="font-bold text-4xl text-white ml-3">{props.prodInfo?.data?.metadata.info.name || "NULL PRODUCT" }</h1>
-						{
-							isOwner  && 
-							<div className="">
-								<EditPhysicalProductModal selectedProduct={props.prodInfo}/>
-							</div>
-						}
 					</div>
 					<div className="flex flex-row gap-3">
 						<div className="rounded-full font-bold bg-[#261832] text-[#72478C] px-3 py-2">
@@ -154,12 +144,30 @@ export function PhysicalProductDisplay(props) {
 						</span>
 					</div>
 				</div>
+				<div className="flex flex-col bg-[#484848] bg-opacity-10 rounded-3xl p-10 w-full bottom-0 overflow-hidden">
+					<button
+						className="text-xl text-white font-bold flex flex-row border-b-[1px] border-[#636363] w-full"
+						onClick={() => {setDescriptionOpen(!descriptionOpen)}}
+					>
+						Description
+						{
+							(props.prodInfo?.data?.metadata?.info?.description.length > 218) && 
+							<ChevronUpIcon className={"h-4 w-4 my-auto ml-auto justify-self-end stroke-[2px] transition translate" + (descriptionOpen ? " rotate-180" : " rotate-0") } />
+						}
+					</button>
+					<p className="text-[#838383] whitespace-pre-line transition w-full">
+						{
+							// this is super scuffed
+							descriptionOpen ? props.prodInfo?.data?.metadata?.info?.description : props.prodInfo?.data?.metadata?.info?.description?.slice(0,218) + (props.prodInfo?.data?.metadata?.info?.description.length > 218 ? "..." : "")
+						}
+					</p>
+				</div>
 				<div className="flex flex-row w-full justify-center mt-6">
 					{
 						// FIXME(millionz): eventually more types will come along and break this
-						props.prodInfo?.type === "commission" ? (
+						isOwner ? (
 							<div className="flex flex-row justify-center">
-								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]">✉️ Request</button>
+								<EditPhysicalProductModal selectedProduct={props.prodInfo}/>
 							</div> 
 						) : (
 							<div className="flex flex-row gap-x-4">
@@ -169,43 +177,7 @@ export function PhysicalProductDisplay(props) {
 						) 
 					}
 				</div>
-				<div className="flex flex-col bg-[#484848] bg-opacity-10 rounded-3xl p-10 w-full bottom-0 overflow-hidden">
-					<button
-						className="text-xl text-white font-bold flex flex-row border-b-[1px] border-[#636363] w-full"
-						onClick={() => {setDescriptionOpen(!descriptionOpen)}}
-					>
-						Description
-						<ChevronUpIcon className={"h-4 w-4 my-auto ml-auto justify-self-end stroke-[2px] transition translate" + (descriptionOpen ? " rotate-180" : " rotate-0") } />
-					</button>
-					<p className="text-[#838383] whitespace-pre-line transition w-full">
-						{
-							// this is super scuffed
-							descriptionOpen ? props.prodInfo?.description : props.prodInfo?.description?.slice(0,218) + "..." 
-						}
-					</p>
-				</div>
 			</div>
-		</div>
-	)
-}
-
-export function PhysicalProductLayout(props) {
-	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
-	return(
-		<div className="w-full min-h-screen bg-transparent">
-			<Head>
-				<title>Orbit</title>
-				<link rel="icon" href="orbit.png" />
-			</Head>
-			<main className="bg-[url('/bgWallpaper.png')]">
-				<HomeHeader headerMiddle={searchBar}/>
-				<div className="max-w-7xl align-center mx-auto">
-					<PhysicalProductDisplay
-						prodInfo={props.product}
-					/>
-				</div>
-				<MainFooter />
-			</main>
 		</div>
 	)
 }

@@ -27,7 +27,7 @@ import Image from 'next/image'
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import 'react-multi-carousel/lib/styles.css'
 
-export function CommissionProductDisplay(props) {
+export function CommissionProductLayout(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
 	console.log(props);
 
@@ -162,27 +162,6 @@ export function CommissionProductDisplay(props) {
 					</p>
 				</div>
 			</div>
-		</div>
-	)
-}
-
-export function CommissionProductLayout(props) {
-	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
-	return(
-		<div className="w-full min-h-screen bg-transparent">
-			<Head>
-				<title>Orbit</title>
-				<link rel="icon" href="orbit.png" />
-			</Head>
-			<main className="bg-[url('/bgWallpaper.png')]">
-				<HomeHeader headerMiddle={searchBar}/>
-				<div className="max-w-7xl align-center mx-auto">
-					<CommissionProductDisplay
-						prodInfo={props.product}
-					/>
-				</div>
-				<MainFooter />
-			</main>
 		</div>
 	)
 }
