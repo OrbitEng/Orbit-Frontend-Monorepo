@@ -10,6 +10,21 @@ import { ClearBgButtonSmall } from "../buttons/CustomRadioButton";
 import ShippingCtx from "@contexts/ShippingCtx";
 import PythClientCtx from "@contexts/PythClientCtx";
 
+import { PublicKey } from "@solana/web3.js";
+const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
+
+function getAssociatedTokenAddress(
+    mint,
+    owner
+){
+    const address = PublicKey.findProgramAddressSync(
+        [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+        ASSOCIATED_TOKEN_PROGRAM_ID
+    )[0];
+    return address;
+}
+
 export default function PosModal(props) {
 	let wallet = useWallet();
 	let connection = useConnection();
@@ -17,7 +32,8 @@ export default function PosModal(props) {
 	const {pythClient} = useContext(PythClientCtx);
 
 	const [expanded, setExpanded] = useState(true);
-	const [balance, setBalance] = useState(0);
+	const [solBalance, setSolBalance] = useState(0);
+	const [usdcBalance, setUsdcBalance] = useState(0);
 	const [openShippingForm, setOpenShippingForm] = useState(false);
 	const [currency, setCurrency] = useState("solana")
 
@@ -30,16 +46,47 @@ export default function PosModal(props) {
 	const [zip, setZip] = useState(shipping?.zip || "");
 	const [country, setCountry] = useState(shipping?.country || "");
 	const [state, setState] = useState(shipping?.state || "");
+	const [solPrice, setSolPrice] = useState();
+
+	const [usdcAmountDue, setUsdcAmountDue] = useState(0);
+	const [solAmountDue, setSolAmountDue] = useState(0);
+
+	useEffect(()=>{
+		setUsdcAmountDue(Number(props.cart.total.toFixed(6)));
+		setSolAmountDue(Number((props.cart.total * (solPrice)).toFixed(9)));
+	},[props.cart, props.cart.total])
+
+	useEffect(async ()=>{
+		if(!pythClient)return;
+		if(props.solPrice){
+			setSolPrice(props.solPrice)
+		}else{
+			setSolPrice((await pythClient.GetSolUsd()).aggregate.price);
+		}
+	},[pythClient, props.solPrice])
 
 	useEffect(async () => {
 		try {
-			setBalance(await connection.connection.getBalance(wallet.publicKey))
+			setSolBalance(await connection.connection.getBalance(wallet.publicKey));
 		} catch(e) {
 			console.log(e)
 		}
 
+		try{
+			let usdcbal = await connection.connection.getTokenAccountBalance(
+				getAssociatedTokenAddress(
+					new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"),
+					wallet.publicKey
+				)
+			);
+			setUsdcBalance(usdcbal.value.uiAmount.toString())
+		}catch(e){
+			console.log(e);
+			setUsdcBalance(0);
+		}
+
 		console.log(await pythClient.GetEurUsd())
-	}, [connection])	
+	}, [connection, wallet.connected])	
 	
 	return(
 		<Transition appear show={props.openPos} as={Fragment}>
@@ -93,11 +140,11 @@ export default function PosModal(props) {
 									</button>
 								</div>
 							</div>
-							<div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 "+(expanded ? "h-80 overflow-auto" : "h-[118px] overflow-hidden")}>
+							<div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 "+(expanded ? "h-80 scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-auto" : "h-[118px] overflow-hidden")}>
 							{
 								props?.cart?.items?.map((item, index) => {
 									return(
-										<div key={index} className="flex flex-row rounded-md justify-between my-2 h-[104px]">
+										<div key={index} className="flex flex-row rounded-md justify-between my-2 h-[104px] px-2">
 											<div className="flex flex-row relative flex-grow  justify-items-center">
 												<div className="relative flex flex-col h-full rounded-md mr-3 justify-center">
 													<button 
@@ -126,8 +173,8 @@ export default function PosModal(props) {
 												</div>
 											</div>
 											<div className="flex flex-col h-full justify-self-end justify-center text-center w-fit truncate ">
-												<span className="text-white font-bold -mb-1 truncate">{(item.data.metadata.price/LAMPORTS_PER_SOL).toFixed(9) + " SOL"}</span>
-												<span className="text-white font-bold text-xs truncate">{"$----"}</span>
+												<span className="text-white font-bold -mb-1 truncate">{(item.data.metadata.price/solPrice) + " SOL"}</span>
+												<span className="text-white font-bold text-xs truncate">${item.data.metadata.price.toNumber()}</span>
 											</div>
 										</div>
 									)
@@ -250,17 +297,63 @@ export default function PosModal(props) {
 							<div className="rounded-lg flex flex-col mt-4 justify-between px-8 border-[1px] border-[#5F5F5F] text-white font-bold divide-y-[1px] divide-[#5F5F5F]">
 								<div className="flex flex-row justify-between py-3">
 									<span className="my-auto">Balance:</span>
-									<div className="flex flex-col">
-										<span>{(balance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
-										<span className="text-xs font-normal">$----</span>
-									</div>
+									
+										{
+											currency == "solana" ? 
+												<div className="flex flex-col">
+													<span>{(solBalance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
+													<span className="text-xs font-normal">${usdcBalance}</span>
+												</div>
+											:
+												<div className="flex flex-col">
+													<span>${usdcBalance}</span>
+													<span className="text-xs font-normal">{(solBalance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
+												</div>
+										}
+									
 								</div>
 								<div className="flex flex-row justify-between py-3">
 									<span className="my-auto">Amount Due:</span>
-									<div className="flex flex-col">
-										<span>{((props.cart.total/LAMPORTS_PER_SOL).toFixed(9) || 0) + " SOL"}</span>
-										<span className="text-xs font-normal">$----</span>
-									</div>
+									{
+										currency == "solana" ? 
+											<div className="flex flex-col w-full items-end">
+												<div className="flex flex-row">
+													<input
+														type="number"
+														value={solAmountDue || 0}
+														onChange={(e)=>{
+															let val = (Number(e.target.value)).toFixed(9);
+															setSolAmountDue(Number(val));
+															setUsdcAmountDue(Number((Number(val)/solPrice).toFixed(6)))
+														}}
+														className="bg-transparent text-end pr-2"
+													/>
+													<span>SOL</span>
+												</div>
+												<span className="text-xs font-normal">${usdcAmountDue}</span>
+											</div>
+											:
+											<div className="flex flex-col w-full items-end">
+												<div className="flex flex-row w-full justify-end">
+													<div className="">
+														$
+													</div>
+													<div>
+														<input
+															type="number"
+															value={usdcAmountDue || 0}
+															onChange={(e)=>{
+																let val = (Number(e.target.value)).toFixed(6);
+																setUsdcAmountDue(Number(val));
+																setSolAmountDue(Number((Number(val)*solPrice).toFixed(9)))
+															}}
+															className={"bg-transparent text-start w-20"}
+														/>
+													</div>
+												</div>
+												<span className="text-xs font-normal">{(solAmountDue.toFixed(9) || 0) + " SOL"}</span>
+											</div>
+									}
 								</div>
 							</div>
 							<button
