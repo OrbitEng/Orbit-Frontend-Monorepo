@@ -8,7 +8,7 @@ import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@sola
 import { useCallback, useContext, useEffect } from 'react';
 
 const {DigitalMarketClient, PhysicalMarketClient, CommissionMarketClient, DisputeClient, MarketAccountsClient, ProductClient, TransactionClient} = require("orbit-clients");
-const {BundlrClient, ChatClient} = require("data-transfer-clients");
+const {BundlrClient, ChatClient, PythClient} = require("data-transfer-clients");
 
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
@@ -32,7 +32,7 @@ import CreateAccountButton from '@includes/components/buttons/CreateAccountButto
 import ProfileButton from '@includes/components/buttons/ProfileButton';
 import CartSideMenu from './CartSideMenu';
 import CartCtx from '@contexts/CartCtx';
-import { PublicKey } from '@solana/web3.js';
+import PythClientCtx from '@contexts/PythClientCtx';
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
@@ -40,16 +40,17 @@ export function HomeHeader(props) {
 	let {connection} = useConnection();
 	let wallet = useWallet();
 
-	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
-	const {disputeProgramClient, setDisputeProgramClient} = useContext(DisputeProgramCtx);
-	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
-	const {commissionMarketClient, setCommissionMarketClient} = useContext(CommissionMarketCtx);
-	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
-	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
-	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
-	const {productClient, setProductClient} = useContext(ProductClientCtx);
-	const {transactionClient, setTransactionClient} = useContext(TransactionClientCtx);
-	const {userAccount, setUserAccount} = useContext(UserAccountCtx);
+	const {setDigitalMarketClient} = useContext(DigitalMarketCtx);
+	const {setDisputeProgramClient} = useContext(DisputeProgramCtx);
+	const {setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
+	const {setCommissionMarketClient} = useContext(CommissionMarketCtx);
+	const {setMarketAccountsClient} = useContext(MarketAccountsCtx);
+	const {setBundlrClient} = useContext(BundlrCtx);
+	const {setMatrixClient} = useContext(MatrixClientCtx);
+	const {setProductClient} = useContext(ProductClientCtx);
+	const {setTransactionClient} = useContext(TransactionClientCtx);
+	const {setUserAccount} = useContext(UserAccountCtx);
+	const {setPythClient} = useContext(PythClientCtx)
 
 	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
 
@@ -64,6 +65,8 @@ export function HomeHeader(props) {
 		if(!(wallet && wallet.publicKey)) {
 			temp_wallet = {};
 		}
+
+		setPythClient(new PythClient(connection, process.env.NEXT_PUBLIC_CLUSTER_NAME))
 
 		const provider =  new anchor.AnchorProvider(connection, temp_wallet, anchor.AnchorProvider.defaultOptions());
 

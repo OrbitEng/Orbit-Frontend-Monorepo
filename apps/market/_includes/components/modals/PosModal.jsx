@@ -6,13 +6,16 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 
 import ShippingCtx from "@contexts/ShippingCtx";
+import PythClientCtx from "@contexts/PythClientCtx";
 
 export default function PosModal(props) {
 	let wallet = useWallet();
 	let connection = useConnection();
+	const {shipping, setShipping} = useContext(ShippingCtx)
+	const {pythClient} = useContext(PythClientCtx);
+
 	const [balance, setBalance] = useState(0);
 	const [openShippingForm, setOpenShippingForm] = useState(false);
-	const {shipping, setShipping} = useContext(ShippingCtx)
 
 	// Shipping fields
 	const [firstName, setFirstName] = useState(shipping?.firstName || "");
@@ -30,6 +33,8 @@ export default function PosModal(props) {
 		} catch(e) {
 			console.log(e)
 		}
+
+		console.log(await pythClient.GetEurUsd())
 	}, [connection])	
 	
 	return(

@@ -38,6 +38,7 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
+import PythClientCtx from '@contexts/PythClientCtx';
 import ProductClientCtx from '@contexts/ProductClientCtx';
 import TransactionClientCtx from '@contexts/TransactionClientCtx';
 import UserAccountCtx from '@contexts/UserAccountCtx';
@@ -63,6 +64,7 @@ function MyApp({ Component, pageProps }) {
   const [bundlrClient, setBundlrClient] = useState();
   const [matrixClient, setMatrixClient] = useState();
   const [userAccount, setUserAccount] = useState();
+  const [pythClient, setPythClient] = useState();
 
   const [ productCache, setProductCache] = useState();
   const [ vendorCache, setVendorCache ] = useState();
@@ -140,15 +142,17 @@ function MyApp({ Component, pageProps }) {
                                 <TransactionClientCtx.Provider value={{transactionClient, setTransactionClient}}>
                                   <UserAccountCtx.Provider value={{userAccount, setUserAccount}}>
                                     <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
-                                      <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
-                                        <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
-                                          <ShippingCtx.Provider value={{shipping, setShipping}}>
-                                            <CartCtx.Provider value={{cart, setCart}} >
-                                              <Component {...pageProps} />
-                                            </CartCtx.Provider>
-                                          </ShippingCtx.Provider>
-                                        </VendorCacheCtx.Provider>
-                                      </ProductCacheCtx.Provider>
+                                      <PythClientCtx.Provider value={{pythClient, setPythClient}}>
+                                        <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
+                                          <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
+                                            <ShippingCtx.Provider value={{shipping, setShipping}}>
+                                              <CartCtx.Provider value={{cart, setCart}} >
+                                                <Component {...pageProps} />
+                                              </CartCtx.Provider>
+                                            </ShippingCtx.Provider>
+                                          </VendorCacheCtx.Provider>
+                                        </ProductCacheCtx.Provider>
+                                      </PythClientCtx.Provider>
                                     </BundlrCtx.Provider>
                                   </UserAccountCtx.Provider>
                                 </TransactionClientCtx.Provider>
