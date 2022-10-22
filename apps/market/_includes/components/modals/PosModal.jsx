@@ -3,7 +3,9 @@ import { Fragment, useState, useEffect, useContext } from "react"
 import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon, PencilIcon, TrashIcon, PlusIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import Image from "next/image"
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { ClearBgButtonSmall } from "../buttons/CustomRadioButton";
 
 import ShippingCtx from "@contexts/ShippingCtx";
 import PythClientCtx from "@contexts/PythClientCtx";
@@ -14,8 +16,10 @@ export default function PosModal(props) {
 	const {shipping, setShipping} = useContext(ShippingCtx)
 	const {pythClient} = useContext(PythClientCtx);
 
+	const [expanded, setExpanded] = useState(true);
 	const [balance, setBalance] = useState(0);
 	const [openShippingForm, setOpenShippingForm] = useState(false);
+	const [currency, setCurrency] = useState("solana")
 
 	// Shipping fields
 	const [firstName, setFirstName] = useState(shipping?.firstName || "");
@@ -84,10 +88,12 @@ export default function PosModal(props) {
 							<div className="flex flex-col px-4 py-4">
 								<div className="flex flex-row justify-between align-middle">
 									<span className="my-auto text-xl font-bold text-[#E7E7E7]">{"ITEMS(" + (props?.cart?.items?.length || 0) + ")"}</span>
-									<ChevronDownIcon className="text-[#797979] h-4 w-4 stroke-[4px]" />
+									<button onClick={()=>{setExpanded(!expanded)}}>
+										<ChevronUpIcon className={"text-[#797979] h-4 w-4 stroke-[4px]" + (expanded ? " rotate-180" : " rotate-0") } />
+									</button>
 								</div>
 							</div>
-							<div className="w-full h-80 max-h-md overflow-auto border-y-[0.5px] border-[#535353] px-4 py-3 ">
+							<div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 "+(expanded ? "h-80 overflow-auto" : "h-[118px] overflow-hidden")}>
 							{
 								props?.cart?.items?.map((item, index) => {
 									return(
@@ -128,6 +134,37 @@ export default function PosModal(props) {
 								})
 							}
 							</div>
+							
+							<div className="flex flex-col mt-8 ">
+								<div className="text-center text-[#A3A3A3] font-bold text-2xl ">
+									Payment Method
+								</div>
+								<div className="rounded-lg flex flex-row px-4 text-white h-12 ">
+									<div className="w-full flex flex-row justify-center items-center h-full gap-x-2"  onClick={()=>{setCurrency("usdc")}}>
+										<ClearBgButtonSmall
+											checked={currency == "usdc"}
+										/>
+										<Image
+											src="/usdcSvgLogo.svg"
+											width={30}
+											height={30}
+											objectFit="contain"
+										/>
+									</div>
+									<div className="w-full flex flex-row justify-center items-center h-full gap-x-2"  onClick={()=>{setCurrency("solana")}}>
+										<ClearBgButtonSmall
+											checked={currency == "solana"}
+										/>
+										<Image
+											src="/solanaSvgLogo.svg"
+											width={30}
+											height={30}
+											objectFit="contain"
+										/>
+									</div>
+								</div>
+							</div>
+
 							{wallet.connected == true &&
 							<div className="rounded-lg flex flex-row px-4 py-2 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle justify-between">
 								<div
