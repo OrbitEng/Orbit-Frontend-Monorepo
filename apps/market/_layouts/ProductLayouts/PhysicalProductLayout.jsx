@@ -3,11 +3,17 @@ import Carousel from "react-multi-carousel"
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import Image from 'next/image'
 import { EditPhysicalProductModal } from "@includes/components/modals/EditListingsModal";
-
+import { CartFunctionalities } from '@functionalities/Cart';
 import UserAccountCtx from "@contexts/UserAccountCtx";
-import 'react-multi-carousel/lib/styles.css'
+import 'react-multi-carousel/lib/styles.css';
+import PosModal from "@includes/components/modals/PosModal";
 
 const responsive = {
+	superLargeDesktop: {
+		breakpoint: { max: 4000, min: 3000 },
+		items: 1,
+		slidesToSlide: 1
+	},
 	desktop: {
 	  breakpoint: { max: 3000, min: 1024 },
 	  items: 1,
@@ -27,7 +33,10 @@ const responsive = {
 
 export function PhysicalProductLayout(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
-	const {userAccount} = useContext(UserAccountCtx)
+	const [ openPos, setOpenPos ] = useState(false);
+	const [ itemAsCart, setItemAsCart] = useState()
+	const {userAccount} = useContext(UserAccountCtx);
+	const {AddItem} = CartFunctionalities();
 
 	const [isOwner, setIsOwner] = useState(false);
 
@@ -36,19 +45,21 @@ export function PhysicalProductLayout(props) {
 			return;
 		}
 
+		setItemAsCart({items:[props.prodInfo], total:props.prodInfo.data.metadata.price});
+
 		if(userAccount.data.wallet.toString() == props.prodInfo.data.metadata.seller.data.wallet.toString()){
 			setIsOwner(true)
 		}else{
 			setIsOwner(false)
 		}
 
-	}, [userAccount, props?.prodInfo])
+	}, [userAccount, props.prodInfo])
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">
 			<div className="bg-white flex rounded-3xl bg-opacity-5 h-full w-1/2 p-10">
 			<Carousel 
-					className="w-full"
+					className="w-full h-full"
 					responsive={responsive} 
 					arrows={true}
 					swipeable={true}
@@ -66,12 +77,11 @@ export function PhysicalProductLayout(props) {
 					{
 						(props.prodInfo?.data?.metadata && props.prodInfo?.data?.metadata?.media) ? props.prodInfo?.data?.metadata?.media?.map((url, index) => {
 								if(url.indexOf("data:image") == 0){
-									return <div className="flex mx-auto justify-center" key={index}>
+									return <div className="relative mx-auto w-[400px] h-[400px] sl:w-[450px] sl:h-[450px] justify-center" key={index}>
 												<Image 
 													src={url}
-													layout="fixed"
-													width={400}
-													height={400}
+													layout="fill"
+													objectFit="cover"
 												/>
 											</div>
 								}else
@@ -120,19 +130,15 @@ export function PhysicalProductLayout(props) {
 					</div>
 				</div>
 				<div className="flex flex-col mt-10 gap-y-2" >
-					<div className="flex flex-row w-full h-full content-center">
-						<h1 className="font-bold text-4xl text-white ml-3">{props.prodInfo?.data?.metadata.info.name || "NULL PRODUCT" }</h1>
+					<div className="flex flex-row w-full h-full content-center mb-10">
+						<h1 className="font-bold text-4xl text-white ml-3">{(props.prodInfo?.data?.metadata?.info?.name && (props.prodInfo.data.metadata.info.name.charAt(0).toUpperCase() + props.prodInfo.data.metadata.info.name.slice(1))) || "NULL PRODUCT" }</h1>
 					</div>
 					<div className="flex flex-row gap-3">
-						<div className="rounded-full font-bold bg-[#261832] text-[#72478C] px-3 py-2">
-							{"availability " + (props.prodInfo?.data?.quantity?.toString() || "∞") }
+						<div className="rounded-full font-bold bg-[#261832] text-[#72478C] px-2 py-2 text-sm">
+							{"Availability: " + (props.prodInfo?.data?.quantity?.toString() || "∞") }
 						</div>
-						<div className="rounded-full font-bold bg-[#311132] text-[#7D348F] px-3 py-2">
-							{
-								props.prodInfo?.type ?
-									(props.prodInfo?.type?.charAt(0)?.toUpperCase() + "" + (props.prodInfo?.type?.slice(1).replace("Product","").replaceAll(/([A-Z])/g, (g1)=>{return ` ${g1}`})))
-									: "Custom Product Type"
-							}
+						<div className="rounded-full font-bold bg-[#311132] text-[#7D348F] px-2 py-2 text-sm">
+							Physical Product
 						</div>
 					</div>
 					<div className="font-semibold align-top ml-3">
@@ -165,18 +171,20 @@ export function PhysicalProductLayout(props) {
 				<div className="flex flex-row w-full justify-center mt-6">
 					{
 						// FIXME(millionz): eventually more types will come along and break this
-						isOwner ? (
+						!isOwner ? (
 							<div className="flex flex-row justify-center">
 								<EditPhysicalProductModal selectedProduct={props.prodInfo}/>
 							</div> 
 						) : (
 							<div className="flex flex-row gap-x-4">
-								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]">🛒 Add to Cart</button>
-								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]">⚡ Quick Buy</button>
+								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]"
+								onClick={()=>{AddItem(props.prodInfo)}}>🛒 Add to Cart</button>
+								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]" onClick={()=>{setOpenPos(true)}}>⚡ Quick Buy</button>
 							</div>
 						) 
 					}
 				</div>
+				{itemAsCart && <PosModal openPos={openPos} setOpenPos={setOpenPos} cart={itemAsCart} setCart={setItemAsCart} />}
 			</div>
 		</div>
 	)

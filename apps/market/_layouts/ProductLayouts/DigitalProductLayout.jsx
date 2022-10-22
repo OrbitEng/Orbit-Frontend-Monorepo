@@ -4,10 +4,11 @@ import Head from "next/head";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
+import { CartFunctionalities } from '@functionalities/Cart';
 import Carousel from "react-multi-carousel"
 import Image from 'next/image'
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
-import 'react-multi-carousel/lib/styles.css'
+import 'react-multi-carousel/lib/styles.css';
 
 
 const responsive = {
@@ -30,6 +31,7 @@ const responsive = {
 
 export function DigitalProductLayout(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
+	const {AddItem,} = CartFunctionalities();
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">

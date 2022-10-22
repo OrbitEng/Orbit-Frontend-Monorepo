@@ -25,7 +25,6 @@ import UserAccountCtx from '@contexts/UserAccountCtx';
 import { MarketAccountFunctionalities } from '@functionalities/Accounts';
 
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
@@ -33,29 +32,11 @@ import CreateAccountButton from '@includes/components/buttons/CreateAccountButto
 import ProfileButton from '@includes/components/buttons/ProfileButton';
 import CartSideMenu from './CartSideMenu';
 import CartCtx from '@contexts/CartCtx';
+import { PublicKey } from '@solana/web3.js';
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
-	let cartItems = [{
-		name:"100 Icon pack",
-		vendorUserName:"@testing123",
-		image:"/demologos.png",
-		price: 12340000000,
-	},
-	{
-		name:"100 Icon pack",
-		vendorUserName:"@testing123",
-		image:"/demologos.png",
-		price: 12340000000,
-	},
-	{
-		name:"100 Icon pack",
-		vendorUserName:"@testing123",
-		image:"/demologos.png",
-		price: 12340000000,
-	}];
 
-	const router = useRouter();
 	let {connection} = useConnection();
 	let wallet = useWallet();
 
@@ -75,11 +56,8 @@ export function HomeHeader(props) {
 	const [marketAccount, setMarketAccount] = useState(undefined);
 	const [menuOpen, setMenuOpen] = useState(false);
 
-	const {cart, setCart} = useContext(CartCtx);
+	const {cart} = useContext(CartCtx);
 	const Notifications = 5;
-	useEffect(() => {
-		console.log("CART:\n" + JSON.stringify(cart));
-	}, [cart.items])
 
 	useEffect(async ()=>{
 		let temp_wallet = wallet;
@@ -187,7 +165,7 @@ export function HomeHeader(props) {
 							</span>
 						}
 					</button>
-					<CartSideMenu open={menuOpen} setOpen={setMenuOpen} cartItems={cartItems}/>
+					<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
 				</div>
 			</div>
 		</header>

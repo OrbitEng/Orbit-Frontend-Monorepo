@@ -9,6 +9,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens:{
+        "sl":"3000px"
+      },
       colors: {
         homeheaderpurple: 'rgba(49,48,113,0.22)',
         homeheadergray: 'rgba(26,25,25,0.22)',

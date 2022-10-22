@@ -145,8 +145,8 @@ export default function ProductsPage(props) {
 				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
-			<main className="bg-[url('/bgWallpaper.png')]">
-				<HomeHeader headerMiddle={HeaderSearchBar}/>
+			<main className="bg-[url('/prodbg.png')] bg-right-bottom bg-cover">
+				<HomeHeader headerMiddle={<HeaderSearchBar/>}/>
 				<div className="max-w-7xl align-center mx-auto">
 					{((productType == "physical") && <PhysicalProductLayout prodInfo={prod ? prod : dummyCommission} />) ||
 					((productType == "digital") && <DigitalProductLayout prodInfo={prod ? prod : dummyCommission} />) ||

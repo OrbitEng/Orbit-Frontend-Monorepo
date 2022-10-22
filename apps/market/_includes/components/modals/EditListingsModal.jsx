@@ -148,7 +148,7 @@ export function EditPhysicalProductModal(props){
                                                     <div className="flex flex-col relative w-3/4 text-xl h-1/2 justify-end">
                                                         <Listbox.Button className="w-full h-full rounded-lg justify-center">
                                                             <div className='w-full bg-[#242424] rounded-lg overflow-hidden h-4/5 ring-1 ring-inset ring-blue-200'>
-                                                                {newAvailability.toString()}
+                                                                {(newAvailability && newAvailability.toString()) || ""}
                                                             </div>
                                                         </Listbox.Button>
                                                         <Listbox.Options className="w-full text-center absolute -bottom-8 transition rounded-b">

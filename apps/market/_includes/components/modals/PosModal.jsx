@@ -4,7 +4,6 @@ import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon, PencilIcon, TrashIcon,
 import Image from "next/image"
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { getCookie, hasCookie, setCookie } from "cookies-next";
 
 import ShippingCtx from "@contexts/ShippingCtx";
 
@@ -60,7 +59,7 @@ export default function PosModal(props) {
 				>
 					<Dialog.Panel className={`w-full ${openShippingForm ? "max-w-2xl" : "max-w-lg"} transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-200`}>
 					{ openShippingForm != true ? (
-						<div className="flex flex-col rounded-xl max-w-lg py-10 px-[4rem] mx-auto w-max">
+						<div className="rounded-xl max-w-lg py-10 px-[4rem] mx-auto w-max">
 							<div className="relative top-0 right-0 flex pt-1 justify-end">
 								<button
 									type="button"
@@ -83,38 +82,40 @@ export default function PosModal(props) {
 									<ChevronDownIcon className="text-[#797979] h-4 w-4 stroke-[4px]" />
 								</div>
 							</div>
-							<div className="flex flex-col border-y-[0.5px] border-[#535353] px-4 py-3">
+							<div className="w-full h-80 max-h-md overflow-auto border-y-[0.5px] border-[#535353] px-4 py-3 ">
 							{
 								props?.cart?.items?.map((item, index) => {
 									return(
-										<div key={index} className="flex flex-row rounded-md justify-between my-2">
-											<div className="flex flex-row flex-shrink-0 mr-8">
-												<div className="relative flex flex-shrink-0 h-12 w-12 rounded-md mr-3">
+										<div key={index} className="flex flex-row rounded-md justify-between my-2 h-[104px]">
+											<div className="flex flex-row relative flex-grow  justify-items-center">
+												<div className="relative flex flex-col h-full rounded-md mr-3 justify-center">
 													<button 
 														onClick={() => {
-															props.setCart({
-																items:[...props.cart.items.slice(0,index), ...props.cart.items.slice(index+1)],
-																total: props.cart.total
-															})
+															props.setCart(propscart => ({
+																items:[...propscart.items.slice(0,index), ...propscart.items.slice(index+1)],
+																total: propscart.total - item.data.metadata.price
+															}))
 														}}
-														className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 -top-1 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs"
+														className="inline-flex z-[120] absolute font-serif bg-red-500 bg-opacity-80 top-2 -right-1 h-4 w-4 rounded-full justify-center items-center text-xs"
 													>
 														<XMarkIcon className="h-3 w-3 text-white stroke-[3px]"/>
 													</button>
-													<Image 
-														className="rounded-md"
-														layout="fill"
-														src={item.image}
-														objectFit="contain"
-													/>
+													<div className="relative w-[80px] h-[80px]">
+														<Image 
+															className="rounded-md"
+															layout="fill"
+															src={(item?.data?.metadata?.media?.length && item.data.metadata.media[0]) || "/demologos.png"}
+															objectFit="cover"
+														/>
+													</div>
 												</div>
-												<div className="flex flex-col justify-start my-auto">
-													<span className="text-white font-bold -mb-1">{item.name}</span>
-													<span className="text-[#868686] text-xs">{item.vendorUserName}</span>
+												<div className="flex flex-col flex-grow h-full justify-center text-lg ">
+													<span className="text-white font-bold -mb-1">{item.data.metadata.info.name}</span>
+													<span className="text-[#868686] text-xs">{item.data.metadata.seller.data.metadata.name}</span>
 												</div>
 											</div>
-											<div className="flex flex-col justify-self-end text-center w-fit truncate">
-												<span className="text-white font-bold -mb-1 truncate">{item.price/LAMPORTS_PER_SOL + " SOL"}</span>
+											<div className="flex flex-col h-full justify-self-end justify-center text-center w-fit truncate ">
+												<span className="text-white font-bold -mb-1 truncate">{(item.data.metadata.price/LAMPORTS_PER_SOL).toFixed(9) + " SOL"}</span>
 												<span className="text-white font-bold text-xs truncate">{"$----"}</span>
 											</div>
 										</div>
@@ -215,7 +216,7 @@ export default function PosModal(props) {
 								<div className="flex flex-row justify-between py-3">
 									<span className="my-auto">Amount Due:</span>
 									<div className="flex flex-col">
-										<span>{(props.cart.total/LAMPORTS_PER_SOL || 0) + " SOL"}</span>
+										<span>{((props.cart.total/LAMPORTS_PER_SOL).toFixed(9) || 0) + " SOL"}</span>
 										<span className="text-xs font-normal">$----</span>
 									</div>
 								</div>

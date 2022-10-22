@@ -15,6 +15,7 @@ import {
   TorusWalletAdapter,
   TokenaryWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
+import { PublicKey } from '@solana/web3.js';
 
 import {
   WalletModalProvider,
@@ -67,25 +68,7 @@ function MyApp({ Component, pageProps }) {
   const [ vendorCache, setVendorCache ] = useState();
 
   const [cart, setCart] = useState({
-    items: [{
-      name:"100 Icon pack",
-      vendorUserName:"@testing123",
-      image:"/demologos.png",
-      price: 12340000000,
-    },
-    {
-      name:"100 Icon pack",
-      vendorUserName:"@testing123",
-      image:"/demologos.png",
-      price: 12340000000,
-    },
-    {
-      name:"100 Icon pack",
-      vendorUserName:"@testing123",
-      image:"/demologos.png",
-      price: 12340000000,
-    }],
-    total: 37020000000,
+    items: []
   });
 
   const [shipping, setShipping] = useState({
@@ -101,18 +84,18 @@ function MyApp({ Component, pageProps }) {
   })
 
   // This handles updating the cookies for cart useState changes
-  useEffect(() => {
-    // probably a better way to do this
-    if(hasCookie('cart')) {
-      if(cart.total == 0) {
-        setCart(JSON.parse(getCookie('cart')));
-      } else {
-        setCookie('cart', cart);
-      }
-    } else {
-      setCookie('cart', cart)
-    }
-  }, [])
+  // useEffect(() => {
+  //   // probably a better way to do this
+  //   if(hasCookie('cart')) {
+  //     if(cart.total == 0) {
+  //       setCart(JSON.parse(getCookie('cart')));
+  //     } else {
+  //       setCookie('cart', cart);
+  //     }
+  //   } else {
+  //     setCookie('cart', cart)
+  //   }
+  // }, [])
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet
