@@ -307,7 +307,7 @@ export function CheckoutForm(props){
 							<div className="rounded-lg flex flex-row px-4 py-4 bg-[#5F5F5F] bg-opacity-30 mt-3 align-middle overflow-hidden">
 							{
 								shipping.updated ? 
-								<div className={`transition duration-200 flex flex-row flex-grow align-middle justify-around overflow-hidden ${openShippingForm ? "opacity-0" : "opacity-100"}`}>
+								<div className={`transition duration-200 flex flex-row flex-grow align-middle justify-around overflow-hidden`}>
 									<div className="flex flex-col align-middle basis-2/5 flex-grow-0">
 										<h3 className="font-bold text-white">Name</h3>
 										<span className="text-[#BDBDBD] text-xs truncate">{
@@ -334,6 +334,7 @@ export function CheckoutForm(props){
                                                     addr1: "",
                                                     addr2: "",
                                                     city: "",
+                                                    zip: "",
                                                     country: "",
                                                     state: ""
 												})}
@@ -392,7 +393,7 @@ export function CheckoutForm(props){
 							<button
 								className="py-4 px-8 z-[120] flex flex-row justify-center bg-[#008C1F2c] rounded-full mt-4 w-fit mx-auto"
 							>
-								<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
+								<span className={"text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto " + (shipping.updated ? "opacity-100" : "opacity-30")}>
 									<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
 									Confirm Purchase
 								</span>
