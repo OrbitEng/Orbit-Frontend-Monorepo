@@ -108,8 +108,8 @@ export default function ChatApp(props) {
 													</div>
 												</div>
 											</div>
-											<div className="relative flex flex-grow bg-gradient-to-t from-[#2917514D] to-[#1D045178] overflow-hidden">
-												<div className="fixed w-full bg-[#2C2638] bg-opacity-30">
+											<div className="relative flex flex-col flex-grow bg-gradient-to-t from-[#2917514D] to-[#1D045178] overflow-hidden">
+												<div className="sticky w-full bg-[#2C2638] bg-opacity-30">
 													<div className="flex flex-row my-auto rounded-lg w-full gap-x-3 p-3 bg-transparent">
 														<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
 															<Image 
@@ -124,21 +124,56 @@ export default function ChatApp(props) {
 														</div>
 													</div>
 												</div>
-												<div className="overflow-y-scroll">
-													<div className="absolute flex flex-row mx-6 bottom-5 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
-														<input
-															className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
-															type="text"
-															placeholder="Write a message..."
-															value={chatMessage}
-															onChange={(e) => {setChatMessage(e.target.value)}}
-														/>
-														<div className="flex flex-row justify-between w-28">
-															<PaperClipIcon className="h-5 w-5 text-[#949494]" />
-															<CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
-															<TagIcon className="h-5 w-5 text-[#949494]"/>
-															<PencilSquareIcon className="h-5 w-5 text-[#949494]" />
-														</div>
+												<div className="px-5 overflow-scroll">
+													<div className="overflow-scroll flex flex-col flex-grow">
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<SelfMessage text="hello" />
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<Message text="hello"/>
+														<ContractRequest requestName="Custom Logo" />
+													</div>
+												</div>
+												<div className="sticky flex flex-row mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
+													<input
+														className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
+														type="text"
+														placeholder="Write a message..."
+														value={chatMessage}
+														onChange={(e) => {setChatMessage(e.target.value)}}
+													/>
+													<div className="flex flex-row justify-between w-28">
+														<PaperClipIcon className="h-5 w-5 text-[#949494]" />
+														<CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
+														<TagIcon className="h-5 w-5 text-[#949494]"/>
+														<PencilSquareIcon className="h-5 w-5 text-[#949494]" />
 													</div>
 												</div>
 											</div>
@@ -151,5 +186,42 @@ export default function ChatApp(props) {
 				</div>
 			</Dialog>
 		</Transition.Root>
+	)
+}
+
+function Message(props) {
+	return(
+		<div className="flex flex-row w-max-[50%] gap-x-2 my-2">
+			<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
+				<Image 
+					layout="fill"
+					src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+					objectFit="contain"
+				/>
+			</div>
+			<div className="rounded bg-[#6A31B2] bg-opacity-20 text-[#949494] py-1 px-2 text-sm my-auto">{props.text}</div>
+		</div>
+	)
+}
+
+
+function SelfMessage(props) {
+	return(
+		<div className="flex flex-row w-max-[50%] gap-x-2 my-2 justify-end">
+			<div className="rounded bg-[#9E3B88] bg-opacity-20 text-[#949494] py-1 px-2 text-sm">{props.text}</div>
+		</div>
+	)
+}
+
+function ContractRequest(props) {
+	return(
+		<div className="flex flex-row w-max-[50%] my-2 justify-end overflow-hidden">
+			<div className="flex flex-row flex-grow rounded bg-[#9E3B88] bg-opacity-20 basis-1/2 my-auto">
+				<div className="flex flex-col basis-1/4">
+					<span className="font-bold text-sm text-white">{props.requestName}</span>
+					<span className="text-xs text-[#6A6A6A]"></span>
+				</div>
+			</div>
+		</div>
 	)
 }

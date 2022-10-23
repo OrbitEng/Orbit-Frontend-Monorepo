@@ -19,7 +19,7 @@ export function HeaderSearchBar(props) {
 				leaveTo="opacity-0"
 			>
 				<div className="bg-black absolute -inset-2 rounded-lg blur-2xl" />
-				<div className="relative flex gap-3 flex-row rounded-full bg-searchbartransparent border-2 border-[#333333] p-1 w-full mx-auto py-auto align-middle">
+				<div className="relative flex gap-3 flex-row rounded-xl bg-searchbartransparent border-[1px] border-[#333333] p-1 w-full mx-auto py-auto align-middle">
 					<Combobox value={selected} onChange={setSelected} >
 						<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px] ml-2"/>
 						<Combobox.Input
@@ -58,7 +58,7 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 			leaveTo="opacity-0 scale-95"
 		>
 			<div ref={ref} className="flex flex-col rounded-lg p-auto w-fill mt-28 py-auto align-middle justify-center max-w-4xl mx-auto">
-				<div className="flex gap-3 flex-row rounded-full bg-searchbartransparent border-2 border-[#222222] p-2 w-full mx-auto py-auto align-middle">
+				<div className="flex gap-3 flex-row rounded-xl bg-searchbartransparent border-[1px] border-[#222222] p-2 w-full mx-auto py-auto align-middle">
 					<Combobox value={selected} onChange={setSelected} >
 						<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px]"/>
 						<Combobox.Input
