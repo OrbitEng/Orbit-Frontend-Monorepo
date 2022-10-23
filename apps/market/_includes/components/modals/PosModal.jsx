@@ -1,16 +1,17 @@
 import { Transition, Dialog, RadioGroup } from "@headlessui/react"
-import { Fragment, useState, useEffect, useContext } from "react"
-import { ChevronDownIcon, XMarkIcon, CheckIcon, BoltIcon, PencilIcon, TrashIcon, PlusIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
-import Image from "next/image"
+import { Fragment, useState, useEffect, useContext, useCallback} from "react"
+import { ChevronDownIcon, XMarkIcon, ChevronUpIcon, BoltIcon, PencilIcon, TrashIcon, PlusIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { ChevronUpIcon } from "@heroicons/react/24/outline";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
 import { ClearBgButtonSmall } from "../buttons/CustomRadioButton";
 
 import ShippingCtx from "@contexts/ShippingCtx";
 import PythClientCtx from "@contexts/PythClientCtx";
+import UserAccountCtx from "@contexts/UserAccountCtx";
 
-import { PublicKey } from "@solana/web3.js";
+import { DigitalFunctionalities, PhysicalFunctionalities, CommissionFunctionalities } from "@functionalities/Transactions";
+import Image from "next/image"
+
 const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
 
@@ -30,12 +31,14 @@ export default function PosModal(props) {
 	let connection = useConnection();
 	const {shipping, setShipping} = useContext(ShippingCtx)
 	const {pythClient} = useContext(PythClientCtx);
+	const {userAccount} = useContext(UserAccountCtx);
 
 	const [expanded, setExpanded] = useState(true);
 	const [solBalance, setSolBalance] = useState(0);
 	const [usdcBalance, setUsdcBalance] = useState(0);
 	const [openShippingForm, setOpenShippingForm] = useState(false);
 	const [currency, setCurrency] = useState("solana")
+	const [solPrice, setSolPrice] = useState();
 
 	// Shipping fields
 	const [firstName, setFirstName] = useState(shipping?.firstName || "");
@@ -46,10 +49,56 @@ export default function PosModal(props) {
 	const [zip, setZip] = useState(shipping?.zip || "");
 	const [country, setCountry] = useState(shipping?.country || "");
 	const [state, setState] = useState(shipping?.state || "");
-	const [solPrice, setSolPrice] = useState();
 
 	const [usdcAmountDue, setUsdcAmountDue] = useState(0);
 	const [solAmountDue, setSolAmountDue] = useState(0);
+
+	const {OpenTransactionSol: openPhysicalSol, OpenTransactionSpl: openPhysicalSpl} = PhysicalFunctionalities()
+	const {OpenTransactionSol: openDigitalSol, OpenTransactionSpl: openDigitalSpl} = DigitalFunctionalities()
+	const {OpenTransactionSol: openCommissionSol, OpenTransactionSpl: openCommissionSpl} = CommissionFunctionalities()
+
+	const submitOrder = useCallback(async ()=>{
+		switch(currency){
+			case "solana":
+				for(let item of props.cart.items){
+					switch(item.type){
+						case "physical":
+							await openPhysicalSol(
+								item,
+							)
+							break;
+						case "digital":
+							await openDigitalSol(
+								item,
+							)
+							break;
+						case "commission":
+							await openCommissionSol(
+								item,
+							)
+							break;
+					}
+				}
+				break;
+			case "usdc":
+				for(let item of props.cart.items){
+					switch(item.type){
+						case "physical":
+							await openPhysicalSpl()
+							break;
+						case "digital":
+							await openDigitalSpl()
+							break;
+						case "commission":
+							await openCommissionSpl()
+							break;
+					}
+					
+				}
+				break;
+		}
+
+	},[usdcAmountDue, solAmountDue, currency, firstName, lastName, addr1, addr2, city, zip, country, state])
 
 	useEffect(()=>{
 		setUsdcAmountDue(Number(props.cart.total.toFixed(6)));
@@ -85,7 +134,6 @@ export default function PosModal(props) {
 			setUsdcBalance(0);
 		}
 
-		console.log(await pythClient.GetEurUsd())
 	}, [connection, wallet.connected])	
 	
 	return(
@@ -136,11 +184,11 @@ export default function PosModal(props) {
 								<div className="flex flex-row justify-between align-middle">
 									<span className="my-auto text-xl font-bold text-[#E7E7E7]">{"ITEMS(" + (props?.cart?.items?.length || 0) + ")"}</span>
 									<button onClick={()=>{setExpanded(!expanded)}}>
-										<ChevronUpIcon className={"text-[#797979] h-4 w-4 stroke-[4px]" + (expanded ? " rotate-180" : " rotate-0") } />
+										<ChevronUpIcon className={"text-[#797979] h-4 w-4 stroke-[4px] transition duration-700 " + (expanded ? "rotate-0" : " rotate-180") } />
 									</button>
 								</div>
 							</div>
-							<div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 "+(expanded ? "h-80 scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full overflow-auto" : "h-[118px] overflow-hidden")}>
+							<div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 transition duration-700 transition-all "+(expanded ? "h-80 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" : "h-[118px] overflow-hidden")}>
 							{
 								props?.cart?.items?.map((item, index) => {
 									return(
@@ -477,7 +525,7 @@ export default function PosModal(props) {
 									state: state
 									});
 									setOpenShippingForm(false);
-								}}	
+								}}
 							>
 								<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
 									Save & Confirm
