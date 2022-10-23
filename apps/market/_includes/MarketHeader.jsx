@@ -29,6 +29,7 @@ import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import CreateAccountButton from '@includes/components/buttons/CreateAccountButton';
+import ChatApp from '@includes/ChatApp';
 import ProfileButton from '@includes/components/buttons/ProfileButton';
 import CartSideMenu from './CartSideMenu';
 import CartCtx from '@contexts/CartCtx';
@@ -56,9 +57,10 @@ export function HomeHeader(props) {
 
 	const [marketAccount, setMarketAccount] = useState(undefined);
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [chatOpen, setChatOpen] = useState(false);
 
 	const {cart} = useContext(CartCtx);
-	const Notifications = 5;
+	const notifications = 5;
 
 	useEffect(async ()=>{
 		let temp_wallet = wallet;
@@ -134,15 +136,19 @@ export function HomeHeader(props) {
 								<PlusCircleIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 							</Link>
 						</div>
-					<button className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]">
-						<EnvelopeIcon className="w-3 h-3 lg:w-5 lg:h-5" />
-						{
+						<button
+							className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]"
+							onClick={() => setChatOpen(true)}
+						>
+							<EnvelopeIcon className="w-3 h-3 lg:w-5 lg:h-5" />
+							{
 
-							<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
-								{Notifications > 999 ? "+999" : Notifications}
-							</span>
-						}
-					</button>
+								<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+									{notifications > 999 ? "+999" : notifications}
+								</span>
+							}
+						</button>
+						<ChatApp open={chatOpen} setOpen={setChatOpen}/>
 				</div>
 				<div className="flex flex-row px-2 gap-3">
 					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full relative">
