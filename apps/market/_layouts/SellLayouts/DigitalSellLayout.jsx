@@ -29,8 +29,8 @@ export function DigitalUploadForm(props) {
 	const [description, setDescription] = useState();
 	const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
 
-	const [vendorDigitalCatalog, setVendorDigitalCatalog] = useState();
-    const [vendorDigitalTx, setVendorDigitalTx] = useState();
+	const [vendorDigitalCatalog, setVendorDigitalCatalog] = useState("");
+    const [vendorDigitalTx, setVendorDigitalTx] = useState("");
 
 	
 	
@@ -58,7 +58,7 @@ export function DigitalUploadForm(props) {
             console.log("init logs render err: ", e);
             setVendorDigitalTx();
         }
-	}, [transactionClient, productClient, wallet && wallet.connected]);
+	}, [transactionClient, productClient, wallet.connected]);
 
 
 	//////////////////////////////////////////////////

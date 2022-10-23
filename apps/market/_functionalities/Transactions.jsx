@@ -22,7 +22,6 @@ export function DigitalFunctionalities(){
     const {bundlrClient} = useContext(BundlrCtx);
     const {matrixClient} = useContext(MatrixClientCtx);
     const {transactionClient} = useContext(TransactionClientCtx);
-    const {productClient} = useContext(ProductClientCtx);
 
     ////////////////////////////////////////////////////////////
     /// TRANSACTIONS
@@ -35,18 +34,13 @@ export function DigitalFunctionalities(){
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
 
-        let listing_struct = await productClient.GetListingsStruct(listings_addr);
-        let vendor_account = await marketAccountsClient.GetAccount(
-            marketAccountsClient.GenAccountAddress(
-                listing_struct.data.listingsOwner
-            )
-        );
+        let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerDigitalTransactions;
 
         let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("digital");
-        let next_open_buyer_index = transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
         let buyer_account_addr = marketAccountsClient.GenAccountAddress();
         return digitalMarketClient.OpenTransactionSol(
@@ -124,18 +118,13 @@ export function DigitalFunctionalities(){
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
 
-        let listing_struct = await productClient.GetListingsStruct(listings_addr);
-        let vendor_account = await marketAccountsClient.GetAccount(
-            marketAccountsClient.GenAccountAddress(
-                listing_struct.data.listingsOwner
-            )
-        );
+        let vendor_account = product.data.metadata.seller.data;;
         let seller_tx_log_addr = vendor_account.sellerDigitalTransactions;
 
         let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("digital");
-        let next_open_buyer_index = transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
         let buyer_account_addr = marketAccountsClient.GenAccountAddress();
 
@@ -391,18 +380,13 @@ export function CommissionFunctionalities(){
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
 
-        let listing_struct = await productClient.GetListingsStruct(listings_addr);
-        let vendor_account = await marketAccountsClient.GetAccount(
-            marketAccountsClient.GenAccountAddress(
-                listing_struct.data.listingsOwner
-            )
-        );
+        let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerCommissionTransactions;
 
         let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("commission");
-        let next_open_buyer_index = transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
         let buyer_account_addr = marketAccountsClient.GenAccountAddress();
         return commissionMarketClient.OpenTransactionSol(
@@ -480,18 +464,13 @@ export function CommissionFunctionalities(){
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
 
-        let listing_struct = await productClient.GetListingsStruct(listings_addr);
-        let vendor_account = await marketAccountsClient.GetAccount(
-            marketAccountsClient.GenAccountAddress(
-                listing_struct.data.listingsOwner
-            )
-        );
+        let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerCommissionTransactions;
 
         let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("commission");
-        let next_open_buyer_index = transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
         let buyer_account_addr = marketAccountsClient.GenAccountAddress();
 
@@ -812,18 +791,13 @@ export function PhysicalFunctionalities(){
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
 
-        let listing_struct = await productClient.GetListingsStruct(listings_addr);
-        let vendor_account = await marketAccountsClient.GetAccount(
-            marketAccountsClient.GenAccountAddress(
-                listing_struct.data.listingsOwner
-            )
-        );
+        let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerPhysicalTransactions;
 
         let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("physical");
-        let next_open_buyer_index = transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
         let buyer_account_addr = marketAccountsClient.GenAccountAddress();
         return physicalMarketClient.OpenTransactionSol(
@@ -901,18 +875,13 @@ export function PhysicalFunctionalities(){
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
 
-        let listing_struct = await productClient.GetListingsStruct(listings_addr);
-        let vendor_account = await marketAccountsClient.GetAccount(
-            marketAccountsClient.GenAccountAddress(
-                listing_struct.data.listingsOwner
-            )
-        );
+        let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerPhysicalTransactions;
 
         let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("physical");
-        let next_open_buyer_index = transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
         let buyer_account_addr = marketAccountsClient.GenAccountAddress();
 

@@ -1,21 +1,29 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { BoltIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { CartFunctionalities } from '@functionalities/Cart';
+import PythClientCtx from "@contexts/PythClientCtx";
 import Image from "next/image";
 import PosModal from './components/modals/PosModal';
 import CartCtx from '@contexts/CartCtx';
 
 export default function CartSideMenu(props) {
 	const [openPos, setOpenPos] = useState(false);
-	const {cart, setCart} = useContext(CartCtx);
+	const [solPrice, setSolPrice] = useState();
+	const {pythClient} = useContext(PythClientCtx);
+
+	useEffect(async ()=>{
+		if(!pythClient)return
+		setSolPrice((await pythClient.GetSolUsd()).aggregate.price);
+	},[pythClient])
+
 	const {DeleteItem} = CartFunctionalities();
+	const {cart, setCart} = useContext(CartCtx);
 
 	useEffect(() => {
 		let tmpTotal = 0;
 		cart?.items?.map((item) => {
-			tmpTotal += item.data.metadata.price;
+			tmpTotal += item.data.metadata.price.toNumber();
 		})
 		setCart(cart => ({items: cart.items, total: tmpTotal}))
 	}, [cart?.items?.length]);
@@ -105,8 +113,8 @@ export default function CartSideMenu(props) {
 																			</div>
 																		</div>
 																		<div className="flex flex-col justify-self-end text-center w-fit truncate">
-																			<span className="text-white font-bold -mb-1 truncate">{item.data.metadata.price/LAMPORTS_PER_SOL + " SOL"}</span>
-																			<span className="text-white font-bold text-xs truncate">{"$----"}</span>
+																			<span className="text-white font-bold -mb-1 truncate">{(item.data.metadata.price/solPrice).toFixed(9) + " SOL"}</span>
+																			<span className="text-white font-bold text-xs truncate">${item.data.metadata.price.toNumber()}</span>
 																		</div>
 																	</div>
 																)
@@ -116,7 +124,7 @@ export default function CartSideMenu(props) {
 													<div className="flex flex-col">
 														<div className="rounded-lg flex flex-row justify-between px-8 py-3 border-[1px] border-[#5F5F5F] text-white font-bold text-xl">
 															<span>Total</span>
-															<span>{cart?.total/LAMPORTS_PER_SOL + " SOL"}</span>
+															<span>{(cart.total/solPrice).toFixed(9) + " SOL"}</span>
 														</div>
 														<button
 															onClick={() => {
@@ -129,7 +137,7 @@ export default function CartSideMenu(props) {
 																Buy Now
 															</span>
 														</button>
-														<PosModal openPos={openPos} setOpenPos={setOpenPos} cart={cart} setCart={setCart} />
+														<PosModal openPos={openPos} setOpenPos={setOpenPos} cart={cart} setCart={setCart} solPrice={solPrice}/>
 													</div>
 												</div>
 											</div>

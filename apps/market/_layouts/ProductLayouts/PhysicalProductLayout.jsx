@@ -41,11 +41,13 @@ export function PhysicalProductLayout(props) {
 	const [isOwner, setIsOwner] = useState(false);
 
 	useEffect(()=>{
+		
 		if(!(props.prodInfo.data && props.prodInfo.data.metadata.seller && props.prodInfo.data.metadata.seller.data.wallet && userAccount)){
 			return;
 		}
 
-		setItemAsCart({items:[props.prodInfo], total:props.prodInfo.data.metadata.price});
+		setItemAsCart({items:[props.prodInfo], total:props.prodInfo.data.metadata.price.toNumber()});
+		console.log("set item as cart")
 
 		if(userAccount.data.wallet.toString() == props.prodInfo.data.metadata.seller.data.wallet.toString()){
 			setIsOwner(true)

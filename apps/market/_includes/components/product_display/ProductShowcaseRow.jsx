@@ -27,7 +27,7 @@ const responsive = {
 	}
 };
 
-export default function ProductShowcaseRow(props) {
+export function ProductShowcaseRow(props) {
 	const [ query, setQuery ] = useState();
 	const [ selected, setSelected ] = useState();
 	const undefProdsArr = Array.of(1,2,3,4);
