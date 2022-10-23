@@ -172,9 +172,40 @@ export default function PosModal(props) {
 													<span className="text-[#868686] text-xs">{item.data.metadata.seller.data.metadata.name}</span>
 												</div>
 											</div>
-											<div className="flex flex-col h-full justify-self-end justify-center text-center w-fit truncate ">
-												<span className="text-white font-bold -mb-1 truncate">{(item.data.metadata.price/solPrice) + " SOL"}</span>
-												<span className="text-white font-bold text-xs truncate">${item.data.metadata.price.toNumber()}</span>
+											<div className="">
+												{
+													currency == "solana" ? 
+													<div className="flex flex-col h-full justify-self-end justify-center text-center w-fit truncate items-end">
+														{/* <input
+															type="number"
+															value={solAmountDue || 0}
+															onChange={(e)=>{
+																let val = (Number(e.target.value)).toFixed(9);
+																setSolAmountDue(Number(val));
+																setUsdcAmountDue(Number((Number(val)/solPrice).toFixed(6)))
+															}}
+															className="bg-transparent text-end pr-2"
+														/> */}
+														<span className="text-white font-bold -mb-1 truncate">{(item.data.metadata.price/solPrice).toFixed(9) + " SOL"}</span>
+														<span className="text-white font-bold text-xs truncate">${item.data.metadata.price.toNumber()}</span>
+													</div>
+													:
+													<div className="flex flex-col h-full justify-self-end justify-center text-center w-fit truncate items-end">
+														{/* <input
+															type="number"
+															value={usdcAmountDue || 0}
+															onChange={(e)=>{
+																let val = (Number(e.target.value)).toFixed(6);
+																setUsdcAmountDue(Number(val));
+																setSolAmountDue(Number((Number(val)*solPrice).toFixed(9)))
+															}}
+															className={"bg-transparent text-start w-20"}
+														/> */}
+														<span className="text-white font-bold -mb-1 truncate">${item.data.metadata.price.toNumber()}</span>
+														<span className="text-white font-bold text-xs truncate">{(item.data.metadata.price/solPrice).toFixed(9) + " SOL"}</span>
+													</div>
+												}
+												
 											</div>
 										</div>
 									)
@@ -300,12 +331,12 @@ export default function PosModal(props) {
 									
 										{
 											currency == "solana" ? 
-												<div className="flex flex-col">
+												<div className="flex flex-col items-end">
 													<span>{(solBalance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
 													<span className="text-xs font-normal">${usdcBalance}</span>
 												</div>
 											:
-												<div className="flex flex-col">
+												<div className="flex flex-col items-end">
 													<span>${usdcBalance}</span>
 													<span className="text-xs font-normal">{(solBalance / LAMPORTS_PER_SOL).toString().slice(0,5) + " SOL"}</span>
 												</div>
@@ -317,40 +348,12 @@ export default function PosModal(props) {
 									{
 										currency == "solana" ? 
 											<div className="flex flex-col w-full items-end">
-												<div className="flex flex-row">
-													<input
-														type="number"
-														value={solAmountDue || 0}
-														onChange={(e)=>{
-															let val = (Number(e.target.value)).toFixed(9);
-															setSolAmountDue(Number(val));
-															setUsdcAmountDue(Number((Number(val)/solPrice).toFixed(6)))
-														}}
-														className="bg-transparent text-end pr-2"
-													/>
-													<span>SOL</span>
-												</div>
+												<span>{solAmountDue} SOL</span>
 												<span className="text-xs font-normal">${usdcAmountDue}</span>
 											</div>
 											:
 											<div className="flex flex-col w-full items-end">
-												<div className="flex flex-row w-full justify-end">
-													<div className="">
-														$
-													</div>
-													<div>
-														<input
-															type="number"
-															value={usdcAmountDue || 0}
-															onChange={(e)=>{
-																let val = (Number(e.target.value)).toFixed(6);
-																setUsdcAmountDue(Number(val));
-																setSolAmountDue(Number((Number(val)*solPrice).toFixed(9)))
-															}}
-															className={"bg-transparent text-start w-20"}
-														/>
-													</div>
-												</div>
+												<span>${usdcAmountDue}</span>
 												<span className="text-xs font-normal">{(solAmountDue.toFixed(9) || 0) + " SOL"}</span>
 											</div>
 									}
