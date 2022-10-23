@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState, useContext } from 'react'
 
-import {SignupForm} from '@includes/components/SignupForm';
+import {SignupForm} from '@includes/components/forms/SignupForm';
 
 export default function CreateAccountButton(props) {
 	let [isOpen, setIsOpen] = useState(false);

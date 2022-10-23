@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { useState } from "react";
 import { ChevronDownIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "./components/cards/ProductDisplayCards";
+import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "@includes/components/cards/ProductDisplayCards";
 import { useEffect } from "react";
 
-export function LargeExplore(props) {
+export function LargeProductExplorer(props) {
 	const [sortMethod, setSortMethod] = useState("recent");
 
 	const [prodsToDisplay, setProdsToDisplay] = useState(Array(16).fill(<EmptyProductDisplayCardHome/>));

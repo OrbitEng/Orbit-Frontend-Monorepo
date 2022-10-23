@@ -1,5 +1,5 @@
 import { GenericLayout } from "@layouts/HeaderFooterGenericLayout";
-import {SignupForm} from "@includes/components/SignupForm";
+import {SignupForm} from "@includes/components/forms/SignupForm";
 
 export default function Signup() {
 	return(

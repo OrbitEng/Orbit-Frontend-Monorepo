@@ -1,17 +1,17 @@
 import { useState, useContext, useEffect } from "react";
 import { Listbox } from "@headlessui/react";
 import Image from "next/image";
-import { LargeExplore } from "@includes/ProductExplorer";
+import { LargeProductExplorer } from "@includes/components/product_display/LargeProductExplorer";
 
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import EditProfileButton from "@includes/components/buttons/EditProfileButton";
+import {EditProfileModal} from "@includes/components/modals/EditProfileModal";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from "@functionalities/Products";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 
-export function AccountDisplay(props) {
+export function ProfileLayout(props) {
 	const { GetAllVendorPhysicalProducts } = PhysicalProductFunctionalities();
 	const { GetAllVendorDigitalProducts } = DigitalProductFunctionalities();
 	const { GetAllVendorCommissionProducts } = CommissionProductFunctionalities();
@@ -98,7 +98,7 @@ export function AccountDisplay(props) {
 						<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{("@" + marketAccount?.address?.toString()) || "@UserNamePlaceHolder"}</span>
 						</div>
-						{isSelf ? <EditProfileButton currentAccount={marketAccount}/>: <></>}
+						{isSelf ? <EditProfileModal currentAccount={marketAccount}/>: <></>}
 					</div>	
 					<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.metadata?.name || "NamePlaceholder"}</span>
 					<p className="text-[#5B5B5B]">{marketAccount?.data.metadata?.bio || "King of the hill is my favorite game, im always in first no matter what case it is"}</p>
@@ -135,7 +135,7 @@ export function AccountDisplay(props) {
 					</Listbox>
 				</div>
 			</div>
-			<LargeExplore items={listingsExplorerCategory} category={displayOption.toLowerCase()} />
+			<LargeProductExplorer items={listingsExplorerCategory} category={displayOption.toLowerCase()} />
 		</div>
 	)
 }

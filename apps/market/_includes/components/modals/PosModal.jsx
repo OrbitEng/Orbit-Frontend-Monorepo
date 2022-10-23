@@ -10,10 +10,16 @@ import PythClientCtx from "@contexts/PythClientCtx";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 
 import { DigitalFunctionalities, PhysicalFunctionalities, CommissionFunctionalities } from "@functionalities/Transactions";
+
+
 import Image from "next/image"
 
 const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
 const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
+const USDC_MINT = {
+	"mainnet": new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"),
+	"devnet": new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU")
+}
 
 function getAssociatedTokenAddress(
     mint,
@@ -65,16 +71,19 @@ export default function PosModal(props) {
 						case "physical":
 							await openPhysicalSol(
 								item,
+								false
 							)
 							break;
 						case "digital":
 							await openDigitalSol(
 								item,
+								false
 							)
 							break;
 						case "commission":
 							await openCommissionSol(
 								item,
+								false
 							)
 							break;
 					}
@@ -84,13 +93,25 @@ export default function PosModal(props) {
 				for(let item of props.cart.items){
 					switch(item.type){
 						case "physical":
-							await openPhysicalSpl()
+							await openPhysicalSpl(
+								item,
+								false,
+								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
+							)
 							break;
 						case "digital":
-							await openDigitalSpl()
+							await openDigitalSpl(
+								item,
+								false,
+								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
+							)
 							break;
 						case "commission":
-							await openCommissionSpl()
+							await openCommissionSpl(
+								item,
+								false,
+								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
+							)
 							break;
 					}
 					
@@ -124,7 +145,7 @@ export default function PosModal(props) {
 		try{
 			let usdcbal = await connection.connection.getTokenAccountBalance(
 				getAssociatedTokenAddress(
-					new PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU"),
+					USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME],
 					wallet.publicKey
 				)
 			);

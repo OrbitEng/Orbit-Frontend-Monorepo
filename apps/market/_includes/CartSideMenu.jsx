@@ -17,8 +17,8 @@ export default function CartSideMenu(props) {
 		setSolPrice((await pythClient.GetSolUsd()).aggregate.price);
 	},[pythClient])
 
-	const {cart, setCart} = useContext(CartCtx);
 	const {DeleteItem} = CartFunctionalities();
+	const {cart, setCart} = useContext(CartCtx);
 
 	useEffect(() => {
 		let tmpTotal = 0;
