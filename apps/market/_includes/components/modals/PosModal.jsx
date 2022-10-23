@@ -123,7 +123,7 @@ export default function PosModal(props) {
 
 	useEffect(()=>{
 		setUsdcAmountDue(Number(props.cart.total.toFixed(6)));
-		setSolAmountDue(Number((props.cart.total * (solPrice)).toFixed(9)));
+		setSolAmountDue(Number((props.cart.total/solPrice).toFixed(9)));
 	},[props.cart, props.cart.total])
 
 	useEffect(async ()=>{
@@ -266,7 +266,7 @@ export default function PosModal(props) {
 															onChange={(e)=>{
 																let val = (Number(e.target.value)).toFixed(6);
 																setUsdcAmountDue(Number(val));
-																setSolAmountDue(Number((Number(val)*solPrice).toFixed(9)))
+																setSolAmountDue(Number((Number(val)/solPrice).toFixed(9)))
 															}}
 															className={"bg-transparent text-start w-20"}
 														/> */}

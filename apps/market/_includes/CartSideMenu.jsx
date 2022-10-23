@@ -113,7 +113,7 @@ export default function CartSideMenu(props) {
 																			</div>
 																		</div>
 																		<div className="flex flex-col justify-self-end text-center w-fit truncate">
-																			<span className="text-white font-bold -mb-1 truncate">{(item.data.metadata.price*solPrice).toFixed(9) + " SOL"}</span>
+																			<span className="text-white font-bold -mb-1 truncate">{(item.data.metadata.price/solPrice).toFixed(9) + " SOL"}</span>
 																			<span className="text-white font-bold text-xs truncate">${item.data.metadata.price.toNumber()}</span>
 																		</div>
 																	</div>
@@ -124,7 +124,7 @@ export default function CartSideMenu(props) {
 													<div className="flex flex-col">
 														<div className="rounded-lg flex flex-row justify-between px-8 py-3 border-[1px] border-[#5F5F5F] text-white font-bold text-xl">
 															<span>Total</span>
-															<span>{(cart.total*solPrice).toFixed(9) + " SOL"}</span>
+															<span>{(cart.total/solPrice).toFixed(9) + " SOL"}</span>
 														</div>
 														<button
 															onClick={() => {
