@@ -21,8 +21,8 @@ export function CommissionUploadForm(props) {
 	const wallet = useWallet();
     
 	const {ListProduct} = CommissionProductFunctionalities();
-	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState();
-	const [vendorCommissionTx, setVendorCommissionTx] = useState();
+	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState("");
+	const [vendorCommissionTx, setVendorCommissionTx] = useState("");
 
 	const {productClient} = useContext(ProductClientCtx);
 	const {transactionClient} = useContext(TransactionClientCtx);
