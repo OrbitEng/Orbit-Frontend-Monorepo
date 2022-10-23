@@ -60,9 +60,9 @@ export default function PosModal(props) {
 				>
 					<Dialog.Panel className={`w-full max-w-2xl transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-200`}>
 					{
-						(pageForm == "checkout" && <CheckoutForm {...props}/>) ||
-						(pageForm == "shipping" && <ShippingForm />) ||
-						(pageForm == "dispute" && <DiscountsForm />)
+						(pageForm == "checkout" && <CheckoutForm setForm={setPageForm} {...props}/>) ||
+						(pageForm == "shipping" && <ShippingForm setForm={setPageForm} />) ||
+						(pageForm == "dispute" && <DiscountsForm setForm={setPageForm} />)
 					}
 					</Dialog.Panel>
 				</Transition.Child>
