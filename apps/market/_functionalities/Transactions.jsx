@@ -37,7 +37,7 @@ export function DigitalFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerDigitalTransactions;
 
-        let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("digital");
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
@@ -121,7 +121,7 @@ export function DigitalFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;;
         let seller_tx_log_addr = vendor_account.sellerDigitalTransactions;
 
-        let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("digital");
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
@@ -383,7 +383,7 @@ export function CommissionFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerCommissionTransactions;
 
-        let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("commission");
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
@@ -467,7 +467,7 @@ export function CommissionFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerCommissionTransactions;
 
-        let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("commission");
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
@@ -794,7 +794,7 @@ export function PhysicalFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerPhysicalTransactions;
 
-        let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("physical");
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
@@ -878,7 +878,7 @@ export function PhysicalFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerPhysicalTransactions;
 
-        let next_open_seller_index = transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("physical");
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);

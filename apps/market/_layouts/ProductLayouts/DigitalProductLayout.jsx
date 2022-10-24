@@ -9,6 +9,8 @@ import Carousel from "react-multi-carousel"
 import Image from 'next/image'
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import 'react-multi-carousel/lib/styles.css';
+import UserAccountCtx from "@contexts/UserAccountCtx";
+import TransactionClientCtx from "@contexts/TransactionClientCtx";
 
 
 const responsive = {
@@ -31,7 +33,16 @@ const responsive = {
 
 export function DigitalProductLayout(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
-	const {AddItem,} = CartFunctionalities();
+	const [ openPos, setOpenPos ] = useState(false);
+	const [ itemAsCart, setItemAsCart] = useState();
+
+	const [buyerTxLog, setBuyerTxLog] = useState();
+
+	const {userAccount} = useContext(UserAccountCtx);
+	const {transactionClient} = useContext(TransactionClientCtx)
+	const {AddItem} = CartFunctionalities();
+
+	const [isOwner, setIsOwner] = useState(false);
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">
@@ -163,6 +174,29 @@ export function DigitalProductLayout(props) {
 						}
 					</p>
 				</div>
+				<div className="flex flex-row w-full justify-center mt-6">
+					{
+						// FIXME(millionz): eventually more types will come along and break this
+						(
+							!isOwner && 
+							<div className="flex flex-row justify-center">
+								{/* <EditPhysicalProductModal selectedProduct={props.prodInfo}/> */}
+							</div> 
+						) || 
+						(
+							(buyerTxLog == undefined) &&
+							<BuyerTxLogModal category={"digital"} setTxLog={setBuyerTxLog}/>
+						) ||
+						(
+							<div className="flex flex-row gap-x-4">
+								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]"
+								onClick={()=>{AddItem(props.prodInfo)}}>🛒 Add to Cart</button>
+								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]" onClick={()=>{setOpenPos(true)}}>⚡ Quick Buy</button>
+							</div>
+						)
+					}
+				</div>
+				{itemAsCart && <PosModal openPos={openPos} setOpenPos={setOpenPos} cart={itemAsCart} setCart={setItemAsCart} />}
 			</div>
 		</div>
 	)

@@ -52,52 +52,56 @@ export function CheckoutForm(props){
 	const {OpenTransactionSol: openCommissionSol, OpenTransactionSpl: openCommissionSpl} = CommissionFunctionalities()
 
 	const submitOrder = useCallback(async ()=>{
+        console.log(props.cart.items, currency)
 		switch(currency){
 			case "solana":
-				for(let i = 0; i < props.cart.items; i++){
+				for(let i = 0; i < props.cart.items.length; i++){
+                    let item = props.cart.items[i];
+                    console.log(item)
 					switch(item.type){
-						case "physical":
+						case "PhysicalProduct":
 							await openPhysicalSol(
 								item,
-								props.discoonts[i]
+								props.discounts[i]
 							)
 							break;
-						case "digital":
+						case "DigitalProduct":
 							await openDigitalSol(
 								item,
-								props.discoonts[i]
+								props.discounts[i]
 							)
 							break;
-						case "commission":
+						case "CommissionProduct":
 							await openCommissionSol(
 								item,
-								props.discoonts[i]
+								props.discounts[i]
 							)
 							break;
 					}
 				}
 				break;
 			case "usdc":
-				for(let i = 0; i < props.cart.items; i++){
+				for(let i = 0; i < props.cart.items.length; i++){
+                    let item = props.cart.items[i];
 					switch(item.type){
-						case "physical":
+						case "PhysicalProduct":
 							await openPhysicalSpl(
 								item,
-								props.discoonts[i],
+								props.discounts[i],
 								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
 							)
 							break;
-						case "digital":
+						case "DigitalProduct":
 							await openDigitalSpl(
 								item,
-								props.discoonts[i],
+								props.discounts[i],
 								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
 							)
 							break;
-						case "commission":
+						case "CommissionProduct":
 							await openCommissionSpl(
 								item,
-								props.discoonts[i],
+								props.discounts[i],
 								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
 							)
 							break;
@@ -397,6 +401,7 @@ export function CheckoutForm(props){
                 </div>
                 <button
                     className="py-4 px-8 z-[120] flex flex-row justify-center bg-[#008C1F2c] rounded-full mt-4 w-fit mx-auto"
+                    onClick={submitOrder}
                 >
                     <span className={"text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto " + (shipping.updated ? "opacity-100" : "opacity-30")}>
                         <BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />

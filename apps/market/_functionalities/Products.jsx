@@ -286,7 +286,6 @@ export function PhysicalProductFunctionalities(props){
             return ""
         }
         let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
-            console.log(ind);
             return productClient.GenProductAddress(
                 ind, listings_addr, "physical"
             )

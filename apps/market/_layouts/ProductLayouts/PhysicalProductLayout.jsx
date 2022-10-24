@@ -1,12 +1,14 @@
 import { useState, useContext, useEffect } from "react";
+import Image from 'next/image'
 import Carousel from "react-multi-carousel"
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
-import Image from 'next/image'
 import { EditPhysicalProductModal } from "@includes/components/modals/EditListingsModal";
 import { CartFunctionalities } from '@functionalities/Cart';
-import UserAccountCtx from "@contexts/UserAccountCtx";
+import { BuyerTxLogModal } from "@includes/components/modals/InitBuyerTxModals";
 import 'react-multi-carousel/lib/styles.css';
 import PosModal from "@includes/components/modals/PosModal";
+import UserAccountCtx from "@contexts/UserAccountCtx";
+import TransactionClientCtx from "@contexts/TransactionClientCtx";
 
 const responsive = {
 	superLargeDesktop: {
@@ -34,8 +36,12 @@ const responsive = {
 export function PhysicalProductLayout(props) {
 	const [ descriptionOpen, setDescriptionOpen ] = useState(false);
 	const [ openPos, setOpenPos ] = useState(false);
-	const [ itemAsCart, setItemAsCart] = useState()
+	const [ itemAsCart, setItemAsCart] = useState();
+
+	const [buyerTxLog, setBuyerTxLog] = useState();
+
 	const {userAccount} = useContext(UserAccountCtx);
+	const {transactionClient} = useContext(TransactionClientCtx)
 	const {AddItem} = CartFunctionalities();
 
 	const [isOwner, setIsOwner] = useState(false);
@@ -47,15 +53,28 @@ export function PhysicalProductLayout(props) {
 		}
 
 		setItemAsCart({items:[props.prodInfo], total:props.prodInfo.data.metadata.price.toNumber()});
-		console.log("set item as cart")
 
 		if(userAccount.data.wallet.toString() == props.prodInfo.data.metadata.seller.data.wallet.toString()){
 			setIsOwner(true)
 		}else{
 			setIsOwner(false)
 		}
-
 	}, [userAccount, props.prodInfo])
+
+	useEffect(async ()=>{
+		try{
+			console.log(userAccount.data.buyerPhysicalTransactions.toString())
+			let txlog = await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerPhysicalTransactions);
+			if(txlog && txlog.data){
+				setBuyerTxLog(txlog)
+			}else{
+				setBuyerTxLog()
+			}
+		}catch(e){
+			console.log(e)
+			setBuyerTxLog()
+		}
+	},[userAccount])
 
 	return(
 		<div className="flex flex-row w-[90%] mx-auto mt-6 mb-20 h-[80vh] gap-8">
@@ -173,17 +192,23 @@ export function PhysicalProductLayout(props) {
 				<div className="flex flex-row w-full justify-center mt-6">
 					{
 						// FIXME(millionz): eventually more types will come along and break this
-						!isOwner ? (
+						(
+							!isOwner && 
 							<div className="flex flex-row justify-center">
 								<EditPhysicalProductModal selectedProduct={props.prodInfo}/>
 							</div> 
-						) : (
+						) || 
+						(
+							(buyerTxLog == undefined) &&
+							<BuyerTxLogModal category={"physical"} setTxLog={setBuyerTxLog}/>
+						) ||
+						(
 							<div className="flex flex-row gap-x-4">
 								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]"
 								onClick={()=>{AddItem(props.prodInfo)}}>🛒 Add to Cart</button>
 								<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-lg border-2 border-[#2C2C4A]" onClick={()=>{setOpenPos(true)}}>⚡ Quick Buy</button>
 							</div>
-						) 
+						)
 					}
 				</div>
 				{itemAsCart && <PosModal openPos={openPos} setOpenPos={setOpenPos} cart={itemAsCart} setCart={setItemAsCart} />}

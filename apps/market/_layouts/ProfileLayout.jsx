@@ -16,7 +16,7 @@ export function ProfileLayout(props) {
 	const { GetAllVendorDigitalProducts } = DigitalProductFunctionalities();
 	const { GetAllVendorCommissionProducts } = CommissionProductFunctionalities();
 	
-	const {GetPfp, GetMetadata} = MarketAccountFunctionalities();
+	const {GetPfp, GetMetadata, AddVendorPhysicalListings} = MarketAccountFunctionalities();
 	const {userAccount} = useContext(UserAccountCtx);
 
 	const [marketAccount, setMarketAccount] = useState();
