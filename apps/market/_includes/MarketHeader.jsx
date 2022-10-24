@@ -89,7 +89,9 @@ export function HomeHeader(props) {
 					setUserAccount(undefined)
 				}else{
 					account.data.profilePic = await GetPfp(account.data.profilePic);
-					account.data.metadata = await GetMetadata(account.data.metadata)
+					account.data.metadata = await GetMetadata(account.data.metadata);
+					
+					account.data.disputeDiscounts = 2;
 					setMarketAccount(account)
 					setUserAccount(account)
 					console.log(account)

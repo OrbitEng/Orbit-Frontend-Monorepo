@@ -31,7 +31,15 @@ function getAssociatedTokenAddress(
 }
 
 export default function PosModal(props) {
+	const {userAccount} = useContext(UserAccountCtx);
 	const [pageForm, setPageForm] = useState("checkout");
+	const [discounts, setDiscounts] = useState(userAccount.data.disputeDiscounts);
+	const [prodDiscounted, setProdDiscounted] = useState(Array(props.cart.items.length).fill(false));
+
+	useEffect(()=>{
+		console.log(discounts)
+		console.log(prodDiscounted)
+	}, [discounts, prodDiscounted, setDiscounts, setProdDiscounted])
 	
 	return(
 		<Transition appear show={props.openPos} as={Fragment}>
@@ -58,11 +66,11 @@ export default function PosModal(props) {
 					leaveFrom="opacity-100 scale-100"
 					leaveTo="opacity-0 scale-95"
 				>
-					<Dialog.Panel className={`w-full max-w-2xl transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-200`}>
+					<Dialog.Panel className={`w-full max-w-2xl transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-500`}>
 					{
-						(pageForm == "checkout" && <CheckoutForm setForm={setPageForm} {...props}/>) ||
-						(pageForm == "shipping" && <ShippingForm setForm={setPageForm}  {...props}/>) ||
-						(pageForm == "dispute" && <DiscountsForm setForm={setPageForm} />)
+						(pageForm == "checkout" && <CheckoutForm setForm={setPageForm} discounts={discounts} {...props}/>) ||
+						(pageForm == "shipping" && <ShippingForm setForm={setPageForm}  discounts={discounts} {...props}/>) ||
+						(pageForm == "discounts" && <DiscountsForm setForm={setPageForm} discounts={discounts} setDiscounts={setDiscounts} prodDiscounted={prodDiscounted} setProdDiscounted={setProdDiscounted} {...props}/>)
 					}
 					</Dialog.Panel>
 				</Transition.Child>

@@ -1,15 +1,8 @@
 import { Transition, Dialog, RadioGroup } from "@headlessui/react"
 import { Fragment, useState, useEffect, useContext, useCallback} from "react"
 import { ChevronDownIcon, XMarkIcon, ChevronUpIcon, BoltIcon, PencilIcon, TrashIcon, PlusIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL, PublicKey } from "@solana/web3.js";
-import { ClearBgButtonSmall } from "../buttons/CustomRadioButton";
-import { DigitalFunctionalities, PhysicalFunctionalities, CommissionFunctionalities } from "@functionalities/Transactions";
 
 import ShippingCtx from "@contexts/ShippingCtx";
-import PythClientCtx from "@contexts/PythClientCtx";
-import UserAccountCtx from "@contexts/UserAccountCtx";
-import Image from "next/image"
 
 export function ShippingForm(props){
     const {shipping, setShipping} = useContext(ShippingCtx);
@@ -53,7 +46,7 @@ export function ShippingForm(props){
     },[canSubmit])
 
     return(
-        <div className={`flex flex-col rounded-xl py-10 px-[4rem] w-full transition duration-200`}>
+        <div className={`flex flex-col rounded-xl py-10 px-[4rem] w-full transition duration-700`}>
             <div className="relative top-0 right-0 flex pt-1 pr-1 justify-between">
                 <button
                     type="button"
