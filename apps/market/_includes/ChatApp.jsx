@@ -8,7 +8,6 @@ export default function ChatApp(props) {
 	const {userAccount, setUserAccount} = useContext(UserAccountCtx);
 	const [chatSearch, setChatSearch] = useState();
 	const [chatMessage, setChatMessage] = useState();
-	console.log(userAccount);
 
 	function classNames(...classes) {
 		return(classes.filter(Boolean).join(' '))
@@ -46,12 +45,12 @@ export default function ChatApp(props) {
 												<div className="relative flex h-16 w-16 rounded-full overflow-hidden mx-auto mt-10">
 													<Image 
 														layout="fill"
-														src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-														objectFit="contain"
+														src={userAccount?.data?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+														objectFit="cover"
 													/>
 												</div>
-												<span className="font-bold text-2xl text-white mx-auto truncate">{userAccount?.addr || "Account Name"}</span>
-												<span className="font-semibold text-sm text-[#515661] truncate mx-14">{("@" + userAccount?.address.toString()) || "@helloworld"}</span>
+												<span className="font-bold text-2xl text-white mx-auto truncate">{userAccount?.data?.metadata?.name}</span>
+												<span className="font-semibold text-sm text-[#515661] truncate mx-14">{("@" + userAccount?.address.toString())}</span>
 												<div className="flex flex-row bg-white bg-opacity-5 p-2 rounded-lg gap-x-1 mt-4 mx-4">
 													<MagnifyingGlassIcon className="h-4 w-4 my-auto text-[#5F5F5F]"/>
 													<input
@@ -69,7 +68,7 @@ export default function ChatApp(props) {
 															<Image 
 																layout="fill"
 																src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-																objectFit="contain"
+																objectFit="cover"
 															/>
 														</div>
 														<div className="flex flex-col text-white font-bold text-xl align-middle my-auto justify-start">
@@ -83,7 +82,7 @@ export default function ChatApp(props) {
 															<Image 
 																layout="fill"
 																src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-																objectFit="contain"
+																objectFit="cover"
 															/>
 														</div>
 														<div className="flex flex-col text-white font-bold text-xl align-middle my-auto justify-start">
@@ -97,7 +96,7 @@ export default function ChatApp(props) {
 															<Image 
 																layout="fill"
 																src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-																objectFit="contain"
+																objectFit="cover"
 															/>
 														</div>
 														<div className="flex flex-col text-white font-bold text-xl align-middle my-auto justify-start">
@@ -115,7 +114,7 @@ export default function ChatApp(props) {
 															<Image 
 																layout="fill"
 																src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-																objectFit="contain"
+																objectFit="cover"
 															/>
 														</div>
 														<div className="flex flex-col my-auto text-white font-bold text-xl align-middle justify-start">
@@ -130,8 +129,8 @@ export default function ChatApp(props) {
 														</button>
 													</div>
 												</div>
-												<div className="px-5 overflow-scroll">
-													<div className="overflow-scroll flex flex-col flex-grow top-0">
+												<div className="px-5 overflow-y-scroll">
+													<div className="relative flex flex-col flex-grow">
 														{/* something something insert conditional for messages here */}
 														<Message text="hello"/>
 														<SelfMessage text="hello" />
@@ -165,7 +164,7 @@ export default function ChatApp(props) {
 														<Message text="hello"/>
 														<Message text="hello"/>
 														<Message text="hello"/>
-														<ContractRequest requestName="Custom Logo" />
+														<ContractRequest autoFocus requestName="Custom Logo" />
 													</div>
 												</div>
 												<div className="sticky flex flex-row mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
@@ -206,7 +205,7 @@ function Message(props) {
 						<Image 
 							layout="fill"
 							src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-							objectFit="contain"
+							objectFit="cover"
 						/>
 					</div>
 					<div className="rounded bg-[#6A31B2] bg-opacity-20 text-[#949494] py-1 px-2 text-sm my-auto">{props.text}</div>
@@ -268,4 +267,8 @@ function ContractRequest(props) {
 			</div>
 		</div>
 	)
+}
+
+function SelfContractRequest() {
+	return("fuck")
 }

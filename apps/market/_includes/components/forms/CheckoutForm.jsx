@@ -170,12 +170,13 @@ export function CheckoutForm(props){
                 <div className="flex flex-col px-4 py-4">
                     <div className="flex flex-row justify-between align-middle">
                         <span className="my-auto text-xl font-bold text-[#E7E7E7]">{"ITEMS(" + (props?.cart?.items?.length || 0) + ")"}</span>
-                        <button onClick={()=>{setExpanded(!expanded)}}>
+                        <button onClick={()=>{if(props?.cart?.items.length > 0){setExpanded(!expanded)}}}>
                             <ChevronUpIcon className={"text-[#797979] h-4 w-4 stroke-[4px] transition duration-700 " + (expanded ? "rotate-0" : " rotate-180") } />
                         </button>
                     </div>
                 </div>
-                <div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 transition duration-700 transition-all "+(expanded ? "scrollbar h-80 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" : "h-[118px] overflow-hidden")}>
+                <div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 duration-700 transition-all "+(expanded ? "scrollbar h-80 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" : "h-[118px] flex overflow-hidden")}>
+                { (!props?.cart?.items?.length || props?.cart?.items?.length > 0) ? <span className="my-auto mx-auto text-2xl text-white font-bold">No Items in Cart!</span> : null }
                 {
                     props?.cart?.items?.map((item, index) => {
                         return(

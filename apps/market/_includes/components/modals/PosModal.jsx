@@ -38,7 +38,7 @@ export default function PosModal(props) {
 	
 	return(
 		<Transition appear show={props.openPos} as={Fragment}>
-			<Dialog as="div" className="relative z-[120]" onClose={() => props.setOpenPos(true)}>
+			<Dialog as="div" className="relative z-[120]" onClose={() => props.setOpenPos(false)}>
 			<Transition.Child
 				as={Fragment}
 				enter="ease-out duration-300"
@@ -57,11 +57,11 @@ export default function PosModal(props) {
 					enter="ease-out duration-300"
 					enterFrom="opacity-0 scale-95"
 					enterTo="opacity-100 scale-100"
-					leave="ease-in duration-200"
+					leave="ease-in duration-[200ms]"
 					leaveFrom="opacity-100 scale-100"
 					leaveTo="opacity-0 scale-95"
 				>
-					<Dialog.Panel className={`w-full max-w-2xl transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-500`}>
+					<Dialog.Panel className={`max-w-xl w-max transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-500`}>
 					{
 						(pageForm == "checkout" && <CheckoutForm setForm={setPageForm} discounts={discounts} {...props}/>) ||
 						(pageForm == "shipping" && <ShippingForm setForm={setPageForm}  discounts={discounts} {...props}/>) ||
