@@ -35,11 +35,6 @@ export default function PosModal(props) {
 	const [pageForm, setPageForm] = useState("checkout");
 	const [discounts, setDiscounts] = useState(userAccount.data.disputeDiscounts);
 	const [prodDiscounted, setProdDiscounted] = useState(Array(props.cart.items.length).fill(false));
-
-	useEffect(()=>{
-		console.log(discounts)
-		console.log(prodDiscounted)
-	}, [discounts, prodDiscounted, setDiscounts, setProdDiscounted])
 	
 	return(
 		<Transition appear show={props.openPos} as={Fragment}>

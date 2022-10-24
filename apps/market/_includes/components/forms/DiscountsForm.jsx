@@ -97,13 +97,16 @@ export function DiscountsForm(props){
                                     <span className="text-white font-bold text-xs truncate">${item.data.metadata.price.toNumber()}</span>
                                 </div>
                                 <div className="flex flex-col h-full justify-self-end justify-center text-center w-1/6 border-l-[0.5px]">
-                                    {(prodDiscounted[index] || (discounts>0)) &&<input
-                                        type="checkbox"
-                                        defaultChecked={prodDiscounted[index]}
-                                        onChange={()=>{
-                                            updateDiscs(index)
-                                        }}
-                                    />}
+                                    {(prodDiscounted[index] || (discounts>0)) &&
+                                        <input
+                                            type="checkbox"
+                                            defaultChecked={prodDiscounted[index]}
+                                            onChange={()=>{
+                                                updateDiscs(index)
+                                            }}
+                                            className=""
+                                        />
+                                    }
                                 </div>
                             <div>
                             </div>

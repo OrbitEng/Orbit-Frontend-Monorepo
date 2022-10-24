@@ -54,50 +54,50 @@ export function CheckoutForm(props){
 	const submitOrder = useCallback(async ()=>{
 		switch(currency){
 			case "solana":
-				for(let item of props.cart.items){
+				for(let i = 0; i < props.cart.items; i++){
 					switch(item.type){
 						case "physical":
 							await openPhysicalSol(
 								item,
-								false
+								props.discoonts[i]
 							)
 							break;
 						case "digital":
 							await openDigitalSol(
 								item,
-								false
+								props.discoonts[i]
 							)
 							break;
 						case "commission":
 							await openCommissionSol(
 								item,
-								false
+								props.discoonts[i]
 							)
 							break;
 					}
 				}
 				break;
 			case "usdc":
-				for(let item of props.cart.items){
+				for(let i = 0; i < props.cart.items; i++){
 					switch(item.type){
 						case "physical":
 							await openPhysicalSpl(
 								item,
-								false,
+								props.discoonts[i],
 								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
 							)
 							break;
 						case "digital":
 							await openDigitalSpl(
 								item,
-								false,
+								props.discoonts[i],
 								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
 							)
 							break;
 						case "commission":
 							await openCommissionSpl(
 								item,
-								false,
+								props.discoonts[i],
 								USDC_MINT[process.env.NEXT_PUBLIC_CLUSTER_NAME]
 							)
 							break;
@@ -107,7 +107,7 @@ export function CheckoutForm(props){
 				break;
 		}
 
-	},[usdcAmountDue, solAmountDue, currency, shipping])
+	},[usdcAmountDue, solAmountDue, currency, shipping, props.discounts])
 
 	useEffect(()=>{
 		setUsdcAmountDue(Number(props.cart.total.toFixed(6)));
@@ -171,7 +171,7 @@ export function CheckoutForm(props){
                         </button>
                     </div>
                 </div>
-                <div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 transition duration-700 transition-all "+(expanded ? "h-80 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" : "h-[118px] overflow-hidden")}>
+                <div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 transition duration-700 transition-all "+(expanded ? "scrollbar h-80 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" : "h-[118px] overflow-hidden")}>
                 {
                     props?.cart?.items?.map((item, index) => {
                         return(
