@@ -124,7 +124,6 @@ export function EditPhysicalProductModal(props){
 					leaveFrom="opacity-100 scale-100"
 					leaveTo="opacity-0 scale-95"
 				>
-					
 						<Dialog.Panel className="w-full flex flex-col max-w-xl rounded-2xl transform overflow-hidden backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] shadow-xl flex flex-row justify-center">
                                 <div className='flex flex-col h-full w-full place-items-center'>
                                     <div className='text-5xl font-bold my-2 mx-auto flex'>

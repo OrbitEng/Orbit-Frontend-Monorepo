@@ -149,6 +149,12 @@ export function CheckoutForm(props){
 
 	}, [connection, wallet.connected])	
 
+    useEffect(() => {
+        if(!(props?.cart?.items?.length && props?.cart?.items?.length > 0)) {
+            setExpanded(false);
+        }
+    }, [props.cart.items])
+
     return (
         <div className="rounded-xl max-w-lg py-10 px-[4rem] mx-auto w-max transition duration-700">
                 <div className="relative top-0 right-0 flex pt-1 justify-end">
@@ -175,8 +181,11 @@ export function CheckoutForm(props){
                         </button>
                     </div>
                 </div>
-                <div className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 duration-700 transition-all "+(expanded ? "scrollbar h-80 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" : "h-[118px] flex overflow-hidden")}>
-                { (!props?.cart?.items?.length || props?.cart?.items?.length > 0) ? <span className="my-auto mx-auto text-2xl text-white font-bold">No Items in Cart!</span> : null }
+                <div 
+                    className={"w-full max-h-md border-y-[0.5px] border-[#535353] px-4 duration-700 transition-all "
+                    + (expanded ? "scrollbar h-80 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full " : "h-[118px] overflow-hidden ") 
+                    + ((props?.cart?.items?.length && props?.cart?.items?.length > 0) || "flex") }>
+                { (props?.cart?.items?.length && props?.cart?.items?.length > 0) || <span className="my-auto mx-auto text-2xl text-white font-bold">No Items in Cart!</span> }
                 {
                     props?.cart?.items?.map((item, index) => {
                         return(

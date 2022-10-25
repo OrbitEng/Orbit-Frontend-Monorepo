@@ -47,7 +47,6 @@ export function PhysicalProductLayout(props) {
 	const [isOwner, setIsOwner] = useState(false);
 
 	useEffect(()=>{
-		
 		if(!(props.prodInfo.data && props.prodInfo.data.metadata.seller && props.prodInfo.data.metadata.seller.data.wallet && userAccount)){
 			return;
 		}
@@ -59,13 +58,15 @@ export function PhysicalProductLayout(props) {
 		}else{
 			setIsOwner(false)
 		}
+
+		console.log(isOwner)
 	}, [userAccount, props.prodInfo])
 
 	useEffect(async ()=>{
 		try{
 			console.log(userAccount.data.buyerPhysicalTransactions.toString())
-			let txlog = await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerPhysicalTransactions);
-			if(txlog && txlog.data){
+			let txlog = await transactionClient.GetBuyerOpenTransactions(userAccount?.data?.buyerPhysicalTransactions);
+			if(txlog && txlog?.data){
 				setBuyerTxLog(txlog)
 			}else{
 				setBuyerTxLog()
@@ -193,7 +194,7 @@ export function PhysicalProductLayout(props) {
 					{
 						// FIXME(millionz): eventually more types will come along and break this
 						(
-							!isOwner && 
+							isOwner && 
 							<div className="flex flex-row justify-center">
 								<EditPhysicalProductModal selectedProduct={props.prodInfo}/>
 							</div> 
