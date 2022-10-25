@@ -112,17 +112,16 @@ export function ProductDisplayCardHome(props) {
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">
 			<div className="relative group">
-				
 				<div className={glowColor + " absolute -inset-0 rounded-lg blur opacity-60 group-hover:opacity-100 transition duration-700 group-hover:duration-700 animate-tilt"} onClick={()=>{setProductCache(prod); setVendorCache(vendor)}}/>
 					<Link href={"/product/" + props.type + "/" + props.address.toString()} >
 						<div className={bgColor + " relative py-4 rounded-lg leading-none flex flex-col items-center overflow-hidden"}>
 							<div className="flex justify-start w-[200px] px-2 gap-x-2 border-[#4F4F4F] border-2 border-opacity-30 rounded-full shadow bg-gradient-to-r to-[#120D20] from-[#19112E]">
-								<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden rounded-full my-2">
+								<div className="relative flex flex-shrink-0 h-9 w-9 overflow-hidden rounded-full my-1">
 									<Image 
 										alt="The profile picture of the item seller"
 										src={vendorUS?.data.profilePic  || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 										layout="fill"
-										objectFit="contain"
+										objectFit="cover"
 									/>
 								</div>
 								<div className="flex flex-col my-auto">
@@ -134,13 +133,14 @@ export function ProductDisplayCardHome(props) {
 								<div className={"absolute -bottom-3 -left-3 z-40 p-2  text-white font-bold bg-[#080B1A] bg-opacity-80 rounded-full border-[1px] text-ellipsis " + borderColor}>
 									<span className="text-sm">{prod?.data?.metadata?.price?.toString() || "12.345"}</span>
 								</div>
-								<div className="overflow-hidden">
+								<div className="overflow-hidden rounded-lg">
 									<Image
 										alt="product image"
 										src={(prod?.data?.metadata?.media && prod?.data.metadata.media[0]) || "/demologos.png"}
 										layout="intrinsic"
 										height={200}
 										width={200}
+										objectFit="cover"
 									/>
 								</div>
 							</div>
