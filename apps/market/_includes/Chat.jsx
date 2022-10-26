@@ -140,7 +140,7 @@ export function ChatWidget(props) {
 								</div>
 							</div>
 							) : (
-							<div className="relative flex flex-col flex-grow bg-gradient-to-t from-[#2917514D] to-[#1D045178] overflow-hidden p-3 pt-12">
+							<div className="relative flex flex-col flex-grow bg-gradient-to-t from-[#2917514D] to-[#1D045178] overflow-hidden p-4 pt-14">
 								<div className="sticky w-full bg-[#2C2638] bg-opacity-30 rounded-lg">
 									<div className="flex flex-row my-auto rounded-lg w-full gap-x-3 p-3 bg-transparent">
 										<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
@@ -232,7 +232,7 @@ function Message(props) {
 		<div className="flex flex-row w-max-[50%] gap-x-2 my-2">
 			<div className="flex flex-col">
 				<div className="relative text-[#5C5C5C] text-xs text-left mb-1">hh:mm</div>
-				<div className="flex flex-row">
+				<div className="flex flex-row gap-x-2">
 					<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
 						<Image 
 							layout="fill"
