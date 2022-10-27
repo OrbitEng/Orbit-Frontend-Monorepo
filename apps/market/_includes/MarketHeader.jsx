@@ -47,11 +47,11 @@ export function HomeHeader(props) {
 	const {setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
 	const {setCommissionMarketClient} = useContext(CommissionMarketCtx);
 	const {setMarketAccountsClient} = useContext(MarketAccountsCtx);
-	const {setBundlrClient} = useContext(BundlrCtx);
-	const {setMatrixClient} = useContext(MatrixClientCtx);
+	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
+	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
 	const {setProductClient} = useContext(ProductClientCtx);
 	const {setTransactionClient} = useContext(TransactionClientCtx);
-	const {setUserAccount} = useContext(UserAccountCtx);
+	const {userAccount, setUserAccount} = useContext(UserAccountCtx);
 	const {setPythClient} = useContext(PythClientCtx)
 
 	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
@@ -65,6 +65,7 @@ export function HomeHeader(props) {
 	const {chatState, setChatState} = useContext(ChatCtx);
 
 	useEffect(async ()=>{
+
 		let temp_wallet = wallet;
 		if(!(wallet && wallet.publicKey)) {
 			temp_wallet = {};
@@ -73,44 +74,46 @@ export function HomeHeader(props) {
 		setPythClient(new PythClient(connection, process.env.NEXT_PUBLIC_CLUSTER_NAME))
 
 		const provider =  new anchor.AnchorProvider(connection, temp_wallet, anchor.AnchorProvider.defaultOptions());
-
 		let accounts_client = new MarketAccountsClient(temp_wallet, connection, provider);
-		let account_address = "";
-		if (temp_wallet && temp_wallet.publicKey){
-			account_address = (accounts_client.GenAccountAddress(temp_wallet.publicKey));
-			let chat_client = new ChatClient(temp_wallet);
-			let bundlr_client = new BundlrClient(temp_wallet);
-			await chat_client.initialize();
-			await bundlr_client.initialize();
-			setMatrixClient(chat_client);
-			setBundlrClient(bundlr_client);
 
-			try{
-				await chat_client.Login();
-			}catch{
-				setHasChat(false);
-			}
-		}
-		try{
-			if(account_address != ""){
-				let account = await accounts_client.GetAccount(account_address);
-				if(!(account && account.data)){
-					setMarketAccount(undefined)
-					setUserAccount(undefined)
-				}else{
-					account.data.profilePic = await GetPfp(account.data.profilePic);
-					account.data.metadata = await GetMetadata(account.data.metadata);
-					
-					account.data.disputeDiscounts = 2;
-					setMarketAccount(account)
-					setUserAccount(account)
-					console.log(account)
+		if (temp_wallet && temp_wallet.publicKey){
+			if(matrixClient && !matrixClient.logged_in){
+
+				let chat_client = new ChatClient(temp_wallet);
+				await chat_client.initialize();
+				setMatrixClient(chat_client);
+				
+				try{
+					await chat_client.Login();
+					setHasChat(true);
+				}catch(e){
+					console.log("login err: ", e)
+					setHasChat(false);
 				}
 			}
-		}catch(e){
-			console.log(e)
-			setMarketAccount(undefined)
-			setUserAccount(undefined)
+
+			if(bundlrClient && !bundlrClient.bundlr.address){
+				let bundlr_client = new BundlrClient(temp_wallet);
+				await bundlr_client.initialize();
+				setBundlrClient(bundlr_client);				
+			}
+
+			try{
+				let account_address = (accounts_client.GenAccountAddress(temp_wallet.publicKey));
+				let account = await accounts_client.GetAccount(account_address);
+				account.data.profilePic = await GetPfp(account.data.profilePic);
+				account.data.metadata = await GetMetadata(account.data.metadata);
+				
+				account.data.disputeDiscounts = 2;
+				setMarketAccount(account)
+				setUserAccount(account)
+				console.log(account)
+			}catch(e){
+				console.log(e)
+				setMarketAccount(undefined)
+				setUserAccount(undefined)
+			}
+
 		}
 
 		setDigitalMarketClient(new DigitalMarketClient(temp_wallet, connection, provider));
@@ -165,8 +168,8 @@ export function HomeHeader(props) {
 					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full relative">
 						{
 							((!wallet.connected) && <WalletMultiButton />) || 
-							(!marketAccount && <CreateAccountModal setMarketAccount={setMarketAccount} connectedWallet={wallet}/>) || 
-							(!hasChat && <CreateChatModal setChat={setHasChat}/>) || 
+							((!marketAccount) && <CreateAccountModal setMarketAccount={setMarketAccount} connectedWallet={wallet}/>) || 
+							((!hasChat) && <CreateChatModal setChat={setHasChat}/>) || 
 							(<ProfileButton selfAccount={marketAccount} setMarketAccount={setMarketAccount}/>)
 						}
 					</div>

@@ -23,9 +23,7 @@ export function CreateChatModal(props){
         setIsOpen(true)
     }
 
-    useEffect(async ()=>{
-		if(!matrixClient || matrixClient.logged_in)return;
-
+   const startChatCreation =  useCallback(async ()=>{
 		let res = await matrixClient.CreateAccountInit();
 		setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
 		setMatrixSession(res.data.session);
@@ -44,7 +42,7 @@ export function CreateChatModal(props){
         <div className=''>
             <button
                 type="button"
-                onClick={openModal}
+                onClick={startChatCreation}
                 className="px-4 py-2 text-sm whitespace-nowrap font-medium text-white focus:outline-none"
             >
                 Create Chat

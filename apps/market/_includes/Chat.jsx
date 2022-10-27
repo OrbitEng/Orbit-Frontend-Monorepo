@@ -35,7 +35,7 @@ export function ChatWidget(props) {
 	useEffect(() => {console.log(chatState)}, [chatState])
 	useEffect(() => {
 		messageBottomRef.scrollIntoView
-	})
+	},[])
 
 	return (
 		<div className="fixed flex flex-col inset-y-0 right-0">
