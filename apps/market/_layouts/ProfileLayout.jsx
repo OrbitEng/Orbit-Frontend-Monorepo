@@ -110,38 +110,7 @@ export function ProfileLayout(props) {
 					}
 				</div>
 			</div>
-			<div className="text-white text-3xl">
-				<div className="flex flex-col w-1/5 h-full justify-center">
-					<Listbox value={displayOption} onChange={setDisplayOption}>
-						<div className="flex relative w-3/4 text-xl h-1/2 justify-end">
-							<Listbox.Button className="flex w-full h-full bg-[#242424] rounded-lg p-1 justify-center">
-								<div className="flex flex-row align-middle w-full">
-									<span className="w-3/4 align-middle font-normal">
-										{displayOption}
-									</span>
-									<ChevronDownIcon className="text-white h-5 w-1/4 my-auto align-middle"/>
-								</div>
-							</Listbox.Button>
-							<Listbox.Options className="w-full text-center absolute transition rounded-md bg-[#242424] z-50">
-								{
-									["Physical","Digital","Commission"].map((category, id)=>(
-										<Listbox.Option
-											key={id}
-											value = {category}
-											className={({active})=>{
-												return `py-1.5 w-full ${active? "bg-[#2c2c2c] ring-1 ring-[#574878] ring-inset rounded-sm" : ""}`
-											}}
-										>
-											{category}
-										</Listbox.Option>
-									))
-								}
-							</Listbox.Options>
-						</div>
-					</Listbox>
-				</div>
-			</div>
-			<LargeProductExplorer items={listingsExplorerCategory} category={displayOption.toLowerCase()} />
+			<LargeProductExplorer displayOption={[displayOption, setDisplayOption]} items={listingsExplorerCategory} category={displayOption.toLowerCase()} />
 		</div>
 	)
 }

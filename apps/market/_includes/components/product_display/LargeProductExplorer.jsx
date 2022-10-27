@@ -3,11 +3,15 @@ import { useState } from "react";
 import { ChevronDownIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "@includes/components/cards/ProductDisplayCards";
 import { useEffect } from "react";
+import { Listbox } from "@headlessui/react";
 
 export function LargeProductExplorer(props) {
 	const [sortMethod, setSortMethod] = useState("recent");
 
 	const [prodsToDisplay, setProdsToDisplay] = useState(Array(16).fill(<EmptyProductDisplayCardHome/>));
+
+	const [listingsExplorerCategory, setListingsExplorerCategory] = useState();
+	const [displayOption, setDisplayOption] = props.displayOption;
 
 	useEffect(()=>{
 		if(!(props.items && props.category)) return;
@@ -50,10 +54,27 @@ export function LargeProductExplorer(props) {
 					<button className="p-2 bg-[#13171D] rounded-lg">
 						<PaperAirplaneIcon className="h-5 w-5 text-white"/>
 					</button>
-					<button className="flex flex-row gap-x-2 align-middle py-1 px-3 bg-[#13171D] rounded-full" disabled>
-						<span className="my-auto text-white font-semibold text-sm ">Filter View...</span>
-						<ChevronDownIcon className="h-3 w-3 text-white my-auto stroke-2"/>
-					</button>
+					<Listbox value={displayOption} onChange={setDisplayOption}>
+						<Listbox.Button className="relative flex flex-row gap-x-2 align-middle py-1 px-3 bg-[#13171D] rounded-full">
+							<span className="my-auto text-white font-semibold text-sm ">{displayOption}</span>
+							<ChevronDownIcon className="h-3 w-3 text-white my-auto stroke-2"/>
+							<Listbox.Options className="flex flex-col text-center absolute transition bg-[#13171D] z-50 rounded-xl py-1 -ml-3">
+								{
+									["Physical","Digital","Commission"].map((category, id)=>(
+										<Listbox.Option
+											key={id}
+											value = {category}
+											className={({active})=>{
+												return `py-1 px-2 w-full text-sm text-white font-bold ${active? "bg-[#2c2c2c] rounded-sm" : ""}`
+											}}
+										>
+											{category}
+										</Listbox.Option>
+									))
+								}
+							</Listbox.Options>
+						</Listbox.Button>
+					</Listbox>
 				</div>
 			</div>
 			{
