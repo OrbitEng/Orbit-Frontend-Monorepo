@@ -95,13 +95,19 @@ export function ProfileLayout(props) {
 				</div>
 				<div className="flex flex-col my-auto">
 					<div className="flex flex-row gap-x-2">
-						<div className="rounded-lg p-1 font-bold text-md bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] w-fit">
-							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{("@" + marketAccount?.address?.toString()) || "@UserNamePlaceHolder"}</span>
+						<div className={"rounded-lg p-1 font-bold text-md w-fit " + (marketAccount?.address ? ("bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747]") : ("bg-[#535353] animate-pulse w-72 h-6"))}>
+							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{marketAccount?.address ? ("@" + marketAccount?.address?.toString()) : ("")}</span>
 						</div>
 						{isSelf ? <EditProfileModal currentAccount={marketAccount}/>: <></>}
 					</div>	
-					<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.metadata?.name || "NamePlaceholder"}</span>
-					<p className="text-[#5B5B5B]">{marketAccount?.data.metadata?.bio || "King of the hill is my favorite game, im always in first no matter what case it is"}</p>
+					{marketAccount?.data?.metadata?.name ? 
+						(<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.metadata?.name || "NamePlaceholder"}</span>) :
+						(<div className="bg-[#535353] animate-pulse h-14 w-72 my-2 rounded-lg" />)
+					}
+					{marketAccount?.data?.metadata ? 
+						(<p className="text-[#5B5B5B]">{marketAccount?.data.metadata?.bio}</p>) :
+						(<div className="bg-[#535353] animate-pulse h-6 w-96 rounded-lg" />)
+					}
 				</div>
 			</div>
 			<div className="text-white text-3xl">

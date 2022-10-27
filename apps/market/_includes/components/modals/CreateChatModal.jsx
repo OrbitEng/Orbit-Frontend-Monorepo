@@ -13,7 +13,7 @@ export function CreateChatModal(props){
 	const [matrixCaptchaPubkey, setMatrixCaptchaPubkey] = useState(undefined);
 	const [matrixSession, setMatrixSession] = useState(undefined);
 
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
 
     function closeModal() {
         setIsOpen(false)
@@ -24,17 +24,19 @@ export function CreateChatModal(props){
     }
 
     useEffect(async ()=>{
-		if(matrixClient.logged_in)return;
+		if(!matrixClient || matrixClient.logged_in)return;
 
 		let res = await matrixClient.CreateAccountInit();
 		setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
 		setMatrixSession(res.data.session);
+        openModal()
 	},[matrixClient])
 
 	let createChat = useCallback(async ()=>{
 		if(!captchaVal)return;
 		await matrixClient.CreateAccountCaptcha(captchaVal, matrixSession);
 		await matrixClient.CreateAccountFinish(matrixSession);
+        await matrixClient.Login();
         props.setChat(true);
 	},[captchaVal])
 

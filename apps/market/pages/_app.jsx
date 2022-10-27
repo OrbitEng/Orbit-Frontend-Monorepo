@@ -48,6 +48,7 @@ import VendorCacheCtx from '@contexts/VendorCacheCtx';
 
 import CartCtx from '@contexts/CartCtx';
 import ShippingCtx from '@contexts/ShippingCtx';
+import ChatCtx from '@contexts/ChatCtx';
 
 // TODO: init redux here too
 // App wrapper that has all these providers
@@ -68,6 +69,10 @@ function MyApp({ Component, pageProps }) {
 
   const [ productCache, setProductCache] = useState();
   const [ vendorCache, setVendorCache ] = useState();
+  const [ chatState, setChatState ] = useState({
+    isOpen: false,
+    unRead: 5,
+  });
 
   const [cart, setCart] = useState({
     items: []
@@ -147,7 +152,9 @@ function MyApp({ Component, pageProps }) {
                                           <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
                                             <ShippingCtx.Provider value={{shipping, setShipping}}>
                                               <CartCtx.Provider value={{cart, setCart}} >
-                                                <Component {...pageProps} />
+                                                <ChatCtx.Provider value={{chatState, setChatState}} >
+                                                  <Component {...pageProps} />
+                                                </ChatCtx.Provider>
                                               </CartCtx.Provider>
                                             </ShippingCtx.Provider>
                                           </VendorCacheCtx.Provider>

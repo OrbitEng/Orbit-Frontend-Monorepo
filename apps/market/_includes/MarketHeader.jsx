@@ -29,11 +29,11 @@ import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
-import ChatApp from '@includes/ChatApp';
 import ProfileButton from '@includes/components/buttons/ProfileButton';
 import CartSideMenu from './CartSideMenu';
 import CartCtx from '@contexts/CartCtx';
 import PythClientCtx from '@contexts/PythClientCtx';
+import ChatCtx from '@contexts/ChatCtx';
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
@@ -60,7 +60,7 @@ export function HomeHeader(props) {
 	const [chatOpen, setChatOpen] = useState(false);
 
 	const {cart} = useContext(CartCtx);
-	const notifications = 5;
+	const {chatState, setChatState} = useContext(ChatCtx);
 
 	useEffect(async ()=>{
 		let temp_wallet = wallet;
@@ -134,24 +134,24 @@ export function HomeHeader(props) {
 			{props.headerMiddle}
 			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E] z-[60] w-40">
 				<div className="flex flex-row px-2 gap-3">
-						<div className='rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]'>
-							<Link href="/sell">
+						<Link href="/sell">
+							<button className='rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]'>
 								<PlusCircleIcon className="w-3 h-3 lg:w-5 lg:h-5" />
-							</Link>
-						</div>
-						<button
-							className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]"
-							onClick={() => setChatOpen(true)}
-						>
-							<EnvelopeIcon className="w-3 h-3 lg:w-5 lg:h-5" />
-							{
-
-								<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
-									{notifications > 999 ? "+999" : notifications}
-								</span>
-							}
-						</button>
-						<ChatApp open={chatOpen} setOpen={setChatOpen}/>
+							</button>
+						</Link>
+						<Link href="/chat" >
+							<button
+								className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]"
+							>
+								<EnvelopeIcon className="w-3 h-3 lg:w-5 lg:h-5" />
+								{
+									chatState.unRead > 0 &&
+									<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+										{chatState.unRead > 999 ? "+999" : chatState.unRead}
+									</span>
+								}
+							</button>
+						</Link>
 				</div>
 				<div className="flex flex-row px-2 gap-3">
 					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full relative">

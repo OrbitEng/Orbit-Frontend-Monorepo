@@ -131,7 +131,7 @@ export function ProductDisplayCardHome(props) {
 							</div>
 							<div className="relative mx-auto content-center my-2 overflow-visible">
 								<div className={"absolute -bottom-3 -left-3 z-40 p-2  text-white font-bold bg-[#080B1A] bg-opacity-80 rounded-full border-[1px] text-ellipsis " + borderColor}>
-									<span className="text-sm">{prod?.data?.metadata?.price?.toString() || "12.345"}</span>
+									<span className="text-sm">{"$" + (prod?.data?.metadata?.price?.toString() || "12.345")}</span>
 								</div>
 								<div className="overflow-hidden rounded-lg">
 									<Image

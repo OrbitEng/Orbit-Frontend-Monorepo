@@ -15,6 +15,7 @@ import DigitalMarketCtx from '@contexts/DigitalMarketCtx'
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx'
 import CommissionMarketCtx from '@contexts/CommissionMarketCtx'
 import ProductClientCtx from '@contexts/ProductClientCtx'
+import { ChatWidget } from '@includes/Chat'
 
 export function Home(props) {
 	const ref = useRef();
@@ -65,8 +66,6 @@ export function Home(props) {
 
 	}, [digitalMarketClient, physicalMarketClient, commissionMarketClient]);
 
-
-
 	return(
 		<div className="w-full min-h-screen bg-transparent">
 			<Head>
@@ -78,11 +77,11 @@ export function Home(props) {
 				<div className="max-w-6xl align-center mx-auto">
 					<HomeBanner />
 					<PageSearchBar ref={ref}/>
-					<TopVendorsDisplay />
 					<ProductShowcaseRow title="Physical Items" prod_type="physical" addresses={recentPhysicals} searchable />
 					<ProductShowcaseRow title="Digital Products" prod_type="digital" addresses={recentDigitals} searchable />
 					<ProductShowcaseRow title="Commissions" prod_type="commission" addresses={recentCommissions} searchable />
 					<NewsStand />
+					<ChatWidget />
 				</div>
 				<MainFooter />
 			</main>
