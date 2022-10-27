@@ -806,11 +806,14 @@ export function PhysicalFunctionalities(){
             next_open_seller_index,
             seller_tx_log_addr,
             listings_addr,
+
             next_open_buyer_index,
             userAccount.data.buyerPhysicalTransactions,
             buyer_account_addr,
+
             product_addr,
             product.price,
+            
             use_discount
         )
     }

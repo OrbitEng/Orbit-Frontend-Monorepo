@@ -1,17 +1,44 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useContext, useState } from "react"
+import { Fragment, useContext, useState, useEffect} from "react"
 import { CloudArrowUpIcon, InformationCircleIcon, MagnifyingGlassIcon, PaperClipIcon, PencilSquareIcon, TagIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import UserAccountCtx from "@contexts/UserAccountCtx";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
+import ReCAPTCHA from "react-google-recaptcha";
+import { CreateChatModal } from "@includes/components/modals/CreateChatModal";
 
 export default function ChatApp(props) {
 	const {userAccount, setUserAccount} = useContext(UserAccountCtx);
+	const {matrixClient} = useContext(MatrixClientCtx);
 	const [chatSearch, setChatSearch] = useState();
 	const [chatMessage, setChatMessage] = useState();
 
+	const [hasChat, setHasChat] = useState(false);
+	
+
 	function classNames(...classes) {
-		return(classes.filter(Boolean).join(' '))
+		return(classes.filter(Boolean).join(''))
 	}
+
+	useEffect(async ()=>{
+		console.log("has chat status:", hasChat)
+		if(!hasChat) return;
+		await matrixClient.Login();
+		setHasChat(true)
+	},[hasChat])
+
+	useEffect(async()=>{
+		if(matrixClient){
+			try{
+				console.log("logging in")
+				let login_res = await matrixClient.Login();
+				console.log("logged in", login_res)
+			}catch(e){
+				setHasChat(false);
+				console.log("has chat set to false", e)
+			}
+		}
+	},[matrixClient])
 
 	return (
 		<Transition.Root show={props.open} as={Fragment}>
@@ -29,6 +56,7 @@ export default function ChatApp(props) {
 								leaveTo="translate-x-full"
 							>
 								<Dialog.Panel className="pointer-events-auto relative w-screen max-w-5xl flex">
+									{(!hasChat) && <CreateChatModal setChat = {setHasChat}/>}
 									<div className="flex flex-row backdrop-blur-xl h-[30rem] w-[61.5rem] overflow-hidden bg-gradient-to-t from-[#32254E78] to-[#26232C9C] border-t border-x border-[#545454] border-opacity-30 shadow-xl my-auto rounded-xl">
 										<div className="absolute top-0 left-0 flex pt-4 pl-4 justify-start">
 											<button
@@ -61,52 +89,30 @@ export default function ChatApp(props) {
 														onChange={(e) => {setChatSearch(e.target.value)}}
 													/>
 												</div>
-												<div className="flex flex-col mt-6">
+												
+												<div className="flex flex-col mt-6" name="open chats">
 													<span className="text-white text-xs font-bold p-2">Messages <span className="text-blue-500">{props?.notis && " (" + props.notis + ")"}</span></span>
-													<div className="flex flex-row rounded-lg w-full gap-x-3 p-3 bg-gradient-to-r from-[#4A165386] to-[#1F165386]">
-														<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
-															<Image 
-																layout="fill"
-																src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-																objectFit="cover"
-															/>
-														</div>
-														<div className="flex flex-col text-white font-bold text-xl align-middle my-auto justify-start">
-															<span className="text-sm text-[#] -mb-[3px]">{props?.vendor?.nickname || "UserName"}</span>
-															<span className="text-[#535353] text-xs font-normal">{(props?.sellerAddr?.slice(0,10) + "...")  || "DMgY6wi2FV..."}</span>
-														</div>
-														<div className="flex justify-end text-white text-xs flex-grow">{props?.timestamp || "hh:mm"}</div>
-													</div>
-													<div className="flex flex-row rounded-lg w-full gap-x-3 p-3 bg-transparent">
-														<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
-															<Image 
-																layout="fill"
-																src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-																objectFit="cover"
-															/>
-														</div>
-														<div className="flex flex-col text-white font-bold text-xl align-middle my-auto justify-start">
-															<span className="text-sm text-[#] -mb-[3px]">{props?.vendor?.nickname || "UserName"}</span>
-															<span className="text-[#535353] text-xs font-normal">{(props?.sellerAddr?.slice(0,10) + "...")  || "DMgY6wi2FV..."}</span>
-														</div>
-														<div className="flex justify-end text-white text-xs flex-grow">{props?.timestamp || "hh:mm"}</div>
-													</div>
-													<div className="flex flex-row rounded-lg w-full gap-x-3 p-3 bg-transparent">
-														<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
-															<Image 
-																layout="fill"
-																src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
-																objectFit="cover"
-															/>
-														</div>
-														<div className="flex flex-col text-white font-bold text-xl align-middle my-auto justify-start">
-															<span className="text-sm text-[#] -mb-[3px]">{props?.vendor?.nickname || "UserName"}</span>
-															<span className="text-[#535353] text-xs font-normal">{(props?.sellerAddr?.slice(0,10) + "...")  || "DMgY6wi2FV..."}</span>
-														</div>
-														<div className="flex justify-end text-white text-xs flex-grow">{props?.timestamp || "hh:mm"}</div>
-													</div>
+													{
+														Array(3).fill("").map((val, ind)=>(
+															<div className={"flex flex-row rounded-lg w-full gap-x-3 p-3 " + ((ind == 0) ? "bg-gradient-to-r from-[#4A165386] to-[#1F165386]" : "p-3 bg-transparent")} key={ind}>
+																<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
+																	<Image 
+																		layout="fill"
+																		src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+																		objectFit="cover"
+																	/>
+																</div>
+																<div className="flex flex-col text-white font-bold text-xl align-middle my-auto justify-start">
+																	<span className="text-sm text-[#] -mb-[3px]">{props?.vendor?.nickname || "UserName"}</span>
+																	<span className="text-[#535353] text-xs font-normal">{(props?.sellerAddr?.slice(0,10) + "...")  || "DMgY6wi2FV..."}</span>
+																</div>
+																<div className="flex justify-end text-white text-xs flex-grow">{props?.timestamp || "hh:mm"}</div>
+															</div>
+														))
+													}
 												</div>
 											</div>
+
 											<div className="relative flex flex-col flex-grow bg-gradient-to-t from-[#2917514D] to-[#1D045178] overflow-hidden">
 												<div className="sticky w-full bg-[#2C2638] bg-opacity-30">
 													<div className="flex flex-row my-auto rounded-lg w-full gap-x-3 p-3 bg-transparent">

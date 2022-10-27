@@ -1,12 +1,13 @@
 import { PlusIcon, UserCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import Image from "next/image";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useContext } from "react";
 import { useDropzone } from "react-dropzone";
-import { useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import UserAccountCtx from "@contexts/UserAccountCtx";
-import { useContext } from "react";
+
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export function SignupForm(props) {
 	const [nickName, setName] = useState("");
@@ -14,8 +15,27 @@ export function SignupForm(props) {
 	const [reflink, setReflink] = useState("");
 	const {CreateAccount} = MarketAccountFunctionalities();
 	const {setUserAccount} = useContext(UserAccountCtx);
+	const {matrixClient} = useContext(MatrixClientCtx)
 
 	const [pfp, setPfp] = useState("");
+	
+	const [captchaVal, setCaptchaVal] = useState(undefined);
+	const [matrixCaptchaPubkey, setMatrixCaptchaPubkey] = useState(undefined);
+	const [matrixSession, setMatrixSession] = useState(undefined)
+
+	useEffect(async ()=>{
+		if(matrixClient && matrixClient.logged_in)return;
+
+		let res = await matrixClient.CreateAccountInit();
+		setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
+		setMatrixSession(res.data.session);
+	},[matrixClient])
+
+	useEffect(async ()=>{
+		if(!captchaVal)return;
+		await matrixClient.CreateAccountCaptcha(captchaVal, matrixSession);
+		await matrixClient.CreateAccountFinish(matrixSession)
+	},[captchaVal])
 
 	const createAccountCallback = async ()=>{
 		let acc = await CreateAccount(
@@ -102,6 +122,12 @@ export function SignupForm(props) {
 						onChange={(e) => {setBio(e.target.value)}}
 					/>
 				</div>
+				{
+					(matrixCaptchaPubkey && matrixSession) && <ReCAPTCHA 
+						sitekey = {matrixCaptchaPubkey}
+						onChange = {setCaptchaVal}
+					/>
+				}
 				<button
 					className="flex flex-row mt-6 w-full rounded-lg align-middle my-auto py-5 bg-white bg-opacity-10 hover:scale-105 transition duration-200"
 					onClick={createAccountCallback}

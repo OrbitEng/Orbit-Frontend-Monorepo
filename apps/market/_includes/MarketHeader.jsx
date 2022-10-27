@@ -28,7 +28,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
-import CreateAccountButton from '@includes/components/buttons/CreateAccountButton';
+import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
 import ChatApp from '@includes/ChatApp';
 import ProfileButton from '@includes/components/buttons/ProfileButton';
 import CartSideMenu from './CartSideMenu';
@@ -76,9 +76,11 @@ export function HomeHeader(props) {
 		let account_address = "";
 		if (temp_wallet && temp_wallet.publicKey){
 			account_address = (accounts_client.GenAccountAddress(temp_wallet.publicKey));
-			
+			let chat_client = new ChatClient(temp_wallet);
 			let bundlr_client = new BundlrClient(temp_wallet);
-			await bundlr_client.bundlr.ready();
+			await chat_client.initialize();
+			await bundlr_client.initialize();
+			setMatrixClient(chat_client);
 			setBundlrClient(bundlr_client);
 		}
 		try{
@@ -109,7 +111,6 @@ export function HomeHeader(props) {
 		setCommissionMarketClient(new CommissionMarketClient(temp_wallet, connection, provider))
 		setProductClient(new ProductClient(temp_wallet, connection, provider));
 		setTransactionClient(new TransactionClient(temp_wallet, connection, provider));
-		setMatrixClient(new ChatClient());
 
 		setMarketAccountsClient(accounts_client);
 		
@@ -160,7 +161,7 @@ export function HomeHeader(props) {
 							) : (
 								marketAccount ? <ProfileButton selfAccount={marketAccount} setMarketAccount={setMarketAccount}/> :
 								// add market account set here
-								<CreateAccountButton setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
+								<CreateAccountModal setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
 							)
 						}
 					</div>
