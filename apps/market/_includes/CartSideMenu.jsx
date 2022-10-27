@@ -124,7 +124,7 @@ export default function CartSideMenu(props) {
 													<div className="flex flex-col">
 														<div className="rounded-lg flex flex-row justify-between px-8 py-3 border-[1px] border-[#5F5F5F] text-white font-bold text-xl">
 															<span>Total</span>
-															<span>{(cart.total/solPrice).toFixed(9) + " SOL"}</span>
+															<span>{(cart.total > 0 ? (cart.total/solPrice).toFixed(4) : "--") + " SOL"}</span>
 														</div>
 														<button
 															onClick={() => {
