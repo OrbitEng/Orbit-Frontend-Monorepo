@@ -33,6 +33,7 @@ import ProfileButton from '@includes/components/buttons/ProfileButton';
 import CartSideMenu from './CartSideMenu';
 import CartCtx from '@contexts/CartCtx';
 import PythClientCtx from '@contexts/PythClientCtx';
+import ChatCtx from '@contexts/ChatCtx';
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
@@ -59,7 +60,7 @@ export function HomeHeader(props) {
 	const [chatOpen, setChatOpen] = useState(false);
 
 	const {cart} = useContext(CartCtx);
-	const notifications = 5;
+	const {chatState, setChatState} = useContext(ChatCtx);
 
 	useEffect(async ()=>{
 		let temp_wallet = wallet;
@@ -143,8 +144,9 @@ export function HomeHeader(props) {
 							>
 								<EnvelopeIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 								{
+									chatState.unRead > 0 &&
 									<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
-										{notifications > 999 ? "+999" : notifications}
+										{chatState.unRead > 999 ? "+999" : chatState.unRead}
 									</span>
 								}
 							</button>

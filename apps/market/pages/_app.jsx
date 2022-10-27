@@ -71,6 +71,7 @@ function MyApp({ Component, pageProps }) {
   const [ vendorCache, setVendorCache ] = useState();
   const [ chatState, setChatState ] = useState({
     isOpen: false,
+    unRead: 5,
   });
 
   const [cart, setCart] = useState({
