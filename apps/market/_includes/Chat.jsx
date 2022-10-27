@@ -24,7 +24,7 @@ export function ChatWidget(props) {
 		<div className="fixed flex flex-col inset-y-0 right-0">
 			<div 
 				className={
-					"pointer-events-auto transition-all duration-300 relative w-screen flex flex-row z-[130] h-[30rem] mt-[25rem] mb-auto "
+					"pointer-events-auto transition-all duration-300 relative w-screen flex flex-row z-[130] h-[30rem] mt-[20rem] mb-auto "
 					+ (( chatState.isOpen ? (panel === "text" ? "max-w-3xl right-0" : "max-w-md right-0") : " max-w-[3.5rem] right-0"))
 				}
 			>

@@ -8,6 +8,8 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 
+import { ChatWidget } from "@includes/Chat";
+
 const token_addresses = {
 	mainnet: {
 		"solana": "11111111111111111111111111111111",
@@ -138,6 +140,7 @@ export function SellLayout(props){
 						</Transition>
 					</Link>
 					</div>
+					<ChatWidget />
 					<MainFooter />
 				</div>
 			</main>
