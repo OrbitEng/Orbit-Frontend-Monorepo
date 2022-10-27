@@ -7,7 +7,6 @@ import ChatCtx from "@contexts/ChatCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import { ArrowUturnLeftIcon, ChevronDoubleLeftIcon } from "@heroicons/react/24/solid";
 import { CreateChatModal } from "@includes/components/modals/CreateChatModal";
-import ReCAPTCHA from "react-google-recaptcha";
 
 
 export function ChatWidget(props) {
@@ -22,7 +21,7 @@ export function ChatWidget(props) {
 	const [hasChat, setHasChat] = useState(true);
 
 	useEffect(async()=>{
-		if(!matrixClient)return;
+		if(matrixClient && matrixClient.logged_in)return;
 		try{
 			console.log("logging in")
 			let login_res = await matrixClient.Login();
@@ -40,7 +39,7 @@ export function ChatWidget(props) {
 
 	return (
 		<div className="fixed flex flex-col inset-y-0 right-0">
-			{(!hasChat) && <CreateChatModal setChat = {setHasChat}/>}
+			{(!hasChat && chatState.isOpen) && <CreateChatModal setChat = {setHasChat}/>}
 			<div 
 				className={
 					"pointer-events-auto transition-all duration-300 relative w-screen flex flex-row z-[130] h-[30rem] mt-[20rem] mb-auto "
@@ -90,7 +89,7 @@ export function ChatWidget(props) {
 								<div className="relative flex flex-shrink-0 h-16 w-16 rounded-full overflow-hidden mx-auto mt-10">
 									<Image 
 										layout="fill"
-										src={userAccount?.data?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+										src={((userAccount?.data?.profilePic?.charAt(0) == "/" || userAccount?.data?.profilePic?.slice(0,4) == "http" || userAccount?.data?.profilePic?.slice(0,4) == "data") && userAccount.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 										objectFit="cover"
 									/>
 								</div>

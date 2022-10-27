@@ -41,7 +41,14 @@ export function CreateChatModal(props){
 	},[captchaVal])
 
     return (
-        <div className='w-screen h-screen'>
+        <div className=''>
+            <button
+                type="button"
+                onClick={openModal}
+                className="px-4 py-2 text-sm whitespace-nowrap font-medium text-white focus:outline-none"
+            >
+                Create Chat
+            </button>
             <Transition appear show={isOpen} as={Fragment}>
 			<Dialog as="div" className="relative z-[200]" onClose={closeModal} static={true}>
 			<Transition.Child

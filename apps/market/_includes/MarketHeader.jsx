@@ -34,6 +34,7 @@ import CartSideMenu from './CartSideMenu';
 import CartCtx from '@contexts/CartCtx';
 import PythClientCtx from '@contexts/PythClientCtx';
 import ChatCtx from '@contexts/ChatCtx';
+import { CreateChatModal } from './components/modals/CreateChatModal';
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
@@ -56,6 +57,7 @@ export function HomeHeader(props) {
 	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
 
 	const [marketAccount, setMarketAccount] = useState(undefined);
+	const [hasChat, setHasChat] = useState(true);
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [chatOpen, setChatOpen] = useState(false);
 
@@ -82,6 +84,12 @@ export function HomeHeader(props) {
 			await bundlr_client.initialize();
 			setMatrixClient(chat_client);
 			setBundlrClient(bundlr_client);
+
+			try{
+				await chat_client.Login();
+			}catch{
+				setHasChat(false);
+			}
 		}
 		try{
 			if(account_address != ""){
@@ -156,13 +164,10 @@ export function HomeHeader(props) {
 				<div className="flex flex-row px-2 gap-3">
 					<div className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-full relative">
 						{
-							!wallet.connected ? ( 
-								<WalletMultiButton />
-							) : (
-								marketAccount ? <ProfileButton selfAccount={marketAccount} setMarketAccount={setMarketAccount}/> :
-								// add market account set here
-								<CreateAccountModal setMarketAccount={setMarketAccount} connectedWallet={wallet}/>
-							)
+							((!wallet.connected) && <WalletMultiButton />) || 
+							(!marketAccount && <CreateAccountModal setMarketAccount={setMarketAccount} connectedWallet={wallet}/>) || 
+							(!hasChat && <CreateChatModal setChat={setHasChat}/>) || 
+							(<ProfileButton selfAccount={marketAccount} setMarketAccount={setMarketAccount}/>)
 						}
 					</div>
 					<button
