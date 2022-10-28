@@ -1,10 +1,17 @@
 import { useContext, useState, useCallback } from "react";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
+import { DigitalFunctionalities } from "@functionalities/Transactions";
+import { ArQueryClient } from "data-transfer-clients";
+import { SelfMessage, Message  } from "@includes/ChatWidget";
 import Image from "next/image";
 
 
-export function ChatFunctionalities(matrixClient, digitalMarketClient, txAddr, roomId){
+export function ChatFunctionalities(props){
+    const {matrixClient} = useContext(MatrixClientCtx);
+    // const {digitalMarketClient} = useContext(DigitalMarketCtx);
+    const {DecryptImage} = DigitalFunctionalities();
+    // const [arweaveClient, setArweaveClient] = useState(new ArQueryClient());
 
     const [chatLogs, setChatLogs] = useState([]);
 
@@ -14,45 +21,37 @@ export function ChatFunctionalities(matrixClient, digitalMarketClient, txAddr, r
                 if(message.type != "m.room.message"){
                     return undefined;
                 }
-
-                let message_side = message.sender == matrixClient.matrix_name ? " right " : " left ";
         
+                let children = undefined;
+                let msgtext = "";
+
                 // todo: take care of common mimetypes
                 // type : content.info.mimetype
                 switch(message.content.msgtype){
                     case "m.notice":
-                        if(message.content.body == "link set"){
-                            if(await digitalMarketClient.GetLink(txAddr)){
-                                continue;
-                            }
-
-                            digitalMarketClient.UpdateLinkLocal(txAddr);
-                        }else
-                        if(message.content.body.includes("choose blocks")){
-                            if(await digitalMarketClient.GetChosenBlocks(txAddr)){
-                                continue;
-                            }
-                            digitalMarketClient.SetChosenBlocks(txAddr, message.content.body.slice(13).split(","));
+                        if(message.content.body.slice(0,8) == "link set"){
+                            children = <Image
+                                src = {(await DecryptImage(props.txAddr))}
+                                layout="fill"
+                                alt="digital file"
+                                objectFit="contain"
+                                priority={true}
+                            />
                         }
                         
-                        continue;
+                        break;
                     case "m.text":
-                        ret = 
-                            <div className={"w-full" + message_side}>
-                                {message.content.body}
-                            </div>
+                        msgtext = message.content.body;
                         break;
                     case "m.image":
-                        ret =
-                            <div className='relative w-full h-14'>
-                                <Image
-                                    src = {this.MatrixClient.mxcUrlToHttp(message.content.url)}
-                                    layout="fill"
-                                    alt="digital file"
-                                    objectFit="contain"
-                                    priority={true}
-                                />
-                            </div>
+                        
+                        children = <Image
+                            src = {this.MatrixClient.mxcUrlToHttp(message.content.url)}
+                            layout="fill"
+                            alt="digital file"
+                            objectFit="contain"
+                            priority={true}
+                        />
                         break;
                     case "m.file":
                         break;
@@ -62,7 +61,16 @@ export function ChatFunctionalities(matrixClient, digitalMarketClient, txAddr, r
                         break;
                 };
 
-                logs.push(ret)
+                let retelement = message.sender == matrixClient.matrix_name ?
+                <SelfMessage text={msgtext}>
+                    {children}
+                </SelfMessage>
+                :
+                <Message text={msgtext}>
+                    {children}
+                </Message>;
+                
+                logs.push(retelement)
             }
             return logs
     }
@@ -88,7 +96,7 @@ export function ChatFunctionalities(matrixClient, digitalMarketClient, txAddr, r
     }
 
     return {
-        chatLogs,
+        FilterNewChatLogs,
         PollMessages,
         FetchOlderMessages
     }

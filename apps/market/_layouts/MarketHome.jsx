@@ -15,7 +15,7 @@ import DigitalMarketCtx from '@contexts/DigitalMarketCtx'
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx'
 import CommissionMarketCtx from '@contexts/CommissionMarketCtx'
 import ProductClientCtx from '@contexts/ProductClientCtx'
-import { ChatWidget } from '@includes/Chat'
+import { ChatWidget } from '@includes/ChatWidget'
 
 export function Home(props) {
 	const ref = useRef();
