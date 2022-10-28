@@ -25,10 +25,13 @@ export function SignupForm(props) {
 
 	useEffect(async ()=>{
 		if(!matrixClient || matrixClient.logged_in)return;
-
-		let res = await matrixClient.CreateAccountInit();
-		setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
-		setMatrixSession(res.data.session);
+		try{
+			let res = await matrixClient.CreateAccountInit();
+			setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
+			setMatrixSession(res.data.session);
+		}catch(e){
+			return;
+		}
 	},[matrixClient])
 
 	useEffect(async ()=>{
@@ -37,7 +40,7 @@ export function SignupForm(props) {
 		await matrixClient.CreateAccountFinish(matrixSession)
 	},[captchaVal])
 
-	const createAccountCallback = async ()=>{
+	const createAccountCallback = useCallback(async ()=>{
 		let acc = await CreateAccount(
 			{
 				name: nickName,
@@ -49,7 +52,7 @@ export function SignupForm(props) {
 		props.setOpen(false);
 		props.setMarketAccount(acc);
 		setUserAccount(acc);
-	}
+	},[pfp, reflink, nickName, biography])
 
 	const pfpFileCallback = useCallback((acceptedFiles) => {
 		const reader = new FileReader()

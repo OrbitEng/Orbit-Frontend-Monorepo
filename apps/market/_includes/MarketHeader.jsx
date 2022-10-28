@@ -92,7 +92,7 @@ export function HomeHeader(props) {
 				}
 			}
 
-			if(bundlrClient && !bundlrClient.bundlr.address){
+			if(!bundlrClient || (bundlrClient && !bundlrClient.bundlr.address)){
 				let bundlr_client = new BundlrClient(temp_wallet);
 				await bundlr_client.initialize();
 				setBundlrClient(bundlr_client);				
