@@ -169,7 +169,7 @@ export function HomeHeader(props) {
 						{
 							((!wallet.connected) && <WalletMultiButton />) || 
 							((!marketAccount) && <CreateAccountModal setMarketAccount={setMarketAccount} connectedWallet={wallet}/>) || 
-							// ((!hasChat) && <CreateChatModal setChat={setHasChat}/>) || 
+							((!hasChat) && <CreateChatModal setChat={setHasChat}/>) || 
 							(<ProfileButton selfAccount={marketAccount} setMarketAccount={setMarketAccount}/>)
 						}
 					</div>

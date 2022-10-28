@@ -78,10 +78,7 @@ export function CreateChatModal(props){
                                     <span className='text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]'> Hold on! </span>
                                 </div>
                                 <span>
-                                    Make a catalog first before you list!
-                                </span>
-                                <span>
-                                    That way, your products can be seen by everyone
+                                    Make a chat client!
                                 </span>
                                 {
                                     (matrixCaptchaPubkey && matrixSession) && 
