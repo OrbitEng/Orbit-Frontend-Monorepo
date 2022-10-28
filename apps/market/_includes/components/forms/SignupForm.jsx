@@ -24,7 +24,7 @@ export function SignupForm(props) {
 	const [matrixSession, setMatrixSession] = useState(undefined)
 
 	useEffect(async ()=>{
-		if(matrixClient && matrixClient.logged_in)return;
+		if(!matrixClient || matrixClient.logged_in)return;
 
 		let res = await matrixClient.CreateAccountInit();
 		setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);

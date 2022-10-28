@@ -21,7 +21,7 @@ export function ChatWidget(props) {
 	const [hasChat, setHasChat] = useState(true);
 
 	useEffect(async()=>{
-		if(matrixClient && matrixClient.logged_in)return;
+		if(!matrixClient || matrixClient.logged_in)return;
 		try{
 			console.log("logging in")
 			let login_res = await matrixClient.Login();
@@ -39,7 +39,7 @@ export function ChatWidget(props) {
 
 	return (
 		<div className="fixed flex flex-col inset-y-0 right-0">
-			{(!hasChat && chatState.isOpen) && <CreateChatModal setChat = {setHasChat}/>}
+			{/* {(!hasChat && chatState.isOpen) && <CreateChatModal setChat = {setHasChat}/>} */}
 			<div 
 				className={
 					"pointer-events-auto transition-all duration-300 relative w-screen flex flex-row z-[130] h-[30rem] mt-[20rem] mb-auto "
