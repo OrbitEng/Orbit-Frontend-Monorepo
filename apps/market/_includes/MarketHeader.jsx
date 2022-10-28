@@ -77,7 +77,7 @@ export function HomeHeader(props) {
 		let accounts_client = new MarketAccountsClient(temp_wallet, connection, provider);
 
 		if (temp_wallet && temp_wallet.publicKey){
-			if(!matrixClient || matrixClient.logged_in || (temp_wallet.publicKey && (matrixClient.auth_keypair.publicKey.toString() != temp_wallet.publicKey.toString()))){
+			if(!matrixClient || (matrixClient.auth_keypair.publicKey.toString() != temp_wallet.publicKey.toString())){
 
 				let chat_client = new ChatClient(temp_wallet);
 				await chat_client.initialize();
