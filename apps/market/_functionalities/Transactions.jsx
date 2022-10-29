@@ -12,9 +12,7 @@ import { ArQueryClient } from "data-transfer-clients";
 import { PublicKey } from "@solana/web3.js";
 import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 import CommissionMarketCtx from "@contexts/CommissionMarketCtx";
-import { TransactionClient } from "orbit-clients";
 import UserAccountCtx from "@contexts/UserAccountCtx";
-import MatrixClientCtx from "@contexts/MatrixClientCtx";
 
 export function CommonTxFunctionalities(props){
     const {matrixClient} = useContext(MatrixClientCtx);

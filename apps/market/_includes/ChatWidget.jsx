@@ -30,12 +30,19 @@ export function ChatWidget(props) {
     useEffect(async()=>{
         if(!(userAccount && userAccount.data) || !(matrixClient || matrixClient.logged_in)) return;
 
-        await Promise.all((await matrixClient.CheckInvites()).map((room)=>{ return matrixClient.JoinInvite(room.roomid)}));
+        await Promise.all((await matrixClient.CheckInvites()).map((room)=>{
+            return matrixClient.JoinInvite(room.roomid)}
+        ));
         
         let rooms = await matrixClient.GetJoinedRooms();
+        console.log(rooms)
         let rooms_mapped = {};
         rooms.forEach(async (room) => {
-            let other_party_name = (await matrixClient.GetRoomMembers(room.roomid))[0];
+            let members = (await matrixClient.GetRoomMembers(room));
+            if(members.length > 2){
+                return
+            }
+            let other_party_name = members[0]
 			let other_party_data = await marketAccountsClient.GetAccount(other_party_name);
 			other_party_data.data.metadata = await GetMetadata(other_party_data.data.metadata);
 			other_party_data.data.profilePic = await GetPfp(other_party_data.data.profilePic);
