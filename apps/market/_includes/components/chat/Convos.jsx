@@ -2,106 +2,15 @@ import Image from "next/image";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useContext, useState } from "react";
 import UserAccountCtx from "@contexts/UserAccountCtx";
-import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import ChatCtx from "@contexts/ChatCtx";
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
-import { useEffect } from "react";
 
 export function Convos(props){
-    const {transactionClient} = useContext(TransactionClientCtx)
     const {userAccount, setUserAccount} = useContext(UserAccountCtx);
-    const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
     const {chatState, setChatState} = useContext(ChatCtx);
 
     const [chatSearch, setChatSearch] = useState();
 
-    const [chatRooms, setChatRooms] = useState([]);
-
-    useEffect(async()=>{
-        if(!(userAccount && userAccount.data) || !(matrixClient || matrixClient.logged_in)) return;
-
-        await Promise.all((await matrixClient.CheckInvites()).map((room)=>{ return matrixClient.JoinInvite(room.roomid)}));
-        
-        let rooms = await matrixClient.GetJoinedRooms();
-        let rooms_mapped = {};
-        rooms.forEach(async (room) => {
-            rooms_mapped[(await matrixClient.GetRoomMembers(room.roomid))[0]] = {
-                roomid: room.roomid,
-            }
-        })
-        
-        let buyer_transactions = [];
-        let seller_transactions = [];
-        
-        if(userAccount.data.buyerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerDigitalTransactions)).data;
-            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                buyer_transactions.push(txs.openTransactions[i])
-            }
-        }
-        if(userAccount.data.buyerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerPhysicalTransactions)).data;
-            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                buyer_transactions.push(txs.openTransactions[i])
-            }
-        }
-        if(userAccount.data.buyerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerCommissionTransactions)).data;
-            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                buyer_transactions.push(txs.openTransactions[i])
-            }
-        }
-
-        /// other party is the return of this call
-        let buyer_convos = await transactionClient.GetMultipleTransactionSeller(buyer_transactions);
-        let seller_wallets = await transactionClient.GetMultipleTxLogOwners(buyer_convos);
-        for(let i = 0; i < seller_wallets.length; i++){
-            rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
-            rooms_mapped[seller_wallets[i].toString()].side = "buyer";
-        }
-
-
-        if(userAccount.data.sellerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerDigitalTransactions)).data;
-            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                seller_transactions.push(txs.openTransactions[i])
-            }
-        }
-        if(userAccount.data.sellerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerPhysicalTransactions)).data;
-            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                seller_transactions.push(txs.openTransactions[i])
-            }
-        }
-        if(userAccount.data.sellerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerCommissionTransactions)).data;
-            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                seller_transactions.push(txs.openTransactions[i])
-            }
-        }
-
-        let seller_convos = await transactionClient.GetMultipleTransactionBuyer(seller_transactions);
-        let buyer_wallets = await transactionClient.GetMultipleTxLogOwners(seller_convos);
-        for(let i = 0; i < buyer_wallets.length; i++){
-            rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
-            rooms_mapped[buyer_wallets[i].toString()].side = "seller";
-        }
-        
-        setChatRooms(room_objs);
-
-    },[matrixClient, userAccount])
+    
 
     return(
         <div className="flex flex-col w-full h-full px-3 pt-3 flex-shrink-0 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">
@@ -129,6 +38,12 @@ export function Convos(props){
             <div className="flex flex-col mt-6 overflow-hidden">
                 <span className="text-white text-xs font-bold p-2">Messages <span className="text-blue-500">{chatState?.unRead > 0 && " (" + chatState?.unRead + ")"}</span></span>
                 <div className="flex flex-col overflow-y-scroll">
+                    {
+                        [...Object.entries(props.chatRooms)].map(([other_name, room_info])=>{
+                            // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
+                            <ChatPersona roomInfo={room_info} setTextRoom={props.setTextRoom}/>
+                        })
+                    }
                     <ChatPersona />
                     <ChatPersona />
                     <ChatPersona />
@@ -141,17 +56,17 @@ export function Convos(props){
 
 export function ChatPersona(props) {
 	return(
-		<div className={"flex flex-row rounded-lg w-full gap-x-3 p-3 hover:bg-gradient-to-r hover:from-[#4A16534D] hover:to-[#1F16534D]"}>
+		<div className={"flex flex-row rounded-lg w-full gap-x-3 p-3 hover:bg-gradient-to-r hover:from-[#4A16534D] hover:to-[#1F16534D]"} onClick={()=>{props.setTextRoom && props.setTextRoom(props.roomInfo)}}>
 			<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
 				<Image 
 					layout="fill"
-					src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+					src={(props?.roomInfo?.other_party?.data?.profilePic && props.roomInfo.other_party.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 					objectFit="cover"
 				/>
 			</div>
 			<div className="flex flex-col text-white font-bold text-xl align-middle my-auto justify-start">
-				<span className="text-sm text-[#] -mb-[3px]">{props?.vendor?.nickname || "UserName"}</span>
-				<span className="text-[#535353] text-xs font-normal">{(props?.sellerAddr?.slice(0,10) + "...")  || "DMgY6wi2FV..."}</span>
+				<span className="text-sm text-[#] -mb-[3px]">{(props?.roomInfo?.other_party?.data?.metadata?.name && props.roomInfo.other_party.data.metadata.name) || "UserName"}</span>
+				<span className="text-[#535353] text-xs font-normal">{(props?.roomInfo?.other_party?.address?.toString &&( props.roomInfo.other_party.address.toString().slice(0,10) + "..."))  || "DMgY6wi2FV..."}</span>
 			</div>
 			<div className="flex justify-end text-white text-xs flex-grow">{props?.timestamp || "hh:mm"}</div>
 		</div>

@@ -3,11 +3,22 @@ import { InformationCircleIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon, Pencil
 import { Message, SelfMessage, ContractRequest } from "@includes/components/chat/Messages";
 import { useEffect, useRef, useState } from "react";
 import { ChatRoomFunctionalities } from "@functionalities/Chat";
+import { useCallback } from "react";
 
 export function Texts(props){
-    const [chatMessage, setChatMessage] = useState([]);
-    const [roomid, setRoomid] = useState(props.roomid);
-    const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities();
+    const [chatMessages, setChatMessages] = useState([]);
+    // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
+    const [roomData, setRoomData] = useState(props.textRoom);
+    const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities(props.textRoom.roomid, props.textRoom.txid);
+
+    const olderMessages = useCallback(async ()=>{
+        let older_messages = await FetchOlderMessages(chatMessages.length);
+        setChatMessages(curr => [...curr, ...older_messages])
+    },[chatMessages])
+
+    useEffect(async()=>{
+        setChatMessages(await PollMessages(roomData.roomid))
+    },[])
     
     const messageBottomRef = useRef(null);
     useEffect(() => {
@@ -21,13 +32,13 @@ export function Texts(props){
                     <div className="relative flex h-8 w-8 rounded-full overflow-hidden">
                         <Image 
                             layout="fill"
-                            src={props?.vendor?.profilePic || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+                            src={(roomData?.other_party?.data?.profilePic && roomData.other_party.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
                             objectFit="cover"
                         />
                     </div>
                     <div className="flex flex-col my-auto text-white font-bold text-xl align-middle justify-start">
-                        <span className="text-sm -mb-[3px]">{props?.vendor?.nickname || "UserName"}</span>
-                        <span className="text-[#535353] text-xs font-normal">{"@somemarketaddress"}</span>
+                        <span className="text-sm -mb-[3px]">{(roomData?.other_party?.data?.metadata?.name && roomData.other_party.data.metadata.name) || "UserName"}</span>
+                        <span className="text-[#535353] text-xs font-normal">{(props?.roomInfo?.other_party?.address?.toString && ("@"+props.roomInfo.other_party.address.toString().slice(0,10) + "...")) || "@DMgY6wi2FV..." }</span>
                     </div>
                     <button 
                         className="bg-transparent ml-auto"
@@ -39,7 +50,9 @@ export function Texts(props){
             </div>
             <div className="px-5 overflow-y-scroll scrolling-touch">
                 <div className="relative flex flex-col flex-grow">
-                    {/* something something insert conditional for messages here */}
+                    {
+                        chatMessages
+                    }
                     <Message text="hello"/>
                     <SelfMessage text="hello" />
                     <Message text="hello"/>
@@ -81,8 +94,8 @@ export function Texts(props){
                     className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
                     type="text"
                     placeholder="Write a message..."
-                    value={chatMessage}
-                    onChange={(e) => {setChatMessage(e.target.value)}}
+                    value={chatMessages}
+                    onChange={(e) => {setChatMessages(e.target.value)}}
                 />
                 <div className="flex flex-row justify-between w-28">
                     <PaperClipIcon className="h-5 w-5 text-[#949494]" />

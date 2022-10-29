@@ -6,7 +6,7 @@ import { SelfMessage, Message  } from "@includes/components/chat/Messages";
 import Image from "next/image";
 
 
-export function ChatRoomFunctionalities(props){
+export function ChatRoomFunctionalities(roomId, txAddr = ""){
     const {matrixClient} = useContext(MatrixClientCtx);
     // const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {DecryptImage} = DigitalFunctionalities();
@@ -28,7 +28,7 @@ export function ChatRoomFunctionalities(props){
                     case "m.notice":
                         if(message.content.body.slice(0,8) == "link set"){
                             children = <Image
-                                src = {(await DecryptImage(props.txAddr))}
+                                src = {(await DecryptImage(txAddr))}
                                 layout="fill"
                                 alt="digital file"
                                 objectFit="contain"
@@ -76,7 +76,7 @@ export function ChatRoomFunctionalities(props){
      * called on startup
      */
     const PollMessages = async() =>{
-        let messages = matrixClient.GetMessagesForRoom(props.roomId);
+        let messages = matrixClient.GetMessagesForRoom(roomId);
         return FilterNewChatLogs(messages)
     }
 
@@ -84,7 +84,7 @@ export function ChatRoomFunctionalities(props){
      * lazy loading
      */
     const FetchOlderMessages = async(logs_length) =>{
-        let messages = matrixClient.UpdateRoomOlderMessages(props.roomId, logs_length);
+        let messages = matrixClient.UpdateRoomOlderMessages(roomId, logs_length);
         return FilterNewChatLogs(messages)
     }
 
