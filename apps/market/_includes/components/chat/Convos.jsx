@@ -2,13 +2,106 @@ import Image from "next/image";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { useContext, useState } from "react";
 import UserAccountCtx from "@contexts/UserAccountCtx";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import ChatCtx from "@contexts/ChatCtx";
+import TransactionClientCtx from "@contexts/TransactionClientCtx";
+import { useEffect } from "react";
 
 export function Convos(props){
+    const {transactionClient} = useContext(TransactionClientCtx)
     const {userAccount, setUserAccount} = useContext(UserAccountCtx);
+    const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
     const {chatState, setChatState} = useContext(ChatCtx);
 
     const [chatSearch, setChatSearch] = useState();
+
+    const [chatRooms, setChatRooms] = useState([]);
+
+    useEffect(async()=>{
+        if(!(userAccount && userAccount.data) || !(matrixClient || matrixClient.logged_in)) return;
+
+        await Promise.all((await matrixClient.CheckInvites()).map((room)=>{ return matrixClient.JoinInvite(room.roomid)}));
+        
+        let rooms = await matrixClient.GetJoinedRooms();
+        let rooms_mapped = {};
+        rooms.forEach(async (room) => {
+            rooms_mapped[(await matrixClient.GetRoomMembers(room.roomid))[0]] = {
+                roomid: room.roomid,
+            }
+        })
+        
+        let buyer_transactions = [];
+        let seller_transactions = [];
+        
+        if(userAccount.data.buyerDigitalTransactions.toString() != "11111111111111111111111111111111"){
+            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerDigitalTransactions)).data;
+            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
+            for(let i = 0; i < indexes.length; i++){
+                if(indexes[i] == "0") continue;
+                buyer_transactions.push(txs.openTransactions[i])
+            }
+        }
+        if(userAccount.data.buyerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
+            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerPhysicalTransactions)).data;
+            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
+            for(let i = 0; i < indexes.length; i++){
+                if(indexes[i] == "0") continue;
+                buyer_transactions.push(txs.openTransactions[i])
+            }
+        }
+        if(userAccount.data.buyerCommissionTransactions.toString() != "11111111111111111111111111111111"){
+            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerCommissionTransactions)).data;
+            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
+            for(let i = 0; i < indexes.length; i++){
+                if(indexes[i] == "0") continue;
+                buyer_transactions.push(txs.openTransactions[i])
+            }
+        }
+
+        /// other party is the return of this call
+        let buyer_convos = await transactionClient.GetMultipleTransactionSeller(buyer_transactions);
+        let seller_wallets = await transactionClient.GetMultipleTxLogOwners(buyer_convos);
+        for(let i = 0; i < seller_wallets.length; i++){
+            rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
+            rooms_mapped[seller_wallets[i].toString()].side = "buyer";
+        }
+
+
+        if(userAccount.data.sellerDigitalTransactions.toString() != "11111111111111111111111111111111"){
+            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerDigitalTransactions)).data;
+            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
+            for(let i = 0; i < indexes.length; i++){
+                if(indexes[i] == "0") continue;
+                seller_transactions.push(txs.openTransactions[i])
+            }
+        }
+        if(userAccount.data.sellerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
+            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerPhysicalTransactions)).data;
+            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
+            for(let i = 0; i < indexes.length; i++){
+                if(indexes[i] == "0") continue;
+                seller_transactions.push(txs.openTransactions[i])
+            }
+        }
+        if(userAccount.data.sellerCommissionTransactions.toString() != "11111111111111111111111111111111"){
+            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerCommissionTransactions)).data;
+            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
+            for(let i = 0; i < indexes.length; i++){
+                if(indexes[i] == "0") continue;
+                seller_transactions.push(txs.openTransactions[i])
+            }
+        }
+
+        let seller_convos = await transactionClient.GetMultipleTransactionBuyer(seller_transactions);
+        let buyer_wallets = await transactionClient.GetMultipleTxLogOwners(seller_convos);
+        for(let i = 0; i < buyer_wallets.length; i++){
+            rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
+            rooms_mapped[buyer_wallets[i].toString()].side = "seller";
+        }
+        
+        setChatRooms(room_objs);
+
+    },[matrixClient, userAccount])
 
     return(
         <div className="flex flex-col w-full h-full px-3 pt-3 flex-shrink-0 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">

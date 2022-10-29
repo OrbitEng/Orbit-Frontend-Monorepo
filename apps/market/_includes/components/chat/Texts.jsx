@@ -2,14 +2,18 @@ import Image from "next/image";
 import { InformationCircleIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { Message, SelfMessage, ContractRequest } from "@includes/components/chat/Messages";
 import { useEffect, useRef, useState } from "react";
+import { ChatRoomFunctionalities } from "@functionalities/Chat";
 
 export function Texts(props){
-    const [chatMessage, setChatMessage] = useState();
+    const [chatMessage, setChatMessage] = useState([]);
+    const [roomid, setRoomid] = useState(props.roomid);
+    const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities();
     
     const messageBottomRef = useRef(null);
     useEffect(() => {
         messageBottomRef.scrollIntoView
     },[])
+
     return(
         <div className="flex flex-col w-full h-full flex-shrink-0 bg-gradient-to-t from-[#29175180] to-[#1D045180]">
             <div className="sticky w-full bg-[#2C2638] bg-opacity-30 rounded-b-lg">

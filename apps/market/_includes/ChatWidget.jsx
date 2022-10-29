@@ -11,30 +11,13 @@ import { Texts } from "@includes/components/chat/Texts";
 
 
 export function ChatWidget(props) {
-	
-	const {matrixClient} = useContext(MatrixClientCtx);
 	const {chatState, setChatState} = useContext(ChatCtx);
 	const [panel, setPanel] = useState("convos"); // can either be "convos" or "text"
-
-	const [hasChat, setHasChat] = useState(true);
-
-	useEffect(async()=>{
-		if(!matrixClient || matrixClient.logged_in)return;
-		try{
-			console.log("logging in")
-			let login_res = await matrixClient.Login();
-			console.log("logged in", login_res)
-		}catch(e){
-			setHasChat(false);
-			console.log("has chat set to false", e)
-		}
-	},[matrixClient])
 
 	useEffect(() => {console.log(chatState)}, [chatState])
 
 	return (
 		<div className="fixed flex flex-col inset-y-0 right-0">
-			{(!hasChat && chatState.isOpen) && <CreateChatModal setChat = {setHasChat}/>}
 			<div 
 				className={
 					"pointer-events-auto transition-all duration-300 relative w-screen flex flex-row z-[130] h-[30rem] mt-[20rem] mb-auto "
@@ -43,7 +26,8 @@ export function ChatWidget(props) {
 			>
 				<div 
 					className={"relative flex flex-col flex-shrink-0 w-14 pt-4 h-full bg-[#1D152C] z-[130] rounded-l-lg focus:outline-none"}
-					onClick={() => {if(!chatState.isOpen) {
+					onClick={() => {
+						if(!chatState.isOpen) {
 							setChatState(s => ({ ...s, isOpen: !chatState.isOpen}))
 						}
 					}}
@@ -78,20 +62,13 @@ export function ChatWidget(props) {
 					</button>
 				</div>
 				<div className="bg-gradient-to-t from-[#32254E78] to-[#26232C9C] relative w-full backdrop-blur-xl overflow-hidden">
-					{panel === "convos" ? (
-							<Convos/>
-						) : (
-							<Texts/>
-						)}
+					{
+						((panel === "convos") && <Convos/>) ||
+						((panel === "texts") && <Texts/>)
+					}
 				</div>
 			</div>
 		</div>
 				
 	)
-}
-
-
-
-function SelfContractRequest() {
-	return("fuck")
 }

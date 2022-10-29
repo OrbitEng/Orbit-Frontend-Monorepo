@@ -2,18 +2,15 @@ import { useContext, useState, useCallback } from "react";
 import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import { DigitalFunctionalities } from "@functionalities/Transactions";
-import { ArQueryClient } from "data-transfer-clients";
-import { SelfMessage, Message  } from "@includes/ChatWidget";
+import { SelfMessage, Message  } from "@includes/components/chat/Messages";
 import Image from "next/image";
 
 
-export function ChatFunctionalities(props){
+export function ChatRoomFunctionalities(props){
     const {matrixClient} = useContext(MatrixClientCtx);
     // const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {DecryptImage} = DigitalFunctionalities();
     // const [arweaveClient, setArweaveClient] = useState(new ArQueryClient());
-
-    const [chatLogs, setChatLogs] = useState([]);
 
     const FilterNewChatLogs = async(messages) =>{
             let logs = [];
@@ -22,7 +19,7 @@ export function ChatFunctionalities(props){
                     return undefined;
                 }
         
-                let children = undefined;
+                let children = <></>;
                 let msgtext = "";
 
                 // todo: take care of common mimetypes
@@ -79,20 +76,16 @@ export function ChatFunctionalities(props){
      * called on startup
      */
     const PollMessages = async() =>{
-        let messages = matrixClient.GetMessagesForRoom(roomId);
-
-        chatLogs.push(FilterNewChatLogs(messages));
-        setChatLogs(chatLogs);
+        let messages = matrixClient.GetMessagesForRoom(props.roomId);
+        return FilterNewChatLogs(messages)
     }
 
     /**
      * lazy loading
      */
-    const FetchOlderMessages = async() =>{
-        let messages = matrixClient.UpdateRoomOlderMessages(roomId, chatLogs.length);
-
-        chatLogs.push(FilterNewChatLogs(messages));
-        setChatLogs(chatLogs);
+    const FetchOlderMessages = async(logs_length) =>{
+        let messages = matrixClient.UpdateRoomOlderMessages(props.roomId, logs_length);
+        return FilterNewChatLogs(messages)
     }
 
     return {
