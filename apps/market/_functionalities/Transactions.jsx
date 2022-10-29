@@ -4,7 +4,6 @@ import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";
-import ProductClientCtx from "@contexts/ProductClientCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 
 
@@ -15,9 +14,26 @@ import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
 import CommissionMarketCtx from "@contexts/CommissionMarketCtx";
 import { TransactionClient } from "orbit-clients";
 import UserAccountCtx from "@contexts/UserAccountCtx";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
+
+export function CommonTxFunctionalities(props){
+    const {matrixClient} = useContext(MatrixClientCtx);
+
+
+    const OpenChat = async(other_party, txid) => {
+        let roomid =  await matrixClient.StartConvo(other_party)
+        await matrixClient.SendMessage(roomid, "Hi I've opened transaction: " + txid)
+    }
+
+    return{
+        OpenChat
+    }
+}
 
 /// OPENING TX TAKE STRUCTS
 export function DigitalFunctionalities(){
+    const {OpenChat} = CommonTxFunctionalities();
+
     const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
@@ -43,9 +59,10 @@ export function DigitalFunctionalities(){
 
         let buyer_tx_log_addr = userAccount.data.buyerDigitalTransactions;
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-
+        let tx_addr = digitalMarketClient.GenTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = userAccount.address;
-        return digitalMarketClient.OpenTransactionSol(
+        await digitalMarketClient.OpenTransactionSol(
+            tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
             listings_addr,
@@ -55,7 +72,9 @@ export function DigitalFunctionalities(){
             product_addr,
             product.price,
             use_discount
-        )
+        );
+
+        await OpenChat(vendor_account.address.toString(), tx_addr)
     }
 
     const CloseTransactionSol = async(
@@ -127,10 +146,11 @@ export function DigitalFunctionalities(){
 
         let buyer_tx_log_addr = userAccount.data.buyerDigitalTransactions;
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-
+        let tx_addr = digitalMarketClient.GenTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = userAccount.address;
 
-        return digitalMarketClient.OpenTransactionSpl(
+        await digitalMarketClient.OpenTransactionSpl(
+            tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
             listings_addr,
@@ -141,7 +161,8 @@ export function DigitalFunctionalities(){
             currency,
             product.price,
             use_discount
-        )
+        );
+        await OpenChat(vendor_account.address.toString(), tx_addr);
 
     }
 
@@ -218,7 +239,7 @@ export function DigitalFunctionalities(){
             tx_addr,
             market_acc,
             market_auth
-        )
+        );
 
         await digitalMarketClient.CommitLink(
             ar_addr,
@@ -364,6 +385,8 @@ export function DigitalFunctionalities(){
 }
 
 export function CommissionFunctionalities(){
+    const {OpenChat} = CommonTxFunctionalities();
+
     const {commissionMarketClient} = useContext(CommissionMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {transactionClient} = useContext(TransactionClientCtx);
@@ -389,9 +412,11 @@ export function CommissionFunctionalities(){
 
         let buyer_tx_log_addr = userAccount.data.buyerCommissionTransactions;
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let tx_addr = commissionMarketClientGenTransactionAddress(vendor_log_address, sellerIndex);
 
         let buyer_account_addr = userAccount.address;
-        return commissionMarketClient.OpenTransactionSol(
+        await commissionMarketClient.OpenTransactionSol(
+            tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
             listings_addr,
@@ -402,6 +427,8 @@ export function CommissionFunctionalities(){
             product.price,
             use_discount
         )
+
+        await OpenChat(vendor_account.address.toString(), tx_addr);
     }
 
     const CloseTransactionSol = async(
@@ -474,9 +501,11 @@ export function CommissionFunctionalities(){
         let buyer_tx_log_addr = userAccount.data.buyerCommissionTransactions;
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
+        let tx_addr = commissionMarketClientGenTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = userAccount.address;
 
-        return commissionMarketClient.OpenTransactionSpl(
+        await commissionMarketClient.OpenTransactionSpl(
+            tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
             listings_addr,
@@ -492,6 +521,7 @@ export function CommissionFunctionalities(){
             use_discount
         )
 
+        await OpenChat(vendor_account.address.toString(), tx_addr);
     }
 
     const CloseTransactionSpl = async(
@@ -776,6 +806,8 @@ export function CommissionFunctionalities(){
 }
 
 export function PhysicalFunctionalities(){
+    const {OpenChat} = CommonTxFunctionalities();
+
     const {physicalMarketClient} = useContext(PhysicalMarketCtx);
     const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {disputeProgramClient} = useContext(DisputeProgramCtx);
@@ -800,9 +832,12 @@ export function PhysicalFunctionalities(){
 
         let buyer_tx_log_addr = userAccount.data.buyerPhysicalTransactions;
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let tx_addr = physicalMarketClient.GenTransactionAddress(vendor_log_address, sellerIndex);
 
         let buyer_account_addr = userAccount.address;
-        return physicalMarketClient.OpenTransactionSol(
+
+        await  physicalMarketClient.OpenTransactionSol(
+            tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
             listings_addr,
@@ -815,7 +850,9 @@ export function PhysicalFunctionalities(){
             product.price,
             
             use_discount
-        )
+        );
+
+        await OpenChat(vendor_account.address.toString(), tx_addr);
     }
 
     const CloseTransactionSol = async(
@@ -887,10 +924,11 @@ export function PhysicalFunctionalities(){
 
         let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("physical");
         let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-
+        let tx_addr = physicalMarketClient.GenTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = marketAccountsClient.GenAccountAddress();
 
-        return physicalMarketClient.OpenTransactionSpl(
+        await physicalMarketClient.OpenTransactionSpl(
+            tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
             listings_addr,
@@ -904,7 +942,9 @@ export function PhysicalFunctionalities(){
             product.price,
             
             use_discount
-        )
+        );
+
+        await OpenChat(vendor_account.address.toString(), tx_addr);
 
     }
 

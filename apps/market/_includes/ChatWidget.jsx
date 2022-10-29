@@ -5,7 +5,6 @@ import { ChatBubbleLeftEllipsisIcon, ChevronLeftIcon, CloudArrowUpIcon, Envelope
 import ChatCtx from "@contexts/ChatCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import UserAccountCtx from "@contexts/UserAccountCtx";
-import ChatCtx from "@contexts/ChatCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { ArrowUturnLeftIcon, ChevronDoubleLeftIcon } from "@heroicons/react/24/solid";
