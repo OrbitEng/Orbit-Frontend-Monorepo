@@ -76,7 +76,8 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
      * called on startup
      */
     const PollMessages = async() =>{
-        let messages = matrixClient.GetMessagesForRoom(roomId);
+        if(!roomId) return [];
+        let messages = await matrixClient.GetMessagesForRoom(roomId);
         return FilterNewChatLogs(messages)
     }
 
@@ -84,6 +85,7 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
      * lazy loading
      */
     const FetchOlderMessages = async(logs_length) =>{
+        if(!roomId) return [];
         let messages = matrixClient.UpdateRoomOlderMessages(roomId, logs_length);
         return FilterNewChatLogs(messages)
     }
