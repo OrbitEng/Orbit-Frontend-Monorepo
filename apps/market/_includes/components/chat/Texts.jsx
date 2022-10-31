@@ -18,16 +18,12 @@ export function Texts(props){
     const submitReview = useCallback(()=>{
         
     },[]);
-    
+
     const attachPreview = useCallback(()=>{
         
     },[]);
-    
-    const submitFinal = useCallback(()=>{
-        
-    },[]);
 
-    const proposeRate = useCallback(()=>{
+    const submitFinal = useCallback(()=>{
         
     },[]);
 
