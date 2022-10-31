@@ -46,7 +46,7 @@ export function Texts(props){
                     </div>
                     <div className="flex flex-col my-auto text-white font-bold text-xl align-middle justify-start">
                         <span className="text-sm -mb-[3px]">{(roomData?.other_party?.data?.metadata?.name && roomData.other_party.data.metadata.name) || "UserName"}</span>
-                        <span className="text-[#535353] text-xs font-normal">{(props?.roomInfo?.other_party?.address?.toString && ("@"+props.roomInfo.other_party.address.toString().slice(0,10) + "...")) || "@DMgY6wi2FV..." }</span>
+                        <span className="text-[#535353] text-xs font-normal">{(roomData?.other_party?.address?.toString && ("@"+roomData.other_party.address.toString().slice(0,10) + "...")) || "@DMgY6wi2FV..." }</span>
                     </div>
                     <button 
                         className="bg-transparent ml-auto"
