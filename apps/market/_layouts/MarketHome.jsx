@@ -28,13 +28,9 @@ export function Home(props) {
 	const {commissionMarketClient} = useContext(CommissionMarketCtx);
 	const {productClient} = useContext(ProductClientCtx);
 
-	const [recentCommissions, setRecentCommissions] = useState(["11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111"]);
-	const [recentDigitals, setRecentDigitals] = useState(["11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111"]);
-	const [recentPhysicals, setRecentPhysicals] = useState(["11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111", "11111111111111111111111111111111"]);
-
-	// const [recentCommissions, setRecentCommissions] = useState();
-	// const [recentDigitals, setRecentDigitals] = useState();
-	// const [recentPhysicals, setRecentPhysicals] = useState();
+	const [recentCommissions, setRecentCommissions] = useState([]);
+	const [recentDigitals, setRecentDigitals] = useState([]);
+	const [recentPhysicals, setRecentPhysicals] = useState([]);
 
 	useEffect(() => {
 		searchBarVisible ? setHeaderMiddle(<NavBar />) : setHeaderMiddle(<HeaderSearchBar />)

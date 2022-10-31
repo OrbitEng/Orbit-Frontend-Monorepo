@@ -12,8 +12,6 @@ export function EditPhysicalProductModal(props){
     const {ChangeQuantity, ChangeAvailability, ChangePrice, SetMedia, SetInfo} = PhysicalProductFunctionalities();
     const {productClient} = useContext(ProductClientCtx);
 
-    
-
     const [newQuantity, setNewQuantity] = useState(0);
     const [newAvailability, setNewAvailability] = useState(false);
     const [newPrice, setNewPrice] = useState(0);

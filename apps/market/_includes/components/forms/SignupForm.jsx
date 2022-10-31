@@ -87,7 +87,7 @@ export function SignupForm(props) {
 				
 				{
 					pfp ? 
-					<div className="h-32 w-32 relative">
+					<div className="h-32 w-32 relative rounded-full overflow-hidden">
 						<Image
 							src={pfp || "/"}
 							layout="fill"
