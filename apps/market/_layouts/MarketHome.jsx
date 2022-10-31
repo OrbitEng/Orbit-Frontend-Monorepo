@@ -67,7 +67,7 @@ export function Home(props) {
 	}, [digitalMarketClient, physicalMarketClient, commissionMarketClient]);
 
 	return(
-		<div className="w-full min-h-screen bg-transparent">
+		<div className="w-full min-h-screen bg-transparent scrollbar">
 			<Head>
 				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />

@@ -11,30 +11,30 @@ export function Texts(props){
     const [roomData, setRoomData] = useState(props.textRoom);
     const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities(props.textRoom.roomid, props.textRoom.txid);
 
+    useEffect(async()=>{
+        setChatMessages(await PollMessages())
+    },[]);
+
     const olderMessages = useCallback(async ()=>{
         let older_messages = await FetchOlderMessages(chatMessages.length);
         setChatMessages(curr => [...curr, ...older_messages])
     },[chatMessages])
 
-    useEffect(async()=>{
-        setChatMessages(await PollMessages())
-    },[]);
 
     const handleScroll = async event => {
-        const { scrollHeight, scrollTop, clientHeight } = event.target
-        const scrollPosition = scrollHeight - scrollTop - clientHeight
-        if (scrollPosition <= 0) {
-            onRequest()
+        const { scrollHeight, scrollTop, clientHeight } = event.target;
+        if (scrollTop <= 10) {
+            olderMessages
         }
     };
     
     const messageBottomRef = useRef(null);
     useEffect(() => {
         messageBottomRef.scrollIntoView()
-    },[])
+    },[messageBottomRef])
 
     return(
-        <div onScroll={handleScroll} className="flex flex-col w-full h-full flex-shrink-0 bg-gradient-to-t from-[#29175180] to-[#1D045180]">
+        <div className="flex flex-col w-full h-full flex-shrink-0 bg-gradient-to-t from-[#29175180] to-[#1D045180]">
             <div className="sticky w-full bg-[#2C2638] bg-opacity-30 rounded-b-lg">
                 <div className="flex flex-row my-auto rounded-lg w-full gap-x-3 p-3 bg-transparent">
                     <div className="relative flex h-8 w-8 rounded-full overflow-hidden">
@@ -56,8 +56,8 @@ export function Texts(props){
                     </button>
                 </div>
             </div>
-            <div className="px-5 overflow-y-scroll scrolling-touch">
-                <div className="relative flex flex-col flex-grow">
+            <div className="px-5 overflow-y-scroll scrolling-touch scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" onScroll={handleScroll} >
+                <div className="relative flex flex-col flex-grow" >
                     {/* {
                         chatMessages
                     } */}
