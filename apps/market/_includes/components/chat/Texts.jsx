@@ -4,12 +4,39 @@ import { Message, SelfMessage, ContractRequest } from "@includes/components/chat
 import { useEffect, useRef, useState } from "react";
 import { ChatRoomFunctionalities } from "@functionalities/Chat";
 import { useCallback } from "react";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
+import { useContext } from "react";
 
 export function Texts(props){
     const [chatMessages, setChatMessages] = useState([]);
+    const [textMesage, setTextMessage] = useState("");
     // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
     const [roomData, setRoomData] = useState(props.textRoom);
     const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities(props.textRoom.roomid, props.textRoom.txid);
+    const {matrixClient} = useContext(MatrixClientCtx);
+
+    const submitReview = useCallback(()=>{
+        
+    },[]);
+    
+    const attachPreview = useCallback(()=>{
+        
+    },[]);
+    
+    const submitFinal = useCallback(()=>{
+        
+    },[]);
+
+    const proposeRate = useCallback(()=>{
+        
+    },[]);
+
+    const sendChat = useCallback(async()=>{
+        if(textMesage == "") return;
+        if(e.key == "Enter"){
+            await matrixClient.SendMessage(roomData.roomid, textMesage)
+        }
+    },[roomData, textMesage])
 
     useEffect(async()=>{
         setChatMessages(await PollMessages())
@@ -58,9 +85,9 @@ export function Texts(props){
             </div>
             <div className="px-5 overflow-y-scroll scrolling-touch scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" onScroll={handleScroll} >
                 <div className="relative flex flex-col flex-grow" >
-                    {/* {
+                    {
                         chatMessages
-                    } */}
+                    }
                     <Message text="hello"/>
                     <SelfMessage text="hello" />
                     <Message text="hello"/>
@@ -102,8 +129,9 @@ export function Texts(props){
                     className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
                     type="text"
                     placeholder="Write a message..."
-                    value={chatMessages}
-                    onChange={(e) => {setChatMessages(e.target.value)}}
+                    value={textMesage}
+                    onChange={(e) => {setTextMesage(e.target.value)}}
+                    onKeyDown={sendChat}
                 />
                 <div className="flex flex-row justify-between w-28">
                     <PaperClipIcon className="h-5 w-5 text-[#949494]" />

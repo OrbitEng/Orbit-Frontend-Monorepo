@@ -87,3 +87,12 @@ export function ContractRequest(props) {
 		</div>
 	)
 }
+
+export function RateMessage(props){
+	// has accept & counter properties
+	return (
+		<div>
+
+		</div>
+	)
+}
