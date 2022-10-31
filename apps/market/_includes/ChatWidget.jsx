@@ -28,7 +28,7 @@ export function ChatWidget(props) {
 	const [textRoom, setTextRoom] = useState({})
 
     useEffect(async()=>{
-        if(!(userAccount && userAccount.data) || !(matrixClient || matrixClient.logged_in)) return;
+        if(!(userAccount && userAccount.data) || !(matrixClient || matrixClient?.logged_in)) return;
 
         await Promise.all((await matrixClient.CheckInvites()).map((room)=>{
             return matrixClient.JoinInvite(room.roomid)}
