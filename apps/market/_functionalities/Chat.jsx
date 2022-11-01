@@ -59,7 +59,7 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
                         break;
                 };
 
-                let retelement = event.sender.name == matrixClient.display_name ?
+                let retelement = event.sender.name == matrixClient.matrix_name ?
                 <SelfMessage text={msgtext}>
                     {children}
                 </SelfMessage>
@@ -79,6 +79,7 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
     const PollMessages = async() =>{
         if(!roomId) return [];
         let messages = (await matrixClient.GetMessagesForRoom(roomId));
+        console.log(messages)
         return FilterNewChatLogs(messages)
     }
 

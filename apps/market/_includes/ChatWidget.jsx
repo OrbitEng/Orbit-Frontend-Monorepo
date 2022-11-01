@@ -47,7 +47,7 @@ export function ChatWidget(props) {
         
         let rooms = await matrixClient.GetJoinedRooms();
         let rooms_mapped = {};
-		loop_outer:
+
         for(let i = 0; i < rooms.length; i++){
 			let room = rooms[i];
 			await matrixClient.RoomInitSync(room);
@@ -58,36 +58,9 @@ export function ChatWidget(props) {
 				continue
 			}
 
-			let other_party_name = members[0]
+			let desanitized_acc_address = matrixClient.SanitizeName(members[0])
 			let other_party_data;
-
-			let notices = (await matrixClient.GetNoticesForRoom(room)).map(e => e.clearEvent);
-			let info = notices.filter(notice => notice.content.body.slice(0,8) == "userinfo");
-			while(info.length < 1){
-				notices = (await matrixClient.UpdateRoomOlderNotices(room)).map(e => e.clearEvent);
-				if(notices.length == 0){
-					continue loop_outer;
-				}
-				info = notices.filter(notice => notice.content.body.slice(0,8) == "userinfo");
-			};
-
-			if(info.length < 1){
-				await matrixClient.LeaveConvo(room);
-				continue
-			}
-			let parsed_info = JSON.parse(info[0].content.body.slice(9));
-			
-
-			let desanitized_acc_address = "";
-			[...Object.entries(parsed_info)].forEach(([key,val])=>{
-				if(key == matrixClient.matrix_name.toLowerCase()) return;
-				desanitized_acc_address = val;
-			});
-
-			if(desanitized_acc_address == ""){
-				console.log("could not find user address")
-				return;
-			}
+			console.log(desanitized_acc_address)
 
 			try{
 				other_party_data = await marketAccountsClient.GetAccount(

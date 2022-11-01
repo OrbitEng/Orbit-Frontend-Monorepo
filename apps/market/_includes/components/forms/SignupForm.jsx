@@ -8,11 +8,13 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import ReCAPTCHA from "react-google-recaptcha";
+import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 
 export function SignupForm(props) {
 	const [nickName, setName] = useState("");
 	const [biography, setBio] = useState("");
 	const [reflink, setReflink] = useState("");
+	const {marketAccountsClient} = useContext(MarketAccountsCtx);
 	const {CreateAccount} = MarketAccountFunctionalities();
 	const {setUserAccount} = useContext(UserAccountCtx);
 	const {matrixClient} = useContext(MatrixClientCtx)
@@ -52,7 +54,7 @@ export function SignupForm(props) {
 		props.setOpen(false);
 		props.setMarketAccount(acc);
 		setUserAccount(acc);
-	},[pfp, reflink, nickName, biography])
+	},[pfp, reflink, nickName, biography, marketAccountsClient])
 
 	const pfpFileCallback = useCallback((acceptedFiles) => {
 		const reader = new FileReader()

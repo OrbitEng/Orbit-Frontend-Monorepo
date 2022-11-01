@@ -29,14 +29,10 @@ export function MarketAccountFunctionalities(props){
             JSON.stringify(user_metadata)
         );
 
-        await marketAccountsClient.CreateAccount(
+        return await marketAccountsClient.CreateAccount(
             metadata_addr,
             pfp_link,
             reflink
-        );
-
-        return await marketAccountsClient.GetAccount(
-            marketAccountsClient.GenAccountAddress()
         );
     }
 

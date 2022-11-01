@@ -30,13 +30,16 @@ export function Texts(props){
     const sendChat = useCallback(async(e)=>{
         if(textMesage == "") return;
         if(e.key == "Enter"){
-            await matrixClient.SendMessage(roomData.roomid, textMesage)
-            setTextMessage("")
+            setTextMessage("");
+            await matrixClient.SendMessage(roomData.roomid, textMesage);
+            setChatMessages(await PollMessages());
         };
     },[roomData, textMesage])
 
     useEffect(async()=>{
-        setChatMessages(await PollMessages())
+        let polled = await PollMessages();
+        console.log(polled)
+        setChatMessages(polled)
     },[]);
 
     const olderMessages = useCallback(async ()=>{
@@ -80,7 +83,7 @@ export function Texts(props){
                     </button>
                 </div>
             </div>
-            <div className="px-5 overflow-y-scroll scrolling-touch scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full" onScroll={handleScroll} >
+            <div className="px-5 overflow-y-scroll scrolling-touch scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full" onScroll={handleScroll} >
                 <div className="relative flex flex-col flex-grow" >
                     {
                         chatMessages
