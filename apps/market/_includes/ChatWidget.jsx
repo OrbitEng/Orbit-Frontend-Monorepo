@@ -54,7 +54,7 @@ export function ChatWidget(props) {
 			let members = (await matrixClient.GetRoomMembers(room));
 			if(members.length != 1){
 				console.log("improper member count");
-				// await matrixClient.LeaveConvo(room);
+				await matrixClient.LeaveConvo(room);
 				continue
 			}
 
