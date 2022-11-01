@@ -341,7 +341,7 @@ export function DigitalFunctionalities(){
     /// CHAT ONLY
     
     const ChooseBlocks = async(blocks, roomid) =>{
-        await matrixClient.SendNotice(roomid, "choose blocks" + blocks.join(","))
+        await matrixClient.SendNotice(roomid, "chosenblocks:" + blocks.join(","))
     }
 
     const DecryptImage = async(tx_addr) =>{
@@ -747,7 +747,7 @@ export function CommissionFunctionalities(){
     /// CHAT ONLY
     
     const ChooseBlocks = async(blocks, roomid) =>{
-        await matrixClient.SendNotice(roomid, "choose blocks" + blocks.join(","))
+        await matrixClient.SendNotice(roomid, "chosenblocks:" + blocks.join(","))
     }
 
     const DecryptImage = async(tx_addr) =>{

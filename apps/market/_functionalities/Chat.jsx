@@ -28,14 +28,16 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
                 switch(message.content.msgtype){
                     case "m.notice":
                         continue;
-                        if(message.content.body.slice(0,8) == "link set"){
-                            children = <Image
-                                src = {(await DecryptImage(txAddr))}
-                                layout="fill"
-                                alt="digital file"
-                                objectFit="contain"
-                                priority={true}
-                            />
+                        let [noticetype, noticebody] = message.content.body.split(":")[0];
+                        switch(noticetype){
+                            case "chosenblocks":
+                                break;
+                            case "proposerate":
+                                break;
+                            case "previewupdated":
+                                break;
+                            case "finaluploaded":
+                                break;
                         }
                         
                         break;
@@ -79,7 +81,6 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
     const PollMessages = async() =>{
         if(!roomId) return [];
         let messages = (await matrixClient.GetMessagesForRoom(roomId));
-        console.log(messages)
         return FilterNewChatLogs(messages)
     }
 

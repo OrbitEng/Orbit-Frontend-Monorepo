@@ -29,14 +29,14 @@ export function Texts(props){
 
     const olderMessages = useCallback(async ()=>{
         let older_messages = await FetchOlderMessages(chatMessages.length);
-        setChatMessages(curr => [...curr, ...older_messages])
+        setChatMessages(await PollMessages())
     },[chatMessages])
 
 
     const handleScroll = async event => {
         const { scrollHeight, scrollTop, clientHeight } = event.target;
         if (scrollTop <= 10) {
-            olderMessages
+            olderMessages()
         }
     };
 
@@ -63,7 +63,7 @@ export function Texts(props){
                     </button>
                 </div>
             </div>
-            <div className="px-5 overflow-y-scroll scrolling-touch scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full" onScroll={handleScroll} >
+            <div className="px-5 overflow-y-scroll flex flex-col scrolling-touch scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full" onScroll={handleScroll} >
                 <div className="relative flex flex-col flex-grow" >
                     {
                         chatMessages
