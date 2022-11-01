@@ -33,6 +33,7 @@ export function ChatWidget(props) {
 	},[setPanel, setTextRoom])
 
     useEffect(async()=>{
+		// return;
         if(!(userAccount && userAccount.data) || !(matrixClient && matrixClient.logged_in)) return;
 
         await Promise.all((await matrixClient.CheckInvites()).map((room)=>{
@@ -43,9 +44,10 @@ export function ChatWidget(props) {
         let rooms_mapped = {};
         for(let i = 0; i < rooms.length; i++){
 			let room = rooms[i]
+			await matrixClient.RoomInitSync(room)
 			let members = (await matrixClient.GetRoomMembers(room));
 			if(members.length != 1){
-				await matrixClient.LeaveConvo(room);
+				// await matrixClient.LeaveConvo(room);
 				continue
 			}
 
@@ -54,9 +56,8 @@ export function ChatWidget(props) {
 
 			let notices = (await matrixClient.GetNoticesForRoom(room));
 			let info = notices.filter(notice => notice.content.body.slice(0,8) == "userinfo");
-			
 			if(info.length < 1){
-				console.log("info length < 1");
+				// await matrixClient.LeaveConvo(room);
 				continue;
 			};
 
@@ -69,7 +70,6 @@ export function ChatWidget(props) {
 			});
 
 			if(desanitized_acc_address == ""){
-				console.log("could not find user address")
 				return;
 			}
 
@@ -78,7 +78,6 @@ export function ChatWidget(props) {
 					marketAccountsClient.GenAccountAddress(desanitized_acc_address)
 				);
 			}catch(e){
-				console.log("error", e)
 				await matrixClient.LeaveConvo(room);
 				continue;
 			}
@@ -160,10 +159,9 @@ export function ChatWidget(props) {
             rooms_mapped[buyer_wallets[i].toString()].side = "seller";
         }
         
-		console.log(rooms_mapped)
         setChatRooms(rooms_mapped);
 
-    },[matrixClient, userAccount])
+    },[matrixClient, matrixClient && matrixClient.logged_in, userAccount])
 
 	useEffect(() => {console.log(chatState)}, [chatState])
 

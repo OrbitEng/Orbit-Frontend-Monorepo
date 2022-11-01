@@ -46,10 +46,6 @@ export function Convos(props){
                             return <ChatPersona roomInfo={room_info} setTextRoomAndPanel={props.setTextRoomAndPanel} key={index}/>
                         })
                     }
-                    <ChatPersona />
-                    <ChatPersona />
-                    <ChatPersona />
-                    <ChatPersona />
                 </div>
             </div>
         </div>
