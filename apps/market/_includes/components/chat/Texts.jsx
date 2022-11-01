@@ -27,7 +27,7 @@ export function Texts(props){
         
     },[]);
 
-    const sendChat = useCallback(async()=>{
+    const sendChat = useCallback(async(e)=>{
         if(textMesage == "") return;
         if(e.key == "Enter"){
             await matrixClient.SendMessage(roomData.roomid, textMesage)
@@ -126,7 +126,7 @@ export function Texts(props){
                     type="text"
                     placeholder="Write a message..."
                     value={textMesage}
-                    onChange={(e) => {setTextMesage(e.target.value)}}
+                    onChange={(e) => {setTextMessage(e.target.value)}}
                     onKeyDown={sendChat}
                 />
                 <div className="flex flex-row justify-between w-28">
