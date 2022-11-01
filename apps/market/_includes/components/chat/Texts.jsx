@@ -31,7 +31,8 @@ export function Texts(props){
         if(textMesage == "") return;
         if(e.key == "Enter"){
             await matrixClient.SendMessage(roomData.roomid, textMesage)
-        }
+            setTextMessage("")
+        };
     },[roomData, textMesage])
 
     useEffect(async()=>{
@@ -84,7 +85,7 @@ export function Texts(props){
                     {
                         chatMessages
                     }
-                    <Message text="hello"/>
+                    {/* <Message text="hello"/>
                     <SelfMessage text="hello" />
                     <Message text="hello"/>
                     <SelfMessage text="hello" />
@@ -116,7 +117,7 @@ export function Texts(props){
                     <Message text="hello"/>
                     <Message text="hello"/>
                     <Message text="hello"/>
-                    <ContractRequest autoFocus requestName="Custom Logo" />
+                    <ContractRequest autoFocus requestName="Custom Logo" /> */}
                     <div ref={(el)=>{messageBottomRef=el}}/>
                 </div>
             </div>

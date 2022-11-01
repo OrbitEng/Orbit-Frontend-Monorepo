@@ -26,6 +26,7 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
                 // type : content.info.mimetype
                 switch(message.content.msgtype){
                     case "m.notice":
+                        continue;
                         if(message.content.body.slice(0,8) == "link set"){
                             children = <Image
                                 src = {(await DecryptImage(txAddr))}
