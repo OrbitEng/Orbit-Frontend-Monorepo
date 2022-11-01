@@ -3,44 +3,29 @@ import { InformationCircleIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon, Pencil
 import { Message, SelfMessage, ContractRequest } from "@includes/components/chat/Messages";
 import { useEffect, useRef, useState } from "react";
 import { ChatRoomFunctionalities } from "@functionalities/Chat";
-import { useCallback } from "react";
-import MatrixClientCtx from "@contexts/MatrixClientCtx";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
+import { ChatTextInput } from "../inputs/ChatTextInput";
 
 export function Texts(props){
     const [chatMessages, setChatMessages] = useState([]);
-    const [textMesage, setTextMessage] = useState("");
     // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
     const [roomData, setRoomData] = useState(props.textRoom);
     const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities(props.textRoom.roomid, props.textRoom.txid);
-    const {matrixClient} = useContext(MatrixClientCtx);
+    
+    const messageBottomRef = useRef(null);
 
-    const submitReview = useCallback(()=>{
+    const newChat = useCallback(async()=>{
+
+        let polled = await PollMessages();
+        setChatMessages(polled);
+        if(!messageBottomRef) return;
+        messageBottomRef.current.scrollIntoView();
         
-    },[]);
-
-    const attachPreview = useCallback(()=>{
-        
-    },[]);
-
-    const submitFinal = useCallback(()=>{
-        
-    },[]);
-
-    const sendChat = useCallback(async(e)=>{
-        if(textMesage == "") return;
-        if(e.key == "Enter"){
-            setTextMessage("");
-            await matrixClient.SendMessage(roomData.roomid, textMesage);
-            setChatMessages(await PollMessages());
-        };
-    },[roomData, textMesage])
+    },[messageBottomRef]);
 
     useEffect(async()=>{
-        let polled = await PollMessages();
-        console.log(polled)
-        setChatMessages(polled)
-    },[]);
+        await newChat()
+    },[])
 
     const olderMessages = useCallback(async ()=>{
         let older_messages = await FetchOlderMessages(chatMessages.length);
@@ -54,11 +39,6 @@ export function Texts(props){
             olderMessages
         }
     };
-    
-    const messageBottomRef = useRef(null);
-    useEffect(() => {
-        messageBottomRef.scrollIntoView()
-    },[messageBottomRef])
 
     return(
         <div className="flex flex-col w-full h-full flex-shrink-0 bg-gradient-to-t from-[#29175180] to-[#1D045180]">
@@ -90,56 +70,12 @@ export function Texts(props){
                     }
                     {/* <Message text="hello"/>
                     <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <SelfMessage text="hello" />
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <Message text="hello"/>
-                    <Message text="hello"/>
                     <ContractRequest autoFocus requestName="Custom Logo" /> */}
-                    <div ref={(el)=>{messageBottomRef=el}}/>
+                    <div ref={messageBottomRef}/>
                 </div>
+                <ChatTextInput roomid={roomData.roomid} updateChat={newChat}/>
             </div>
-            <div className="sticky flex flex-row mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
-                <input
-                    className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
-                    type="text"
-                    placeholder="Write a message..."
-                    value={textMesage}
-                    onChange={(e) => {setTextMessage(e.target.value)}}
-                    onKeyDown={sendChat}
-                />
-                <div className="flex flex-row justify-between w-28">
-                    <PaperClipIcon className="h-5 w-5 text-[#949494]" />
-                    <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
-                    <TagIcon className="h-5 w-5 text-[#949494]"/>
-                    <PencilSquareIcon className="h-5 w-5 text-[#949494]" />
-                </div>
-            </div>
+           
         </div>
     )   
 }
