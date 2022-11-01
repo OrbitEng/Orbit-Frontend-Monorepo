@@ -35,7 +35,7 @@ export function MarketAccountFunctionalities(props){
             reflink
         );
 
-        return marketAccountsClient.GetAccount(
+        return await marketAccountsClient.GetAccount(
             marketAccountsClient.GenAccountAddress()
         );
     }

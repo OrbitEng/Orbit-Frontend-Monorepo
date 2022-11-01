@@ -7,6 +7,7 @@ import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
 import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
+import { ChatWidget } from "@includes/ChatWidget";
 
 export function GenericLayout(props){
 	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -22,6 +23,7 @@ export function GenericLayout(props){
 				<div className="max-w-7xl align-center mx-auto">
 					{props.children}
 				</div>
+				<ChatWidget />
 				<MainFooter />
 			</main>
 		</div>

@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import { Listbox } from "@headlessui/react";
 import Image from "next/image";
 import { LargeProductExplorer } from "@includes/components/product_display/LargeProductExplorer";
-
+import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import {EditProfileModal} from "@includes/components/modals/EditProfileModal";
@@ -10,14 +10,18 @@ import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from "@functionalities/Products";
 import UserAccountCtx from "@contexts/UserAccountCtx";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
+import { ChatWidget } from "@includes/ChatWidget";
 
 export function ProfileLayout(props) {
 	const { GetAllVendorPhysicalProducts } = PhysicalProductFunctionalities();
 	const { GetAllVendorDigitalProducts } = DigitalProductFunctionalities();
 	const { GetAllVendorCommissionProducts } = CommissionProductFunctionalities();
 	
-	const {GetPfp, GetMetadata, AddVendorPhysicalListings} = MarketAccountFunctionalities();
+	const {GetPfp, GetMetadata} = MarketAccountFunctionalities();
 	const {userAccount} = useContext(UserAccountCtx);
+
+	const {matrixClient} = useContext(MatrixClientCtx)
 
 	const [marketAccount, setMarketAccount] = useState();
 	const [isSelf, setIsSelf] = useState(false);
@@ -98,7 +102,17 @@ export function ProfileLayout(props) {
 						<div className={"rounded-lg p-1 font-bold text-md w-fit " + (marketAccount?.address ? ("bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747]") : ("bg-[#535353] animate-pulse w-72 h-6"))}>
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-[#16C7FF] to-[#C625FF]">{marketAccount?.address ? ("@" + marketAccount?.address?.toString()) : ("")}</span>
 						</div>
-						{isSelf ? <EditProfileModal currentAccount={marketAccount}/>: <></>}
+						{
+							(isSelf && <EditProfileModal currentAccount={marketAccount}/>) || 
+							((matrixClient && matrixClient.logged_in) && 
+							
+							<button className="p-2 bg-[#13171D] rounded-lg" onClick={async ()=>{
+								console.log(marketAccount.data.wallet.toString())
+								await matrixClient.StartConvo(marketAccount.data.wallet.toString())}}>
+								<PaperAirplaneIcon className="h-5 w-5 text-white"/>
+							</button>) ||
+							<></>
+						}
 					</div>	
 					{marketAccount?.data?.metadata?.name ? 
 						(<span className="text-white font-bold text-6xl mb-2">{marketAccount?.data?.metadata?.name || "NamePlaceholder"}</span>) :

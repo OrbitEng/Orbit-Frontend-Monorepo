@@ -33,8 +33,13 @@ function getAssociatedTokenAddress(
 export default function PosModal(props) {
 	const {userAccount} = useContext(UserAccountCtx);
 	const [pageForm, setPageForm] = useState("checkout");
-	const [discounts, setDiscounts] = useState(userAccount.data.disputeDiscounts);
+	const [discounts, setDiscounts] = useState(0);
 	const [prodDiscounted, setProdDiscounted] = useState(Array(props.cart.items.length).fill(false));
+
+	useEffect(()=>{
+		if(!(userAccount && userAccount.data)) return;
+		setDiscounts(userAccount.data.disputeDiscounts)
+	},[userAccount])
 	
 	return(
 		<Transition appear show={props.openPos} as={Fragment}>

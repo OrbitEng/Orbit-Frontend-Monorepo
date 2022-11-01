@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
-import { ChevronDownIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "@includes/components/cards/ProductDisplayCards";
 import { useEffect } from "react";
 import { Listbox } from "@headlessui/react";
@@ -51,9 +51,6 @@ export function LargeProductExplorer(props) {
 					</button>
 				</div>
 				<div className="flex flex-row gap-x-2">
-					<button className="p-2 bg-[#13171D] rounded-lg">
-						<PaperAirplaneIcon className="h-5 w-5 text-white"/>
-					</button>
 					<Listbox value={displayOption} onChange={setDisplayOption}>
 						<Listbox.Button className="relative flex flex-row gap-x-2 align-middle py-1 px-3 bg-[#13171D] rounded-full">
 							<span className="my-auto text-white font-semibold text-sm ">{displayOption}</span>

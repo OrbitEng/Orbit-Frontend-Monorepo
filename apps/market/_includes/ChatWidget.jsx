@@ -28,29 +28,68 @@ export function ChatWidget(props) {
 	const [textRoom, setTextRoom] = useState({})
 
     useEffect(async()=>{
-        if(!(userAccount && userAccount.data) || !(matrixClient || matrixClient.logged_in)) return;
+        if(!(userAccount && userAccount.data) || !(matrixClient && matrixClient.logged_in)) return;
 
         await Promise.all((await matrixClient.CheckInvites()).map((room)=>{
             return matrixClient.JoinInvite(room.roomid)}
         ));
         
         let rooms = await matrixClient.GetJoinedRooms();
-        console.log(rooms)
         let rooms_mapped = {};
-        rooms.forEach(async (room) => {
-            let members = (await matrixClient.GetRoomMembers(room));
-            if(members.length > 2){
-                return
-            }
-            let other_party_name = members[0]
-			let other_party_data = await marketAccountsClient.GetAccount(other_party_name);
+		console.log(rooms)
+        for(let i = 0; i < rooms.length; i++){
+			let room = rooms[i]
+			let members = (await matrixClient.GetRoomMembers(room));
+			console.log(room, members)
+			if(members.length != 1){
+				await matrixClient.LeaveConvo(room);
+				continue
+			}
+			console.log("checking members")
+			let other_party_name = members[0]
+			let other_party_data;
+
+			let notices = (await matrixClient.GetNoticesForRoom(room));
+			let info = notices.filter(notice => notice.content.body.slice(0,8) == "userinfo");
+			
+			if(info.length < 1){
+				console.log("info length < 1");
+				continue;
+			};
+
+			let parsed_info = JSON.parse(info[0].split(":")[1]);
+			console.log(parsed_info)
+
+			let desanitized_acc_address = "";
+			[...Object.entries(parsed_info)].forEach(([key,val])=>{
+				if(key == matrixClient.matrix_name.toLowerCase()) return;
+				desanitized_acc_address = val;
+			});
+
+			if(desanitized_acc_address == ""){
+				console.log("could not find user address")
+				return;
+			}
+
+			try{
+				other_party_data = await marketAccountsClient.GetAccount(
+					marketAccountsClient.GenAccountAddress(desanitized_acc_address)
+				);
+			}catch(e){
+				console.log("error", e)
+				await matrixClient.LeaveConvo(room);
+				continue;
+			}
+			console.log("got room members")
 			other_party_data.data.metadata = await GetMetadata(other_party_data.data.metadata);
 			other_party_data.data.profilePic = await GetPfp(other_party_data.data.profilePic);
-            rooms_mapped[other_party_name] = {
-                roomid: room.roomid,
-                other_party: other_party_data
-            }
-        })
+			console.log("setting")
+			rooms_mapped[other_party_name] = {
+				roomid: room.roomid,
+				other_party: other_party_data
+			}
+		}
+		console.log("checking tx logs")
         
         let buyer_transactions = [];
         let seller_transactions = [];
@@ -121,6 +160,7 @@ export function ChatWidget(props) {
             rooms_mapped[buyer_wallets[i].toString()].side = "seller";
         }
         
+		console.log(rooms_mapped)
         setChatRooms(rooms_mapped);
 
     },[matrixClient, userAccount])

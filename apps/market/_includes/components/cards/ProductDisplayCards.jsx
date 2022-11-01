@@ -59,7 +59,7 @@ export function ProductDisplayCardHome(props) {
 	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
 
 	useEffect(async ()=>{
-		if(props.address == "11111111111111111111111111111111"){
+		if((props.address == "11111111111111111111111111111111") || !marketAccountsClient){
 			return
 		};
 		let tp = undefined;
