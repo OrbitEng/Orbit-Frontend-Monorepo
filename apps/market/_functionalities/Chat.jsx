@@ -45,7 +45,6 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
                         children = <Image
                             src = {this.MatrixClient.mxcUrlToHttp(message.content.url)}
                             layout="fill"
-                            alt="digital file"
                             objectFit="contain"
                             priority={true}
                         />

@@ -5,6 +5,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import ChatCtx from "@contexts/ChatCtx";
 
 export function Convos(props){
+    console.log(props)
     const {userAccount, setUserAccount} = useContext(UserAccountCtx);
     const {chatState, setChatState} = useContext(ChatCtx);
 
@@ -39,9 +40,10 @@ export function Convos(props){
                 <span className="text-white text-xs font-bold p-2">Messages <span className="text-blue-500">{chatState?.unRead > 0 && " (" + chatState?.unRead + ")"}</span></span>
                 <div className="flex flex-col overflow-y-scroll">
                     {
-                        [...Object.entries(props.chatRooms)].map(([other_name, room_info])=>{
+                        [...Object.entries(props.chatRooms)].map(([other_name, room_info], index)=>{
+                            console.log(other_name, room_info);
                             // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
-                            <ChatPersona roomInfo={room_info} setTextRoom={props.setTextRoom}/>
+                            return <ChatPersona roomInfo={room_info} setTextRoomAndPanel={props.setTextRoomAndPanel} key={index}/>
                         })
                     }
                     <ChatPersona />
@@ -55,8 +57,12 @@ export function Convos(props){
 }
 
 export function ChatPersona(props) {
+    console.log(props)
 	return(
-		<div className={"flex flex-row rounded-lg w-full gap-x-3 p-3 hover:bg-gradient-to-r hover:from-[#4A16534D] hover:to-[#1F16534D]"} onClick={()=>{props.setTextRoom && props.setTextRoom(props.roomInfo)}}>
+		<div
+            className={"flex flex-row rounded-lg w-full gap-x-3 p-3 hover:bg-gradient-to-r hover:from-[#4A16534D] hover:to-[#1F16534D]"}
+            onClick={()=>{props.setTextRoomAndPanel && props.setTextRoomAndPanel(props.roomInfo)}}
+        >
 			<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
 				<Image 
 					layout="fill"

@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useContext, useEffect, useState, useRef } from "react"
+import { Fragment, useContext, useEffect, useState, useRef, useCallback } from "react"
 import { ChatBubbleLeftEllipsisIcon, ChevronLeftIcon, CloudArrowUpIcon, EnvelopeIcon, InformationCircleIcon, MagnifyingGlassIcon, PaperAirplaneIcon, PaperClipIcon, PencilSquareIcon, PlusCircleIcon, TagIcon, UserGroupIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import ChatCtx from "@contexts/ChatCtx";
@@ -25,7 +25,12 @@ export function ChatWidget(props) {
 	const [panel, setPanel] = useState("convos"); // can either be "convos" or "text"
 
 	const [chatRooms, setChatRooms] = useState([]);
-	const [textRoom, setTextRoom] = useState({})
+	const [textRoom, setTextRoom] = useState({});
+
+	const setTextRoomAndPanel = useCallback((roominfo)=>{
+		setTextRoom(roominfo);
+		setPanel("text")
+	},[setPanel, setTextRoom])
 
     useEffect(async()=>{
         if(!(userAccount && userAccount.data) || !(matrixClient && matrixClient.logged_in)) return;
@@ -36,16 +41,14 @@ export function ChatWidget(props) {
         
         let rooms = await matrixClient.GetJoinedRooms();
         let rooms_mapped = {};
-		console.log(rooms)
         for(let i = 0; i < rooms.length; i++){
 			let room = rooms[i]
 			let members = (await matrixClient.GetRoomMembers(room));
-			console.log(room, members)
 			if(members.length != 1){
 				await matrixClient.LeaveConvo(room);
 				continue
 			}
-			console.log("checking members")
+
 			let other_party_name = members[0]
 			let other_party_data;
 
@@ -57,8 +60,7 @@ export function ChatWidget(props) {
 				continue;
 			};
 
-			let parsed_info = JSON.parse(info[0].split(":")[1]);
-			console.log(parsed_info)
+			let parsed_info = JSON.parse(info[0].content.body.slice(9));
 
 			let desanitized_acc_address = "";
 			[...Object.entries(parsed_info)].forEach(([key,val])=>{
@@ -80,16 +82,14 @@ export function ChatWidget(props) {
 				await matrixClient.LeaveConvo(room);
 				continue;
 			}
-			console.log("got room members")
 			other_party_data.data.metadata = await GetMetadata(other_party_data.data.metadata);
 			other_party_data.data.profilePic = await GetPfp(other_party_data.data.profilePic);
-			console.log("setting")
-			rooms_mapped[other_party_name] = {
-				roomid: room.roomid,
+
+			rooms_mapped[desanitized_acc_address] = {
+				roomid: room,
 				other_party: other_party_data
 			}
 		}
-		console.log("checking tx logs")
         
         let buyer_transactions = [];
         let seller_transactions = [];
@@ -214,7 +214,7 @@ export function ChatWidget(props) {
 				</div>
 				<div className="bg-gradient-to-t from-[#32254E78] to-[#26232C9C] relative w-full backdrop-blur-xl overflow-hidden">
 					{
-						((panel === "convos") && <Convos chatRooms={chatRooms} setTextRoom={setTextRoom}/>) ||
+						((panel === "convos") && <Convos chatRooms={chatRooms} setTextRoomAndPanel={setTextRoomAndPanel}/>) ||
 						((panel === "text") && <Texts textRoom={textRoom}/>)
 					}
 				</div>
