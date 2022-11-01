@@ -14,7 +14,7 @@ export function Convos(props){
     
 
     return(
-        <div className="flex flex-col w-full h-full px-3 pt-3 flex-shrink-0 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">
+        <div className="flex flex-col w-full h-full px-3 pt-3 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">
             <div className="flex flex-col">
                 <div className="relative flex flex-shrink-0 h-16 w-16 rounded-full overflow-hidden mx-auto mt-10">
                     <Image 

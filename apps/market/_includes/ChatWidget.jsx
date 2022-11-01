@@ -35,37 +35,36 @@ export function ChatWidget(props) {
     useEffect(async()=>{
 		// return;
         if(!(userAccount && userAccount.data) || !(matrixClient && matrixClient.logged_in)) return;
-		console.log(matrixClient);
 
-        await Promise.all((await matrixClient.CheckInvites()).map((room)=>{
-            return matrixClient.JoinInvite(room.roomid)}
-        ));
+		for (let invitation of (await matrixClient.CheckInvites())){
+			try{
+				await matrixClient.JoinInvite(invitation.roomId)
+			}catch(e){
+				await matrixClient.LeaveConvo(invitation.roomId);
+			}
+		}
+        
         
         let rooms = await matrixClient.GetJoinedRooms();
-		console.log("rooms: ", rooms);
         let rooms_mapped = {};
 		loop_outer:
         for(let i = 0; i < rooms.length; i++){
-			let room = rooms[i]
-			await matrixClient.RoomInitSync(room)
+			let room = rooms[i];
+			await matrixClient.RoomInitSync(room);
 			let members = (await matrixClient.GetRoomMembers(room));
-			console.log(room, members)
 			if(members.length != 1){
 				console.log("improper member count");
 				// await matrixClient.LeaveConvo(room);
 				continue
 			}
-			console.log(room, members)
 
 			let other_party_name = members[0]
 			let other_party_data;
 
-			let notices = (await matrixClient.GetNoticesForRoom(room));
-			console.log(notices)
+			let notices = (await matrixClient.GetNoticesForRoom(room)).map(e => e.clearEvent);
 			let info = notices.filter(notice => notice.content.body.slice(0,8) == "userinfo");
-			console.log(info)
 			while(info.length < 1){
-				notices = await matrixClient.UpdateRoomOlderNotices(room);
+				notices = (await matrixClient.UpdateRoomOlderNotices(room)).map(e => e.clearEvent);
 				if(notices.length == 0){
 					continue loop_outer;
 				}
@@ -188,8 +187,8 @@ export function ChatWidget(props) {
 		<div className="fixed flex flex-col inset-y-0 right-0">
 			<div 
 				className={
-					"pointer-events-auto transition-all duration-300 relative w-screen flex flex-row z-[130] h-[30rem] mt-[20rem] mb-auto "
-					+ (( chatState.isOpen ? (panel === "text" ? "max-w-3xl right-0" : "max-w-md right-0") : " max-w-[3.5rem] right-0"))
+					"pointer-events-auto transition-all duration-300 relative w-screen max-w-3xl flex flex-row z-[130] h-[30rem] mt-[20rem] mb-auto "
+					+ (( chatState.isOpen ? (panel === "text" ? "max-w-3xl right-0" : "max-w-xl right-0") : " max-w-[3.5rem] right-0"))
 				}
 			>
 				<div 

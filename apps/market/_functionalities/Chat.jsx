@@ -12,9 +12,10 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
     const {DecryptImage} = DigitalFunctionalities();
     // const [arweaveClient, setArweaveClient] = useState(new ArQueryClient());
 
-    const FilterNewChatLogs = async(messages) =>{
+    const FilterNewChatLogs = async(events) =>{
             let logs = [];
-            for(let message of messages){
+            for(let event of events){
+                let message = event.clearEvent
                 if(message.type != "m.room.message"){
                     return undefined;
                 }
@@ -58,7 +59,7 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
                         break;
                 };
 
-                let retelement = message.sender == matrixClient.matrix_name ?
+                let retelement = event.sender.name == matrixClient.display_name ?
                 <SelfMessage text={msgtext}>
                     {children}
                 </SelfMessage>
@@ -77,7 +78,7 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
      */
     const PollMessages = async() =>{
         if(!roomId) return [];
-        let messages = await matrixClient.GetMessagesForRoom(roomId);
+        let messages = (await matrixClient.GetMessagesForRoom(roomId));
         return FilterNewChatLogs(messages)
     }
 
@@ -86,7 +87,7 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
      */
     const FetchOlderMessages = async(logs_length) =>{
         if(!roomId) return [];
-        let messages = matrixClient.UpdateRoomOlderMessages(roomId, logs_length);
+        let messages = (await matrixClient.UpdateRoomOlderMessages(roomId, logs_length));
         return FilterNewChatLogs(messages)
     }
 
