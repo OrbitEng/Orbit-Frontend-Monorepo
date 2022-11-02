@@ -5,10 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { ChatRoomFunctionalities } from "@functionalities/Chat";
 import { useCallback, useContext } from "react";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
+import CommissionRequestModal from "@includes/components/modals/CommissionRequestModal";
 
 export function ChatTextInput(props){
     const {matrixClient} = useContext(MatrixClientCtx);
     const [textMesage, setTextMessage] = useState("");
+    const [openRequestModal, setOpenRequestModal] = useState(false);
 
     const submitReview = useCallback(()=>{
         
@@ -41,12 +43,15 @@ export function ChatTextInput(props){
                 onChange={(e) => {setTextMessage(e.target.value)}}
                 onKeyDown={sendChat}
             />
-            <div className="flex flex-row justify-between w-28">
+            <div className="flex flex-row justify-between w-24">
                 <PaperClipIcon className="h-5 w-5 text-[#949494]" />
+                <div className="border-x border-[#4D4D4D]" />
                 <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
-                <TagIcon className="h-5 w-5 text-[#949494]"/>
-                <PencilSquareIcon className="h-5 w-5 text-[#949494]" />
+                <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
+                    <TagIcon className="h-5 w-5 text-[#949494]"/>
+                </button>
             </div>
+            <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
         </div>
     )
 }

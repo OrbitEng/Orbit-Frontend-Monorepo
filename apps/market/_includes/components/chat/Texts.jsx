@@ -75,7 +75,6 @@ export function Texts(props){
                 </div>
                 <ChatTextInput roomid={roomData.roomid} updateChat={newChat}/>
             </div>
-           
         </div>
     )   
 }
