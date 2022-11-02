@@ -16,7 +16,6 @@ import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx'
 import CommissionMarketCtx from '@contexts/CommissionMarketCtx'
 import ProductClientCtx from '@contexts/ProductClientCtx'
 import { ChatWidget } from '@includes/ChatWidget'
-import CommissionRequestModal from '@includes/components/modals/CommissionRequestModal'
 
 export function Home(props) {
 	const ref = useRef();
@@ -79,7 +78,6 @@ export function Home(props) {
 					<ProductShowcaseRow title="Commissions" prod_type="commission" addresses={recentCommissions} searchable />
 					<NewsStand />
 					<ChatWidget />
-					<CommissionRequestModal />
 				</div>
 				<MainFooter />
 			</main>

@@ -13,11 +13,9 @@ import { CreateChatModal } from "@includes/components/modals/CreateChatModal";
 import { Convos } from "@includes/components/chat/Convos";
 import { Texts } from "@includes/components/chat/Texts";
 
-
 export function ChatWidget(props) {
 	const {chatState, setChatState} = useContext(ChatCtx);
 	const [panel, setPanel] = useState("convos"); // can either be "convos" or "text"
-
 
 	const [textRoom, setTextRoom] = useState({});
 
@@ -81,6 +79,5 @@ export function ChatWidget(props) {
 				</div>
 			</div>
 		</div>
-				
 	)
 }

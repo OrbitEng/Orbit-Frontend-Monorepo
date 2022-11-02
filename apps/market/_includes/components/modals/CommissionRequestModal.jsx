@@ -1,12 +1,12 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Wallet } from "@project-serum/anchor";
 
 export default function CommissionRequestModal(props) {
 	return(
-		<Transition appear show={false} as={Fragment}>
-			<Dialog as="div" className="relative z-[120]" onClose={() => props.setOpenPos(false)}>
+		<Transition show={props.open} as={Fragment}>
+			<Dialog as="div" className="fixed z-[260]" onClose={() => props.setOpen(false)}>
 			<Transition.Child
 				as={Fragment}
 				enter="ease-out duration-300"
@@ -35,7 +35,7 @@ export default function CommissionRequestModal(props) {
 								<button
 									type="button"
 									className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
-									onClick={() => props.setOpenPos(false)}
+									onClick={() => props.setOpen(false)}
 								>
 									<span className="sr-only">Close panel</span>
 									<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
