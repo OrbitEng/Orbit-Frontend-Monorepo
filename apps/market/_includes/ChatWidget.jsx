@@ -26,6 +26,7 @@ export function ChatWidget(props) {
 
 	useEffect(() => {console.log(chatState)}, [chatState])
 
+
 	return (
 		<div className="fixed flex flex-col inset-y-0 right-0 z-[250]">
 			<div 
@@ -54,7 +55,9 @@ export function ChatWidget(props) {
 					<button
 						className={"mx-auto p-2 rounded-lg bg-opacity-30 " + (panel === "text" && "bg-[#383838]")}
 						onClick={() => {
-							setPanel("text")
+							if (textRoom != {}){
+								setPanel("text")
+							}
 						}}
 					>
 						<PaperAirplaneIcon className="h-6 w-6 mx-auto my-auto text-white" />

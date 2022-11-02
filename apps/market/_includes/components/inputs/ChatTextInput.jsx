@@ -1,9 +1,7 @@
 import Image from "next/image";
-import { InformationCircleIcon, TrashIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { TrashIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
-import { Message, SelfMessage, ContractRequest } from "@includes/components/chat/Messages";
-import { useEffect, useRef, useState } from "react";
-import { ChatRoomFunctionalities } from "@functionalities/Chat";
+import { useState } from "react";
 import { useCallback, useContext } from "react";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import CommissionRequestModal from "@includes/components/modals/CommissionRequestModal";
@@ -60,25 +58,27 @@ export function ChatTextInput(props){
     },[props.roomid, textMesage, files])
 
     return(
-        <div className="sticky flex flex-row mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
+        <div className="absolute flex flex-row mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
             {
                 ((files && files.length > 0) &&
                 
                     <div className="flex flex-row overflow-x-auto w-full">
                         {
                             files.map((imgfile)=>{
-                                return  <div className="relative w-32 h-32 flex flex-col justify-center group">
-                                            <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100">
-                                                <TrashIcon className="w-8 h-8"/>
-                                            </div>
-                                            <div className="overflow-hidden rounded-md w-full h-full">
-                                                <Image 
-                                                    src={imgfile}
-                                                    layout="fill"
-                                                    objectFit="contain"
-                                                />
-                                            </div>
+                                return (
+                                    <div className="relative w-32 h-32 flex flex-col justify-center group">
+                                        <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100">
+                                            <TrashIcon className="w-8 h-8"/>
                                         </div>
+                                        <div className="overflow-hidden rounded-md w-full h-full">
+                                            <Image 
+                                                src={imgfile}
+                                                layout="fill"
+                                                objectFit="contain"
+                                            />
+                                        </div>
+                                    </div>
+                                )
                             })
                         }
                     </div>

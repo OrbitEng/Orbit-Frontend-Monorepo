@@ -1,16 +1,19 @@
 import Image from "next/image";
-import { InformationCircleIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
-import { Message, SelfMessage, ContractRequest } from "@includes/components/chat/Messages";
+import { InformationCircleIcon} from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import { ChatRoomFunctionalities } from "@functionalities/Chat";
-import { useCallback, useContext } from "react";
-import { ChatTextInput } from "../inputs/ChatTextInput";
+import { useCallback } from "react";
+import { ChatTextInput } from "@includes/components/inputs/ChatTextInput";
 
 export function Texts(props){
     const [chatMessages, setChatMessages] = useState([]);
     // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
     const [roomData, setRoomData] = useState(props.textRoom);
-    const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities(props.textRoom.roomid, props.textRoom.txid);
+    const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities(
+        props.textRoom.roomid,
+        props.textRoom.txid,
+        roomData?.other_party?.data?.profilePic
+    );
     
     const messageBottomRef = useRef(null);
 
@@ -63,8 +66,8 @@ export function Texts(props){
                     </button>
                 </div>
             </div>
-            <div className="px-5 overflow-y-scroll flex flex-col scrolling-touch scrollbar scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full" onScroll={handleScroll} >
-                <div className="relative flex flex-col flex-grow" >
+            <div className="px-5 flex flex-col h-full overflow-hidden" >
+                <div className="relative flex flex-col flex-grow overflow-y-scroll h-full mb-16" onScroll={handleScroll} >
                     {
                         chatMessages
                     }

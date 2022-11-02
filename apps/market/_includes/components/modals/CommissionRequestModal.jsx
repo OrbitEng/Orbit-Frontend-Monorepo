@@ -50,7 +50,6 @@ export default function CommissionRequestModal(props) {
 								}
 							</div>
 							<div className="flex flex-col border-[#545454] border-[1px] bg-[#3C3C3C] bg-opacity-[44%] h-60 rounded-xl">
-								
 							</div>
 						</div>
 					</Dialog.Panel>

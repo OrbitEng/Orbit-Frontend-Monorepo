@@ -6,7 +6,11 @@ import { SelfMessage, Message  } from "@includes/components/chat/Messages";
 import Image from "next/image";
 
 
-export function ChatRoomFunctionalities(roomId, txAddr = ""){
+export function ChatRoomFunctionalities(
+    roomId,
+    txAddr = "",
+    pfpData = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"
+){
     const {matrixClient} = useContext(MatrixClientCtx);
     // const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {DecryptImage} = DigitalFunctionalities();
@@ -66,7 +70,7 @@ export function ChatRoomFunctionalities(roomId, txAddr = ""){
                     {children}
                 </SelfMessage>
                 :
-                <Message text={msgtext}>
+                <Message text={msgtext} pfp={pfpData}>
                     {children}
                 </Message>;
                 

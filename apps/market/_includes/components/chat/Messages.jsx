@@ -9,7 +9,7 @@ export function Message(props) {
 					<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
 						<Image 
 							layout="fill"
-							src={(props?.vendor?.profilePic && props?.vendor?.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+							src={props?.pfp || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 							objectFit="cover"
 						/>
 					</div>
