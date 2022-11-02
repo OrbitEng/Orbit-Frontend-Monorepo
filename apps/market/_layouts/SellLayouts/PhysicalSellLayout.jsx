@@ -67,9 +67,7 @@ export function PhysicalUploadForm(props) {
             console.log("init logs render err: ", e)
             setVendorPhysicalTx()
 		}
-	},[productClient, transactionClient, wallet.connected])
-
-	
+	},[productClient, transactionClient, wallet.connected]);
 
 	const onDrop = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
