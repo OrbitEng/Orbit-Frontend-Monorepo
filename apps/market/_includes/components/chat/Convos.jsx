@@ -27,19 +27,23 @@ export function Convos(props){
         if(!(userAccount && userAccount.data) || !(matrixClient && matrixClient.logged_in)) return;
 
 		for (let invitation of (await matrixClient.CheckInvites())){
+            console.log(invitation)
 			try{
 				await matrixClient.JoinInvite(invitation.roomId)
 			}catch(e){
+                console.log(e)
 				await matrixClient.LeaveConvo(invitation.roomId);
 			}
 		}
         
         
         let rooms = await matrixClient.GetJoinedRooms();
+        console.log(rooms)
         let rooms_mapped = {};
 
         for(let i = 0; i < rooms.length; i++){
 			let room = rooms[i];
+            console.log(room)
 			await matrixClient.RoomInitSync(room);
 			let members = (await matrixClient.GetRoomMembers(room));
 			if(members.length != 1){
