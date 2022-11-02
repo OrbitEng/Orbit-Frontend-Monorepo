@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { InformationCircleIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { InformationCircleIcon, TrashIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import { Message, SelfMessage, ContractRequest } from "@includes/components/chat/Messages";
 import { useEffect, useRef, useState } from "react";
@@ -12,16 +12,28 @@ export function ChatTextInput(props){
     const {matrixClient} = useContext(MatrixClientCtx);
     const [textMesage, setTextMessage] = useState("");
     const [openRequestModal, setOpenRequestModal] = useState(false);
-    const [file, setFile] = useState("");
+    const [files, setFiles] = useState([]);
 
     const onDrop = (acceptedFiles) => {
-        const afr = new FileReader()
+        acceptedFiles.forEach((fin)=>{
+            const afr = new FileReader()
             afr.onload = () => {
-                setFile(afr.result);
+                setFiles(cf => [...cf, afr.result]);
             }
-            afr.readAsDataURL(acceptedFiles[0]);
+            afr.readAsDataURL(fin);
+        });
 	}
-	const {open} = useDropzone({onDrop});
+
+    const deleteFile = (filein)=>{
+		let index = files.indexOf(filein);
+		if(index == -1){
+			return;
+		}
+		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)]);
+	}
+
+    const {open} = useDropzone({onDrop});
+
 
     const submitReview = useCallback(()=>{
         
@@ -38,14 +50,40 @@ export function ChatTextInput(props){
     const sendChat = useCallback(async(e)=>{
         if(textMesage == "" || !props.roomid) return;
         if(e.key == "Enter"){
-            setTextMessage("");
+            for(let uploadedimage of files){
+                await matrixClient.UploadImage(props.roomid, uploadedimage)
+            }
             await matrixClient.SendMessage(props.roomid, textMesage);
+            setTextMessage("");
             props.updateChat();
         };
-    },[props.roomid, textMesage])
+    },[props.roomid, textMesage, files])
 
     return(
         <div className="sticky flex flex-row mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
+            {
+                ((files && files.length > 0) &&
+                
+                    <div className="flex flex-row overflow-x-auto w-full">
+                        {
+                            files.map((imgfile)=>{
+                                return  <div className="relative w-32 h-32 flex flex-col justify-center group">
+                                            <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100">
+                                                <TrashIcon className="w-8 h-8"/>
+                                            </div>
+                                            <div className="overflow-hidden rounded-md w-full h-full">
+                                                <Image 
+                                                    src={imgfile}
+                                                    layout="fill"
+                                                    objectFit="contain"
+                                                />
+                                            </div>
+                                        </div>
+                            })
+                        }
+                    </div>
+                )
+            }
             <input
                 className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
                 type="text"
