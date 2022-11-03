@@ -1,0 +1,679 @@
+{
+  "version": "0.1.0",
+  "name": "orbit_product",
+  "instructions": [
+    {
+      "name": "initRecentListings",
+      "docs": [
+        "INIT"
+      ],
+      "accounts": [
+        {
+          "name": "physicalRecentListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "digitalRecentListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "commissionRecentListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initVendorListings",
+      "docs": [
+        "VENDOR LISTINGS UTILS"
+      ],
+      "accounts": [
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "marketType",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "listCommissionProduct",
+      "accounts": [
+        {
+          "name": "commissionProduct",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "prod",
+          "type": {
+            "defined": "OrbitProductStruct"
+          }
+        }
+      ]
+    },
+    {
+      "name": "listDigitalProduct",
+      "accounts": [
+        {
+          "name": "digitalProduct",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "prod",
+          "type": {
+            "defined": "OrbitProductStruct"
+          }
+        },
+        {
+          "name": "fileType",
+          "type": {
+            "defined": "DigitalFileTypes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "listPhysicalProduct",
+      "accounts": [
+        {
+          "name": "physProduct",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "prod",
+          "type": {
+            "defined": "OrbitProductStruct"
+          }
+        },
+        {
+          "name": "quantity",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "unlistProduct",
+      "accounts": [
+        {
+          "name": "prod",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transferVendorListingsOwnership",
+      "docs": [
+        "OWNERSHIP TRANSFER"
+      ],
+      "accounts": [
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destinationWallet",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transferAllVendorListingsOwnership",
+      "accounts": [
+        {
+          "name": "physicalVendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "digitalVendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "commissionVendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destinationWallet",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "listingsOwner",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "markProdAvailable",
+      "docs": [
+        "PRODUCT MODIFIERS"
+      ],
+      "accounts": [
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "markProdUnavailable",
+      "accounts": [
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "updateProductPrice",
+      "accounts": [
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "price",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "setMedia",
+      "accounts": [
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "link",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "setProdInfo",
+      "accounts": [
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "info",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "updateProductQuantity",
+      "docs": [
+        "PHYSICAL"
+      ],
+      "accounts": [
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "qnt",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "updateProductQuantityInternal",
+      "accounts": [
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "callerAuth",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "qnt",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "setFileType",
+      "docs": [
+        "DIGITAL"
+      ],
+      "accounts": [
+        {
+          "name": "product",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "fileType",
+          "type": {
+            "defined": "DigitalFileTypes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "flushListings",
+      "accounts": [
+        {
+          "name": "vendorListings",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerWallet",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ListingsStruct",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "listingsOwner",
+            "type": "publicKey"
+          },
+          {
+            "name": "addressAvailable",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          },
+          {
+            "name": "productAvailable",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DigitalProduct",
+      "docs": [
+        "DIGITAL"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "metadata",
+            "type": {
+              "defined": "OrbitProductStruct"
+            }
+          },
+          {
+            "name": "digitalFileType",
+            "type": {
+              "defined": "DigitalFileTypes"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PhysicalProduct",
+      "docs": [
+        "PHYSICAL"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "metadata",
+            "type": {
+              "defined": "OrbitProductStruct"
+            }
+          },
+          {
+            "name": "quantity",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CommissionProduct",
+      "docs": [
+        "COMMISSION"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "metadata",
+            "type": {
+              "defined": "OrbitProductStruct"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RecentMarketListings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "marketType",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "pubkeys",
+            "type": {
+              "array": [
+                "publicKey",
+                25
+              ]
+            }
+          },
+          {
+            "name": "index",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "OrbitProductStruct",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "info",
+            "type": "string"
+          },
+          {
+            "name": "ownerCatalog",
+            "type": "publicKey"
+          },
+          {
+            "name": "index",
+            "type": "u8"
+          },
+          {
+            "name": "price",
+            "type": "u64"
+          },
+          {
+            "name": "deliveryEstimate",
+            "type": "u8"
+          },
+          {
+            "name": "media",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DigitalFileTypes",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Text"
+          },
+          {
+            "name": "Video"
+          },
+          {
+            "name": "Audio"
+          },
+          {
+            "name": "Image"
+          },
+          {
+            "name": "Folder"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AddressUnavailable",
+      "msg": "requested PDA is unavailable"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidCatalogType",
+      "msg": "given address is not a recent catalog"
+    }
+  ],
+  "metadata": {
+    "address": "97yvrxpWXrsurDgiWiskJ4KcQhFZJF6SrLoUYA53bpBL"
+  }
+}

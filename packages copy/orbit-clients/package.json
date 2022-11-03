@@ -1,0 +1,12 @@
+{
+  "name": "orbit-clients",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@project-serum/anchor": "^0.25.0"
+  }
+}

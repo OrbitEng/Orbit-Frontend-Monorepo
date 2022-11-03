@@ -1,0 +1,12 @@
+{
+  "name": "data-transfer-clients",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "matrix-js-sdk": "^19.4.0",
+    "tweetnacl": "^1.0.3"
+  }
+}
