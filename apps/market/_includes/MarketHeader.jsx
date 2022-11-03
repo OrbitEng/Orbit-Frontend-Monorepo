@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import OrbitLogo from '../public/OrbitLogo.png'
 
 import * as anchor from "@project-serum/anchor";
 
@@ -133,7 +132,7 @@ export function HomeHeader(props) {
 				<Link href="/">
 					<div className="relative flex flex-shrink-0 h-full w-full">
 						<Image
-							src={OrbitLogo}
+							src={"/OrbitLogo.png"}
 							layout="fill"
 							alt="The Name and Logo for the Orbit market"
 							objectFit="contain"
