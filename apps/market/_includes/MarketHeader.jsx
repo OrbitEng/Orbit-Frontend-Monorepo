@@ -131,7 +131,6 @@ export function HomeHeader(props) {
 			<div className="relative flex flex-shrink-0 py-auto w-40 align-middle content-start cursor-pointer p-2">
 				<Link href="/">
 					<div className="relative flex flex-shrink-0 h-full w-full">
-						
 						<Image
 							src={"/OrbitLogo.png"}
 							layout="fill"
