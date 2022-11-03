@@ -30,7 +30,6 @@ export function ChatRoomFunctionalities(
                 // todo: take care of common mimetypes
                 // type : content.info.mimetype
                 switch(message.content.msgtype){
-                    
                     case "m.notice":
                         continue;
                         let [noticetype, noticebody] = message.content.body.split(":")[0];
