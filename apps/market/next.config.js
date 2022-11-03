@@ -6,8 +6,6 @@ const withTM = require('next-transpile-modules')([
   'orbit-clients',
   'browser-clients',
   'data-transfer-clients',
-  "accounts-program",
-  "multisig"
 ]);
 
 const withPWA = require('next-pwa');
