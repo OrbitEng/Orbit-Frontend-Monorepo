@@ -127,7 +127,7 @@ export function HomeHeader(props) {
 	}, [wallet.connected, wallet.publicKey])
 
 	return(
-		<header className="mx-auto max-w-7xl h-14 lg:h-32 top-0 sticky flex flex-row justify-between bg-transparent backdrop-blur z-50 overflow-visible w-full">
+		<header className="mx-auto max-w-7xl h-14 lg:h-32 top-0 inset-x-0 sticky flex flex-row justify-between bg-transparent backdrop-blur z-50 overflow-visible w-full">
 			<div className="relative flex flex-shrink-0 py-auto w-40 align-middle content-start cursor-pointer p-2">
 				<Link href="/">
 					<div className="relative flex flex-shrink-0 h-full w-full">

@@ -26,9 +26,13 @@ export function ChatWidget(props) {
 
 	useEffect(() => {console.log(chatState)}, [chatState])
 
+	const account = useContext(UserAccountCtx);
+	useEffect(() => {
+		console.log(account?.userAccount)
+	}, account)
 
 	return (
-		<div className="fixed flex flex-col inset-y-0 right-0 z-[0]">
+		<div className={"inset-y-0 right-0 z-[0] " + (account?.userAccount ? "fixed flex flex-col" : "hidden") }>
 			<div 
 				className={
 					"pointer-events-auto transition-all duration-300 relative w-screen max-w-3xl flex flex-row z-[250] h-[30rem] mt-[20rem] mb-auto "
