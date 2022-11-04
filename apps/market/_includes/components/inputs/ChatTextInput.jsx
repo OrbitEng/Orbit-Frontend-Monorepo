@@ -58,19 +58,19 @@ export function ChatTextInput(props){
     },[props.roomid, textMesage, files])
 
     return(
-        <div className="absolute flex flex-row mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
+        <div className="absolute flex flex-col  mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
             {
                 ((files && files.length > 0) &&
                 
-                    <div className="flex flex-row overflow-x-auto w-full">
+                    <div className="flex flex-row overflow-x-auto w-full my-2 border-b border-[#545454] place-items-center border-2 gap-4">
                         {
                             files.map((imgfile)=>{
                                 return (
-                                    <div className="relative w-32 h-32 flex flex-col justify-center group">
-                                        <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100">
+                                    <div className="relative w-32 h-32 flex flex-col justify-center group w-full border-2">
+                                        <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 text-gray-700 z-[1]">
                                             <TrashIcon className="w-8 h-8"/>
                                         </div>
-                                        <div className="overflow-hidden rounded-md w-full h-full">
+                                        <div className="relative overflow-hidden rounded-md w-full h-full z-[0]">
                                             <Image 
                                                 src={imgfile}
                                                 layout="fill"
@@ -84,23 +84,26 @@ export function ChatTextInput(props){
                     </div>
                 )
             }
-            <input
-                className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
-                type="text"
-                placeholder="Write a message..."
-                value={textMesage}
-                onChange={(e) => {setTextMessage(e.target.value)}}
-                onKeyDown={sendChat}
-            />
-            <div className="flex flex-row justify-between w-24">
-                <PaperClipIcon className="h-5 w-5 text-[#949494]" onClick={open}/>
-                <div className="border-x border-[#4D4D4D]" />
-                <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
-                <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
-                    <TagIcon className="h-5 w-5 text-[#949494]"/>
-                </button>
+            <div className="flex flex-row w-full">
+
+                <input
+                    className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
+                    type="text"
+                    placeholder="Write a message..."
+                    value={textMesage}
+                    onChange={(e) => {setTextMessage(e.target.value)}}
+                    onKeyDown={sendChat}
+                />
+                <div className="flex flex-row justify-between w-24">
+                    <PaperClipIcon className="h-5 w-5 text-[#949494]" onClick={open}/>
+                    <div className="border-x border-[#4D4D4D]" />
+                    <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
+                    <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
+                        <TagIcon className="h-5 w-5 text-[#949494]"/>
+                    </button>
+                </div>
+                <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
             </div>
-            <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
         </div>
     )
 }
