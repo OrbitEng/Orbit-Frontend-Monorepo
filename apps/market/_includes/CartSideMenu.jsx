@@ -1,16 +1,22 @@
 import { Fragment, useContext, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { BoltIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { BoltIcon, UserPlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { CartFunctionalities } from '@functionalities/Cart';
 import PythClientCtx from "@contexts/PythClientCtx";
 import Image from "next/image";
+import { useWallet } from '@solana/wallet-adapter-react';
 import PosModal from './components/modals/PosModal';
+
 import CartCtx from '@contexts/CartCtx';
+import UserAccountCtx from '@contexts/UserAccountCtx';
+
 
 export default function CartSideMenu(props) {
 	const [openPos, setOpenPos] = useState(false);
 	const [solPrice, setSolPrice] = useState();
 	const {pythClient} = useContext(PythClientCtx);
+	const {account} = useContext(UserAccountCtx);
+	const wallet = useWallet();
 
 	useEffect(async ()=>{
 		if(!pythClient)return
@@ -128,15 +134,26 @@ export default function CartSideMenu(props) {
 														</div>
 														<button
 															onClick={() => {
-																setOpenPos(true)
+																if (wallet?.connected && (account != {})) {
+																	setOpenPos(true)
+																}
 															}}
 															className="py-4 z-[120] flex flex-row justify-center bg-gradient-to-tr from-[#464255A6] via-[#2D2A35A6] to-[#2D2A35A6] rounded-lg mt-4"
 														>
-															<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
-																<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
-																Buy Now
-															</span>
-														</button>
+														{
+															(wallet?.connected && (account != {})) ?  
+																<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
+																	<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
+																	Buy Now
+																</span>
+																:
+																// TODO(M): make this link to the react hook that makes an account
+																<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#A637F0] to-[#FAB6FD] font-bold flex flex-row my-auto">
+																	<UserPlusIcon className="h-4 w-4 text-[#A637F0] stroke-[2.5px] my-auto mr-1 " />
+																	Create Account
+																</span>
+														}
+														</button> 
 														<PosModal openPos={openPos} setOpenPos={setOpenPos} cart={cart} setCart={setCart} solPrice={solPrice}/>
 													</div>
 												</div>
