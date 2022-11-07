@@ -11,8 +11,8 @@ export function Texts(props){
     const [chatMessages, setChatMessages] = useState([]);
     // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
     const [roomData, setRoomData] = useState(props.textRoom);
-    const {PollMessages, FetchOlderMessages} = ChatRoomFunctionalities(
-        props.textRoom.roomid,
+    const {PollMessages, FetchOlderMessages, FilterNewChatLogs} = ChatRoomFunctionalities(
+        props.textRoom.roomId,
         props.textRoom.txid,
         roomData?.other_party?.data?.profilePic
     );
@@ -28,9 +28,16 @@ export function Texts(props){
         
     },[messageBottomRef]);
 
-    useEffect(async()=>{
-        await newChat()
+    // useEffect(async()=>{
+    //     await newChat()
+    // },[])
+
+    useEffect(async ()=>{
+        setChatMessages(
+            await FilterNewChatLogs(props.textRoom.timeline)
+        );
     },[])
+
 
     const olderMessages = useCallback(async ()=>{
         let older_messages = await FetchOlderMessages(chatMessages.length);

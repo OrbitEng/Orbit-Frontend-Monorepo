@@ -17,66 +17,67 @@ export function ChatRoomFunctionalities(
     // const [arweaveClient, setArweaveClient] = useState(new ArQueryClient());
 
     const FilterNewChatLogs = async(events) =>{
-            let logs = [];
-            for(let event of events){
-                let message = event.clearEvent
-                if(message.type != "m.room.message"){
-                    return undefined;
-                }
-        
-                let children = <></>;
-                let msgtext = "";
-
-                // todo: take care of common mimetypes
-                // type : content.info.mimetype
-                switch(message.content.msgtype){
-                    case "m.notice":
-                        continue;
-                        let [noticetype, noticebody] = message.content.body.split(":")[0];
-                        switch(noticetype){
-                            case "chosenblocks":
-                                break;
-                            case "proposerate":
-                                break;
-                            case "previewupdated":
-                                break;
-                            case "finaluploaded":
-                                break;
-                        }
-                        
-                        break;
-                    case "m.text":
-                        msgtext = message.content.body;
-                        break;
-                    case "m.image":
-                        
-                        children = <Image
-                            src = {matrixClient.mxcUrlToHttp(message.content.url)}
-                            layout="fill"
-                            objectFit="contain"
-                            priority={true}
-                        />
-                        break;
-                    case "m.file":
-                        break;
-                    case "m.audio":
-                        break;
-                    case "m.video":
-                        break;
-                };
-
-                let retelement = event.sender.name == matrixClient.matrix_name ?
-                <SelfMessage text={msgtext}>
-                    {children}
-                </SelfMessage>
-                :
-                <Message text={msgtext} pfp={pfpData}>
-                    {children}
-                </Message>;
-                
-                logs.push(retelement)
+        console.log(events)
+        let logs = [];
+        for(let event of events.filter(e => e.clearEvent)){
+            let message = event.clearEvent
+            if(message.type != "m.room.message"){
+                return undefined;
             }
-            return logs
+    
+            let children = <></>;
+            let msgtext = "";
+
+            // todo: take care of common mimetypes
+            // type : content.info.mimetype
+            switch(message.content.msgtype){
+                case "m.notice":
+                    continue;
+                    let [noticetype, noticebody] = message.content.body.split(":")[0];
+                    switch(noticetype){
+                        case "chosenblocks":
+                            break;
+                        case "proposerate":
+                            break;
+                        case "previewupdated":
+                            break;
+                        case "finaluploaded":
+                            break;
+                    }
+                    
+                    break;
+                case "m.text":
+                    msgtext = message.content.body;
+                    break;
+                case "m.image":
+                    
+                    children = <Image
+                        src = {message.content.url}
+                        layout="fill"
+                        objectFit="contain"
+                        priority={true}
+                    />
+                    break;
+                case "m.file":
+                    break;
+                case "m.audio":
+                    break;
+                case "m.video":
+                    break;
+            };
+
+            let retelement = event.sender.name == matrixClient.matrix_name ?
+            <SelfMessage text={msgtext}>
+                {children}
+            </SelfMessage>
+            :
+            <Message text={msgtext} pfp={pfpData}>
+                {children}
+            </Message>;
+            
+            logs.push(retelement)
+        }
+        return logs
     }
 
     /**

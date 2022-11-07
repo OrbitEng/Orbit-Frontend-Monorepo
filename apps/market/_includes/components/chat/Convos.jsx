@@ -20,6 +20,17 @@ export function Convos(props){
     const [chatRooms, setChatRooms] = useState([]);
     const [chatSearch, setChatSearch] = useState("");
 
+    useEffect(()=>{
+        if(!(matrixClient)){
+            return;
+        }
+        if(!(matrixClient.chatrooms)){
+            matrixClient.chatroommount = setChatRooms;
+            return;
+        }
+        setChatRooms(matrixClient.chatrooms);
+    }, [matrixClient, matrixClient && matrixClient.chatrooms])
+
     return(
         <div className="flex flex-col w-full h-full px-3 pt-3 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">
             <div className="flex flex-col">
@@ -47,10 +58,10 @@ export function Convos(props){
                 <span className="text-white text-xs font-bold p-2">Messages <span className="text-blue-500">{chatState?.unRead > 0 && " (" + chatState?.unRead + ")"}</span></span>
                 <div className="flex flex-col overflow-y-auto">
                     {
-                        [...Object.entries(chatRooms)].map(([other_name, room_info], index)=>{
+                        (matrixClient && matrixClient.chatrooms) && [...Object.entries(matrixClient.chatrooms)].map(([other_name, room_info], index)=>{
                             console.log(other_name, room_info);
                             // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
-                            return <ChatPersona roomInfo={room_info} setTextRoomAndPanel={props.setTextRoomAndPanel} key={index} UpdateConvos={UpdateConvos}/>
+                            return <ChatPersona roomInfo={room_info} setTextRoomAndPanel={props.setTextRoomAndPanel} key={index}/>
                         })
                     }
                 </div>
@@ -63,8 +74,7 @@ export function ChatPersona(props) {
     const {matrixClient} = useContext(MatrixClientCtx);
 
     const LeaveConversation = useCallback(async()=>{
-        await matrixClient.LeaveConvo(props.roomInfo.roomid);
-        await props.UpdateConvos();
+        await matrixClient.LeaveConvo(props.roomInfo.roomId);
     },[props, matrixClient]);
 
 	return(

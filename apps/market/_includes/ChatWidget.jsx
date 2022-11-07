@@ -76,7 +76,7 @@ export function ChatWidget(props) {
 				<div className="bg-gradient-to-t from-[#32254E78] to-[#26232C9C] relative w-full backdrop-blur-xl overflow-hidden">
 					{
 						((panel === "convos") && <Convos setTextRoomAndPanel={setTextRoomAndPanel}/>) ||
-						((panel === "text") && <Texts textRoom={textRoom}/>)
+						(((textRoom && textRoom.roomId) && (panel === "text")) && <Texts textRoom={textRoom}/>)
 					}
 				</div>
 			</div>
