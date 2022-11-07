@@ -70,6 +70,7 @@ export function HomeHeader(props) {
 		setPythClient(new PythClient(connection, process.env.NEXT_PUBLIC_CLUSTER_NAME))
 
 		const provider =  new anchor.AnchorProvider(connection, temp_wallet, anchor.AnchorProvider.defaultOptions());
+		provider.wallet = wallet;
 		let accounts_client = new MarketAccountsClient(temp_wallet, connection, provider);
 
 		setDigitalMarketClient(new DigitalMarketClient(temp_wallet, connection, provider));

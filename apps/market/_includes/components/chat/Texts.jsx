@@ -12,8 +12,8 @@ export function Texts(props){
     // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
     const [roomData, setRoomData] = useState(props.textRoom);
     const {PollMessages, FetchOlderMessages, FilterNewChatLogs} = ChatRoomFunctionalities(
-        props.textRoom.roomId,
-        props.textRoom.txid,
+        roomData.roomId,
+        roomData.txid,
         roomData?.other_party?.data?.profilePic
     );
     
@@ -34,7 +34,7 @@ export function Texts(props){
 
     useEffect(async ()=>{
         setChatMessages(
-            await FilterNewChatLogs(props.textRoom.timeline)
+            await FilterNewChatLogs(roomData.timeline)
         );
     },[])
 
@@ -85,7 +85,7 @@ export function Texts(props){
                     <ContractRequest autoFocus requestName="Custom Logo" /> */}
                     <div ref={messageBottomRef}/>
                 </div>
-                <ChatTextInput roomid={roomData.roomid} updateChat={newChat}/>
+                <ChatTextInput roomid={roomData.roomId} updateChat={newChat}/>
             </div>
         </div>
     )   
