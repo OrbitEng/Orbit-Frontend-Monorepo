@@ -8,7 +8,6 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { ArrowUturnLeftIcon, ChevronDoubleLeftIcon } from "@heroicons/react/24/solid";
-import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import { CreateChatModal } from "@includes/components/modals/CreateChatModal";
 import { Convos } from "@includes/components/chat/Convos";
 import { Texts } from "@includes/components/chat/Texts";

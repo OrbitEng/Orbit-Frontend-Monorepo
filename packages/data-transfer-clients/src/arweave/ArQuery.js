@@ -23,4 +23,22 @@ export default class ArQueryClient{
         let media = data.split(">UwU<");
         return media
     }
+
+    GetPfp = async(ar_addr)=>{
+        try{
+            let data = (await this.GetImageData(ar_addr))[0];
+            return data
+        }catch{
+            return undefined
+        }
+    }
+
+    GetMetadata = async(ar_addr)=>{
+        try{
+            let data = await this.FetchData(ar_addr);
+            return JSON.parse(data)
+        }catch{
+            return undefined
+        }
+    }
 }

@@ -7,19 +7,18 @@ import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import {EditProfileModal} from "@includes/components/modals/EditProfileModal";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from "@functionalities/Products";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import { ChatWidget } from "@includes/ChatWidget";
+import ArweaveCtx from "@contexts/ArweaveCtx";
 
 export function ProfileLayout(props) {
 	const { GetAllVendorPhysicalProducts } = PhysicalProductFunctionalities();
 	const { GetAllVendorDigitalProducts } = DigitalProductFunctionalities();
 	const { GetAllVendorCommissionProducts } = CommissionProductFunctionalities();
-	
-	const {GetPfp, GetMetadata} = MarketAccountFunctionalities();
-	const {userAccount} = useContext(UserAccountCtx);
+	const { arweaveClient } = useContext(ArweaveCtx)
+	const { userAccount } = useContext(UserAccountCtx);
 
 	const {matrixClient} = useContext(MatrixClientCtx)
 
@@ -64,8 +63,8 @@ export function ProfileLayout(props) {
 		try{
 			market_account = await marketAccountsClient.GetAccount(props.accountAddr);
 			console.log(market_account)
-			market_account.data.profilePic = await GetPfp(market_account.data.profilePic);
-			market_account.data.metadata = await GetMetadata(market_account.data.metadata);
+			market_account.data.profilePic = await arweaveClient.GetPfp(market_account.data.profilePic);
+			market_account.data.metadata = await arweaveClient.GetMetadata(market_account.data.metadata);
 		}catch(e){
 			console.log(e)
 			return;
@@ -85,7 +84,7 @@ export function ProfileLayout(props) {
 			setCommissionListings(listings);
 		}
 
-	}, [marketAccountsClient, props.accountAddr, productClient])
+	}, [marketAccountsClient, props.accountAddr, productClient, arweaveClient])
 
 	return(
 		<div className="flex flex-col max-w-6xl mx-auto">

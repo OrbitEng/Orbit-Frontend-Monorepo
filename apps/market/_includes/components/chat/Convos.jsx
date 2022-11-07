@@ -6,12 +6,10 @@ import ChatCtx from "@contexts/ChatCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
-import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 import { useCallback } from "react";
 import { useEffect } from "react";
 
 export function Convos(props){
-    const {GetPfp, GetMetadata} = MarketAccountFunctionalities();
 	const {transactionClient} = useContext(TransactionClientCtx)
 	const {userAccount} = useContext(UserAccountCtx);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
@@ -21,136 +19,6 @@ export function Convos(props){
 
     const [chatRooms, setChatRooms] = useState([]);
     const [chatSearch, setChatSearch] = useState("");
-
-    const UpdateConvos = useCallback(async()=>{
-		// return;
-        if(!(userAccount && userAccount.data) || !(matrixClient && matrixClient.logged_in)) return;
-
-		for (let invitation of (await matrixClient.CheckInvites())){
-            console.log(invitation)
-			try{
-				await matrixClient.JoinInvite(invitation.roomId)
-			}catch(e){
-                console.log(e)
-				await matrixClient.LeaveConvo(invitation.roomId);
-			}
-		}
-        
-        
-        let rooms = await matrixClient.GetJoinedRooms();
-        console.log(rooms)
-        let rooms_mapped = {};
-
-        for(let i = 0; i < rooms.length; i++){
-			let room = rooms[i];
-            console.log(room)
-			await matrixClient.RoomInitSync(room);
-			let members = (await matrixClient.GetRoomMembers(room));
-			if(members.length != 1){
-				console.log("improper member count");
-				await matrixClient.LeaveConvo(room);
-				continue
-			}
-
-			let desanitized_acc_address = matrixClient.SanitizeName(members[0])
-			let other_party_data;
-			console.log(desanitized_acc_address)
-
-			try{
-				other_party_data = await marketAccountsClient.GetAccount(
-					marketAccountsClient.GenAccountAddress(desanitized_acc_address)
-				);
-			}catch(e){
-				console.log("error", e)
-				await matrixClient.LeaveConvo(room);
-				continue;
-			}
-			other_party_data.data.metadata = await GetMetadata(other_party_data.data.metadata);
-			other_party_data.data.profilePic = await GetPfp(other_party_data.data.profilePic);
-
-			rooms_mapped[desanitized_acc_address] = {
-				roomid: room,
-				other_party: other_party_data
-			}
-		}
-        
-        let buyer_transactions = [];
-        let seller_transactions = [];
-        
-        if(userAccount.data.buyerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerDigitalTransactions)).data;
-            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                buyer_transactions.push(txs.openTransactions[i])
-            }
-        }
-        if(userAccount.data.buyerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerPhysicalTransactions)).data;
-            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                buyer_transactions.push(txs.openTransactions[i])
-            }
-        }
-        if(userAccount.data.buyerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetBuyerOpenTransactions(userAccount.data.buyerCommissionTransactions)).data;
-            let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                buyer_transactions.push(txs.openTransactions[i])
-            }
-        }
-
-        /// other party is the return of this call
-        let buyer_convos = await transactionClient.GetMultipleTransactionSeller(buyer_transactions);
-        let seller_wallets = await transactionClient.GetMultipleTxLogOwners(buyer_convos);
-        for(let i = 0; i < seller_wallets.length; i++){
-            rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
-            rooms_mapped[seller_wallets[i].toString()].side = "buyer";
-        }
-
-
-        if(userAccount.data.sellerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerDigitalTransactions)).data;
-            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                seller_transactions.push(txs.openTransactions[i])
-            }
-        }
-        if(userAccount.data.sellerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerPhysicalTransactions)).data;
-            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                seller_transactions.push(txs.openTransactions[i])
-            }
-        }
-        if(userAccount.data.sellerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-            let txs = (await transactionClient.GetSellerOpenTransactions(userAccount.data.sellerCommissionTransactions)).data;
-            let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
-            for(let i = 0; i < indexes.length; i++){
-                if(indexes[i] == "0") continue;
-                seller_transactions.push(txs.openTransactions[i])
-            }
-        }
-
-        let seller_convos = await transactionClient.GetMultipleTransactionBuyer(seller_transactions);
-        let buyer_wallets = await transactionClient.GetMultipleTxLogOwners(seller_convos);
-        for(let i = 0; i < buyer_wallets.length; i++){
-            rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
-            rooms_mapped[buyer_wallets[i].toString()].side = "seller";
-        }
-        
-		console.log(rooms_mapped)
-        setChatRooms(rooms_mapped);
-
-    },[matrixClient, matrixClient && matrixClient.last_sync, userAccount])
-
-    useEffect(async()=>{
-        await UpdateConvos()
-    },[UpdateConvos])
 
     return(
         <div className="flex flex-col w-full h-full px-3 pt-3 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">

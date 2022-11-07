@@ -7,7 +7,7 @@ import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@sola
 import { useCallback, useContext, useEffect } from 'react';
 
 const {DigitalMarketClient, PhysicalMarketClient, CommissionMarketClient, DisputeClient, MarketAccountsClient, ProductClient, TransactionClient} = require("orbit-clients");
-const {BundlrClient, ChatClient, PythClient} = require("data-transfer-clients");
+const {BundlrClient, ChatClient, PythClient, ArQueryClient} = require("data-transfer-clients");
 
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
@@ -34,6 +34,7 @@ import CartCtx from '@contexts/CartCtx';
 import PythClientCtx from '@contexts/PythClientCtx';
 import ChatCtx from '@contexts/ChatCtx';
 import { CreateChatModal } from './components/modals/CreateChatModal';
+import ArweaveCtx from '@contexts/ArweaveCtx';
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
@@ -51,57 +52,45 @@ export function HomeHeader(props) {
 	const {setProductClient} = useContext(ProductClientCtx);
 	const {setTransactionClient} = useContext(TransactionClientCtx);
 	const {userAccount, setUserAccount} = useContext(UserAccountCtx);
-	const {setPythClient} = useContext(PythClientCtx)
-
-	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
+	const {setPythClient} = useContext(PythClientCtx);
+	const {setArweaveClient} = useContext(ArweaveCtx);
 
 	const [marketAccount, setMarketAccount] = useState(undefined);
-	const [hasChat, setHasChat] = useState(true);
 	const [menuOpen, setMenuOpen] = useState(false);
-	const [chatOpen, setChatOpen] = useState(false);
 
 	const {cart} = useContext(CartCtx);
 	const {chatState, setChatState} = useContext(ChatCtx);
 
 	useEffect(async ()=>{
 
-		let temp_wallet = wallet;
-		if(!(wallet && wallet.publicKey)) {
-			temp_wallet = {};
-		}
+		if((userAccount && wallet.connected)&& (wallet.publicKey.toString() == userAccount.address.toString())) return;
+
+		let temp_wallet = (wallet && wallet.publicKey) ? wallet : {};
 
 		setPythClient(new PythClient(connection, process.env.NEXT_PUBLIC_CLUSTER_NAME))
 
 		const provider =  new anchor.AnchorProvider(connection, temp_wallet, anchor.AnchorProvider.defaultOptions());
 		let accounts_client = new MarketAccountsClient(temp_wallet, connection, provider);
 
-		if (temp_wallet && temp_wallet.publicKey){
-			if(!matrixClient || (matrixClient.auth_keypair.publicKey.toString() != temp_wallet.publicKey.toString())){
+		setDigitalMarketClient(new DigitalMarketClient(temp_wallet, connection, provider));
+		setDisputeProgramClient(new DisputeClient(temp_wallet, connection, provider));
+		setPhysicalMarketClient(new PhysicalMarketClient(temp_wallet, connection, provider));
+		setCommissionMarketClient(new CommissionMarketClient(temp_wallet, connection, provider))
+		setProductClient(new ProductClient(temp_wallet, connection, provider));
+		let ar_client = new ArQueryClient();
+		setArweaveClient(ar_client)
+		let tx_client = new TransactionClient(temp_wallet, connection, provider);
+		setTransactionClient(tx_client);
 
-				let chat_client = new ChatClient(temp_wallet);
-				await chat_client.initialize();
-				setMatrixClient(chat_client);
-				
-				try{
-					await chat_client.Login();
-					setHasChat(true);
-				}catch(e){
-					console.log("login err: ", e)
-					setHasChat(false);
-				}
-			}
+		setMarketAccountsClient(accounts_client);
 
-			if(!bundlrClient || (bundlrClient && !bundlrClient.bundlr.address)){
-				let bundlr_client = new BundlrClient(temp_wallet);
-				await bundlr_client.initialize();
-				setBundlrClient(bundlr_client);				
-			}
-
+		if (temp_wallet.publicKey){
+			let account_address = (accounts_client.GenAccountAddress(temp_wallet.publicKey));
+			let account;
 			try{
-				let account_address = (accounts_client.GenAccountAddress(temp_wallet.publicKey));
-				let account = await accounts_client.GetAccount(account_address);
-				account.data.profilePic = await GetPfp(account.data.profilePic);
-				account.data.metadata = await GetMetadata(account.data.metadata);
+				account = await accounts_client.GetAccount(account_address);
+				account.data.profilePic = await ar_client.GetPfp(account.data.profilePic);
+				account.data.metadata = await ar_client.GetMetadata(account.data.metadata);
 				
 				account.data.disputeDiscounts = 2;
 				setMarketAccount(account)
@@ -113,16 +102,21 @@ export function HomeHeader(props) {
 				setUserAccount(undefined)
 			}
 
+			if((!matrixClient || (matrixClient.auth_keypair.publicKey.toString() != temp_wallet.publicKey.toString())) && account){
+
+				let chat_client = new ChatClient(temp_wallet, accounts_client, tx_client, ar_client, account);
+				await chat_client.initialize();
+				setMatrixClient(chat_client);
+				await chat_client.Login();
+			}
+
+			if(!bundlrClient || (bundlrClient && !bundlrClient.bundlr.address)){
+				let bundlr_client = new BundlrClient(temp_wallet);
+				await bundlr_client.initialize();
+				setBundlrClient(bundlr_client);				
+			}
+
 		}
-
-		setDigitalMarketClient(new DigitalMarketClient(temp_wallet, connection, provider));
-		setDisputeProgramClient(new DisputeClient(temp_wallet, connection, provider));
-		setPhysicalMarketClient(new PhysicalMarketClient(temp_wallet, connection, provider));
-		setCommissionMarketClient(new CommissionMarketClient(temp_wallet, connection, provider))
-		setProductClient(new ProductClient(temp_wallet, connection, provider));
-		setTransactionClient(new TransactionClient(temp_wallet, connection, provider));
-
-		setMarketAccountsClient(accounts_client);
 		
 	}, [wallet.connected, wallet.publicKey])
 
@@ -168,7 +162,7 @@ export function HomeHeader(props) {
 						{
 							((!wallet.connected) && <WalletMultiButton />) || 
 							((!marketAccount) && <CreateAccountModal setMarketAccount={setMarketAccount} connectedWallet={wallet}/>) || 
-							((!hasChat) && <CreateChatModal setChat={setHasChat}/>) || 
+							((!(matrixClient && matrixClient.logged_in)) && <CreateChatModal/>) || 
 							(<ProfileButton selfAccount={marketAccount} setMarketAccount={setMarketAccount}/>)
 						}
 					</div>

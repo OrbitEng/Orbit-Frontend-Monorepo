@@ -8,9 +8,9 @@ import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
 
 import { ProductCommonUtils } from "@functionalities/Products";
-import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 
 import ProductClientCtx from "@contexts/ProductClientCtx";
+import ArweaveCtx from "@contexts/ArweaveCtx";
 
 export function EmptyProductDisplayCardHome(props) {
 
@@ -36,12 +36,11 @@ export function EmptyProductDisplayCardHome(props) {
 }
 
 export function ProductDisplayCardHome(props) {
-	const {GetPfp, GetMetadata} = MarketAccountFunctionalities();
-
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
 	const {productClient} = useContext(ProductClientCtx);
 	const {setProductCache} = useContext(ProductCacheCtx);
 	const {setVendorCache} = useContext(VendorCacheCtx);
+	const {arweaveClient} = useContext(ArweaveCtx)
 
 	const [glowColor, setGlowColor] = useState((props.type == "commission" && "bg-[#4541EE]") || (props.type == "digital" && "bg-[#FF31B9]") || (props.type == "physical" && "bg-[#4541EE]"));
 	const [borderColor, setBorderColor] = useState((props.type == "commission" && "border-[#4541EE]") || (props.type == "digital" && "border-[#FF31B9]") || (props.type == "physical" && "border-[#4541EE]"));
@@ -101,8 +100,8 @@ export function ProductDisplayCardHome(props) {
 			let vendor = await marketAccountsClient.GetAccount(
 				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);
-			vendor.data.profilePic = await GetPfp(vendor.data.profilePic);
-			vendor.data.metadata = await GetMetadata(vendor.data.metadata);
+			vendor.data.profilePic = await arweaveClient.GetPfp(vendor.data.profilePic);
+			vendor.data.metadata = await arweaveClient.GetMetadata(vendor.data.metadata);
 			tp.data.metadata.seller = vendor;
 			setVendorUS(vendor);
 		};

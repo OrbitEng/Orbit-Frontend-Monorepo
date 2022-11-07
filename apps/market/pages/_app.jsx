@@ -43,6 +43,8 @@ import ProductClientCtx from '@contexts/ProductClientCtx';
 import TransactionClientCtx from '@contexts/TransactionClientCtx';
 import UserAccountCtx from '@contexts/UserAccountCtx';
 
+import ArweaveCtx from '@contexts/ArweaveCtx';
+
 import ProductCacheCtx from '@contexts/ProductCacheCtx';
 import VendorCacheCtx from '@contexts/VendorCacheCtx';
 
@@ -66,6 +68,7 @@ function MyApp({ Component, pageProps }) {
   const [matrixClient, setMatrixClient] = useState();
   const [userAccount, setUserAccount] = useState();
   const [pythClient, setPythClient] = useState();
+  const [arweaveClient, setArweaveClient] = useState();
 
   const [ productCache, setProductCache] = useState();
   const [ vendorCache, setVendorCache ] = useState();
@@ -151,11 +154,13 @@ function MyApp({ Component, pageProps }) {
                                         <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
                                           <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
                                             <ShippingCtx.Provider value={{shipping, setShipping}}>
-                                              <CartCtx.Provider value={{cart, setCart}} >
-                                                <ChatCtx.Provider value={{chatState, setChatState}} >
-                                                  <Component {...pageProps} />
-                                                </ChatCtx.Provider>
-                                              </CartCtx.Provider>
+                                              <ArweaveCtx.Provider value={{arweaveClient, setArweaveClient}}>
+                                                <CartCtx.Provider value={{cart, setCart}} >
+                                                  <ChatCtx.Provider value={{chatState, setChatState}} >
+                                                    <Component {...pageProps} />
+                                                  </ChatCtx.Provider>
+                                                </CartCtx.Provider>
+                                              </ArweaveCtx.Provider>
                                             </ShippingCtx.Provider>
                                           </VendorCacheCtx.Provider>
                                         </ProductCacheCtx.Provider>

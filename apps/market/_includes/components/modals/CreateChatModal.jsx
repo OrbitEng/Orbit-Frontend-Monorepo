@@ -35,7 +35,6 @@ export function CreateChatModal(props){
 		await matrixClient.CreateAccountCaptcha(captchaVal, matrixSession);
 		await matrixClient.CreateAccountFinish(matrixSession);
         await matrixClient.Login();
-        props.setChat(true);
         closeModal()
 	},[captchaVal])
 

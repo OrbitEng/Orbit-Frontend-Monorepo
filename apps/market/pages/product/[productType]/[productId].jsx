@@ -12,11 +12,11 @@ import VendorCacheCtx from "@contexts/VendorCacheCtx";
 import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 
 import { ProductCommonUtils } from "@functionalities/Products";
-import { MarketAccountFunctionalities } from "@functionalities/Accounts";
 
 import { useState, useEffect, useContext } from "react";
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import { PublicKey } from "@solana/web3.js";
+import ArweaveCtx from "@contexts/ArweaveCtx";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Dummy Products
@@ -64,13 +64,12 @@ export default function ProductsPage(props) {
 	const {productClient} = useContext(ProductClientCtx)
 	const {productCache} = useContext(ProductCacheCtx);
 	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {arweaveClient} = useContext(ArweaveCtx);
 	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
 
 	// fetch product somewhere in here from query
 	const [prod, setProd] = useState();
 	const [vendor, setVendor] = useState();
-
-	const {GetPfp, GetMetadata} = MarketAccountFunctionalities()
 
 	useEffect(async ()=>{
 		if(productCache && productCache.address.toString() == productId){
@@ -129,13 +128,13 @@ export default function ProductsPage(props) {
 			let vendor = await marketAccountsClient.GetAccount(
 				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);
-			vendor.data.profilePic = await GetPfp(vendor.data.profilePic);
-			vendor.data.metadata = await GetMetadata(vendor.data.metadata)
+			vendor.data.profilePic = await arweaveClient.GetPfp(vendor.data.profilePic);
+			vendor.data.metadata = await arweaveClient.GetMetadata(vendor.data.metadata)
 			tp.data.metadata.seller = vendor;
 			setVendor(vendor);
 		};
 		setProd(tp);
-	},[productType, productId, productCache, productClient, marketAccountsClient])
+	},[productType, productId, productCache, productClient, marketAccountsClient, arweaveClient])
 
 	// here I'm just using the digital layout because it's the same for pretty much everything...
 	// todo: add nfts later

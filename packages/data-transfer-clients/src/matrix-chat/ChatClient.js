@@ -5,15 +5,19 @@ import {IDBClient, enc_common} from "browser-clients";
 const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
 
 export default class ChatClient{
-    constructor(auth_keypair){
+    constructor(auth_keypair, accounts_client, transactionClient, ar_client, userAccount){
         if(auth_keypair){
             this.auth_keypair = auth_keypair;
             this.matrix_name = this.UnsanitizeName(this.auth_keypair.publicKey.toString())
+            this.marketAccountsClient = accounts_client;
+            this.transactionClient = transactionClient;
+            this.arweaveClient = ar_client;
+            this.userAccount = userAccount;
         }
         this.logged_in = false;
         
         this.matrixclient = sdk.createClient({
-            baseUrl: 'https://projectsegfau.lt',
+            baseUrl: 'https://matrix.foss.wtf',
             deviceId: "orbit_client"
         });
         
@@ -24,14 +28,8 @@ export default class ChatClient{
 
     initialize = async() =>{
         if(this.auth_keypair.signMessage && !this.password){
-            this.password = (await this.auth_keypair.signMessage("chatpassword")).toString("hex").slice(0,64)+"A"
+            this.password = (await this.auth_keypair.signMessage("chatpassword")).toString("hex").slice(0,64)+"A."
         };
-        this.matrixclient.once("sync", (state, prevstate, res)=>{
-            if(state == "PREPARED"){
-                this.logged_in = true;
-                this.last_sync = {};
-            }
-        })
     }
 
     Login = async()=>{
@@ -44,7 +42,7 @@ export default class ChatClient{
         }
 
         this.matrixclient = sdk.createClient({
-            baseUrl: 'https://projectsegfau.lt',
+            baseUrl: 'https://matrix.foss.wtf',
             userId: res.user_id,
             accessToken: res.access_token,
             sessionStore: window.localStorage,
@@ -55,28 +53,146 @@ export default class ChatClient{
         });
         
         await this.matrixclient.initCrypto();
+
         this.matrixclient.on("sync", async (state, prevstate, res)=>{
+            console.log("client sync: ", state);
             if(state == "PREPARED"){
                 this.logged_in = true;
                 this.last_sync = {};
                 await this.matrixclient.uploadKeys();
                 this.matrixclient.setGlobalErrorOnUnknownDevices(false);
-                // await this.matrixclient.uploadDeviceSigningKeys();
+                
+
+                for (let invitation of (await this.CheckInvites())){
+                    console.log(invitation)
+                    try{
+                        await this.JoinInvite(invitation.roomId)
+                    }catch(e){
+                        console.log(e)
+                        await this.LeaveConvo(invitation.roomId);
+                    }
+                }
+
+                let rooms = await this.GetJoinedRooms();
+                console.log(rooms)
+                let rooms_mapped = {};
+
+                for(let i = 0; i < rooms.length; i++){
+                    let room = rooms[i];
+                    console.log(room)
+                    await this.RoomInitSync(room);
+                    let members = (await this.GetRoomMembers(room));
+                    if(members.length != 1){
+                        console.log("improper member count");
+                        await this.LeaveConvo(room);
+                        continue
+                    }
+
+                    let desanitized_acc_address = this.SanitizeName(members[0])
+                    let other_party_data;
+                    console.log(desanitized_acc_address)
+
+                    try{
+                        console.log(this)
+                        other_party_data = await this.marketAccountsClient.GetAccount(
+                            this.marketAccountsClient.GenAccountAddress(desanitized_acc_address)
+                        );
+                    }catch(e){
+                        console.log("error", e)
+                        await this.LeaveConvo(room);
+                        continue;
+                    }
+                    other_party_data.data.metadata = await this.arweaveClient.GetMetadata(other_party_data.data.metadata);
+                    other_party_data.data.profilePic = await this.arweaveClient.GetPfp(other_party_data.data.profilePic);
+
+                    rooms_mapped[desanitized_acc_address] = {
+                        roomid: room,
+                        other_party: other_party_data,
+                        chat_logs: this.GetMessagesForRoom(room)
+                    }
+                }
+                
+                let buyer_transactions = [];
+                let seller_transactions = [];
+                
+                if(this.userAccount.data.buyerDigitalTransactions.toString() != "11111111111111111111111111111111"){
+                    let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerDigitalTransactions)).data;
+                    let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
+                    for(let i = 0; i < indexes.length; i++){
+                        if(indexes[i] == "0") continue;
+                        buyer_transactions.push(txs.openTransactions[i])
+                    }
+                }
+                if(this.userAccount.data.buyerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
+                    let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerPhysicalTransactions)).data;
+                    let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
+                    for(let i = 0; i < indexes.length; i++){
+                        if(indexes[i] == "0") continue;
+                        buyer_transactions.push(txs.openTransactions[i])
+                    }
+                }
+                if(this.userAccount.data.buyerCommissionTransactions.toString() != "11111111111111111111111111111111"){
+                    let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerCommissionTransactions)).data;
+                    let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
+                    for(let i = 0; i < indexes.length; i++){
+                        if(indexes[i] == "0") continue;
+                        buyer_transactions.push(txs.openTransactions[i])
+                    }
+                }
+
+                /// other party is the return of this call
+                let buyer_convos = await this.transactionClient.GetMultipleTransactionSeller(buyer_transactions);
+                let seller_wallets = await this.transactionClient.GetMultipleTxLogOwners(buyer_convos);
+                for(let i = 0; i < seller_wallets.length; i++){
+                    rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
+                    rooms_mapped[seller_wallets[i].toString()].side = "buyer";
+                }
+
+
+                if(this.userAccount.data.sellerDigitalTransactions.toString() != "11111111111111111111111111111111"){
+                    let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerDigitalTransactions)).data;
+                    let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
+                    for(let i = 0; i < indexes.length; i++){
+                        if(indexes[i] == "0") continue;
+                        seller_transactions.push(txs.openTransactions[i])
+                    }
+                }
+                if(this.userAccount.data.sellerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
+                    let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerPhysicalTransactions)).data;
+                    let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
+                    for(let i = 0; i < indexes.length; i++){
+                        if(indexes[i] == "0") continue;
+                        seller_transactions.push(txs.openTransactions[i])
+                    }
+                }
+                if(this.userAccount.data.sellerCommissionTransactions.toString() != "11111111111111111111111111111111"){
+                    let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerCommissionTransactions)).data;
+                    let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
+                    for(let i = 0; i < indexes.length; i++){
+                        if(indexes[i] == "0") continue;
+                        seller_transactions.push(txs.openTransactions[i])
+                    }
+                }
+
+                let seller_convos = await this.transactionClient.GetMultipleTransactionBuyer(seller_transactions);
+                let buyer_wallets = await this.transactionClient.GetMultipleTxLogOwners(seller_convos);
+                for(let i = 0; i < buyer_wallets.length; i++){
+                    rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
+                    rooms_mapped[buyer_wallets[i].toString()].side = "seller";
+                }
+                
+                this.chatrooms = rooms_mapped
+
             }
+
+        });
+        this.matrixclient.on("event", async (event)=>{
+            console.log("event sync: ", event);
+            
         });
         await this.matrixclient.startClient();
         console.log("done logging in", this.matrixclient)
         
-    }
-
-    ////////////////////////////
-    /// SYNCING
-
-    Sync = async() =>{
-        this.matrixclient.once("sync", (state, prevstate, res)=>{
-            this.last_sync = {};
-            console.log("synced: ", state)
-        })
     }
 
     RoomInitSync = async(roomid) =>{
@@ -124,7 +240,7 @@ export default class ChatClient{
             room_id: roomId,
         } = await this.matrixclient.createRoom({
             visibility: 'private',
-            invite: ["@"+this.UnsanitizeName(inv_user)+":projectsegfau.lt"],
+            invite: ["@"+this.UnsanitizeName(inv_user)+":foss.wtf"],
             initial_state:[{
                 type: "m.room.encryption",
                 state_key: "",

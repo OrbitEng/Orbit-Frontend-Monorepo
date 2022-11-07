@@ -1,11 +1,13 @@
 import Image from "next/image";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import { InformationCircleIcon} from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import { ChatRoomFunctionalities } from "@functionalities/Chat";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
 import { ChatTextInput } from "@includes/components/inputs/ChatTextInput";
 
 export function Texts(props){
+    const {matrixClient} = useContext(MatrixClientCtx);
     const [chatMessages, setChatMessages] = useState([]);
     // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
     const [roomData, setRoomData] = useState(props.textRoom);

@@ -139,33 +139,9 @@ export function MarketAccountFunctionalities(props){
         return marketAccountsClient.DeclineTransfer()
     }
 
-
-    /////////////////////////////////////////////////////////////
-    /// INFO FETCHING
-
-    const GetPfp = async(ar_addr)=>{
-        try{
-            let data = (await (new ArQueryClient()).GetImageData(ar_addr))[0];
-            return data
-        }catch{
-            return undefined
-        }
-    }
-
-    const GetMetadata = async(ar_addr)=>{
-        try{
-            let data = await (new ArQueryClient()).FetchData(ar_addr);
-            return JSON.parse(data)
-        }catch{
-            return undefined
-        }
-    }
-
     return {
         CreateAccount,
         SetPfp,
-        GetPfp,
-        GetMetadata,
         SetReflink,
         UpdateMetadata,
         UnsetReflink,
