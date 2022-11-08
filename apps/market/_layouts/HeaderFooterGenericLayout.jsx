@@ -23,7 +23,28 @@ export function GenericLayout(props){
 				<div className="max-w-7xl align-center mx-auto">
 					{props.children}
 				</div>
-				<ChatWidget />
+				{props?.chat && <ChatWidget />}
+				<MainFooter />
+			</main>
+		</div>
+	)
+}
+
+export function WideGenericLayout(props){
+	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
+
+    return(
+		<div className="w-full min-h-screen bg-transparent">
+			<Head>
+				<title>Orbit</title>
+				<link rel="icon" href="/orbit.png" />
+			</Head>
+			<main className="bg-[url('/bgWallpaper.png')] min-h-screen">
+				<HomeHeader headerMiddle={searchBar}/>
+				<div className="max-w-[100rem] align-center mx-auto">
+					{props.children}
+				</div>
+				{props?.chat && <ChatWidget />}
 				<MainFooter />
 			</main>
 		</div>

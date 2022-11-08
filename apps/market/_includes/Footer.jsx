@@ -13,7 +13,7 @@ export function MainFooter(){
                             layout="fill"
                             alt="The Name and Logo for the Orbit market"
                             objectFit="contain"
-                            priority={true}
+                            loading="lazy"
                         />
                     </div>
                 </div>
@@ -56,12 +56,14 @@ export function MainFooter(){
                             layout='fixed'
                             width={36}
                             height={36}
+                            loading="lazy"
                         />
                         <Image
                             src="/mediumicon.png"
                             layout='fixed'
                             width={36}
                             height={36}
+                            loading="lazy"
                         />
                     </div>
                 </div>
