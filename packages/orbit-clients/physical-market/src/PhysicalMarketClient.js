@@ -10,13 +10,11 @@ import { getMultisigWallet, MULTISIG_WALLET_ADDRESS} from 'orbit-clients/multisi
 import idl from "../deps/orbit_physical_market.json";
 
 export default class PhysicalMarketClient{
-    constructor(wallet, connection, provider){
+    constructor(connection, provider){
 
         this.programid = new PublicKey(idl.metadata.address);
 
-        if(wallet){
-            this.wallet = wallet;
-        }
+        
         
         if(connection){
             this.connection = connection;
@@ -60,7 +58,7 @@ export default class PhysicalMarketClient{
             physProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
             physicalAuth: this.GenMarketAuth(),
@@ -139,7 +137,7 @@ export default class PhysicalMarketClient{
             physTransaction: tx_addr,
             escrowAccount: tx_struct.metadata.escrow_account,
             buyerTransactionsLog: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey
+            buyerWallet: this.provider.wallet.publicKey
         })
         .rpc();
 
@@ -167,7 +165,7 @@ export default class PhysicalMarketClient{
             buyerTransactionsLog: tx_struct.buyer,
             buyerWallet: buyer_wallet,
             sellerTransactionsLog: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
             physicalAuth: this.GenMarketAuth(),
             physicalProgram: this.programid,
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
@@ -206,7 +204,7 @@ export default class PhysicalMarketClient{
             physProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
             physicalAuth: this.GenMarketAuth(),
@@ -312,9 +310,9 @@ export default class PhysicalMarketClient{
             buyerTransactionsLog: tx_struct.buyer,
             buyerTokenAccount: getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.wallet.publicKey        
+                this.provider.wallet.publicKey        
             ),
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID
         })
         .rpc();
@@ -348,9 +346,9 @@ export default class PhysicalMarketClient{
             sellerTransactionsLog: tx_struct.seller,
             sellerTokenAccount:  getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.wallet.publicKey
+                this.provider.wallet.publicKey
             ),
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
             physicalAuth: this.GenMarketAuth(),
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
             physicalProgram: this.programid,
@@ -379,7 +377,7 @@ export default class PhysicalMarketClient{
         .accounts({
             physTransaction: tx_addr,
             newDispute: dispute_addr,
-            openerWallet: this.wallet.publicKey,
+            openerWallet: this.provider.wallet.publicKey,
             buyer: buyer_account,
             seller: seller_account,
             physicalAuth: this.GenMarketAuth(),
@@ -496,7 +494,7 @@ export default class PhysicalMarketClient{
             physTransaction: tx_addr,
             reviewedAccount: review_receiver,
             reviewer: market_account,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             physAuth: this.GenMarketAuth(),
             physicalProgram: this.programid,
             accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
@@ -520,7 +518,7 @@ export default class PhysicalMarketClient{
         .accounts({
             physTransaction: tx_addr,
             transactionsLog: tx_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             buyerWallet: buyer_wallet
         })
         .rpc()

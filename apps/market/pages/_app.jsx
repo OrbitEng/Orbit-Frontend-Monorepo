@@ -1,7 +1,7 @@
 import 'styles/globals.css'
 import { useEffect, useMemo, useState } from 'react';
-import { getCookie, hasCookie, setCookie } from 'cookies-next';
 
+import * as anchor from "@project-serum/anchor";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
@@ -52,6 +52,9 @@ import CartCtx from '@contexts/CartCtx';
 import ShippingCtx from '@contexts/ShippingCtx';
 import ChatCtx from '@contexts/ChatCtx';
 
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
+
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
@@ -69,6 +72,7 @@ function MyApp({ Component, pageProps }) {
   const [userAccount, setUserAccount] = useState();
   const [pythClient, setPythClient] = useState();
   const [arweaveClient, setArweaveClient] = useState();
+  const[anchorProvider, setAnchorProvider] = useState();
 
   const [ productCache, setProductCache] = useState();
   const [ vendorCache, setVendorCache ] = useState();
@@ -92,20 +96,6 @@ function MyApp({ Component, pageProps }) {
     country:"",
     state:""
   })
-
-  // This handles updating the cookies for cart useState changes
-  // useEffect(() => {
-  //   // probably a better way to do this
-  //   if(hasCookie('cart')) {
-  //     if(cart.total == 0) {
-  //       setCart(JSON.parse(getCookie('cart')));
-  //     } else {
-  //       setCookie('cart', cart);
-  //     }
-  //   } else {
-  //     setCookie('cart', cart)
-  //   }
-  // }, [])
 
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet
@@ -140,41 +130,43 @@ function MyApp({ Component, pageProps }) {
           <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                  <MatrixClientCtx.Provider value={{matrixClient, setMatrixClient}}>
-                    <PhysicalMarketCtx.Provider value={{physicalMarketClient, setPhysicalMarketClient}}>
-                      <DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
-                        <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
-                          <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
-                            <CommissionMarketCtx.Provider value={{commissionMarketClient, setCommissionMarketClient}}>
-                              <ProductClientCtx.Provider value={{productClient, setProductClient}}>
-                                <TransactionClientCtx.Provider value={{transactionClient, setTransactionClient}}>
-                                  <UserAccountCtx.Provider value={{userAccount, setUserAccount}}>
-                                    <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
-                                      <PythClientCtx.Provider value={{pythClient, setPythClient}}>
-                                        <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
-                                          <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
-                                            <ShippingCtx.Provider value={{shipping, setShipping}}>
-                                              <ArweaveCtx.Provider value={{arweaveClient, setArweaveClient}}>
-                                                <CartCtx.Provider value={{cart, setCart}} >
-                                                  <ChatCtx.Provider value={{chatState, setChatState}} >
-                                                    <Component {...pageProps} />
-                                                  </ChatCtx.Provider>
-                                                </CartCtx.Provider>
-                                              </ArweaveCtx.Provider>
-                                            </ShippingCtx.Provider>
-                                          </VendorCacheCtx.Provider>
-                                        </ProductCacheCtx.Provider>
-                                      </PythClientCtx.Provider>
-                                    </BundlrCtx.Provider>
-                                  </UserAccountCtx.Provider>
-                                </TransactionClientCtx.Provider>
-                              </ProductClientCtx.Provider>
-                            </CommissionMarketCtx.Provider>
-                          </DisputeProgramCtx.Provider>
-                        </MarketAccountsCtx.Provider>
-                      </DigitalMarketCtx.Provider>
-                    </PhysicalMarketCtx.Provider>
-                  </MatrixClientCtx.Provider>
+                  <AnchorProviderCtx.Provider value={{anchorProvider, setAnchorProvider}}>
+                      <PhysicalMarketCtx.Provider value={{physicalMarketClient, setPhysicalMarketClient}}>
+                        <DigitalMarketCtx.Provider value={{digitalMarketClient, setDigitalMarketClient}}>
+                          <MarketAccountsCtx.Provider value={{marketAccountsClient, setMarketAccountsClient}}>
+                            <DisputeProgramCtx.Provider value={{disputeProgramClient, setDisputeProgramClient}}>
+                              <CommissionMarketCtx.Provider value={{commissionMarketClient, setCommissionMarketClient}}>
+                                <ProductClientCtx.Provider value={{productClient, setProductClient}}>
+                                  <TransactionClientCtx.Provider value={{transactionClient, setTransactionClient}}>
+                                    <UserAccountCtx.Provider value={{userAccount, setUserAccount}}>
+                                      <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
+                                        <MatrixClientCtx.Provider value={{matrixClient, setMatrixClient}}>
+                                          <PythClientCtx.Provider value={{pythClient, setPythClient}}>
+                                            <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
+                                              <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
+                                                <ShippingCtx.Provider value={{shipping, setShipping}}>
+                                                  <ArweaveCtx.Provider value={{arweaveClient, setArweaveClient}}>
+                                                    <CartCtx.Provider value={{cart, setCart}} >
+                                                      <ChatCtx.Provider value={{chatState, setChatState}} >
+                                                        <Component {...pageProps} />
+                                                      </ChatCtx.Provider>
+                                                    </CartCtx.Provider>
+                                                  </ArweaveCtx.Provider>
+                                                </ShippingCtx.Provider>
+                                              </VendorCacheCtx.Provider>
+                                            </ProductCacheCtx.Provider>
+                                          </PythClientCtx.Provider>
+                                        </MatrixClientCtx.Provider>
+                                      </BundlrCtx.Provider>
+                                    </UserAccountCtx.Provider>
+                                  </TransactionClientCtx.Provider>
+                                </ProductClientCtx.Provider>
+                              </CommissionMarketCtx.Provider>
+                            </DisputeProgramCtx.Provider>
+                          </MarketAccountsCtx.Provider>
+                        </DigitalMarketCtx.Provider>
+                      </PhysicalMarketCtx.Provider>
+                  </AnchorProviderCtx.Provider>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

@@ -11,7 +11,7 @@ export function Texts(props){
     const [chatMessages, setChatMessages] = useState([]);
     // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
     const [roomData, setRoomData] = useState(props.textRoom);
-    const {PollMessages, FetchOlderMessages, FilterNewChatLogs} = ChatRoomFunctionalities(
+    const {FilterNewChatLogs} = ChatRoomFunctionalities(
         roomData.roomId,
         roomData.txid,
         roomData?.other_party?.data?.profilePic
@@ -20,37 +20,30 @@ export function Texts(props){
     const messageBottomRef = useRef(null);
 
     const newChat = useCallback(async()=>{
-
-        let polled = await PollMessages();
-        setChatMessages(polled);
+        console.log("calling back")
         if(!messageBottomRef) return;
         messageBottomRef.current.scrollIntoView();
         
     },[messageBottomRef]);
 
-    // useEffect(async()=>{
-    //     await newChat()
-    // },[])
-
     useEffect(async ()=>{
-        setChatMessages(
-            await FilterNewChatLogs(roomData.timeline)
-        );
+        console.log("using effect")
+        setChatMessages(await FilterNewChatLogs(roomData.timeline));
+        await newChat()
     },[])
 
+    useEffect(()=>{
 
-    const olderMessages = useCallback(async ()=>{
-        let older_messages = await FetchOlderMessages(chatMessages.length);
-        setChatMessages(await PollMessages())
-    },[chatMessages])
+    },[chatMessages]);
 
 
-    const handleScroll = async event => {
+    const handleScroll = useCallback(async (event) => {
         const { scrollHeight, scrollTop, clientHeight } = event.target;
         if (scrollTop <= 10) {
-            olderMessages()
+            await matrixClient.UpdateRoomOlderMessages(roomData.roomId, chatMessages.length);
+            setChatMessages(await FilterNewChatLogs(roomData.timeline))
         }
-    };
+    },[chatMessages]);
 
     return(
         <div className="flex flex-col w-full h-full flex-shrink-0 bg-gradient-to-t from-[#29175180] to-[#1D045180]">
@@ -75,8 +68,8 @@ export function Texts(props){
                     </button>
                 </div>
             </div>
-            <div className="px-5 flex flex-col h-full overflow-hidden" >
-                <div className="relative flex flex-col flex-grow overflow-y-scroll h-full mb-16" onScroll={handleScroll} >
+            <div className="px-5 flex flex-col h-full overflow-hidden " >
+                <div className="relative flex flex-col w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full mb-16 " onScroll={handleScroll} >
                     {
                         chatMessages
                     }
