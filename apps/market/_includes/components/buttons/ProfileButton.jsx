@@ -152,8 +152,7 @@ export default function ProfileButton(props) {
 						onClick={async () => {
 							await wallet.disconnect()
 							setMarketAccountsClient(undefined);
-							setMatrixClient(undefined)
-							props?.setMarketAccount(undefined);
+							setMatrixClient(undefined);
 						}} 
 						className="flex flex-row relative left-0 font-semibold text-[#ACACAC] align-middle justify-end"
 					>

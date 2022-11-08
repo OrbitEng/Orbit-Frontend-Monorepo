@@ -8,12 +8,10 @@ import {TRANSACTION_PROGRAM_ID} from "orbit-clients/transaction-program";
 const idl = require("../deps/orbit_market_accounts");
 
 export default class MarketAccountsClient{
-    constructor(wallet, connection, provider){
+    constructor(connection, provider){
         this.programid = new PublicKey(idl.metadata.address);
 
-        if(wallet && wallet.publicKey){
-            this.wallet = wallet;
-        };
+        
 
         if(connection){
             this.connection = connection;
@@ -38,7 +36,7 @@ export default class MarketAccountsClient{
         .initializeVoterStruct()
         .accounts({
             voterIdStruct: voter_id_addr,
-            payer: this.wallet.publicKey,
+            payer: this.provider.wallet.publicKey,
         })
         .rpc()
     }
@@ -64,15 +62,15 @@ export default class MarketAccountsClient{
         await this.program.methods
         .createAccount(media_link, metadata_link)
         .accounts({
-            marketAccount: this.GenAccountAddress(this.wallet.publicKey),
+            marketAccount: this.GenAccountAddress(this.provider.wallet.publicKey),
             voterIdStruct: voter_id_addr,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
         })
         .remainingAccounts(reflink_arr)
         .rpc();
 
         return await this.GetAccount(
-            this.GenAccountAddress(this.wallet.publicKey)
+            this.GenAccountAddress(this.provider.wallet.publicKey)
         );
     };
 
@@ -85,7 +83,7 @@ export default class MarketAccountsClient{
         .updateProfileImage(new_pfp_link)
         .accounts({
             marketAccount: market_account,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -97,7 +95,7 @@ export default class MarketAccountsClient{
         .updateMetadata(metadata_link)
         .accounts({
             marketAccount: this.GenAccountAddress(),
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -114,7 +112,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             reflink: reflink,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc();
     };
@@ -128,7 +126,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: market_acc,
             reflink: reflink_addr,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -148,7 +146,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             listingsStruct: listings_address,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             productProgram: PRODUCT_PROGRAM_ID
         })
         .rpc()
@@ -166,7 +164,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             listingsStruct: listings_address,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             productProgram: PRODUCT_PROGRAM_ID
         })
         .rpc()
@@ -184,7 +182,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             listingsStruct: listings_address,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             productProgram: PRODUCT_PROGRAM_ID
         })
         .rpc()
@@ -202,7 +200,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             transactionsLog: transactions_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             transactionsProgram: TRANSACTION_PROGRAM_ID
         })
         .rpc()
@@ -216,7 +214,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             transactionsLog: transactions_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             transactionsProgram: TRANSACTION_PROGRAM_ID
         })
         .rpc()
@@ -230,7 +228,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             transactionsLog: transactions_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             transactionsProgram: TRANSACTION_PROGRAM_ID
         })
         .rpc()
@@ -245,7 +243,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             transactionsLog: transactions_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             transactionsProgram: TRANSACTION_PROGRAM_ID
         })
         .rpc()
@@ -259,7 +257,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             transactionsLog: transactions_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             transactionsProgram: TRANSACTION_PROGRAM_ID
         })
         .rpc()
@@ -273,7 +271,7 @@ export default class MarketAccountsClient{
         .accounts({
             marketAccount: this.GenAccountAddress(),
             transactionsLog: transactions_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             transactionsProgram: TRANSACTION_PROGRAM_ID
         })
         .rpc()
@@ -298,7 +296,7 @@ export default class MarketAccountsClient{
         .accounts({
             transferStruct: transfer_addr,
             sourceMarketAccount: source,
-            sourceWallet: this.wallet.publicKey,
+            sourceWallet: this.provider.wallet.publicKey,
             destinationMarketAccount: destination,
             destinationWallet: destination_wallet
         })
@@ -321,7 +319,7 @@ export default class MarketAccountsClient{
             sourceMarketAccount: source,
             sourceWallet: source_wallet,
             destinationMarketAccount: market_acc,
-            destinationWallet: this.wallet.publicKey,
+            destinationWallet: this.provider.wallet.publicKey,
             transferRequest: transfer_addr
         })
         .rpc()
@@ -346,7 +344,7 @@ export default class MarketAccountsClient{
             destinationMarketAccount: destination,
             destinationWallet: destination_wallet,
             transferRequest: transfer_addr,
-            invoker: this.wallet.publicKey,
+            invoker: this.provider.wallet.publicKey,
         })
         .rpc()
     }
@@ -355,14 +353,14 @@ export default class MarketAccountsClient{
     //// REFLINK
 
     CreateReflink = async () => {
-        let reflink_addr = this.GenReflinkAddress(this.wallet.publicKey);
+        let reflink_addr = this.GenReflinkAddress(this.provider.wallet.publicKey);
 
         await this.program.methods
         .CreateReflink()
         .accounts({
             reflink: reflink_addr,
             marketAccount: this.GenAccountAddress(),
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -386,7 +384,7 @@ export default class MarketAccountsClient{
         .accounts({
             reflink: reflink_addr,
             marketAccount: market_acc,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .remainingAccounts(remaining_accs)
         .rpc()
@@ -488,7 +486,7 @@ export default class MarketAccountsClient{
 
     GenAccountAddress = (wallet_addr) => {
         if(!wallet_addr){
-            wallet_addr = this.wallet.publicKey
+            wallet_addr = this.provider.wallet.publicKey
         }
         if(typeof wallet_addr == "string"){
             wallet_addr = new PublicKey(wallet_addr)

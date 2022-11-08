@@ -14,7 +14,6 @@ export default class ChatClient{
             this.arweaveClient = ar_client;
             this.userAccount = userAccount;
         }
-        this.logged_in = false;
         
         this.matrixclient = sdk.createClient({
             baseUrl: 'https://matrix.foss.wtf',
@@ -28,7 +27,7 @@ export default class ChatClient{
 
     initialize = async() =>{
         if(this.auth_keypair.signMessage && !this.password){
-            this.password = (await this.auth_keypair.signMessage("chatpassword")).toString("hex").slice(0,64)+"A."
+            this.password = (await this.auth_keypair.signMessage("chatpassword")).toString("hex").slice(0,64)+"A.";
         };
     }
 
@@ -38,7 +37,8 @@ export default class ChatClient{
         
 
         if(res.errcode){
-            throw(res.errcode)
+            console.log(res.errcode)
+            return false
         }
 
         this.matrixclient = sdk.createClient({
@@ -57,14 +57,11 @@ export default class ChatClient{
         this.matrixclient.on("sync", async (state, prevstate, res)=>{
             console.log("client sync: ", state);
             if(state == "PREPARED"){
-                this.logged_in = true;
-                this.last_sync = {};
                 await this.matrixclient.uploadKeys();
                 this.matrixclient.setGlobalErrorOnUnknownDevices(false);
                 
 
                 for (let invitation of (await this.CheckInvites())){
-                    console.log(invitation)
                     try{
                         await this.JoinInvite(invitation.roomId)
                     }catch(e){
@@ -74,26 +71,21 @@ export default class ChatClient{
                 }
 
                 let rooms = await this.GetJoinedRooms();
-                console.log(rooms)
                 let rooms_mapped = {};
 
                 for(let i = 0; i < rooms.length; i++){
                     let room = rooms[i];
-                    console.log(room)
                     await this.RoomInitSync(room);
                     let members = (await this.GetRoomMembers(room));
                     if(members.length != 1){
-                        console.log("improper member count");
                         await this.LeaveConvo(room);
                         continue
                     }
 
                     let desanitized_acc_address = this.SanitizeName(members[0])
                     let other_party_data;
-                    console.log(desanitized_acc_address)
 
                     try{
-                        console.log(this)
                         other_party_data = await this.marketAccountsClient.GetAccount(
                             this.marketAccountsClient.GenAccountAddress(desanitized_acc_address)
                         );
@@ -187,12 +179,10 @@ export default class ChatClient{
         });
 
         this.matrixclient.on("event", async (event)=>{
-            console.log("event sync: ", event);
-            console.log(this.chatrooms)
             switch(event.type){
                 case "m.room.member":
                     if((event.content.membership == "invite") && (event.content.displayname == this.matrix_name)){
-
+                        this.chatroommount ? this.chatroommount(rooms_mapped) : {};
                     };
                     break;
                 case "m.room.encrypted":
@@ -200,7 +190,7 @@ export default class ChatClient{
             }
         });
         await this.matrixclient.startClient();
-        console.log("done logging in", this.matrixclient)
+        return true;
         
     }
 
@@ -260,12 +250,9 @@ export default class ChatClient{
         
         let room = this.matrixclient.getRoom(roomId);
         let members = (await room.getEncryptionTargetMembers()).map(x => x["userId"])
-        console.log(members)
         let memberkeys = await this.matrixclient.downloadKeys(members);
-        console.log(memberkeys);
         for (const userId in memberkeys) {
             for (const deviceId in memberkeys[userId]) {
-                console.log(userId, deviceId);
                 await this.matrixclient.claimOneTimeKeys([[userId, deviceId]], "signed_curve25519");
                 await this.matrixclient.setDeviceVerified(userId, deviceId, true);
             }
@@ -365,7 +352,7 @@ export default class ChatClient{
             room = this.matrixclient.getRoom(room);
         }
         
-        await Promise.all(room.timeline.filter(async(e)=>{return await this.matrixclient.decryptEventIfNeeded(e)}))
+        await Promise.all(room.timeline.map(e => this.matrixclient.decryptEventIfNeeded(e)))
         return room.timeline.filter(event=>
             (event.clearEvent && event.clearEvent.type == "m.room.message")
         );
@@ -376,7 +363,7 @@ export default class ChatClient{
             room = this.matrixclient.getRoom(room);
         }
 
-        await Promise.all(room.timeline.filter(async(e)=>{return await this.matrixclient.decryptEventIfNeeded(e)}))
+        await Promise.all(room.timeline.map(e => this.matrixclient.decryptEventIfNeeded(e)))
         let notices = room.timeline.filter(event=>
             (event.clearEvent && event.clearEvent.type == "m.room.message") && (event.clearEvent && event.clearEvent.content.msgtype == "m.notice")
         );
@@ -387,7 +374,6 @@ export default class ChatClient{
         let room = (this.matrixclient.getRoom(roomid));
         if(!room) return [];
         let members = room.getMembers();
-        console.log(members)
         let member_ids = [];
         for(let member of members){
             if(member.name == this.matrix_name) continue;
@@ -404,7 +390,7 @@ export default class ChatClient{
             room = this.matrixclient.getRoom(room);
         }
         await this.matrixclient.scrollback(room);
-        await Promise.all(room.timeline.filter(async(e)=>{return await this.matrixclient.decryptEventIfNeeded(e)}))
+        await Promise.all(room.timeline.map(e => this.matrixclient.decryptEventIfNeeded(e)))
         let older_messages = room.timeline.slice(limit).filter(event=>
             (event.clearEvent && event.clearEvent.type == "m.room.message")
         );
@@ -416,7 +402,7 @@ export default class ChatClient{
             room = this.matrixclient.getRoom(room);
         }
         await this.matrixclient.scrollback(room);
-        await Promise.all(room.timeline.filter(async(e)=>{return await this.matrixclient.decryptEventIfNeeded(e)}))
+        await Promise.all(room.timeline.map(e => this.matrixclient.decryptEventIfNeeded(e)))
         let older_messages = room.timeline.slice(limit).filter(event=>
             (event.clearEvent && event.clearEvent.type == "m.room.message") && (event.clearEvent && event.clearEvent.content.msgtype == "m.notice")
         );

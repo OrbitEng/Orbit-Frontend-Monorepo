@@ -10,12 +10,10 @@ import idl from "../deps/orbit_digital_market";
 
 export default class DigitalMarket{
 
-    constructor(wallet, connection, provider){
+    constructor(connection, provider){
         this.programid = new PublicKey(idl.metadata.address);
 
-        if(wallet){
-            this.wallet = wallet;
-        }
+        
         
         if(connection){
             this.connection = connection;
@@ -59,7 +57,7 @@ export default class DigitalMarket{
                 digitalProduct: product,
                 buyerTransactionsLog: buyer_log_address,
                 buyerMarketAccount: buyer_account_address,
-                buyerWallet: this.wallet.publicKey,
+                buyerWallet: this.provider.wallet.publicKey,
                 sellerListings: vendor_listings_address,
                 sellerTransactionsLog: vendor_log_address,
                 digitalAuth: this.GenMarketAuth(),
@@ -136,7 +134,7 @@ export default class DigitalMarket{
             digitalTransaction: tx_addr,
             escrowAccount: tx_struct.metadata.escrow_account,
             buyerTransactionsLog: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey
+            buyerWallet: this.provider.wallet.publicKey
         })
         .rpc();
     };
@@ -162,7 +160,7 @@ export default class DigitalMarket{
             buyerTransactionsLog: tx_struct.buyer,
             buyerWallet: buyer_wallet,
             sellerTransactionsLog: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
             digitalAuth: this.GenMarketAuth(),
             digitalProgram: this.programid,
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
@@ -201,7 +199,7 @@ export default class DigitalMarket{
             digitalProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
             digitalAuth: this.GenMarketAuth(),
@@ -306,9 +304,9 @@ export default class DigitalMarket{
             buyerTransactionsLog: tx_struct.buyer,
             buyerTokenAccount: getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.wallet.publicKey        
+                this.provider.wallet.publicKey        
             ),
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID
         })
         .rpc();
@@ -342,9 +340,9 @@ export default class DigitalMarket{
             sellerTransactionsLog: tx_struct.seller,
             sellerTokenAccount:  getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.wallet.publicKey
+                this.provider.wallet.publicKey
             ),
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
             digitalAuth: this.GenMarketAuth(),
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
             digitalProgram: this.programid,
@@ -370,7 +368,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: tx_addr,
             transactionsLog: tx_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             buyerWallet: buyer_wallet
         })
         .rpc()
@@ -393,7 +391,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: tx_addr,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey
+            buyerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -412,7 +410,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: tx_addr,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey
+            buyerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -433,7 +431,7 @@ export default class DigitalMarket{
             digitalTransaction: tx_addr,
             buyerAccount: buyer_account,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             digitalAuth: this.GenMarketAuth(),
             digitalProgram: this.programid,
             marketAccountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
@@ -464,7 +462,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
         })
         .rpc()
     }
@@ -483,7 +481,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
         })
         .rpc()
     }
@@ -501,7 +499,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
         })
         .rpc()
 
@@ -521,7 +519,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
         })
         .remainingAccounts(
             Object.values(pk_map).map((val)=>{
@@ -551,7 +549,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: tx_addr,
             sellerAccount: tx_struct.seller,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -573,7 +571,7 @@ export default class DigitalMarket{
             digitalTransaction: tx_addr,
             reviewedAccount: review_receiver,
             reviewer: market_account,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             digitalAuth: this.GenMarketAuth(),
             digitalProgram: this.programid,
             accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID

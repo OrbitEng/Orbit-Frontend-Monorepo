@@ -4,12 +4,10 @@ import {PublicKey} from "@solana/web3.js";
 const idl = require("../deps/orbit_product");
 
 export default class ProductClient{
-    constructor(wallet, connection, provider){
+    constructor(connection, provider){
         this.programid = new PublicKey(idl.metadata.address);
 
-        if(wallet){
-            this.wallet = wallet;
-        }
+        
         
         if(connection){
             this.connection = connection;
@@ -32,7 +30,7 @@ export default class ProductClient{
             physicalRecentListings: this.GenRecentListings("physical"),
             digitalRecentListings:  this.GenRecentListings("digital"),
             commissionRecentListings:  this.GenRecentListings("commission"),
-            payer: this.wallet.publicKey
+            payer: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -47,7 +45,7 @@ export default class ProductClient{
         .initVendorListings(market_type)
         .accounts({
             vendorListings: listings_address,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -78,7 +76,7 @@ export default class ProductClient{
         .accounts({
             commissionProduct: product,
             vendorListings: vendor_listings,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .remainingAccounts(remaining_accounts)
         .rpc()
@@ -106,7 +104,7 @@ export default class ProductClient{
         .accounts({
             digitalProduct: product,
             vendorListings: vendor_listings,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .remainingAccounts(remaining_accounts)
         .rpc()
@@ -135,7 +133,7 @@ export default class ProductClient{
         .accounts({
             physProduct: product,
             vendorListings: vendor_listings,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .remainingAccounts(remaining_accounts)
         .rpc()
@@ -157,7 +155,7 @@ export default class ProductClient{
         .accounts({
             prod: product,
             vendorListings: listings,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -174,7 +172,7 @@ export default class ProductClient{
         .flushListings()
         .accounts({
             vendorListings: listings_addr,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -197,7 +195,7 @@ export default class ProductClient{
         .accounts({
             vendorListings: vendor_listings,
             destinationWallet: new_wallet_addr,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -221,7 +219,7 @@ export default class ProductClient{
             digitalVendorListings: digital_listings,
             commissionVendorListings: commission_listings,
             destinationWallet: new_wallet_addr,
-            listingsOwner: this.wallet.publicKey
+            listingsOwner: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -248,7 +246,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -270,7 +268,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -293,7 +291,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -318,7 +316,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -343,7 +341,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -366,7 +364,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -394,7 +392,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -404,7 +402,7 @@ export default class ProductClient{
 
     GenListingsAddress = (product_type, listings_wallet) => {
         if(!listings_wallet){
-            listings_wallet = this.wallet.publicKey;
+            listings_wallet = this.provider.wallet.publicKey;
         }
 
         if(typeof listings_wallet == "string"){

@@ -48,7 +48,7 @@ export default function CreateAccountModal(props) {
 					leaveTo="opacity-0 scale-95"
 				>
 					<Dialog.Panel className="w-full bg-transparent max-w-[30rem] transform overflow-hidden rounded-2xl text-left align-middle transition-all">
-						<SignupForm setOpen={setIsOpen} setMarketAccount={props.setMarketAccount}/>
+						<SignupForm setOpen={setIsOpen} />
 					</Dialog.Panel>
 				</Transition.Child>
 				</div>

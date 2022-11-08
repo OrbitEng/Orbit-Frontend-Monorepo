@@ -4,12 +4,10 @@ import {PublicKey} from "@solana/web3.js";
 const idl = require("../deps/orbit_transaction");
 
 export default class TransactionClient{
-    constructor(wallet, connection, provider){
+    constructor(connection, provider){
         this.programid = new PublicKey(idl.metadata.address);
 
-        if(wallet){
-            this.wallet = wallet;
-        }
+        
         
         if(connection){
             this.connection = connection;
@@ -30,7 +28,7 @@ export default class TransactionClient{
         .createBuyerTransactionsLog(market_type)
         .accounts({
             transactionsLog: this.GenBuyerTransactionLog(market_type),
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -41,7 +39,7 @@ export default class TransactionClient{
         .createSellerTransactionsLog(market_type)
         .accounts({
             transactionsLog: this.GenSellerTransactionLog(market_type),
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
         })
         .rpc()
     }
@@ -55,7 +53,7 @@ export default class TransactionClient{
         .accounts({
             transactionsLog: tx_log,
             newOwner: new_owner,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -87,7 +85,7 @@ export default class TransactionClient{
             digitalLog: digitalLog,
             commissionsLog: commissionsLog,
             newOwner: new_owner,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     }
@@ -97,7 +95,7 @@ export default class TransactionClient{
 
     GenBuyerTransactionLog = (market_type, wallet) => {
         if(!wallet){
-            wallet = this.wallet.publicKey
+            wallet = this.provider.wallet.publicKey
         }
         if(typeof wallet == "string"){
             wallet = new PublicKey(wallet)
@@ -114,7 +112,7 @@ export default class TransactionClient{
 
     GenSellerTransactionLog = (market_type, wallet) => {
         if(!wallet){
-            wallet = this.wallet.publicKey
+            wallet = this.provider.wallet.publicKey
         }
         if(typeof wallet == "string"){
             wallet = new PublicKey(wallet)

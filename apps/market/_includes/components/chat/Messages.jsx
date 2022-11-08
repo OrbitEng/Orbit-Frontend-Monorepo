@@ -24,7 +24,7 @@ export function Message(props) {
 
 export function SelfMessage(props) {
 	return(
-		<div className="flex flex-row w-max-[50%] gap-x-2 my-2 justify-end">
+		<div className="flex flex-row w-max-[50%] gap-x-2 my-2 justify-end pr-4">
 			<div className="flex flex-col">
 				<div className="relative text-[#5C5C5C] text-xs text-right mb-1">hh:mm</div>
 				<div className="rounded bg-[#9E3B88] bg-opacity-20 text-[#949494] py-1 px-2 text-sm">{props.text}</div>

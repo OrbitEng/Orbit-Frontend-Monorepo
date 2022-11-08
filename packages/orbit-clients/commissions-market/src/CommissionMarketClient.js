@@ -10,12 +10,10 @@ const idl = require("../deps/orbit_commission_market");
 
 export default class CommissionMarketClient{
 
-    constructor(wallet, connection, provider){
+    constructor(connection, provider){
         this.programid = new PublicKey(idl.metadata.address);
 
-        if(wallet){
-            this.wallet = wallet;
-        }
+        
         
         if(connection){
             this.connection = connection;
@@ -61,7 +59,7 @@ export default class CommissionMarketClient{
             commissionProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
             commissionAuth: this.GenMarketAuth(),
@@ -139,7 +137,7 @@ export default class CommissionMarketClient{
             commissionTransaction: tx_addr,
             escrowAccount: tx_struct.metadata.escrow_account,
             buyerTransactionsLog: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey
+            buyerWallet: this.provider.wallet.publicKey
         })
         .rpc();
     };
@@ -165,7 +163,7 @@ export default class CommissionMarketClient{
             buyerTransactionsLog: tx_struct.buyer,
             buyerWallet: buyer_wallet,
             sellerTransactionsLog: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
             commissionAuth: this.GenMarketAuth(),
             commissionProgram: this.programid,
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
@@ -204,7 +202,7 @@ export default class CommissionMarketClient{
             commissionProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
             commissionAuth: this.GenMarketAuth(),
@@ -309,9 +307,9 @@ export default class CommissionMarketClient{
             buyerTransactionsLog: tx_struct.buyer,
             buyerTokenAccount: getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.wallet.publicKey        
+                this.provider.wallet.publicKey        
             ),
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID
         })
         .rpc();
@@ -345,9 +343,9 @@ export default class CommissionMarketClient{
             sellerTransactionsLog: tx_struct.seller,
             sellerTokenAccount:  getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.wallet.publicKey
+                this.provider.wallet.publicKey
             ),
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
             commissionAuth: this.GenMarketAuth(),
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
             commissionProgram: this.programid,
@@ -373,7 +371,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: tx_addr,
             transactionsLog: tx_log,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             buyerWallet: buyer_wallet
         })
         .rpc()
@@ -396,7 +394,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: tx_addr,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey
+            buyerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -415,7 +413,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: tx_addr,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey
+            buyerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -436,7 +434,7 @@ export default class CommissionMarketClient{
             commissionTransaction: tx_addr,
             buyerAccount: buyer_account,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.wallet.publicKey,
+            buyerWallet: this.provider.wallet.publicKey,
             commissionAuth: this.GenMarketAuth(),
             commissionProgram: this.programid,
             marketAccountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
@@ -467,7 +465,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
         })
         .rpc()
     }
@@ -486,7 +484,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
         })
         .rpc()
     }
@@ -504,7 +502,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
         })
         .rpc()
 
@@ -524,7 +522,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey,
+            sellerWallet: this.provider.wallet.publicKey,
         })
         .remainingAccounts(
             Object.values(pk_map).map((val)=>{
@@ -554,7 +552,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: tx_addr,
             sellerAccount: tx_struct.seller,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -576,7 +574,7 @@ export default class CommissionMarketClient{
             commissionTransaction: tx_addr,
             reviewedAccount: review_receiver,
             reviewer: market_account,
-            wallet: this.wallet.publicKey,
+            wallet: this.provider.wallet.publicKey,
             commissionAuth: this.GenMarketAuth(),
             commissionProgram: this.programid,
             accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
@@ -603,7 +601,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: tx_addr,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.wallet.publicKey
+            sellerWallet: this.provider.wallet.publicKey
         })
         .rpc()
     };
@@ -622,7 +620,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: tx_addr,
             transactionLogs: transaction_logs,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
 		.rpc()
     };
@@ -640,7 +638,7 @@ export default class CommissionMarketClient{
         .accounts({
             commissionTransaction: tx_addr,
             transactionLogs: transaction_logs,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     };

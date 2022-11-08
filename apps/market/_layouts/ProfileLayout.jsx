@@ -103,7 +103,7 @@ export function ProfileLayout(props) {
 						</div>
 						{
 							(isSelf && <EditProfileModal currentAccount={marketAccount}/>) || 
-							((matrixClient && matrixClient.logged_in) && 
+							((matrixClient) && 
 							
 							<button className="p-2 bg-[#13171D] rounded-lg" onClick={async ()=>{
 								console.log(marketAccount.data.wallet.toString())

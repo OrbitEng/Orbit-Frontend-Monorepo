@@ -7,10 +7,9 @@ import { IDBClient } from 'browser-clients';
 const idl = require("../deps/dispute.json");
 
 export default class DisputeClient{
-    constructor(wallet, connection, provider){
+    constructor(connection, provider){
         this.programid = new PublicKey(idl.metadata.address);
 
-        this.wallet = wallet;
         this.connection = connection;
         this.provider = provider;
         
@@ -33,7 +32,7 @@ export default class DisputeClient{
         .accounts({
             disputeAccount: dispute_addr,
             marketAccount: market_account,
-            wallet: this.wallet.publicKey
+            wallet: this.provider.wallet.publicKey
         })
         .rpc()
     }

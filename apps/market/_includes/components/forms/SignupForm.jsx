@@ -26,7 +26,7 @@ export function SignupForm(props) {
 	const [matrixSession, setMatrixSession] = useState(undefined)
 
 	useEffect(async ()=>{
-		if(!matrixClient || matrixClient.logged_in)return;
+		if(!matrixClient || matrixClient.chatrooms)return;
 		try{
 			let res = await matrixClient.CreateAccountInit();
 			setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
@@ -52,7 +52,6 @@ export function SignupForm(props) {
 			reflink
 		);
 		props.setOpen(false);
-		props.setMarketAccount(acc);
 		setUserAccount(acc);
 	},[pfp, reflink, nickName, biography, marketAccountsClient])
 
