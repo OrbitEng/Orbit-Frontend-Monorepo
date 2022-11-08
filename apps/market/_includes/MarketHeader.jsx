@@ -21,8 +21,6 @@ import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import UserAccountCtx from '@contexts/UserAccountCtx';
 
-import { MarketAccountFunctionalities } from '@functionalities/Accounts';
-
 import Link from 'next/link';
 import { useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
@@ -63,7 +61,7 @@ export function HomeHeader(props) {
 
 	useEffect(async ()=>{
 
-		if((userAccount && wallet.connected)&& (wallet.publicKey.toString() == userAccount.address.toString())) return;
+		if((userAccount && wallet.connected) && (wallet.publicKey.toString() == userAccount.address.toString())) return;
 
 		let temp_wallet = (wallet && wallet.publicKey) ? wallet : {};
 
