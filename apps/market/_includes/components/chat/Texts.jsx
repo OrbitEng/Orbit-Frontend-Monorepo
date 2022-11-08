@@ -39,7 +39,7 @@ export function Texts(props){
 
     const handleScroll = useCallback(async (event) => {
         const { scrollHeight, scrollTop, clientHeight } = event.target;
-        if (scrollTop <= 10) {
+        if (scrollTop == 0) {
             await matrixClient.UpdateRoomOlderMessages(roomData.roomId, chatMessages.length);
             setChatMessages(await FilterNewChatLogs(roomData.timeline))
         }
