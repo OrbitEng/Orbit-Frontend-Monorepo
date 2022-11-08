@@ -106,9 +106,8 @@ export default class ChatClient{
                     other_party_data.data.profilePic = await this.arweaveClient.GetPfp(other_party_data.data.profilePic);
 
                     rooms_mapped[desanitized_acc_address] = {
-                        roomid: room,
                         other_party: other_party_data,
-                        chat_logs: this.GetMessagesForRoom(room)
+                        ...this.matrixclient.getRoom(room)
                     }
                 }
                 
@@ -182,13 +181,23 @@ export default class ChatClient{
                 }
                 
                 this.chatrooms = rooms_mapped
-
+                this.chatroommount ? this.chatroommount(rooms_mapped) : {};
             }
 
         });
+
         this.matrixclient.on("event", async (event)=>{
             console.log("event sync: ", event);
-            
+            console.log(this.chatrooms)
+            switch(event.type){
+                case "m.room.member":
+                    if((event.content.membership == "invite") && (event.content.displayname == this.matrix_name)){
+
+                    };
+                    break;
+                case "m.room.encrypted":
+                    break;
+            }
         });
         await this.matrixclient.startClient();
         console.log("done logging in", this.matrixclient)
