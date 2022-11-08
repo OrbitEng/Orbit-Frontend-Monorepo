@@ -32,7 +32,7 @@ export function Convos(props){
     }, [matrixClient, matrixClient && matrixClient.chatrooms])
 
     return(
-        <div className={"flex flex-col w-full h-full px-3 pt-3 bg-gradient-to-t " + (props?.fullscreen || "from-[#2917514D] to-[#1D045178]")}>
+        <div className="flex flex-col w-full h-full px-3 pt-3 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">
             <div className="flex flex-col">
                 <div className="relative flex flex-shrink-0 h-16 w-16 rounded-full overflow-hidden mx-auto mt-10">
                     <Image 
@@ -109,4 +109,67 @@ export function ChatPersona(props) {
             </div>
 		</div>
 	)
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Fullscreen Components
+export function FullScreenConvos(props){
+	const {transactionClient} = useContext(TransactionClientCtx)
+	const {userAccount} = useContext(UserAccountCtx);
+	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+
+    const {chatState} = useContext(ChatCtx);
+    const {matrixClient} = useContext(MatrixClientCtx)
+
+    const [chatRooms, setChatRooms] = useState([]);
+    const [chatSearch, setChatSearch] = useState("");
+
+    useEffect(()=>{
+        if(!(matrixClient)){
+            return;
+        }
+        if(!(matrixClient.chatrooms)){
+            matrixClient.chatroommount = setChatRooms;
+            return;
+        }
+        setChatRooms(matrixClient.chatrooms);
+    }, [matrixClient, matrixClient && matrixClient.chatrooms])
+
+    return(
+        <div className="flex flex-col w-full h-full p-4">
+            <div className="flex flex-col w-full overflow-hidden">
+                <div className="relative flex flex-shrink-0 h-16 w-16 rounded-full overflow-hidden mx-auto mt-10">
+                    <Image 
+                        layout="fill"
+                        src={((userAccount?.data?.profilePic?.charAt(0) == "/" || userAccount?.data?.profilePic?.slice(0,4) == "http" || userAccount?.data?.profilePic?.slice(0,4) == "data") && userAccount.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+                        objectFit="cover"
+                    />
+                </div>
+                <span className="font-bold text-2xl text-white text-center truncate">{userAccount?.data?.metadata?.name}</span>
+                <span className="font-semibold text-sm text-[#515661] truncate">{("@" + userAccount?.address.toString())}</span>
+                <div className="flex flex-row bg-white bg-opacity-5 p-2 rounded-lg gap-x-1 mt-4">
+                    <MagnifyingGlassIcon className="h-4 w-4 my-auto text-[#5F5F5F]"/>
+                    <input
+                        className="bg-transparent text-sm outline-none text-[#515661] placeholder:text-[#5F5F5F]"
+                        type="text"
+                        placeholder="Search"
+                        value={chatSearch}
+                        onChange={(e) => {setChatSearch(e.target.value)}}
+                    />
+                </div>
+            </div>
+            <div className="flex flex-col mt-6 overflow-hidden">
+                <span className="text-white text-xs font-bold p-2">Messages <span className="text-blue-500">{chatState?.unRead > 0 && " (" + chatState?.unRead + ")"}</span></span>
+                <div className="flex flex-col overflow-y-auto">
+                    {
+                        (matrixClient && matrixClient.chatrooms) && [...Object.entries(matrixClient.chatrooms)].map(([other_name, room_info], index)=>{
+                            console.log(other_name, room_info);
+                            // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
+                            return <ChatPersona roomInfo={room_info} setTextRoomAndPanel={props.setTextRoomAndPanel} key={index}/>
+                        })
+                    }
+                </div>
+            </div>
+        </div>
+    )
 }
