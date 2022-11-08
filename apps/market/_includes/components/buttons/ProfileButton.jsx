@@ -8,10 +8,12 @@ import { Fragment } from "react";
 import { ArrowRightOnRectangleIcon, ChevronRightIcon, StarIcon, TruckIcon, UserCircleIcon, UsersIcon } from "@heroicons/react/24/outline";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+import UserAccountCtx from "@contexts/UserAccountCtx";
 
 export default function ProfileButton(props) {
 	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx)
+	const {userAccount, setUserAccount} = useContext(UserAccountCtx)
 	const [ balance, setBalance ] = useState(0);
 	let wallet = useWallet();
 	let connection = useConnection()
@@ -38,7 +40,7 @@ export default function ProfileButton(props) {
 				leaveFrom="transform opacity-100 scale-100"
 				leaveTo="transform opacity-0 scale-95"
 			>
-				<Popover.Panel className="absolute flex flex-col p-5 top-2 -right-4 bg-[#8E84FF] bg-opacity-20 rounded-lg shadow-lg w-64">
+				<Popover.Panel className="absolute flex flex-col p-5 top-2 -right-4 bg-[#8E84FF] bg-opacity-20 rounded-lg shadow-lg w-64 backdrop-blur">
 					<Popover.Group>
 						<Link 
 							className="m-1"
@@ -152,7 +154,8 @@ export default function ProfileButton(props) {
 						onClick={async () => {
 							await wallet.disconnect()
 							setMarketAccountsClient(undefined);
-							setMatrixClient(undefined)
+							setMatrixClient(undefined);
+							setUserAccount(undefined);
 							props?.setMarketAccount(undefined);
 						}} 
 						className="flex flex-row relative left-0 font-semibold text-[#ACACAC] align-middle justify-end"
