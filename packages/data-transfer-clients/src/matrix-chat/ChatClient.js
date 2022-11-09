@@ -284,8 +284,9 @@ export default class ChatClient{
     LeaveConvo = async(chatroom_name, roomid)=>{
         await this.matrixclient.leaveRoomChain(roomid);
         await this.matrixclient.forget(roomid, true);
-        delete this.chatrooms[chatroom_name];
-        console.log(this.chatroommount)
+        if(this.chatrooms && this.chatrooms[chatroom_name]){
+            delete this.chatrooms[chatroom_name];
+        }
         this.chatroommount ? this.chatroommount(this.chatrooms) : {};
     }
 

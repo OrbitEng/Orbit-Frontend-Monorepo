@@ -1,15 +1,16 @@
 import Image from "next/image";
 import { TrashIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
-import { useState } from "react";
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useState } from "react";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import CommissionRequestModal from "@includes/components/modals/CommissionRequestModal";
+import ChatUploadContentModal from "../modals/ChatUploadContentModal";
 
 export function ChatTextInput(props){
     const {matrixClient} = useContext(MatrixClientCtx);
     const [textMesage, setTextMessage] = useState("");
     const [openRequestModal, setOpenRequestModal] = useState(false);
+    const [openUploadPreviewModal, setOpenUploadPreviewModal] = useState(false)
     const [fileBlobs, setFileBlobs] = useState([]);
 
     const onDrop = (acceptedFiles) => {
@@ -93,12 +94,15 @@ export function ChatTextInput(props){
                 <div className="flex flex-row justify-between w-24">
                     <PaperClipIcon className="h-5 w-5 text-[#949494]" onClick={open}/>
                     <div className="border-x border-[#4D4D4D]" />
-                    <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
+                    <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
+                        <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
+                    </button>
                     <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
                         <TagIcon className="h-5 w-5 text-[#949494]"/>
                     </button>
                 </div>
                 <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
+                <ChatUploadContentModal open={openUploadPreviewModal} setOpen={setOpenUploadPreviewModal}/>
             </div>
         </div>
     )
