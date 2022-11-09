@@ -1,4 +1,8 @@
-import { Dialog } from "@headlessui/react";
+import { Fragment, useEffect } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Wallet } from "@project-serum/anchor";
+
 
 export default function ChatUploadContentModal(props) {
 	return(
