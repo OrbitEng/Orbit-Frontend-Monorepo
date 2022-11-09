@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MagnifyingGlassIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { MagnifyingGlassIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useContext, useState } from "react";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import ChatCtx from "@contexts/ChatCtx";
@@ -78,13 +78,12 @@ export function ChatPersona(props) {
 
 	return(
 		<div
-            className="w-full flex flex-row"
+            className="w-full flex flex-row overflow-visible"
         >
             <div
                 onClick={()=>{props.setTextRoomAndPanel && props.setTextRoomAndPanel(props.roomInfo)}}
-                className="flex-grow flex flex-row rounded-lg gap-x-3 p-3 hover:bg-gradient-to-r hover:from-[#4A16534D] hover:to-[#1F16534D] overflow-hidden"
+                className="relative flex-grow flex flex-row rounded-lg gap-x-3 p-3 hover:bg-gradient-to-r hover:from-[#4A16534D] hover:to-[#1F16534D] overflow-visible"
             >
-
                 <div className="relative flex h-8 w-8 rounded-full overflow-hidden">
                     <Image 
                         layout="fill"
@@ -100,11 +99,10 @@ export function ChatPersona(props) {
                     <div className="flex flex-row">
                         {props?.timestamp || "hh:mm"}
                     </div>
+                    <div onClick={LeaveConversation} className="inline-flex flex-row items-center justify-center text-xs font-bold leading-none transform translate-x-1/2 -translate-y-1/2 rounded-full">
+                        <XMarkIcon className="h-4 w-4 text-blue-500" />
+                    </div>
                 </div>
-            </div>
-
-            <div onClick={LeaveConversation}>
-                <TrashIcon className="mx-2 w-8 h-8 text-white"/>
             </div>
 		</div>
 	)
