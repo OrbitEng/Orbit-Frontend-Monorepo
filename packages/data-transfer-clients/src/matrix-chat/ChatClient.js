@@ -278,7 +278,6 @@ export default class ChatClient{
         if(txid){
             this.chatrooms[inv_user][txid] = txid;
         }
-        this.chatroommount(this.chatrooms);
         return roomId;
     }
 
@@ -286,6 +285,8 @@ export default class ChatClient{
         await this.matrixclient.leaveRoomChain(roomid);
         await this.matrixclient.forget(roomid, true);
         delete this.chatrooms[chatroom_name];
+        console.log(this.chatroommount)
+        this.chatroommount ? this.chatroommount(this.chatrooms) : {};
     }
 
     //////////////////////////////////////////////

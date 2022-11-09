@@ -19,11 +19,14 @@ export function Convos(props){
     const [chatSearch, setChatSearch] = useState("");
 
     useEffect(()=>{
-        if(!(matrixClient && matrixClient.chatrooms)){
+        if(!matrixClient){
             return;
         }
+        if(!matrixClient.chatrooms){
+            matrixClient.chatroommount = setChatRooms 
+        }
         setChatRooms(matrixClient.chatrooms);
-    }, [chatState, matrixClient && matrixClient.chatrooms])
+    }, [chatState, matrixClient, matrixClient?.chatrooms])
 
     return(
         <div className="flex flex-col w-full h-full px-3 pt-3 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">
@@ -70,7 +73,7 @@ export function ChatPersona(props) {
 
     const LeaveConversation = useCallback(async()=>{
         await matrixClient.LeaveConvo(props.other_party, props.roomInfo.roomId);
-        setChatState(s=>s)
+        setChatState(s => ({...s}))
     },[matrixClient]);
 
 	return(

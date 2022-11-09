@@ -110,7 +110,7 @@ export function ProfileLayout(props) {
 								async ()=>{
 									console.log(marketAccount.data.wallet.toString())
 									await matrixClient.StartConvo(marketAccount)
-									setChatState(s=>s);
+									setChatState(s => ({...s}))
 								}
 							}>
 								<PaperAirplaneIcon className="h-5 w-5 text-white"/>
