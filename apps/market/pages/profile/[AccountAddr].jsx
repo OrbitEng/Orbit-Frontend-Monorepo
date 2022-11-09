@@ -7,7 +7,7 @@ export default function AccountPage() {
 	const { AccountAddr } = router.query;
 
 	return(
-		<GenericLayout>
+		<GenericLayout chat>
 			<ProfileLayout accountAddr={AccountAddr} />
 		</GenericLayout>
 	)
