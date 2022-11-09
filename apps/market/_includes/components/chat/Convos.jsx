@@ -10,9 +10,7 @@ import { useCallback } from "react";
 import { useEffect } from "react";
 
 export function Convos(props){
-	const {transactionClient} = useContext(TransactionClientCtx)
 	const {userAccount} = useContext(UserAccountCtx);
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
 
     const {chatState} = useContext(ChatCtx);
     const {matrixClient} = useContext(MatrixClientCtx)
@@ -21,15 +19,11 @@ export function Convos(props){
     const [chatSearch, setChatSearch] = useState("");
 
     useEffect(()=>{
-        if(!(matrixClient)){
-            return;
-        }
-        if(!(matrixClient.chatrooms)){
-            matrixClient.chatroommount = setChatRooms;
+        if(!(matrixClient && matrixClient.chatrooms)){
             return;
         }
         setChatRooms(matrixClient.chatrooms);
-    }, [matrixClient, matrixClient && matrixClient.chatrooms])
+    }, [chatState, matrixClient && matrixClient.chatrooms])
 
     return(
         <div className="flex flex-col w-full h-full px-3 pt-3 bg-gradient-to-t from-[#2917514D] to-[#1D045178]">
@@ -58,10 +52,10 @@ export function Convos(props){
                 <span className="text-white text-xs font-bold p-2">Messages <span className="text-blue-500">{chatState?.unRead > 0 && " (" + chatState?.unRead + ")"}</span></span>
                 <div className="flex flex-col overflow-y-auto">
                     {
-                        (matrixClient && matrixClient.chatrooms) && [...Object.entries(matrixClient.chatrooms)].map(([other_name, room_info], index)=>{
+                        (chatRooms) && [...Object.entries(chatRooms)].map(([other_name, room_info], index)=>{
                             console.log(other_name, room_info);
                             // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
-                            return <ChatPersona roomInfo={room_info} setTextRoomAndPanel={props.setTextRoomAndPanel} key={index}/>
+                            return <ChatPersona setChatRooms={setChatRooms} roomInfo={room_info} other_party={other_name} setTextRoomAndPanel={props.setTextRoomAndPanel} key={index}/>
                         })
                     }
                 </div>
@@ -72,10 +66,12 @@ export function Convos(props){
 
 export function ChatPersona(props) {
     const {matrixClient} = useContext(MatrixClientCtx);
+    const {setChatState} = useContext(ChatCtx);
 
     const LeaveConversation = useCallback(async()=>{
-        await matrixClient.LeaveConvo(props.roomInfo.roomId);
-    },[props, matrixClient]);
+        await matrixClient.LeaveConvo(props.other_party, props.roomInfo.roomId);
+        setChatState(s=>s)
+    },[matrixClient]);
 
 	return(
 		<div

@@ -69,7 +69,7 @@ export function Texts(props){
                 </div>
             </div>
             <div className="px-5 flex flex-col h-full overflow-hidden " >
-                <div className="relative flex flex-col w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full mb-16 " onScroll={handleScroll} >
+                <div className="relative flex flex-col flex-grow w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full mb-2" onScroll={handleScroll} >
                     {
                         chatMessages
                     }

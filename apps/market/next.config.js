@@ -40,6 +40,6 @@ module.exports = withTM({
     return config;
   },
   images: {
-    domains: ['raw.githubusercontent.com', 'www.gravatar.com'],
+    domains: ['raw.githubusercontent.com', 'www.gravatar.com', "matrix.foss.wtf"],
   }
 })

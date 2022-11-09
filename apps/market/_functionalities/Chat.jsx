@@ -25,8 +25,9 @@ export function ChatRoomFunctionalities(
                 return undefined;
             }
     
-            let children = <></>;
+            let children = undefined;
             let msgtext = "";
+            let imagesrc = "";
 
             // todo: take care of common mimetypes
             // type : content.info.mimetype
@@ -50,13 +51,9 @@ export function ChatRoomFunctionalities(
                     msgtext = message.content.body;
                     break;
                 case "m.image":
-                    
-                    children = <Image
-                        src = {message.content.url}
-                        layout="fill"
-                        objectFit="contain"
-                        priority={true}
-                    />
+                    // msgtext = message.content.body;
+                    if(typeof message.content.url != "string")continue;
+                    imagesrc = matrixClient.matrixclient.mxcUrlToHttp(message.content.url);
                     break;
                 case "m.file":
                     break;
@@ -67,11 +64,11 @@ export function ChatRoomFunctionalities(
             };
 
             let retelement = event.sender.name == matrixClient.matrix_name ?
-            <SelfMessage text={msgtext}>
+            <SelfMessage text={msgtext} imagesrc={imagesrc}>
                 {children}
             </SelfMessage>
             :
-            <Message text={msgtext} pfp={pfpData}>
+            <Message text={msgtext} pfp={pfpData} imagesrc={imagesrc}>
                 {children}
             </Message>;
             

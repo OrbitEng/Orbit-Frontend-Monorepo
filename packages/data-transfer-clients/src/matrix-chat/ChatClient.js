@@ -221,12 +221,22 @@ export default class ChatClient{
     }
 
     SendImage = async(roomid, image_data) => {
-        await this.matrixclient.sendMessage(roomid,
+        let mxurl = await this.UploadImage(image_data);
+        console.log(mxurl)
+        if((typeof mxurl != "string") && (mxurl.slice(0,3) != "mxurl")) return;
+        await this.matrixclient.sendMessage(
+            roomid,
             {
-                url:image_data,
+                url: mxurl,
                 msgtype: "m.image",
-                text:""
+                body: image_data.name + image_data.type
             }
+        )
+    }
+
+    UploadImage = async(image_data) => {
+        return this.matrixclient.uploadContent(
+            image_data
         )
     }
 
@@ -234,12 +244,12 @@ export default class ChatClient{
     ////////////////////////////////////////
     /// BASIC UTILS
 
-    StartConvo = async(inv_user)=>{
+    StartConvo = async(userprofile, txid = undefined)=>{
         const {
             room_id: roomId,
         } = await this.matrixclient.createRoom({
             visibility: 'private',
-            invite: ["@"+this.UnsanitizeName(inv_user)+":foss.wtf"],
+            invite: ["@"+this.UnsanitizeName(userprofile.data.wallet.toString())+":foss.wtf"],
             initial_state:[{
                 type: "m.room.encryption",
                 state_key: "",
@@ -261,12 +271,21 @@ export default class ChatClient{
         
         await this.matrixclient.uploadKeys();
         await this.matrixclient.sendSharedHistoryKeys(roomId, members);
-        
+        this.chatrooms[userprofile.data.wallet.toString()] = {
+            ...room,
+            other_party: userprofile
+        };
+        if(txid){
+            this.chatrooms[inv_user][txid] = txid;
+        }
+        this.chatroommount(this.chatrooms);
         return roomId;
     }
 
-    LeaveConvo = async(roomid)=>{
+    LeaveConvo = async(chatroom_name, roomid)=>{
         await this.matrixclient.leaveRoomChain(roomid);
+        await this.matrixclient.forget(roomid, true);
+        delete this.chatrooms[chatroom_name];
     }
 
     //////////////////////////////////////////////

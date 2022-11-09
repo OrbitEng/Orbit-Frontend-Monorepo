@@ -5,16 +5,29 @@ export function Message(props) {
 		<div className="flex flex-row w-max-[50%] gap-x-2 my-2">
 			<div className="flex flex-col">
 				<div className="relative text-[#5C5C5C] text-xs text-left mb-1">hh:mm</div>
-				<div className="flex flex-row gap-x-2">
+				<div className=" flex flex-row gap-x-2">
 					<div className="relative flex h-8 w-8 rounded-full overflow-hidden">
 						<Image 
-							layout="fill"
 							src={props?.pfp || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+							layout="fill"
 							objectFit="cover"
 						/>
 					</div>
-					<div className="rounded bg-[#6A31B2] bg-opacity-20 text-[#949494] py-1 px-2 text-sm my-auto">{props.text}</div>
+					{
+						(props.text.length > 0) &&
+						<div className="rounded bg-[#9E3B88] bg-opacity-20 text-[#949494] py-1 px-2 text-sm my-auto">{props.text}</div>
+					}
 					{props.children}
+					{
+						props.imagesrc && 
+						<div className="relative w-80 h-60">
+                            <Image
+                                src = {props.imagesrc}
+                                layout="fill"
+                                objectFit="contain"
+                            />
+					</div>
+					}
 				</div>
 			</div>
 		</div>
@@ -27,8 +40,21 @@ export function SelfMessage(props) {
 		<div className="flex flex-row w-max-[50%] gap-x-2 my-2 justify-end pr-4">
 			<div className="flex flex-col">
 				<div className="relative text-[#5C5C5C] text-xs text-right mb-1">hh:mm</div>
-				<div className="rounded bg-[#9E3B88] bg-opacity-20 text-[#949494] py-1 px-2 text-sm">{props.text}</div>
+				{
+					(props.text.length > 0) &&
+					<div className="rounded bg-[#9E3B88] bg-opacity-20 text-[#949494] py-1 px-2 text-sm">{props.text}</div>
+				}
 				{props.children}
+				{
+					props.imagesrc && 
+					<div className="relative w-80 h-60">
+                            <Image
+                                src = {props.imagesrc}
+                                layout="fill"
+                                objectFit="contain"
+                            />
+					</div>
+				}
 			</div>
 		</div>
 	)

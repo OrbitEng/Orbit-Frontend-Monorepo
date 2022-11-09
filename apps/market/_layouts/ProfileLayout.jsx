@@ -10,7 +10,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from "@functionalities/Products";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
-import { ChatWidget } from "@includes/ChatWidget";
+import ChatCtx from "@contexts/ChatCtx";
 import ArweaveCtx from "@contexts/ArweaveCtx";
 
 export function ProfileLayout(props) {
@@ -19,6 +19,7 @@ export function ProfileLayout(props) {
 	const { GetAllVendorCommissionProducts } = CommissionProductFunctionalities();
 	const { arweaveClient } = useContext(ArweaveCtx)
 	const { userAccount } = useContext(UserAccountCtx);
+	const {setChatState} = useContext(ChatCtx)
 
 	const {matrixClient} = useContext(MatrixClientCtx)
 
@@ -105,9 +106,13 @@ export function ProfileLayout(props) {
 							(isSelf && <EditProfileModal currentAccount={marketAccount}/>) || 
 							((matrixClient) && 
 							
-							<button className="p-2 bg-[#13171D] rounded-lg" onClick={async ()=>{
-								console.log(marketAccount.data.wallet.toString())
-								await matrixClient.StartConvo(marketAccount.data.wallet.toString())}}>
+							<button className="p-2 bg-[#13171D] rounded-lg" onClick={
+								async ()=>{
+									console.log(marketAccount.data.wallet.toString())
+									await matrixClient.StartConvo(marketAccount)
+									setChatState(s=>s);
+								}
+							}>
 								<PaperAirplaneIcon className="h-5 w-5 text-white"/>
 							</button>) ||
 							<></>
