@@ -106,7 +106,7 @@ export function ProfileLayout(props) {
 							(isSelf && <EditProfileModal currentAccount={marketAccount}/>) || 
 							((matrixClient) && 
 							
-							<button className="p-2 bg-[#13171D] rounded-lg" onClick={
+							<button className="bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] rounded-lg relative p-2" onClick={
 								async ()=>{
 									console.log(marketAccount.data.wallet.toString())
 									await matrixClient.StartConvo(marketAccount)
