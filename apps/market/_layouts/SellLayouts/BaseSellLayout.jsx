@@ -53,7 +53,7 @@ export function SellLayout(props){
 								<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-3xl">
 									<div className="relative flex w-1/2 h-1/2 mx-auto">
 										<Image
-											src="/emojis/globeEmojiImage.png"
+											src="/Emojis/globeEmojiImage.png"
 											layout="fill"
 											objectFit="contain"
 										/>
@@ -88,7 +88,7 @@ export function SellLayout(props){
 								<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-3xl">
 									<div className="relative flex w-1/2 h-1/2 mx-auto">
 										<Image
-											src="/emojis/filesEmojiImage.png"
+											src="/Emojis/filesEmojiImage.png"
 											layout="fill"
 											objectFit="contain"
 										/>
@@ -123,7 +123,7 @@ export function SellLayout(props){
 								<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-3xl">
 									<div className="relative flex w-1/2 h-1/2 mx-auto">
 										<Image
-											src="/emojis/wrenchEmojiImage.png"
+											src="/Emojis/wrenchEmojiImage.png"
 											layout="fill"
 											objectFit="contain"
 										/>
