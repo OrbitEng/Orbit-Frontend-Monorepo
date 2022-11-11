@@ -7,6 +7,30 @@ import CommissionRequestModal from "@includes/components/modals/CommissionReques
 import ChatUploadContentModal from "../modals/ChatUploadContentModal";
 
 export function ChatTextInput(props){
+    const {CommitPreview, ProposeRate, AcceptRate, SeePreview,
+		UploadProductFile: UploadProductFileCommission, 
+		UpdateStatusToShipping: UpdateStatusToShippingCommission, 
+		CommitSubkeys: CommitSubkeysCommission, 
+		ChooseBlocks: ChooseBlocksCommission, 
+		DecryptImage: DecryptImageCommission, 
+		} = CommissionFunctionalities();
+
+	const {
+		UpdateStatusToShipping: UpdateStatusToShippingDigital,
+		UploadProductFile: UploadProductFileDigital,
+		CommitSubkeys: CommitSubkeysDigital,
+		SellerAcceptTransaction: SellerAcceptTransactionDigital,
+		ChooseBlocks: ChooseBlocksDigital,
+		DecryptImage: DecryptImageDigital,
+	} = DigitalFunctionalities();
+
+	const {
+		OpenDispute,
+		CloseDisputeSol,
+		CloseDisputeSpl
+	} = PhysicalFunctionalities();
+
+
     const {matrixClient} = useContext(MatrixClientCtx);
     const [textMesage, setTextMessage] = useState("");
     const [openRequestModal, setOpenRequestModal] = useState(false);

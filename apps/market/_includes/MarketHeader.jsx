@@ -156,12 +156,17 @@ export function HomeHeader(props) {
 		if((wallet.connected && wallet.publicKey && matrixClient) && (matrixClient.auth_keypair.publicKey.toString() == wallet.publicKey.toString())){
 			return
 		}
-		let chat_client = new ChatClient(wallet, marketAccountsClient, transactionClient, arweaveClient, userAccount);
-		setMatrixClient(chat_client)
-		await chat_client.initialize();
-		if(await chat_client.Login()){
-			setHasChat(true)
-		};
+		try{
+			let chat_client = new ChatClient(wallet, marketAccountsClient, transactionClient, arweaveClient, userAccount);
+			setMatrixClient(chat_client)
+			await chat_client.initialize();
+			if(await chat_client.Login()){
+				setHasChat(true)
+			};
+		}catch(e){
+			console.log(e);
+			setHasChat(false);
+		}
 	}, [marketAccountsClient, transactionClient, arweaveClient, userAccount, arweaveClient, wallet])
 
 	return(

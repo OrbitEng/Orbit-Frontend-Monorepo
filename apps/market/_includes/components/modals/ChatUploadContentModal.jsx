@@ -2,9 +2,12 @@ import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Wallet } from "@project-serum/anchor";
+import { CommissionFunctionalities, DigitalFunctionalities, PhysicalFunctionalities } from "@functionalities/Transactions";
 
 
 export default function ChatUploadContentModal(props) {
+	const {CommitPreview, ProposeRate} = CommissionFunctionalities();
+
 	return(
 		<Transition show={props.open} as={Fragment}>
 			<Dialog as="div" className="fixed z-[260]" onClose={() => props.setOpen(false)}>
