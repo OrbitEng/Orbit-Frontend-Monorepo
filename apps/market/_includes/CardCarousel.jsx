@@ -19,9 +19,7 @@ export function HomeBanner(props) {
                 leaveFrom="opacity-100 rotate-0 scale-100 "
                 leaveTo="opacity-0 scale-95 "
             >
-                <Rerousel itemRef={ref} interval={7000}>
-                    <BetaCard passedRef={ref} />
-                </Rerousel>
+                <BetaCard />
             </Transition>
         </div>
     )
