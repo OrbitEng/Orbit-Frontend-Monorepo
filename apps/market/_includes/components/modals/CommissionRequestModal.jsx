@@ -68,23 +68,6 @@ export default function CommissionRequestModal(props) {
 									<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
 								</button>
 							</div>
-
-							<div className="flex mt-8 flex-col border-[#545454] border-[1px] bg-[#131313] bg-opacity-[56%] min-h-[360px] h-full rounded-xl" {...getRootProps()}>
-								<input {...getInputProps()}/>
-								{
-									(files.length > 0) ? 
-									
-									files.map((file)=>{
-										return 
-											<div>
-											</div>
-									})
-									:
-									<div className="w-[90%] ">
-
-									</div>
-								}
-							</div>
 							
 							<div className="text-white py-4">{statusMessage}</div>
 							

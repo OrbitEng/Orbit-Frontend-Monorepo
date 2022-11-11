@@ -118,15 +118,15 @@ export function ChatTextInput(props){
                 <div className="flex flex-row justify-between w-24">
                     <PaperClipIcon className="h-5 w-5 text-[#949494]" onClick={open}/>
                     <div className="border-x border-[#4D4D4D]" />
-                    <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
+                    <button className="flex" onClick={() => {setOpenUploadPreviewModal(true)}}>
                         <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
                     </button>
                     <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
                         <TagIcon className="h-5 w-5 text-[#949494]"/>
                     </button>
                 </div>
-                <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
                 <ChatUploadContentModal open={openUploadPreviewModal} setOpen={setOpenUploadPreviewModal}/>
+                <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
             </div>
         </div>
     )
