@@ -106,6 +106,7 @@ export default class ChatClient{
                 let buyer_transactions = [];
                 let seller_transactions = [];
                 
+                let buyerindlengths = {};
                 if(this.userAccount.data.buyerDigitalTransactions.toString() != "11111111111111111111111111111111"){
                     let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerDigitalTransactions)).data;
                     let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
@@ -113,6 +114,7 @@ export default class ChatClient{
                         if(indexes[i] == "0") continue;
                         buyer_transactions.push(txs.openTransactions[i])
                     }
+                    buyerindlengths.digital = indexes.length;
                 }
                 if(this.userAccount.data.buyerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
                     let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerPhysicalTransactions)).data;
@@ -121,6 +123,7 @@ export default class ChatClient{
                         if(indexes[i] == "0") continue;
                         buyer_transactions.push(txs.openTransactions[i])
                     }
+                    buyerindlengths.physical = indexes.length;
                 }
                 if(this.userAccount.data.buyerCommissionTransactions.toString() != "11111111111111111111111111111111"){
                     let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerCommissionTransactions)).data;
@@ -129,17 +132,31 @@ export default class ChatClient{
                         if(indexes[i] == "0") continue;
                         buyer_transactions.push(txs.openTransactions[i])
                     }
+                    buyerindlengths.commission = indexes.length;
                 }
 
                 /// other party is the return of this call
                 let buyer_convos = await this.transactionClient.GetMultipleTransactionSeller(buyer_transactions);
                 let seller_wallets = await this.transactionClient.GetMultipleTxLogOwners(buyer_convos);
-                for(let i = 0; i < seller_wallets.length; i++){
+
+                for(let i = 0; i < buyerindlengths.digital; i++){
                     rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
                     rooms_mapped[seller_wallets[i].toString()].side = "buyer";
+                    rooms_mapped[seller_wallets[i].toString()].type = "digital";
+                }
+                for(let i = buyerindlengths.digital; i < buyerindlengths.physical; i++){
+                    rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
+                    rooms_mapped[seller_wallets[i].toString()].side = "buyer";
+                    rooms_mapped[seller_wallets[i].toString()].type = "physical";
+                }
+                for(let i = buyerindlengths.physical; i < buyerindlengths.commission; i++){
+                    rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
+                    rooms_mapped[seller_wallets[i].toString()].side = "buyer";
+                    rooms_mapped[seller_wallets[i].toString()].type = "commission";
                 }
 
 
+                let sellerindlengths = {};
                 if(this.userAccount.data.sellerDigitalTransactions.toString() != "11111111111111111111111111111111"){
                     let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerDigitalTransactions)).data;
                     let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
@@ -147,6 +164,7 @@ export default class ChatClient{
                         if(indexes[i] == "0") continue;
                         seller_transactions.push(txs.openTransactions[i])
                     }
+                    sellerindlengths.digital = indexes.length;
                 }
                 if(this.userAccount.data.sellerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
                     let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerPhysicalTransactions)).data;
@@ -155,6 +173,7 @@ export default class ChatClient{
                         if(indexes[i] == "0") continue;
                         seller_transactions.push(txs.openTransactions[i])
                     }
+                    sellerindlengths.physical = indexes.length;
                 }
                 if(this.userAccount.data.sellerCommissionTransactions.toString() != "11111111111111111111111111111111"){
                     let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerCommissionTransactions)).data;
@@ -163,13 +182,26 @@ export default class ChatClient{
                         if(indexes[i] == "0") continue;
                         seller_transactions.push(txs.openTransactions[i])
                     }
+                    sellerindlengths.commission = indexes.length;
                 }
 
                 let seller_convos = await this.transactionClient.GetMultipleTransactionBuyer(seller_transactions);
                 let buyer_wallets = await this.transactionClient.GetMultipleTxLogOwners(seller_convos);
-                for(let i = 0; i < buyer_wallets.length; i++){
+
+                for(let i = 0; i < sellerindlengths.digital; i++){
                     rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
                     rooms_mapped[buyer_wallets[i].toString()].side = "seller";
+                    rooms_mapped[buyer_wallets[i].toString()].type = "digital";
+                }
+                for(let i = sellerindlengths.digital; i < sellerindlengths.physical; i++){
+                    rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
+                    rooms_mapped[buyer_wallets[i].toString()].side = "seller";
+                    rooms_mapped[buyer_wallets[i].toString()].type = "physical";
+                }
+                for(let i = sellerindlengths.physical; i < sellerindlengths.commission; i++){
+                    rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
+                    rooms_mapped[buyer_wallets[i].toString()].side = "seller";
+                    rooms_mapped[buyer_wallets[i].toString()].type = "commission";
                 }
                 
                 this.chatrooms = rooms_mapped

@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useDropzone } from "react-dropzone";
 import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Wallet } from "@project-serum/anchor";
+import { useState } from "react";
 
 
 export default function ChatUploadContentModal(props) {
@@ -31,9 +32,6 @@ export default function ChatUploadContentModal(props) {
 	}
 
     const {getRootProps, getInputProps, open} = useDropzone({onDrop});
-
-
-	const {CommitPreview, ProposeRate} = CommissionFunctionalities();
 
 	return(
 		<Transition show={props.open} as={Fragment}>

@@ -7,8 +7,6 @@ import Image from "next/image";
 
 
 export function ChatRoomFunctionalities(
-    roomId,
-    txAddr = "",
     pfpData = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"
 ){
     const {matrixClient} = useContext(MatrixClientCtx);
@@ -77,16 +75,8 @@ export function ChatRoomFunctionalities(
         return logs
     }
 
-    /**
-     * lazy loading
-     */
-    const FetchOlderMessages = async(logs_length) =>{
-        return matrixClient.UpdateRoomOlderMessages(roomId, logs_length)
-    }
-
     return {
-        FilterNewChatLogs,
-        FetchOlderMessages
+        FilterNewChatLogs
     }
 
 }

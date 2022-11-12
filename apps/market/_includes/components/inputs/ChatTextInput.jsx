@@ -5,6 +5,7 @@ import { useCallback, useContext, useState } from "react";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import CommissionRequestModal from "@includes/components/modals/CommissionRequestModal";
 import ChatUploadContentModal from "../modals/ChatUploadContentModal";
+import { PhysicalFunctionalities, DigitalFunctionalities, CommissionFunctionalities } from "@functionalities/Transactions";
 
 export function ChatTextInput(props){
     const {CommitPreview, ProposeRate, AcceptRate, SeePreview,
