@@ -15,7 +15,7 @@ export default function CartSideMenu(props) {
 	const [openPos, setOpenPos] = useState(false);
 	const [solPrice, setSolPrice] = useState();
 	const {pythClient} = useContext(PythClientCtx);
-	const {account} = useContext(UserAccountCtx);
+	const {userAccount, setUserAccount} = useContext(UserAccountCtx);
 	const wallet = useWallet();
 
 	useEffect(async ()=>{
@@ -134,14 +134,14 @@ export default function CartSideMenu(props) {
 														</div>
 														<button
 															onClick={() => {
-																if (wallet?.connected && (account != {})) {
+																if (wallet?.connected && (!userAccount)) {
 																	setOpenPos(true)
 																}
 															}}
 															className="py-4 z-[120] flex flex-row justify-center bg-gradient-to-tr from-[#464255A6] via-[#2D2A35A6] to-[#2D2A35A6] rounded-lg mt-4"
 														>
 														{
-															(wallet?.connected && (account != {})) ?  
+															(wallet?.connected && userAccount) ?  
 																<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
 																	<BoltIcon className="h-4 w-4 text-[#7fff6b] stroke-2 my-auto mr-1 " />
 																	Buy Now
