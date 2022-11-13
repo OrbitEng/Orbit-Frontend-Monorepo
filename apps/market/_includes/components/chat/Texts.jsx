@@ -4,7 +4,8 @@ import { InformationCircleIcon} from "@heroicons/react/24/outline";
 import { Fragment, useEffect, useRef, useState } from "react";
 import { ChatRoomFunctionalities } from "@functionalities/Chat";
 import { useCallback, useContext } from "react";
-import { ChatTextInput } from "@includes/components/inputs/ChatTextInput";
+import { ChatMessageInput } from "@includes/components/inputs/ChatMessageInput";
+import { ChatFunctionInput } from "@includes/components/inputs/ChatFunctionInput";
 
 export function Texts(props){
     const {matrixClient} = useContext(MatrixClientCtx);
@@ -71,7 +72,10 @@ export function Texts(props){
                     <ContractRequest autoFocus requestName="Custom Logo" /> */}
                     <div ref={messageBottomRef}/>
                 </div>
-                <ChatTextInput roomid={roomData.roomId} updateChat={newChat} txid={roomData.txid} side={roomData.side} txtype={roomData.type}/>
+                <div className="flex flex-row">
+                    <ChatMessageInput roomid={roomData.roomId} updateChat={newChat} txid={roomData.txid} side={roomData.side} txtype={roomData.type}/>
+                    <ChatFunctionInput roomid={roomData.roomId} updateChat={newChat} txid={roomData.txid} side={roomData.side} txtype={roomData.type}/>
+                </div>
             </div>
         </div>
     )   
@@ -164,7 +168,7 @@ export function FullScreenTexts(props){
                             <ContractRequest autoFocus requestName="Custom Logo" /> */}
                             <div ref={messageBottomRef}/>
                         </div>
-                        <ChatTextInput roomid={roomData.roomId} updateChat={newChat}/>
+                        <ChatMessageInput roomid={roomData.roomId} updateChat={newChat}/>
                     </> : <div className="m-auto">
                         <div className="relative mx-auto h-28 w-44 translate-x-4">
                             <Image

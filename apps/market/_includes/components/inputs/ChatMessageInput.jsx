@@ -1,41 +1,13 @@
 import Image from "next/image";
 import { TrashIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
-import CommissionRequestModal from "@includes/components/modals/CommissionRequestModal";
-import ChatUploadContentModal from "../modals/ChatUploadContentModal";
-import { PhysicalFunctionalities, DigitalFunctionalities, CommissionFunctionalities } from "@functionalities/Transactions";
 
-export function ChatTextInput(props){
-    const {CommitPreview, ProposeRate, AcceptRate, SeePreview,
-		UploadProductFile: UploadProductFileCommission, 
-		UpdateStatusToShipping: UpdateStatusToShippingCommission, 
-		CommitSubkeys: CommitSubkeysCommission, 
-		ChooseBlocks: ChooseBlocksCommission, 
-		DecryptImage: DecryptImageCommission, 
-		} = CommissionFunctionalities();
-
-	const {
-		UpdateStatusToShipping: UpdateStatusToShippingDigital,
-		UploadProductFile: UploadProductFileDigital,
-		CommitSubkeys: CommitSubkeysDigital,
-		SellerAcceptTransaction: SellerAcceptTransactionDigital,
-		ChooseBlocks: ChooseBlocksDigital,
-		DecryptImage: DecryptImageDigital,
-	} = DigitalFunctionalities();
-
-	const {
-		OpenDispute,
-		CloseDisputeSol,
-		CloseDisputeSpl
-	} = PhysicalFunctionalities();
-
+export function ChatMessageInput(props){
 
     const {matrixClient} = useContext(MatrixClientCtx);
     const [textMesage, setTextMessage] = useState("");
-    const [openRequestModal, setOpenRequestModal] = useState(false);
-    const [openUploadPreviewModal, setOpenUploadPreviewModal] = useState(false)
     const [fileBlobs, setFileBlobs] = useState([]);
 
     const onDrop = (acceptedFiles) => {
@@ -77,7 +49,9 @@ export function ChatTextInput(props){
             setFileBlobs([]);
             props.updateChat();
         };
-    },[props.roomid, textMesage, fileBlobs])
+    },[props.roomid, textMesage, fileBlobs]);
+
+    
 
     return(
         <div className="flex flex-col  mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
@@ -116,18 +90,6 @@ export function ChatTextInput(props){
                     onChange={(e) => {setTextMessage(e.target.value)}}
                     onKeyDown={sendChat}
                 />
-                <div className="flex flex-row justify-between w-24">
-                    <PaperClipIcon className="h-5 w-5 text-[#949494]" onClick={open}/>
-                    <div className="border-x border-[#4D4D4D]" />
-                    <button className="flex" onClick={() => {setOpenUploadPreviewModal(true)}}>
-                        <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
-                    </button>
-                    <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
-                        <TagIcon className="h-5 w-5 text-[#949494]"/>
-                    </button>
-                </div>
-                <ChatUploadContentModal open={openUploadPreviewModal} setOpen={setOpenUploadPreviewModal}/>
-                <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal} />
             </div>
         </div>
     )
