@@ -142,8 +142,19 @@ export function FullScreenConvos(props){
                         objectFit="cover"
                     />
                 </div>
-                <span className="font-bold text-2xl text-white text-center truncate">{userAccount?.data?.metadata?.name}</span>
-                <span className="font-semibold text-sm text-[#515661] truncate">{("@" + userAccount?.address.toString())}</span>
+                {
+                    userAccount?.data?.metadata ? (
+                    <>
+                        <span className="font-bold text-2xl text-white text-center truncate">{userAccount?.data?.metadata?.name}</span>
+                        <span className="font-semibold text-sm text-[#515661] truncate">{("@" + userAccount?.address.toString())}</span>
+                    </>
+                    ) : (
+                    <div className="w-full">
+                        <div className="bg-[#535353] h-6 w-1/2 rounded mb-1 mt-2 animate-pulse mx-auto" />
+                        <div className="bg-[#535353] h-4 w-2/3 rounded animate-pulse mx-auto" />
+                    </div>
+                    )
+                }
                 <div className="flex flex-row bg-white bg-opacity-5 p-2 rounded-lg gap-x-1 mt-4">
                     <MagnifyingGlassIcon className="h-4 w-4 my-auto text-[#5F5F5F]"/>
                     <input

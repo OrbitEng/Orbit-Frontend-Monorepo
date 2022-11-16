@@ -24,10 +24,10 @@ export function CreateChatModal(props){
     }
 
    const startChatCreation =  useCallback(async ()=>{
+        openModal()
 		let res = await matrixClient.CreateAccountInit();
 		setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
 		setMatrixSession(res.data.session);
-        openModal()
 	},[matrixClient])
 
 	let createChat = useCallback(async ()=>{

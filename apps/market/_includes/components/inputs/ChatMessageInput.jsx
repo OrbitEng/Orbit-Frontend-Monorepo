@@ -81,7 +81,6 @@ export function ChatMessageInput(props){
                 )
             }
             <div className="flex flex-row w-full">
-
                 <input
                     className="flex flex-grow bg-transparent text-sm outline-none text-[#949494] placeholder:text-[#949494]"
                     type="text"
@@ -90,6 +89,18 @@ export function ChatMessageInput(props){
                     onChange={(e) => {setTextMessage(e.target.value)}}
                     onKeyDown={sendChat}
                 />
+                <div className="flex flex-row gap-x-2">
+                    <button disabled className="disabled:cursor-not-allowed">
+                        <PaperClipIcon className="h-5 w-5 text-[#949494]"/>
+                    </button>
+                    <div className="border-l-[#949494] border-l-[1px]" />
+                    <button disabled className="disabled:cursor-not-allowed">
+                        <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
+                    </button>
+                    <button disabled className="disabled:cursor-not-allowed">
+                        <TagIcon className="h-5 w-5 text-[#949494]"/>
+                    </button>
+                </div>
             </div>
         </div>
     )

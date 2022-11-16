@@ -85,11 +85,10 @@ export function FullScreenTexts(props){
     const {matrixClient} = useContext(MatrixClientCtx);
     const [chatMessages, setChatMessages] = useState([]);
     // {roomid: string, other_party: orbit market account, txid?: pubkey, sid: "buyer"/"seller"}
-    const [roomData, setRoomData] = useState(props.textRoom);
     const {FilterNewChatLogs} = ChatRoomFunctionalities(
-        roomData.roomId,
-        roomData.txid,
-        roomData?.other_party?.data?.profilePic
+        props?.textRoom?.roomId,
+        props?.textRoom.txid,
+        props?.textRoom?.other_party?.data?.profilePic
     );
     
     const messageBottomRef = useRef(null);
@@ -103,7 +102,7 @@ export function FullScreenTexts(props){
 
     useEffect(async ()=>{
         console.log("using effect")
-        setChatMessages(await FilterNewChatLogs(roomData.timeline));
+        setChatMessages(await FilterNewChatLogs(props?.textRoom.timeline));
         await newChat()
     },[])
 
@@ -114,36 +113,32 @@ export function FullScreenTexts(props){
     const handleScroll = useCallback(async (event) => {
         const { scrollHeight, scrollTop, clientHeight } = event.target;
         if (scrollTop == 0) {
-            await matrixClient.UpdateRoomOlderMessages(roomData.roomId, chatMessages.length);
-            setChatMessages(await FilterNewChatLogs(roomData.timeline))
+            await matrixClient.UpdateRoomOlderMessages(props?.textRoom?.roomId, chatMessages.length);
+            setChatMessages(await FilterNewChatLogs(props?.textRoom?.timeline))
         }
     },[chatMessages]);
 
-    useEffect(() => {
-        console.log(roomData)
-    }, [roomData])
-
     return(
         <div className="flex flex-col w-full h-full flex-shrink-0">
-            {roomData?.roomId && 
-                <div className="sticky w-full bg-[#2C2638] bg-opacity-30 rounded-b-lg">
-                    <div className="flex flex-row my-auto rounded-lg w-full gap-x-3 p-3 bg-transparent">
+            {props?.textRoom?.roomId && 
+                <div className="sticky w-full bg-[#2C2638] bg-opacity-30">
+                    <div className="flex flex-row my-auto w-full gap-x-3 p-3 bg-transparent">
                         <div className="relative flex h-8 w-8 rounded-full overflow-hidden">
                             <Image 
                                 layout="fill"
-                                src={(roomData?.other_party?.data?.profilePic && roomData.other_party.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
+                                src={(props?.textRoom?.other_party?.data?.profilePic && props?.textRoom?.other_party?.data?.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
                                 objectFit="cover"
                             />
                         </div>
                         <div className="flex flex-col my-auto text-white font-bold text-xl align-middle justify-start">
                             {
-                                roomData?.other_party?.data?.metadata?.name ? 
-                                <span className="text-sm -mb-[3px]">{(roomData?.other_party?.data?.metadata?.name)}</span>
+                                props?.textRoom?.other_party?.data?.metadata?.name ? 
+                                <span className="text-sm -mb-[3px]">{(props?.textRoom?.other_party?.data?.metadata?.name)}</span>
                                 : <span className="bg-[#535353] h-4 rounded w-36 animate-pulse" />
                             }
                             {
-                                roomData?.other_party?.address?.toString ?
-                                <span className="text-[#535353] text-xs font-normal">{(roomData?.other_party?.address?.toString && ("@"+roomData.other_party.address.toString().slice(0,10) + "..."))}</span>
+                                props?.textRoom?.other_party?.address?.toString ?
+                                <span className="text-[#535353] text-xs font-normal">{(props?.textRoom?.other_party?.address?.toString && ("@"+props.textRoom.other_party.address.toString().slice(0,10) + "..."))}</span>
                                 : <span className="bg-[#535353] h-3 rounded w-48 my-1 animate-pulse" />
                             }
                         </div>
@@ -157,7 +152,7 @@ export function FullScreenTexts(props){
                 </div>
             }
             <div className="px-5 flex flex-col h-full overflow-hidden " >
-                { roomData?.roomId ? 
+                { props?.textRoom?.roomId ? 
                     <>
                         <div className="relative flex flex-col flex-grow w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full h-full mb-2" onScroll={handleScroll} >
                             {
@@ -168,7 +163,7 @@ export function FullScreenTexts(props){
                             <ContractRequest autoFocus requestName="Custom Logo" /> */}
                             <div ref={messageBottomRef}/>
                         </div>
-                        <ChatMessageInput roomid={roomData.roomId} updateChat={newChat}/>
+                        <ChatMessageInput roomid={props.textRoom.roomId} updateChat={newChat}/>
                     </> : <div className="m-auto">
                         <div className="relative mx-auto h-28 w-44 translate-x-4">
                             <Image
