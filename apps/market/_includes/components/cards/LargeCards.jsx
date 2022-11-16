@@ -24,6 +24,7 @@ export function BetaCard(props) {
 				layout="fill"
 				objectFit="cover"
 				priority={true}
+				loading="eager"
 			/>
 		</div>
 	);
