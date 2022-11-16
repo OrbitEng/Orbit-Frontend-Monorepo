@@ -303,6 +303,7 @@ export default class ChatClient{
         
         await this.matrixclient.uploadKeys();
         await this.matrixclient.sendSharedHistoryKeys(roomId, members);
+        console.log(this.chatrooms)
         this.chatrooms[userprofile.data.wallet.toString()] = {
             ...room,
             other_party: userprofile

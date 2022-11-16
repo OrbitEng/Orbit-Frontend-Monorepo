@@ -2,7 +2,8 @@ import Image from "next/image";
 import { TrashIcon, PaperClipIcon, CloudArrowUpIcon, TagIcon } from "@heroicons/react/24/outline";
 import { useCallback, useContext, useEffect, useState } from "react";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
-import {CommissionRequestModal, ChatUploadPreviewModal} from "@includes/components/chat/ChatTxModals";
+import { CommissionRequestModal } from "@includes/components/chat/ChatModals/CommissionRequestModal";
+import { ChatUploadPreviewModal } from "@includes/components/chat/ChatModals/UploadPreviewModal";
 import { PhysicalFunctionalities, DigitalFunctionalities, CommissionFunctionalities } from "@functionalities/Transactions";
 
 export function ChatFunctionInput(props){
@@ -86,22 +87,18 @@ export function ChatFunctionInput(props){
 
     return(
         <div className="flex flex-col  mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
-            <div className="flex flex-row w-full">
-                <div className="flex flex-row justify-between w-24">
-                    <PaperClipIcon className="h-5 w-5 text-[#949494]" onClick={open}/>
-                    <div className="border-x border-[#4D4D4D]" />
-                    <button className="flex" onClick={() => {setOpenUploadPreviewModal(true)}}>
-                        <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
-                    </button>
-                    <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
-                        <TagIcon className="h-5 w-5 text-[#949494]"/>
-                    </button>
-                </div>
+            <div className="flex flex-row w-full justify-between gap-x-4">
+                <button className="flex" onClick={() => {setOpenUploadPreviewModal(true)}}>
+                    <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
+                </button>
+                <button className="flex" onClick={() => {setOpenRequestModal(true)}}>
+                    <TagIcon className="h-5 w-5 text-[#949494]"/>
+                </button>
                 
                 <ChatUploadPreviewModal
                     open={openUploadPreviewModal}
                     setOpen={setOpenUploadPreviewModal}
-                    txid={propstxid}
+                    txid={props.txid}
                 />
                 <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal}/>
             </div>

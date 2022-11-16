@@ -54,7 +54,7 @@ export function ChatMessageInput(props){
     
 
     return(
-        <div className="flex flex-col  mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
+        <div className="flex flex-col w-full mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
             {
                 ((fileBlobs && fileBlobs.length > 0) &&
                 
@@ -89,18 +89,6 @@ export function ChatMessageInput(props){
                     onChange={(e) => {setTextMessage(e.target.value)}}
                     onKeyDown={sendChat}
                 />
-                <div className="flex flex-row gap-x-2">
-                    <button disabled className="disabled:cursor-not-allowed">
-                        <PaperClipIcon className="h-5 w-5 text-[#949494]"/>
-                    </button>
-                    <div className="border-l-[#949494] border-l-[1px]" />
-                    <button disabled className="disabled:cursor-not-allowed">
-                        <CloudArrowUpIcon className="h-5 w-5 text-[#949494]"/>
-                    </button>
-                    <button disabled className="disabled:cursor-not-allowed">
-                        <TagIcon className="h-5 w-5 text-[#949494]"/>
-                    </button>
-                </div>
             </div>
         </div>
     )

@@ -706,6 +706,10 @@ export function CommissionFunctionalities(){
         tx_addr,
         preview_file_dataurl
     ) =>{
+
+        if(preview_file_dataurl.join){
+            preview_file_dataurl = preview_file_dataurl.join(">UwU<")
+        }
         let ar_addr = await bundlrClient.UploadBuffer(preview_file_dataurl);
 
         await commissionMarketClient.CommitPreview(
