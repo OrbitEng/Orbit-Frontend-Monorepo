@@ -55,21 +55,53 @@ export function ProductDisplayCardHome(props) {
 	const [prod, setProd] = useState();
 	const [vendorUS, setVendorUS] = useState();
 
-	let productTags = ["UX/UI", "design"]
+	let productTags = ["UX/UI", "design"];
+
+	let categoryTagBg, categoryTagGlow, categoryTagText, categoryCardGlow;
+
+	switch(props?.type) {
+		case "commission":
+			categoryTagBg = "bg-[#2A1D4F]";
+			categoryTagGlow = "bg-[#875EFF]";
+			categoryTagText = "#text-[875EFF]";
+			categoryCardGlow = "rgba(135, 94, 255, 0.5)";
+			break;
+		case "digital":
+			categoryTagBg = "bg-[#331837]";
+			categoryTagGlow = "bg-[#7F1790]";
+			categoryTagText = "text-[#C442DA]";
+			categoryCardGlow = "rgba(196, 66, 218, 0.5)"
+			break;
+		case "local": 
+			categoryTagBg = "bg-[#002513]";
+			categoryTagGlow = "bg-[#064F2B]";
+			categoryTagText = "text-[#00934C]";
+			categoryCardGlow = "rgba(0, 177, 89, 0.5)"
+			break;
+		case "physical":  
+			categoryTagBg = "bg-[#192328BF]";
+			categoryTagGlow = "bg-[#205C7D]";
+			categoryTagText = "text-[#00A3FF]";
+			categoryCardGlow = "rgba(0, 163, 255, 0.5)"
+			break;
+	}
+ 
+
 	let categoryTag = (
 		<div className="relative">
-			<div className="absolute -inset-0 bg-[#875EFF] blur"/>
-			<div className="relative flex flex-row py-1 px-2 rounded-[4px] bg-[#2A1D4F]">
-				<span className="text-[#875EFF] my-auto text-sm">Commission</span>
+			<div className={`absolute -inset-0 ${categoryTagGlow} blur`}/>
+			<div className={`relative flex flex-row py-1 px-2 rounded-[4px] ${categoryTagBg}`}>
+				<span className={`${categoryTagText} my-auto text-sm`}>{props?.type}</span>
 				<span className="h-4"/>
 			</div>
 		</div>
-	)
+	);
+
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4">
 			<Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable={true} glareColor="#ffffff" glareMaxOpacity={0.1} glareBorderRadius="10px" glarePosition="all">
 				<div className="relative group overflow-visible">
-					<div className="absolute -inset-0 -rotate-1 blur-sm" style={{background: "radial-gradient(ellipse at center, transparent, rgba(135,94,255,0.5) 90%, rgba(71,71,71,0.24) 100%)"}}/>
+					<div className="absolute -inset-0 -rotate-1 blur-sm" style={{background: `radial-gradient(ellipse at center, transparent, ${categoryCardGlow} 90%, rgba(71,71,71,0.24) 100%)`}}/>
 					<div className="relative bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-4">
 						<div className="flex relative w-full overflow-visible">
 							<div className="absolute flex flex-row gap-x-1 gradient-box -bottom-3 left-1 z-40 py-1 px-2 bg-gradient-to-br from-[#181424] via-[#2D2A35] to-[#181424] text-white rounded-lg border-t-[1.5px] border-[#3F3F3F] max-w-[50%]">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Combobox } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { 
@@ -32,11 +32,32 @@ export function ProductShowcaseRow(props) {
 	const [ selected, setSelected ] = useState();
 	const undefProdsArr = Array.of(1,2,3,4);
 
+	const [flagColor, setFlagColor] = useState(`#FFFFFF`);
+
+	useEffect(() => {
+		console.log(props?.prod_type)
+		switch(props?.prod_type) {
+			case "local":
+				setFlagColor(`bg-[#04DE71]`);
+				break;
+			case "commission":
+				setFlagColor(`bg-[#875EFF]`);
+				break;
+			case "digital":
+				setFlagColor(`bg-[#BF04DE]`);
+				break;
+			case "physical":
+				setFlagColor(`bg-[#00A3FF]`);
+				break;
+		}
+		console.log(flagColor)
+	}, [props?.prod_type]);
+
 	return(
 		<div className="flex flex-col my-14">
 			<div className="flex flex-row justify-between align-middle mb-3">
 				<div className="flex flex-row gap-x-4">
-					<span className="bg-[#875EFF] w-[5px] rounded-full"/>
+					<span className={`${flagColor} w-[5px] rounded-full`} />
 					<h1 className="flex text-3xl text-white align-middle my-auto">{"Find " + props.title}</h1>
 				</div>
 				<div className="flex flex-row gap-2 justify-end">
@@ -87,7 +108,7 @@ export function ProductShowcaseRow(props) {
 						})
 						:
 						undefProdsArr.map((undef, ki) => {
-							return <ProductDisplayCardHome key={ki}/>
+							return <ProductDisplayCardHome key={ki} type={props.prod_type}/>
 						})
 				}
 			</Carousel>

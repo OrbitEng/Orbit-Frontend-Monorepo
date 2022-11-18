@@ -73,6 +73,7 @@ export function Home(props) {
 				<div className="max-w-6xl align-center mx-auto">
 					<HomeBanner />
 					<PageSearchBar ref={ref}/>
+					<ProductShowcaseRow title="Local Products" prod_type="local" addresses={recentPhysicals} searchable />
 					<ProductShowcaseRow title="Physical Items" prod_type="physical" addresses={recentPhysicals} searchable />
 					<ProductShowcaseRow title="Digital Products" prod_type="digital" addresses={recentDigitals} searchable />
 					<ProductShowcaseRow title="Commissions" prod_type="commission" addresses={recentCommissions} searchable />
