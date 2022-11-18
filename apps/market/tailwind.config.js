@@ -13,6 +13,7 @@ module.exports = {
         "sl":"3000px"
       },
       colors: {
+        loading: '#181424',
         homeheaderpurple: 'rgba(49,48,113,0.22)',
         homeheadergray: 'rgba(26,25,25,0.22)',
         buttontransparent: 'rgba(24,20,36,0.82)',

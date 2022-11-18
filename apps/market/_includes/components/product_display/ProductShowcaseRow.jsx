@@ -35,23 +35,26 @@ export function ProductShowcaseRow(props) {
 	return(
 		<div className="flex flex-col my-14">
 			<div className="flex flex-row justify-between align-middle mb-3">
-				<h1 className="text-4xl text-white font-bold align-middle">{props.title}</h1>
+				<div className="flex flex-row gap-x-4">
+					<span className="bg-[#875EFF] w-[5px] rounded-full"/>
+					<h1 className="flex text-3xl text-white align-middle my-auto">{"Find " + props.title}</h1>
+				</div>
 				<div className="flex flex-row gap-2 justify-end">
 					{ 
 						props.searchable && ( 
-								<div className="flex gap-1 flex-row rounded-full bg-searchbartransparent border-[1px] border-[#474747] w-56 mx-auto h-10 align-middle px-2">
+								<div className="flex gap-1 flex-row rounded-full bg-searchbartransparent border-[0.5px] border-[#474747] w-96 mx-auto h-10 align-middle px-2">
 									<Combobox value={selected} onChange={setSelected} >
 										<MagnifyingGlassIcon className="h-5 w-5 text-[#4A4A4A] my-auto"/>
 										<Combobox.Input
 										className="flex w-full bg-transparent text-[#888888] placeholder:text-[#4A4A4A] font-semibold focus:outline-none"
-										placeholder="Search"
+										placeholder="Search in Marketplace"
 										onChange={(e) => setQuery(e.target.value)} />
 									</Combobox>
 								</div>
 						) 
 					}
-					<button className="rounded-full bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto py-2 px-4">
-						View All
+					<button className="rounded-[13px] bg-gradient-to-tr from-[#1F1E28] to-[#1E1B26] text-[#7E7E7E] align-middle flex my-auto py-2 px-4">
+						Explore All
 					</button>
 				</div>
 			</div>
@@ -84,7 +87,7 @@ export function ProductShowcaseRow(props) {
 						})
 						:
 						undefProdsArr.map((undef, ki) => {
-							return <EmptyProductDisplayCardHome key={ki}/>
+							return <ProductDisplayCardHome key={ki}/>
 						})
 				}
 			</Carousel>

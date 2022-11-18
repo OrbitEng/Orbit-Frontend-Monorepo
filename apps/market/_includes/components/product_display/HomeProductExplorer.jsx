@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useContext } from "react";
-import { ProductDisplayCardHome } from "../cards/ProductDisplayCards";
+import { ProductDisplayCardHome, ProductDisplayCardHomeV2 } from "../cards/ProductDisplayCards";
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
@@ -78,17 +78,7 @@ export function HomeProductExplorer(props) {
 						<ProductDisplayCardHome product={c} key={i}/>
 					)
 				})}
-
-				<ProductDisplayCardHome 
-				/>
-				<ProductDisplayCardHome 
-				/>
-				<ProductDisplayCardHome 
-				/>
-				<ProductDisplayCardHome 
-				/>
 			</div>
-
 		</div>
 	)
 }
