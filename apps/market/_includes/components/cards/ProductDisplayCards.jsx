@@ -74,7 +74,7 @@ export function ProductDisplayCardHome(props) {
 		case "commission":
 			categoryTagBg = "bg-[#2A1D4F]";
 			categoryTagGlow = "bg-[#875EFF]";
-			categoryTagText = "#text-[875EFF]";
+			categoryTagText = "text-[875EFF]";
 			categoryCardGlow = "rgba(135, 94, 255, 0.5)";
 			break;
 		case "digital":
