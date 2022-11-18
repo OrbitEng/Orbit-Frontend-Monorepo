@@ -108,7 +108,7 @@ export function ProductShowcaseRow(props) {
 						})
 						:
 						undefProdsArr.map((undef, ki) => {
-							return <ProductDisplayCardHome key={ki} type={props.prod_type}/>
+							return <EmptyProductDisplayCardHome key={ki}/>
 						})
 				}
 			</Carousel>
