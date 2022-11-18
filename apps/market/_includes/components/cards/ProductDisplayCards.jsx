@@ -116,11 +116,6 @@ export function ProductDisplayCardHome(props) {
 		let tp = undefined;
 		switch(props.type){
 			case "commission":
-				setProdButton(
-					<div className="flex flex-row justify-center mt-3">
-						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
-					</div>
-				);
 				tp = (await productClient.GetCommissionProduct(props.address));
 				if(!tp){
 					return;
