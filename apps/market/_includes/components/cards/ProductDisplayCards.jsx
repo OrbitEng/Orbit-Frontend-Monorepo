@@ -56,9 +56,18 @@ export function ProductDisplayCardHome(props) {
 	const [vendorUS, setVendorUS] = useState();
 	const router = useRouter();
 
+	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {productClient} = useContext(ProductClientCtx);
+	const {setProductCache} = useContext(ProductCacheCtx);
+	const {setVendorCache} = useContext(VendorCacheCtx);
+	const {arweaveClient} = useContext(ArweaveCtx)
+
+	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
+
 	let productTags = ["UX/UI", "design"];
 
 	let categoryTagBg, categoryTagGlow, categoryTagText, categoryCardGlow;
+
 	
 	// This is maybe slow, can get spedup from memo
 	switch(props?.type) {
@@ -98,15 +107,6 @@ export function ProductDisplayCardHome(props) {
 			</div>
 		</div>
 	);
-
-
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {productClient} = useContext(ProductClientCtx);
-	const {setProductCache} = useContext(ProductCacheCtx);
-	const {setVendorCache} = useContext(VendorCacheCtx);
-	const {arweaveClient} = useContext(ArweaveCtx)
-
-	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
 
 	useEffect(async () => {
 		if((props.address == "11111111111111111111111111111111") || !marketAccountsClient){
