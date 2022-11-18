@@ -68,8 +68,9 @@ export function ProductDisplayCardHome(props) {
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4">
 			<Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable={true} glareColor="#ffffff" glareMaxOpacity={0.1} glareBorderRadius="10px" glarePosition="all">
-				<div className="relative group">
-					<div className="bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-4">
+				<div className="relative group overflow-visible">
+					<div className="absolute -inset-0 -rotate-1 blur-sm" style={{background: "radial-gradient(ellipse at center, transparent, rgba(135,94,255,0.5) 90%, rgba(71,71,71,0.24) 100%)"}}/>
+					<div className="relative bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-4">
 						<div className="flex relative w-full overflow-visible">
 							<div className="absolute flex flex-row gap-x-1 gradient-box -bottom-3 left-1 z-40 py-1 px-2 bg-gradient-to-br from-[#181424] via-[#2D2A35] to-[#181424] text-white rounded-lg border-t-[1.5px] border-[#3F3F3F] max-w-[50%]">
 								<span className="overflow-hidden relative flex rounded-full h-6 w-6 flex-shrink-0">
