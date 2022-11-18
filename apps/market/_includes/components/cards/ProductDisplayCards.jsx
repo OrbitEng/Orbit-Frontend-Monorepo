@@ -181,7 +181,7 @@ export function ProductDisplayCardHome(props) {
 							<div className="flex relative overflow-hidden rounded-[9px] w-full h-[230px]">
 								<Image
 									alt="product image"
-									src={"/demologos.png"}
+									src={(prod?.data?.metadata?.media && prod?.data.metadata.media[0]) || "/demologos.png"}
 									layout="fill"
 									objectFit="cover"
 									loading="lazy"
