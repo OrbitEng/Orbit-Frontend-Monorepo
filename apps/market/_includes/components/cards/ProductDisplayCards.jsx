@@ -12,7 +12,7 @@ import { ProductCommonUtils } from "@functionalities/Products";
 
 import ProductClientCtx from "@contexts/ProductClientCtx";
 import ArweaveCtx from "@contexts/ArweaveCtx";
-import { Category } from "matrix-js-sdk";
+import { useRouter } from "next/router";
 
 export function EmptyProductDisplayCardHomeDep(props) {
 	return(
@@ -54,11 +54,13 @@ export function EmptyProductDisplayCardHome(props) {
 export function ProductDisplayCardHome(props) {
 	const [prod, setProd] = useState();
 	const [vendorUS, setVendorUS] = useState();
+	const router = useRouter();
 
 	let productTags = ["UX/UI", "design"];
 
 	let categoryTagBg, categoryTagGlow, categoryTagText, categoryCardGlow;
-
+	
+	// This is maybe slow, can get spedup from memo
 	switch(props?.type) {
 		case "commission":
 			categoryTagBg = "bg-[#2A1D4F]";
@@ -97,10 +99,71 @@ export function ProductDisplayCardHome(props) {
 		</div>
 	);
 
+
+	const {marketAccountsClient} = useContext(MarketAccountsCtx);
+	const {productClient} = useContext(ProductClientCtx);
+	const {setProductCache} = useContext(ProductCacheCtx);
+	const {setVendorCache} = useContext(VendorCacheCtx);
+	const {arweaveClient} = useContext(ArweaveCtx)
+
+	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
+
+	useEffect(async () => {
+		if((props.address == "11111111111111111111111111111111") || !marketAccountsClient){
+			return
+		};
+
+		let tp = undefined;
+		switch(props.type){
+			case "commission":
+				setProdButton(
+					<div className="flex flex-row justify-center mt-3">
+						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
+					</div>
+				);
+				tp = (await productClient.GetCommissionProduct(props.address));
+				if(!tp){
+					return;
+				}
+				break;
+			case "digital":
+				tp = (await productClient.GetDigitalProduct(props.address));
+				if(!tp){
+					return;
+				}
+				break;
+			case "physical":
+				tp = await productClient.GetPhysicalProduct(props.address);
+				if(!tp){
+					return;
+				}
+				break;
+			default:
+				break;
+		};
+		
+		if(tp){
+			tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
+			tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
+
+			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
+			if(!vendor_listings_struct) return;
+			tp.data.metadata.availability = productClient.FindProductAvailability(tp.data, vendor_listings_struct)
+			let vendor = await marketAccountsClient.GetAccount(
+				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
+			);
+			vendor.data.profilePic = await arweaveClient.GetPfp(vendor.data.profilePic);
+			vendor.data.metadata = await arweaveClient.GetMetadata(vendor.data.metadata);
+			tp.data.metadata.seller = vendor;
+			setVendorUS(vendor);
+		};
+		setProd(tp);
+	},[productClient, marketAccountsClient, props.address])
+
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4">
 			<Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable={true} glareColor="#ffffff" glareMaxOpacity={0.1} glareBorderRadius="10px" glarePosition="all">
-				<div className="relative group overflow-visible">
+				<div className="relative group overflow-visible" onClick={()=>{setProductCache(prod); setVendorCache(vendor)}}>
 					<div className="absolute -inset-0 -rotate-1 blur-sm" style={{background: `radial-gradient(ellipse at center, transparent, ${categoryCardGlow} 90%, rgba(71,71,71,0.24) 100%)`}}/>
 					<div className="relative bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-4">
 						<div className="flex relative w-full overflow-visible">
@@ -113,11 +176,11 @@ export function ProductDisplayCardHome(props) {
 										loading="lazy"
 									/>
 								</span>
-								<span className="my-auto text-[#EFEFEF] font-semibold text-sm truncate">{("@" + vendorUS?.address?.toString())}</span>
+								<span className="my-auto text-[#EFEFEF] text-sm truncate">{("@" + vendorUS?.address?.toString())}</span>
 							</div>
 							<div className="absolute flex flex-row gradient-box -bottom-3 right-1 z-40 text-white rounded-lg overflow-hidden px-2 py-1 bg-gradient-to-br from-[#181424] via-[#2D2A35] to-[#181424] max-w-[40%]">
 								{/* For now I am just leaving the prices in USD but talk to indy about this... */}
-								<span className="my-auto align-middle text-center truncate">{"$" + (Math.round(prod?.data?.metadata?.price) ? Math.round(prod?.data?.metadata?.price)?.toString() : "123")}</span>
+								<span className="my-auto align-middle text-center truncate text-sm">{"$" + (Math.round(prod?.data?.metadata?.price) ? Math.round(prod?.data?.metadata?.price)?.toString() : "123")}</span>
 								<span className="h-6"/>
 							</div>
 							<div className="flex relative overflow-hidden rounded-[9px] w-full h-[230px]">
@@ -133,7 +196,10 @@ export function ProductDisplayCardHome(props) {
 						<span className="text-2xl text-white font-bold truncate w-full text-left px-2 mt-4">{prod?.data?.metadata?.info?.name || "Icon Pack"}</span>
 						<span
 							className="text-sm font-semibold text-[#7B7B7B] underline text-left w-full px-2 cursor-pointer"
-							onClick={() => {console.log("navigate using router")}}
+							onClick={(e) => {
+								e.preventDefault()
+								router.push("/product/" + props?.type + "/" + props?.address?.toString())
+							}}
 						>
 							View Listing
 						</span>
@@ -147,7 +213,7 @@ export function ProductDisplayCardHome(props) {
 								)
 							})}
 						</div>
-						{props?.type == "commission" ? (
+						{!(props?.type == "commission" || "local") ? (
 							<button
 								className="font-bold text-lg py-1 px-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-[12px] drop-shadow border-2 border-[#2D2D2D] border-opacity-60"
 							>
