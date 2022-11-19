@@ -50,40 +50,40 @@ export function ChatFunctionInput(props){
         
     },[]);
 
-    useEffect(()=>{
-        switch(props.txtype){
-            case "digital":
-                setFunctionalities({
-                    CommitPreview, ProposeRate, AcceptRate, SeePreview,
-                    UploadProductFile: UploadProductFileCommission,
-                    UpdateStatusToShipping: UpdateStatusToShippingCommission,
-                    CommitSubkeys: CommitSubkeysCommission,
-                    ChooseBlocks: ChooseBlocksCommission,
-                    DecryptImag: DecryptImageCommission
-                })
-                break;
-            case "physical":
-                setFunctionalities({
-                    UpdateStatusToShipping: UpdateStatusToShippingDigital,
-                    UploadProductFile: UploadProductFileDigital,
-                    CommitSubkeys: CommitSubkeysDigital,
-                    SellerAcceptTransaction: SellerAcceptTransactionDigital,
-                    ChooseBlocks: ChooseBlocksDigital,
-                    DecryptImage: DecryptImageDigital,
-                })
-                break;
-            case "commission":
-                setFunctionalities({
-                    OpenDispute,
-                    CloseDisputeSol,
-                    CloseDisputeSpl
-                })
-                break;
-            default:
-                setFunctionalities()
-                break;
-        }
-    },[props.txtype])
+    // useEffect(()=>{
+    //     switch(props.txtype){
+    //         case "digital":
+    //             setFunctionalities({
+    //                 CommitPreview, ProposeRate, AcceptRate, SeePreview,
+    //                 UploadProductFile: UploadProductFileCommission,
+    //                 UpdateStatusToShipping: UpdateStatusToShippingCommission,
+    //                 CommitSubkeys: CommitSubkeysCommission,
+    //                 ChooseBlocks: ChooseBlocksCommission,
+    //                 DecryptImag: DecryptImageCommission
+    //             })
+    //             break;
+    //         case "physical":
+    //             setFunctionalities({
+    //                 UpdateStatusToShipping: UpdateStatusToShippingDigital,
+    //                 UploadProductFile: UploadProductFileDigital,
+    //                 CommitSubkeys: CommitSubkeysDigital,
+    //                 SellerAcceptTransaction: SellerAcceptTransactionDigital,
+    //                 ChooseBlocks: ChooseBlocksDigital,
+    //                 DecryptImage: DecryptImageDigital,
+    //             })
+    //             break;
+    //         case "commission":
+    //             setFunctionalities({
+    //                 OpenDispute,
+    //                 CloseDisputeSol,
+    //                 CloseDisputeSpl
+    //             })
+    //             break;
+    //         default:
+    //             setFunctionalities()
+    //             break;
+    //     }
+    // },[props.txtype])
 
     return(
         <div className="flex flex-col  mx-3 bottom-0 mb-4 inset-x-0 p-3 bg-white bg-opacity-5 rounded-lg">
@@ -98,9 +98,9 @@ export function ChatFunctionInput(props){
                 <ChatUploadPreviewModal
                     open={openUploadPreviewModal}
                     setOpen={setOpenUploadPreviewModal}
-                    txid={props.txid}
+                    txid={props.tx}
                 />
-                <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal}/>
+                <CommissionRequestModal open={openRequestModal} setOpen={setOpenRequestModal} tx={props.tx}/>
             </div>
         </div>
     )

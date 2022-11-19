@@ -16,7 +16,7 @@ export default class ChatClient{
         }
         
         this.matrixclient = sdk.createClient({
-            baseUrl: 'https://matrix.foss.wtf',
+            baseUrl: 'http://164.92.83.9:80',
             deviceId: "orbit_client"
         });
         
@@ -42,7 +42,7 @@ export default class ChatClient{
         }
 
         this.matrixclient = sdk.createClient({
-            baseUrl: 'https://matrix.foss.wtf',
+            baseUrl: 'http://164.92.83.9:80',
             userId: res.user_id,
             accessToken: res.access_token,
             sessionStore: window.localStorage,
@@ -99,6 +99,7 @@ export default class ChatClient{
 
                     rooms_mapped[desanitized_acc_address] = {
                         other_party: other_party_data,
+                        transactions: [],
                         ...this.matrixclient.getRoom(room)
                     }
                 }
@@ -140,19 +141,25 @@ export default class ChatClient{
                 let seller_wallets = await this.transactionClient.GetMultipleTxLogOwners(buyer_convos);
 
                 for(let i = 0; i < buyerindlengths.digital; i++){
-                    rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
-                    rooms_mapped[seller_wallets[i].toString()].side = "buyer";
-                    rooms_mapped[seller_wallets[i].toString()].type = "digital";
+                    rooms_mapped[seller_wallets[i].toString()].transactions.push({
+                        txid: buyer_transactions[i],
+                        side: "buyer",
+                        type: "digital"
+                    })
                 }
                 for(let i = buyerindlengths.digital; i < buyerindlengths.physical; i++){
-                    rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
-                    rooms_mapped[seller_wallets[i].toString()].side = "buyer";
-                    rooms_mapped[seller_wallets[i].toString()].type = "physical";
+                    rooms_mapped[seller_wallets[i].toString()].transactions.push({
+                        txid: buyer_transactions[i],
+                        side: "buyer",
+                        type: "physical"
+                    })
                 }
                 for(let i = buyerindlengths.physical; i < buyerindlengths.commission; i++){
-                    rooms_mapped[seller_wallets[i].toString()].txid = buyer_transactions[i];
-                    rooms_mapped[seller_wallets[i].toString()].side = "buyer";
-                    rooms_mapped[seller_wallets[i].toString()].type = "commission";
+                    rooms_mapped[seller_wallets[i].toString()].transactions.push({
+                        txid: buyer_transactions[i],
+                        side: "buyer",
+                        type: "commission"
+                    })
                 }
 
 
@@ -189,19 +196,25 @@ export default class ChatClient{
                 let buyer_wallets = await this.transactionClient.GetMultipleTxLogOwners(seller_convos);
 
                 for(let i = 0; i < sellerindlengths.digital; i++){
-                    rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
-                    rooms_mapped[buyer_wallets[i].toString()].side = "seller";
-                    rooms_mapped[buyer_wallets[i].toString()].type = "digital";
+                    rooms_mapped[buyer_wallets[i].toString()].transactions.push({
+                        txid: seller_transactions[i],
+                        side: "seller",
+                        type: "digital"
+                    })
                 }
                 for(let i = sellerindlengths.digital; i < sellerindlengths.physical; i++){
-                    rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
-                    rooms_mapped[buyer_wallets[i].toString()].side = "seller";
-                    rooms_mapped[buyer_wallets[i].toString()].type = "physical";
+                    rooms_mapped[buyer_wallets[i].toString()].transactions.push({
+                        txid: seller_transactions[i],
+                        side: "seller",
+                        type: "physical"
+                    })
                 }
                 for(let i = sellerindlengths.physical; i < sellerindlengths.commission; i++){
-                    rooms_mapped[buyer_wallets[i].toString()].txid = seller_transactions[i];
-                    rooms_mapped[buyer_wallets[i].toString()].side = "seller";
-                    rooms_mapped[buyer_wallets[i].toString()].type = "commission";
+                    rooms_mapped[buyer_wallets[i].toString()].transactions.push({
+                        txid: seller_transactions[i],
+                        side: "seller",
+                        type: "commission"
+                    })
                 }
                 
                 this.chatrooms = rooms_mapped
@@ -281,7 +294,7 @@ export default class ChatClient{
             room_id: roomId,
         } = await this.matrixclient.createRoom({
             visibility: 'private',
-            invite: ["@"+this.UnsanitizeName(userprofile.data.wallet.toString())+":foss.wtf"],
+            invite: ["@"+this.UnsanitizeName(userprofile.data.wallet.toString())+":164.92.83.9"],
             initial_state:[{
                 type: "m.room.encryption",
                 state_key: "",
