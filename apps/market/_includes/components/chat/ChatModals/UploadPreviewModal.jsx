@@ -16,6 +16,7 @@ export function ChatUploadPreviewModal(props) {
 	const [statusMessage, setStatusMessage] = useState("percent completed");
 
     const SubmissionCallback = useCallback(async ()=>{
+        if(!props.txid) return;
         await CommitPreview(
             props.txid,
             fileUrls
@@ -84,14 +85,14 @@ export function ChatUploadPreviewModal(props) {
 								</button>
 							</div>
 
-							<div className="grid grid-cols-1 mt-8 border-[#545454] border-[1px] bg-[#131313] bg-opacity-[56%] h-[280px] rounded-xl text-white">
+							<div className="grid grid-cols-1 mt-8 border-[#545454] border-[1px] bg-[#131313] bg-opacity-[56%] h-[280px] rounded-xl text-white place-items-center">
 								{
 									(fileUrls.length > 0) ? 
-									<div className="w-full h-full grid grid-cols-1 justify-center place-items-center border-2 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full place-items-center">
+									<div className="grid grid-cols-1 w-full h-full justify-center place-items-center border-red-400 border-8 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full place-items-center">
                                         {
                                             fileUrls.map((file, index)=>{
                                                 return (
-                                                    <div className="relative flex flex-row shrink-0 items-center gap-x-3 w-full h-full border-2 px-2">
+                                                    <div className="flex flex-row shrink-0 items-center gap-x-3 w-full h-1/3 border-2 px-2">
                                                         <div className="w-1/5 h-[90%] relative flex flex-col place-items-center rounded-lg overflow-hidden my-2">
                                                             <Image 
                                                                 src={file}
@@ -108,16 +109,17 @@ export function ChatUploadPreviewModal(props) {
                                                         </div>
                                                     </div>
                                                 )
-                                            })
+                                            }).concat(
+                                                <div className="relative flex flex-row items-center gap-x-3 w-full h-1/3 border-2" {...getRootProps()}>
+                                                    <div className="relative w-1/4 h-full">
+                                                        <PlusIcon className="w-full h-full text-white"/>
+                                                    </div>
+                                                    <div>
+                                                        Add another preview
+                                                    </div>
+                                                </div>
+                                            )
                                         }
-                                        <div className="relative flex flex-row items-center gap-x-3 w-full h-1/3 border-2" {...getRootProps()}>
-                                            <div className="relative w-1/4 h-full">
-                                                <PlusIcon className="w-full h-full text-white"/>
-                                            </div>
-                                            <div>
-                                                Add another preview
-                                            </div>
-                                        </div>
                                     </div>
 									:
 									<div className="w-4/5 h-4/5 flex flex-col justify-center border-dashed border-2 rounded-sm" {...getRootProps()}>
