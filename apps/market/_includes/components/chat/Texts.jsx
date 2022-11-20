@@ -73,8 +73,8 @@ export function Texts(props){
                     <div ref={messageBottomRef}/>
                 </div>
                 <div className="flex flex-row">
-                    <ChatMessageInput roomid={roomData.roomId} updateChat={newChat} tx={props.tx}/>
-                    <ChatFunctionInput roomid={roomData.roomId} updateChat={newChat} tx={props.tx}/>
+                    <ChatMessageInput roomid={roomData.roomId} updateChat={newChat} tx={roomData.transactions}/>
+                    <ChatFunctionInput roomid={roomData.roomId} updateChat={newChat} tx={roomData.transactions}/>
                 </div>
             </div>
         </div>
