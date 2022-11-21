@@ -1,14 +1,13 @@
 import { useRef } from 'react'
-import { Rerousel } from 'rerousel'
-import { BetaCard } from '@includes/components/cards/LargeCards'
 import { Transition } from '@headlessui/react';
+import Image from 'next/image';
 
 export function HomeBanner(props) {
     //@ts-ignore
 	const [ref, setRef] = useRef(undefined);
 
     return(
-        <div className="w-full max-w-5xl h-auto container content-center align-middle mx-auto my-12" >
+        <div className="w-full max-w-5xl h-auto container content-center align-middle mx-auto mt-36 mb-0" >
             <Transition
                 appear={true}
                 show={true}
@@ -19,7 +18,13 @@ export function HomeBanner(props) {
                 leaveFrom="opacity-100 rotate-0 scale-100 "
                 leaveTo="opacity-0 scale-95 "
             >
-                <BetaCard />
+                <div className="relative flex h-36">
+                    <Image 
+                        src="/LargeOrbitLogo.png"
+                        layout="fill"
+                        objectFit="contain"
+                    />
+                </div>
             </Transition>
         </div>
     )
