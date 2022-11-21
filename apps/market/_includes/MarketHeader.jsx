@@ -157,7 +157,7 @@ export function HomeHeader(props) {
 			return
 		}
 		try{
-			let chat_client = new ChatClient(wallet, marketAccountsClient, transactionClient, arweaveClient, userAccount);
+			let chat_client = new ChatClient(wallet, marketAccountsClient, physicalMarketClient, digitalMarketClient, commissionMarketClient, transactionClient, arweaveClient, userAccount);
 			setMatrixClient(chat_client)
 			await chat_client.initialize();
 			if(await chat_client.Login()){
@@ -167,7 +167,7 @@ export function HomeHeader(props) {
 			console.log(e);
 			setHasChat(false);
 		}
-	}, [marketAccountsClient, transactionClient, arweaveClient, userAccount, arweaveClient, wallet])
+	}, [marketAccountsClient, physicalMarketClient, digitalMarketClient, commissionMarketClient, transactionClient, arweaveClient, userAccount, arweaveClient, wallet])
 
 	return(
 		<header className="mx-auto max-w-7xl h-14 lg:h-32 top-0 inset-x-0 sticky flex flex-row justify-between bg-transparent z-50 overflow-visible w-full">

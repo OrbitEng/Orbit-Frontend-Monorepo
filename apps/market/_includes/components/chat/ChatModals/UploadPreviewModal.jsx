@@ -1,14 +1,14 @@
 import Image from "next/image";
 import { useState, Fragment, useEffect } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { useDropzone } from "react-dropzone";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import { Wallet } from "@project-serum/anchor";
 import { CommissionFunctionalities } from "@functionalities/Transactions";
 import { useCallback } from "react";
 
 export function ChatUploadPreviewModal(props) {
+	const [txid, setTxid] = useState(props.transactions[0].txid);
     const {CommitPreview} = CommissionFunctionalities();
 
 	const [fileUrls, setFileUrls] = useState([]);
@@ -16,9 +16,9 @@ export function ChatUploadPreviewModal(props) {
 	const [statusMessage, setStatusMessage] = useState("percent completed");
 
     const SubmissionCallback = useCallback(async ()=>{
-        if(!props.txid) return;
+        if(!txid) return;
         await CommitPreview(
-            props.txid,
+            txid,
             fileUrls
         );
         props.setOpen(false)
@@ -83,6 +83,31 @@ export function ChatUploadPreviewModal(props) {
 									<span className="sr-only">Close panel</span>
 									<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
 								</button>
+							</div>
+
+							<div className="w-full">
+							<Listbox value={txid} onChange={setTxid} id="availability">
+									<div className="flex flex-col relative w-3/4 text-xl h-1/2 justify-end">
+										<Listbox.Button className="w-full h-full rounded-lg justify-center">
+											<div className='w-full bg-[#242424] rounded-lg overflow-hidden h-4/5 ring-1 ring-inset ring-blue-200'>
+												{(txid && txid.toString()) || ""}
+											</div>
+										</Listbox.Button>
+										<Listbox.Options className="w-full text-center absolute -bottom-8 transition rounded-b">
+											{
+												props.transactions.map(tx => (
+													<Listbox.Option
+														key={tx.txid}
+														value = {tx.txid}
+														className="w-full bg-[#242424] rounded-lg overflow-hidden h-4/5 ring-1 ring-inset ring-blue-200"
+													>
+														{tx.txid.toString()}
+													</Listbox.Option>
+												))
+											}
+										</Listbox.Options>
+									</div>
+								</Listbox>
 							</div>
 
 							<div className="grid grid-cols-1 mt-8 border-[#545454] border-[1px] bg-[#131313] bg-opacity-[56%] h-[280px] rounded-xl text-white place-items-center">

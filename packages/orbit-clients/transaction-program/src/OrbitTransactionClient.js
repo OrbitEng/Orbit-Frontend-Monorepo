@@ -156,7 +156,7 @@ export default class TransactionClient{
         return new PublicKey(tx.data.slice(40,72))
     }
 
-    GetMultipleTransactionSeller = async(tx_addrs) => {
+    GetMultipleTransactionSeller = async(tx_addrs, include_tx = false) => {
         let txs = await this.connection.getMultipleAccountsInfo(tx_addrs);
         return txs.map(tx => new PublicKey(tx.data.slice(40,72)))
     }

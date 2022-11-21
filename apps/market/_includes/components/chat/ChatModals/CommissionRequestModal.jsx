@@ -2,36 +2,16 @@ import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useDropzone } from "react-dropzone";
-import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { CheckIcon, ChevronLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { CommissionFunctionalities } from "@functionalities/Transactions";
 
 
 export function CommissionRequestModal(props) {
-	
-    let wallet = useWallet();
-	let connection = useConnection();
-	const [files, setFiles] = useState([]);
 	const [statusMessage, setStatusMessage] = useState("percent completed");
     const [openRequestModal, setOpenRequestModal] = useState(false);
 
-	const onDrop = (acceptedFiles) => {
-		acceptedFiles.forEach((fin)=>{
-            const afr = new FileReader()
-            afr.onload = () => {
-                setFiles(cf => [...cf, ...acceptedFiles]);
-            }
-            afr.readAsDataURL(fin);
-        });
-	}
-
-    const deleteFile = (index)=>{
-		if(index == -1){
-			return;
-		}
-		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)]);
-	}
-
-    const {getRootProps, getInputProps, open} = useDropzone({onDrop});
+	const [transactions, setTransactions] = useState(props.transactions);
+	const {SellerEarlyDeclineSol, SellerEarlyDeclineSpl, SellerAcceptTransaction} = CommissionFunctionalities();
 
 
 	return(
@@ -73,14 +53,31 @@ export function CommissionRequestModal(props) {
 									<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
 								</button>
 							</div>
-							
-							<div className="flex flex-col mb-8">
-								<span className="text-[#848484] font-bold truncate w-1/2">
-									{"Wallet: " + wallet.publicKey}
-								</span>
-							</div>
-							<div className="h-[60%] border-[#545454] border-[1px] bg-[#26232C] bg-opacity-[56%] rounded-lg">
 
+							<div className="h-[60%] border-[#545454] border-[1px] bg-[#26232C] bg-opacity-[56%] rounded-lg">
+								{
+									transactions.map((tx)=>{
+										<div className="relative flex flex-row w-[90%] h-1/3 rounded-lg bg-[#7E7E7E]">
+											<div className="relative w-1/4 h-full">
+												<Image 
+													src={tx.data.metadata.product.data.metadata.media}
+													layout="fill"
+													objectFit="cover"
+												/>
+											</div>
+
+											<div>
+												{tx.data.metadata.product.data.metadata.name}
+											</div>
+											<div className="w-16 h-full bg-[#02421e]" onClick={()=>{SellerAcceptTransaction(tx.address)}}>
+												<CheckIcon className="text-green-700"/>
+											</div>
+											<div className="w-16 h-full bg-[#54000b]" onClick={tx.data.metadata.currency.toString() == "11111111111111111111111111111111" ? ()=>{SellerEarlyDeclineSol(tx.address)} : ()=>{SellerEarlyDeclineSpl(tx.address)}}>
+												<XMarkIcon className="text-green-700"/>
+											</div>
+										</div>
+									})
+								}
 							</div>
 
 						</div>
