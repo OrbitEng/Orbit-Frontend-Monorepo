@@ -211,7 +211,6 @@ export function HomeHeader(props) {
 						{
 							((!wallet.connected) && <WalletMultiButton />) || 
 							((!userAccount) && <CreateAccountModal connectedWallet={wallet}/>) || 
-							((!hasChat) && <CreateChatModal/>) || 
 							(<ProfileButton selfAccount={userAccount} />)
 						}
 					</div>
