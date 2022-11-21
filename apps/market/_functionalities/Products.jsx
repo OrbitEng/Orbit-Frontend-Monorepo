@@ -7,29 +7,6 @@ import BundlrCtx from "@contexts/BundlrCtx";
 
 import { ArQueryClient } from "data-transfer-clients";
 
-export function ProductCommonUtils(props){
-    const {productClient} = useContext(ProductClientCtx);
-    
-    /**
-     * should return [name, desc]
-     */
-     const ResolveProductInfo = async(metadata_addr) => {
-        let arclient = new ArQueryClient();
-        return JSON.parse(await arclient.FetchData(metadata_addr));
-        
-    };
-
-    const ResolveProductMedia = async(media_addr) => {
-        let arclient = new ArQueryClient();
-        return arclient.GetImageData(media_addr);
-    }
-
-    return{
-        ResolveProductInfo,
-        ResolveProductMedia
-    }
-}
-
 export function DigitalProductFunctionalities(props){
     const {bundlrClient} = useContext(BundlrCtx);
     const {productClient} = useContext(ProductClientCtx);

@@ -317,7 +317,7 @@ export default class CommissionMarketClient{
         return tx_hash
     };
 
-    sellerEarlyDeclineSpl = async(
+    SellerEarlyDeclineSpl = async(
         tx_addr,
 
         buyer_wallet,
@@ -330,7 +330,7 @@ export default class CommissionMarketClient{
         let tx_struct = (await this.GetTransaction(tx_addr)).data;
 
         await this.program.methods
-        .sellerEarlyDeclineSpl()
+        .SellerEarlyDeclineSpl()
         .account({
             commissionTransaction: tx_addr,
             escrowAccount: tx_struct.metadata.escrowAccount,

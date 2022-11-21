@@ -138,8 +138,8 @@ export function ProductDisplayCardHome(props) {
 		};
 		
 		if(tp){
-			tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
-			tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
+			tp.data.metadata.info = JSON.parse(await arweaveClient.FetchData(tp.data.metadata.info));
+			tp.data.metadata.media = await arweaveClient.GetImageData(tp.data.metadata.media);
 
 			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
@@ -284,8 +284,8 @@ export function ProductDisplayCardHomeDep(props) {
 		};
 		
 		if(tp){
-			tp.data.metadata.info = await ResolveProductInfo(tp.data.metadata.info);
-			tp.data.metadata.media = await ResolveProductMedia(tp.data.metadata.media);
+			tp.data.metadata.info = JSON.parse(await arweaveClient.FetchData(tp.data.metadata.info));
+			tp.data.metadata.media = await arweaveClient.GetImageData(tp.data.metadata.media);
 
 			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;

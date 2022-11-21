@@ -5,7 +5,7 @@ import {IDBClient, enc_common} from "browser-clients";
 const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
 
 export default class ChatClient{
-    constructor(auth_keypair, accounts_client, transactionClient, ar_client, userAccount){
+    constructor(auth_keypair, accounts_client, productClient, transactionClient, physicalClient, digitalClient, commissionClient, ar_client, userAccount){
         if(auth_keypair){
             this.auth_keypair = auth_keypair;
             this.matrix_name = this.UnsanitizeName(this.auth_keypair.publicKey.toString())
@@ -13,6 +13,10 @@ export default class ChatClient{
             this.transactionClient = transactionClient;
             this.arweaveClient = ar_client;
             this.userAccount = userAccount;
+            this.physicalClient = physicalClient;
+            this.digitalClient = digitalClient;
+            this.commissionClient = commissionClient;
+            this.productclient = productClient;
         }
         
         this.matrixclient = sdk.createClient({
@@ -73,6 +77,9 @@ export default class ChatClient{
                 let rooms = await this.GetJoinedRooms();
                 let rooms_mapped = {};
 
+                //////////////////////////////////////////////////////
+                /// ROOM POPULATION
+
                 for(let i = 0; i < rooms.length; i++){
                     let room = rooms[i];
                     await this.RoomInitSync(room);
@@ -104,6 +111,10 @@ export default class ChatClient{
                     }
                 }
                 
+
+                //////////////////////////////////////////////////////////
+                /// BUYER TX CHUNK
+
                 let buyer_transactions = [];
                 let seller_transactions = [];
                 
@@ -136,27 +147,66 @@ export default class ChatClient{
                     buyerindlengths.commission = indexes.length;
                 }
 
-                /// other party is the return of this call
-                let buyer_convos = await this.transactionClient.GetMultipleTransactionSeller(buyer_transactions);
-                let seller_wallets = await this.transactionClient.GetMultipleTxLogOwners(buyer_convos);
+                let buyer_digital_transactions = await this.digitalClient.GetMultipleTransactions(buyer_transactions.slice(0,sellerindlengths.digital));
+                let buyer_physical_transactions = await this.physicalClient.GetMultipleTransactions(buyer_transactions.slice(0,sellerindlengths.physical));
+                let buyer_commission_transactions = await this.commissionClient.GetMultipleTransactions(buyer_transactions.slice(0,sellerindlengths.commission));
 
+                let buyer_digital_products = await this.productclient.GetMultipleDigitalProducts(
+                    buyer_digital_transactions.map(async (tx) => {tx.data.metadata.product})
+                )
+                buyer_digital_products.forEach(async (prod)=>{
+                    prod.data.metadata.info = JSON.parse(await this.arweaveClient.FetchData(prod.data.metadata.info));
+                    prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
+                });
+
+                let buyer_physical_products = await this.productclient.GetMultipleDigitalProducts(
+                    buyer_physical_transactions.map(async (tx) => {tx.data.metadata.product})
+                )
+                buyer_physical_products.forEach(async (prod)=>{
+                    prod.data.metadata.info = JSON.parse(await this.arweaveClient.FetchData(prod.data.metadata.info));
+                    prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
+                });
+
+                let buyer_commission_products = await this.productclient.GetMultipleDigitalProducts(
+                    buyer_commission_transactions.map(async (tx) => {tx.data.metadata.product})
+                )
+                buyer_commission_products.forEach(async (prod)=>{
+                    prod.data.metadata.info = JSON.parse(await this.arweaveClient.FetchData(prod.data.metadata.info));
+                    prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
+                });
+
+                let seller_tx_logs = [...buyer_digital_transactions, ...buyer_physical_transactions, ...buyer_commission_transactions].map(tx => tx.data.metadata.seller);
+                let seller_wallets = await this.transactionClient.GetMultipleTxLogOwners(seller_tx_logs);
+                
+                ////////////////////////////////////////////////////////////////
+                /// SELLER TX CHUNK
+                
                 for(let i = 0; i < buyerindlengths.digital; i++){
+                    buyer_digital_transactions[i].data.metadata.product =
+                    buyer_digital_products[i];
                     rooms_mapped[seller_wallets[i].toString()].transactions.push({
                         txid: buyer_transactions[i],
+                        txstruct: buyer_digital_transactions[i],
                         side: "buyer",
                         type: "digital"
                     })
                 }
                 for(let i = buyerindlengths.digital; i < buyerindlengths.physical; i++){
+                    buyer_physical_transactions[i-buyerindlengths.digital].data.metadata.product =
+                    buyer_physical_products[i-buyerindlengths.digital];
                     rooms_mapped[seller_wallets[i].toString()].transactions.push({
                         txid: buyer_transactions[i],
+                        txstruct: buyer_physical_transactions[i-buyerindlengths.digital],
                         side: "buyer",
                         type: "physical"
                     })
                 }
                 for(let i = buyerindlengths.physical; i < buyerindlengths.commission; i++){
+                    buyer_commission_transactions[i-buyerindlengths.physical].data.metadata.product =
+                    buyer_commission_products[i-buyerindlengths.physical];
                     rooms_mapped[seller_wallets[i].toString()].transactions.push({
                         txid: buyer_transactions[i],
+                        txstruct: buyer_commission_transactions[i-buyerindlengths.physical],
                         side: "buyer",
                         type: "commission"
                     })
@@ -192,26 +242,63 @@ export default class ChatClient{
                     sellerindlengths.commission = indexes.length;
                 }
 
-                let seller_convos = await this.transactionClient.GetMultipleTransactionBuyer(seller_transactions);
-                let buyer_wallets = await this.transactionClient.GetMultipleTxLogOwners(seller_convos);
+                let seller_digital_transactions = await this.digitalClient.GetMultipleTransactions(seller_transactions.slice(0,sellerindlengths.digital));
+                let seller_physical_transactions = await this.physicalClient.GetMultipleTransactions(seller_transactions.slice(0,sellerindlengths.physical));
+                let seller_commission_transactions = await this.commissionClient.GetMultipleTransactions(seller_transactions.slice(0,sellerindlengths.commission));
+
+                let seller_digital_products = await this.productclient.GetMultipleDigitalProducts(
+                    seller_digital_transactions.map(async (tx) => {tx.data.metadata.product})
+                )
+                seller_digital_products.forEach(async (prod)=>{
+                    prod.data.metadata.info = JSON.parse(await this.arweaveClient.FetchData(prod.data.metadata.info));
+                    prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
+                });
+
+                let seller_physical_products = await this.productclient.GetMultipleDigitalProducts(
+                    seller_physical_transactions.map(async (tx) => {tx.data.metadata.product})
+                )
+                seller_physical_products.forEach(async (prod)=>{
+                    prod.data.metadata.info = JSON.parse(await this.arweaveClient.FetchData(prod.data.metadata.info));
+                    prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
+                });
+
+                let seller_commission_products = await this.productclient.GetMultipleDigitalProducts(
+                    seller_commission_transactions.map(async (tx) => {tx.data.metadata.product})
+                )
+                seller_commission_products.forEach(async (prod)=>{
+                    prod.data.metadata.info = JSON.parse(await this.arweaveClient.FetchData(prod.data.metadata.info));
+                    prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
+                });
+
+                let buyer_tx_logs = [...seller_digital_transactions, ...seller_physical_transactions, ...seller_commission_transactions].map(tx => tx.data.metadata.buyer);
+                let buyer_wallets = await this.transactionClient.GetMultipleTxLogOwners(buyer_tx_logs);
 
                 for(let i = 0; i < sellerindlengths.digital; i++){
+                    seller_digital_transactions[i].data.metadata.product =
+                    seller_digital_products[i];
                     rooms_mapped[buyer_wallets[i].toString()].transactions.push({
                         txid: seller_transactions[i],
+                        txstruct: seller_digital_transactions[i],
                         side: "seller",
                         type: "digital"
                     })
                 }
                 for(let i = sellerindlengths.digital; i < sellerindlengths.physical; i++){
+                    seller_physical_transactions[i-buyerindlengths.digital].data.metadata.product =
+                    seller_physical_products[i-buyerindlengths.digital];
                     rooms_mapped[buyer_wallets[i].toString()].transactions.push({
                         txid: seller_transactions[i],
+                        txstruct: seller_physical_transactions[i-sellerindlengths.digital],
                         side: "seller",
                         type: "physical"
                     })
                 }
                 for(let i = sellerindlengths.physical; i < sellerindlengths.commission; i++){
+                    seller_commission_transactions[i-buyerindlengths.physical].data.metadata.product =
+                    seller_commission_products[i-buyerindlengths.physical];
                     rooms_mapped[buyer_wallets[i].toString()].transactions.push({
                         txid: seller_transactions[i],
+                        txstruct: seller_commission_transactions[i-sellerindlengths.physical],
                         side: "seller",
                         type: "commission"
                     })

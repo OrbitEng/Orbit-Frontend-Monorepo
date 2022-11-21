@@ -8,7 +8,7 @@ import { CommissionFunctionalities } from "@functionalities/Transactions";
 import { useCallback } from "react";
 
 export function ChatUploadPreviewModal(props) {
-	const [txid, setTxid] = useState(props.tx[0].txid);
+	const [txid, setTxid] = useState(props.transactions[0].txid);
     const {CommitPreview} = CommissionFunctionalities();
 
 	const [fileUrls, setFileUrls] = useState([]);
@@ -74,7 +74,19 @@ export function ChatUploadPreviewModal(props) {
 						<div className="flex flex-col rounded-xl py-10 px-[4rem] w-full transition duration-700">
 							<div className="top-0 left-0 flex flex-row pt-1 justify-center">
 								<h1 className="text-3xl text-white font-bold">Upload Content</h1>
-								<Listbox value={txid} onChange={setTxid} id="availability">
+								<div className="flex-grow"/>
+								<button
+									type="button"
+									className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
+									onClick={() => props.setOpen(false)}
+								>
+									<span className="sr-only">Close panel</span>
+									<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
+								</button>
+							</div>
+
+							<div className="w-full">
+							<Listbox value={txid} onChange={setTxid} id="availability">
 									<div className="flex flex-col relative w-3/4 text-xl h-1/2 justify-end">
 										<Listbox.Button className="w-full h-full rounded-lg justify-center">
 											<div className='w-full bg-[#242424] rounded-lg overflow-hidden h-4/5 ring-1 ring-inset ring-blue-200'>
@@ -83,7 +95,7 @@ export function ChatUploadPreviewModal(props) {
 										</Listbox.Button>
 										<Listbox.Options className="w-full text-center absolute -bottom-8 transition rounded-b">
 											{
-												props.tx.map(tx => (
+												props.transactions.map(tx => (
 													<Listbox.Option
 														key={tx.txid}
 														value = {tx.txid}
@@ -96,15 +108,6 @@ export function ChatUploadPreviewModal(props) {
 										</Listbox.Options>
 									</div>
 								</Listbox>
-								<div className="flex-grow"/>
-								<button
-									type="button"
-									className="rounded-full text-white hover:text-white p-1 border-[#5b5b5b] border-[1px] focus:outline-none"
-									onClick={() => props.setOpen(false)}
-								>
-									<span className="sr-only">Close panel</span>
-									<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
-								</button>
 							</div>
 
 							<div className="grid grid-cols-1 mt-8 border-[#545454] border-[1px] bg-[#131313] bg-opacity-[56%] h-[280px] rounded-xl text-white place-items-center">
