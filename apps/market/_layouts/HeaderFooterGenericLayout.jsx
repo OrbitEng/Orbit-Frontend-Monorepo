@@ -18,7 +18,7 @@ export function GenericLayout(props){
 				<title>Orbit</title>
 				<link rel="icon" href="/orbit.png" />
 			</Head>
-			<main className="bg-[url('/bgWallpaper.png')] min-h-screen">
+			<main className="bg-[url('/bgWallpaper.png')] min-h-screen bg-cover">
 				<HomeHeader headerMiddle={searchBar}/>
 				<div className="max-w-7xl align-center mx-auto">
 					{props.children}
@@ -39,7 +39,7 @@ export function WideGenericLayout(props){
 				<title>Orbit</title>
 				<link rel="icon" href="/orbit.png" />
 			</Head>
-			<main className="bg-[url('/bgWallpaper.png')] min-h-screen">
+			<main className="bg-[url('/bgWallpaper.png')] min-h-screen bg-cover">
 				<HomeHeader headerMiddle={searchBar}/>
 				<div className="max-w-[100rem] align-center mx-auto">
 					{props.children}
