@@ -1,35 +1,56 @@
 import Image from "next/image";
-import { Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { useDropzone } from "react-dropzone";
 import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Wallet } from "@project-serum/anchor";
-import { useState } from "react";
+import { DigitalFunctionalities, CommissionFunctionalities } from "@functionalities/Transactions";
 
 
 export function CommissionRequestModal(props) {
-	const [files, setFiles] = useState([]);
+
+	const [transaction, setTransaction] = useState(props.transactions[0]);
+
+	const {UploadProductFile: UploadDigitalFinal} = DigitalFunctionalities({});
+	const {UploadProductFile: UploadCommissionFinal} = CommissionFunctionalities({});
+
+	const [xslices, setXslices] = useState(0);
+	const [yslices, setYslices] = useState(0);
+
+	const [fileUrls, setFileUrls] = useState([]);
+	const [fileBlobs, setFileBlobs] = useState([]);
 	const [statusMessage, setStatusMessage] = useState("percent completed");
 
-	const onDrop = (acceptedFiles) => {
-		acceptedFiles.forEach((fin)=>{
-            const afr = new FileReader()
-            afr.onload = () => {
-                setFiles(cf => [...cf, ...acceptedFiles]);
-            }
-            afr.readAsDataURL(fin);
-        });
-	}
-
-    const deleteFile = (index)=>{
-		if(index == -1){
-			return;
+    const SubmissionCallback = useCallback(async ()=>{
+        if(!(transaction && transaction.txid)) return;
+		switch(transaction.type){
+			case "digital":
+				await UploadDigitalFinal(transaction.txid, fileBlobs[0], xslices, yslices)
+				break;
+			case "commission":
+				await UploadCommissionFinal(transaction.txid, fileBlobs[0], xslices, yslices)
+				break;
+			default:
+				break;
 		}
-		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)]);
+        props.setOpen(false)
+    },[UploadDigitalFinal, UploadCommissionFinal, props, fileUrls, transaction])
+
+	const onDrop = (acceptedFiles) => {
+		const afr = new FileReader()
+		afr.onload = () => {
+			setFileBlobs((fsb) => {
+				fsb[transaction.txid] = acceptedFiles[0];
+				return fsb
+			})
+			setFileUrls((cf) => {
+				cf[transaction.txid] = afr.result;
+				return cf;
+			});
+		}
+		afr.readAsDataURL(acceptedFiles[0]);
 	}
 
     const {getRootProps, getInputProps, open} = useDropzone({onDrop});
-
 
 	return(
 		<Transition show={props.open} as={Fragment}>
@@ -56,10 +77,10 @@ export function CommissionRequestModal(props) {
 					leaveFrom="opacity-100 scale-100"
 					leaveTo="opacity-0 scale-95"
 				>
-					<Dialog.Panel className={`w-[860px] transform overflow-hidden rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-500`}>
+					<Dialog.Panel className={`w-[600px] transform rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-500`}>
 						<div className="flex flex-col rounded-xl py-10 px-[4rem] w-full transition duration-700">
 							<div className="top-0 left-0 flex flex-row pt-1 justify-center">
-								<h1 className="text-3xl text-white font-bold">Upload Content</h1>
+								<h1 className="text-3xl text-white font-bold">Upload Finished Product!</h1>
 								<div className="flex-grow"/>
 								<button
 									type="button"
@@ -70,14 +91,100 @@ export function CommissionRequestModal(props) {
 									<XMarkIcon className="h-6 w-6 text-[#e2e2e2]" aria-hidden="true" />
 								</button>
 							</div>
+
+							<div className="w-full">
+							<Listbox value={transaction.txid} onChange={setTransaction} id="availability">
+									<div className="flex flex-col relative w-3/4 text-xl h-1/2 justify-end">
+										<Listbox.Button className="w-full h-full rounded-lg justify-center">
+											<div className='w-full bg-[#242424] rounded-lg overflow-hidden h-4/5 ring-1 ring-inset ring-blue-200'>
+												{(transaction.txid && transaction.txid.toString()) || ""}
+											</div>
+										</Listbox.Button>
+										<Listbox.Options className="w-full text-center absolute -bottom-8 transition rounded-b">
+											{
+												props.transactions.map(tx => (
+													<Listbox.Option
+														key={tx.txid}
+														value = {tx}
+														className="w-full bg-[#242424] rounded-lg overflow-hidden h-4/5 ring-1 ring-inset ring-blue-200"
+													>
+														{tx.txid.toString()}
+													</Listbox.Option>
+												))
+											}
+										</Listbox.Options>
+									</div>
+								</Listbox>
+							</div>
+
+							<div className="grid grid-cols-1 mt-8 border-[#545454] border-[1px] bg-[#131313] bg-opacity-[56%] h-[280px] rounded-xl text-white place-items-center">
+								{
+									(fileUrls[transaction.txid]) ? 
+									<div className="grid grid-cols-1 w-full h-full justify-center place-items-center border-red-400 border-8 overflow-y-auto scrollbar-thumb-[#5B5B5B] scrollbar-track-[#8E8E8E] scrollbar-thumb-rounded-full scrollbar-track-rounded-full place-items-center">
+										<div className="flex flex-row shrink-0 items-center gap-x-3 w-full h-1/3 border-2 px-2">
+											<div className="w-1/5 h-[90%] relative flex flex-col place-items-center rounded-lg overflow-hidden my-2">
+												<Image 
+													src={fileUrls[transaction.txid]}
+													layout="fill"
+													objectFit="cover"
+												/>
+											</div>
+											<div className="flex flex-col flex-grow text-center">
+												<div className="text-lg font-bold ">{transaction.txid.toString().slice(0,24)}</div>
+											</div>
+											<div className="absolute right-0 w-16 h-16" onClick={()=>{deleteFile(index)}}>
+												<XMarkIcon className="text-[#B74747] h-full"/>
+											</div>
+										</div>
+                                    </div>
+									:
+									<div className="w-4/5 h-4/5 flex flex-col justify-center border-dashed border-2 rounded-sm" {...getRootProps()}>
+                                        <input {...getInputProps()}/>
+										<div className="relative flex flex-col h-16 mx-16  place-items-center align-center">
+											<Image
+												src="/foldericon.svg"
+												layout="fill"
+												objectFit="contain"
+											/>
+										</div>
+										<div className="flex flex-col">
+											<span className="align-middle text-center my-auto mx-auto text-xl font-bold">Drag & Drop
+												<span className="text-[#9944EE]"> fileBlobs</span>,
+												<span className="text-[#9944EE]"> images</span>,
+											</span>
+											<span className="align-middle text-center my-auto mx-auto text-xl font-bold">
+												<span className="text-[#9944EE]"> audio</span>,
+												and more</span>
+											<span className="align-middle mx-auto font-bold text-sm">Or <span className="text-[#9944EE] underline">browse for fileBlobs</span> on your computer</span>
+										</div>
+									</div>
+								}
+							</div>
 							
 							<div className="text-white py-4">{statusMessage}</div>
 							
-							<div className="w-full bg-white rounded-full overflow-hidden bg-opacity-[56%] h-6 border-[#545454] border-[1px]">
-									<div className="rounded-full bg-[url('/bargradient.png')] w-[60%] h-full border-2 background-clip-border">
-
-									</div>
+							<div className="w-full bg-[#131313] rounded-full overflow-hidden bg-opacity-[56%] h-6 border-[#545454] border-[1px]">
+									<div className="rounded-full bg-[url('/progressgradient.png')] bg-center w-[40%] h-full border-[1px] background-clip-border"/>
 							</div>
+
+							<div className="flex flex-row justify-center text-white my-4">
+								<div>Project completion</div>
+								<div className="flex-grow"/>
+								<div className="text-sm">60% complete</div>
+							</div>
+
+							<div className="h-2 w-full bg-[#2F2F2F] rounded-full overflow-hidden">
+								<div className="rounded-full w-[40%] overflow-hidden bg-gradient-to-r from-[#3375F4] to-[#98E6FF] via-[#4FAEF7] bg-clip-content h-full"></div>
+							</div>
+
+							<button
+								className={"py-4 px-8 z-[120] flex flex-row justify-center bg-[#008C1F3c] rounded-full mt-8 w-fit mx-auto opacity-100"}
+								onClick={SubmissionCallback}
+							>
+								<span className="text-transparent bg-clip-text bg-gradient-to-t from-[#19B500] to-white font-bold flex flex-row my-auto">
+									Commit Previews
+								</span>
+							</button>
 						</div>
 					</Dialog.Panel>
 				</Transition.Child>

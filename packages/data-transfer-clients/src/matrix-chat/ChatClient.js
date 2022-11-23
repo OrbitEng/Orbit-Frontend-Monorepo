@@ -20,7 +20,7 @@ export default class ChatClient{
         }
         
         this.matrixclient = sdk.createClient({
-            baseUrl: 'http://164.92.83.9:80',
+            baseUrl: 'https://matrix.orbitmarketplace.net',
             deviceId: "orbit_client"
         });
         
@@ -46,7 +46,7 @@ export default class ChatClient{
         }
 
         this.matrixclient = sdk.createClient({
-            baseUrl: 'http://164.92.83.9:80',
+            baseUrl: 'https://matrix.orbitmarketplace.net',
             userId: res.user_id,
             accessToken: res.access_token,
             sessionStore: window.localStorage,
@@ -381,7 +381,7 @@ export default class ChatClient{
             room_id: roomId,
         } = await this.matrixclient.createRoom({
             visibility: 'private',
-            invite: ["@"+this.UnsanitizeName(userprofile.data.wallet.toString())+":164.92.83.9"],
+            invite: ["@"+this.UnsanitizeName(userprofile.data.wallet.toString())+":orbitmarketplace"],
             initial_state:[{
                 type: "m.room.encryption",
                 state_key: "",

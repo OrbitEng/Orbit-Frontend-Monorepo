@@ -73,7 +73,7 @@ export function ChatUploadPreviewModal(props) {
 					<Dialog.Panel className={`w-[600px] transform rounded-2xl backdrop-blur bg-gradient-to-t from-[#32254EB3] to-[#26232CE6] border-t-[0.5px] border-[#474747] text-left align-middle shadow-xl transition-all duration-500`}>
 						<div className="flex flex-col rounded-xl py-10 px-[4rem] w-full transition duration-700">
 							<div className="top-0 left-0 flex flex-row pt-1 justify-center">
-								<h1 className="text-3xl text-white font-bold">Upload Content</h1>
+								<h1 className="text-3xl text-white font-bold">Upload Previews</h1>
 								<div className="flex-grow"/>
 								<button
 									type="button"
