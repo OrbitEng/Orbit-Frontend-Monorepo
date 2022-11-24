@@ -122,3 +122,38 @@ export function RateMessage(props){
 		</div>
 	)
 }
+
+export function PreviewMessage(props){
+	// has show preview blur
+	return (
+		<div>
+
+		</div>
+	)
+}
+
+export function ChunkSelectionRequest(props){
+	// has show final (box selection)
+	return (
+		<div>
+
+		</div>
+	)
+}
+
+export function FinalizationMessageFinal(props){
+	// has accept & counter properties
+	return (
+		<div>
+
+		</div>
+	)
+}
+
+export function KeysAndShipMessage(props){
+	return (
+		<div>
+
+		</div>
+	)
+}

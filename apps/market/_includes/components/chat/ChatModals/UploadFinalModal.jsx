@@ -4,6 +4,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useDropzone } from "react-dropzone";
 import { ChevronLeftIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { DigitalFunctionalities, CommissionFunctionalities } from "@functionalities/Transactions";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
 
 
 export function CommissionRequestModal(props) {

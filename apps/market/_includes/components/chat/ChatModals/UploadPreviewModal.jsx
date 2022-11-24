@@ -1,11 +1,10 @@
 import Image from "next/image";
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect, useCallback } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { useDropzone } from "react-dropzone";
-import { XMarkIcon } from "@heroicons/react/24/solid";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { CommissionFunctionalities } from "@functionalities/Transactions";
-import { useCallback } from "react";
+import MatrixClientCtx from "@contexts/MatrixClientCtx";
 
 export function ChatUploadPreviewModal(props) {
 	const [txid, setTxid] = useState(props.transactions[0].txid);
