@@ -24,7 +24,7 @@ export default function ProfileButton(props) {
 
 	return(
 		<Popover>
-			<Popover.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[5px] justify-center align-middle ">
+			<Popover.Button className="relative overflow-hidden h-7 w-7 rounded-full m-[4px] justify-center align-middle ">
 				<Image
 					src={((props?.selfAccount?.data?.profilePic?.charAt(0) == "/" || props?.selfAccount?.data?.profilePic?.slice(0,4) == "http" || props?.selfAccount?.data?.profilePic?.slice(0,4) == "data") && props.selfAccount.data.profilePic) || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
 					layout="fill"
