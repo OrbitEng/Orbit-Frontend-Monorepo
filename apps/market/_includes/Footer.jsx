@@ -1,4 +1,4 @@
-import OrbitLogo from '../public/OrbitLogo.png';
+import OrbitLogo from '../public/OrbitLogos/OrbitFullLogo.png';
 import Image from 'next/image';
 import Link from 'next/link';
 

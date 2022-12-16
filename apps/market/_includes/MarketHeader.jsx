@@ -33,6 +33,7 @@ import ChatCtx from '@contexts/ChatCtx';
 import { CreateChatModal } from './components/modals/CreateChatModal';
 import ArweaveCtx from '@contexts/ArweaveCtx';
 import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
+import { HeaderSearchBar, PageSearchBar } from './components/SearchBar';
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
@@ -170,12 +171,12 @@ export function HomeHeader(props) {
 	}, [marketAccountsClient, physicalMarketClient, digitalMarketClient, commissionMarketClient, transactionClient, arweaveClient, userAccount, arweaveClient, wallet])
 
 	return(
-		<header className="mx-auto max-w-7xl h-14 lg:h-32 top-0 inset-x-0 sticky flex flex-row justify-between bg-transparent z-50 overflow-visible w-full">
+		<header className="mx-auto max-w-[100rem] h-14 lg:h-32 top-0 inset-x-0 sticky flex flex-row justify-between bg-transparent z-50 overflow-visible w-full">
 			<div className="relative flex flex-shrink-0 py-auto w-40 align-middle content-start cursor-pointer p-2">
 				<Link href="/">
-					<div className="relative flex flex-shrink-0 h-full w-full">
+					<div className="relative flex flex-shrink-0 h-1/2 w-1/2 my-auto">
 						<Image
-							src={"/OrbitLogo.png"}
+							src={"/OrbitLogos/OrbitFullLogo.png"}
 							layout="fill"
 							alt="The Name and Logo for the Orbit market"
 							objectFit="contain"
@@ -184,7 +185,7 @@ export function HomeHeader(props) {
 					</div>
 				</Link>
 			</div>
-			{props.headerMiddle}
+			<HeaderSearchBar />
 			<div className="flex flex-row align-middle my-auto justify-end divide-x-[1px] divide-[#5E5E5E] z-[60] w-40">
 				<div className="flex flex-row px-2 gap-3">
 						<Link href="/sell">
