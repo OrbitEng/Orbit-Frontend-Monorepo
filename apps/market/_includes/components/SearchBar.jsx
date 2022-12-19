@@ -1,13 +1,21 @@
-import React, { FC, useState, Fragment } from 'react';
-import { Combobox, Transition } from '@headlessui/react';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import React, { useState, Fragment } from 'react';
+import { Combobox, Listbox, Transition } from '@headlessui/react';
+import { CheckIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
+const searchCategories = [
+	{ key: 1, name: "All", value: "all"},
+	{ key: 2, name: "Local", value: "local"},
+	{ key: 3, name: "Shipped", value: "shipped"},
+	{ key: 4, name: "Digital", value: "digital"}
+]
 
 export function HeaderSearchBar(props) {
-	const [ selected, setSelected ] = useState()
-	const [ query, setQuery ] = useState()
+	const [ selected, setSelected ] = useState();
+	const [ query, setQuery ] = useState();
+	const [ selectedProductSearchCat, setSelectedProductSearchCat ] = useState(searchCategories[0]);
 
 	return(
-		<div className="flex flex-col px-12 lg:px-36 my-auto py-auto align-middle justify-center w-full overflow-visible">
+		<div className="flex flex-col my-auto align-middle justify-center overflow-visible w-full">
 			<Transition
 				show={true}
 				appear={true}
@@ -18,14 +26,50 @@ export function HeaderSearchBar(props) {
 				leaveFrom="opacity-100"
 				leaveTo="opacity-0"
 			>
-				<div className="relative flex gap-3 flex-row rounded-lg bg-searchbartransparent border-[1px] border-[#333333] p-1 w-full mx-auto py-auto align-middle">
+				<div className="relative flex gap-3 flex-row rounded-lg bg-[#0F0D14] border-[1px] border-[#202020] p-1 w-full max-w-2xl mx-auto align-middle">
 					<Combobox value={selected} onChange={setSelected} >
-						<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px] ml-2"/>
+						<MagnifyingGlassIcon className="h-5 w-5 text-[#393939] my-auto stroke-[1px] ml-2"/>
 						<Combobox.Input
-						className="flex w-full bg-transparent text-[#777777] placeholder:text-[#4A4A4A] text-lg font-semibold focus:outline-none"
-						placeholder="Search in marketplace"
-						onChange={(e) => setQuery(e.target.value)} />
+							className="flex w-full bg-transparent text-[#777777] placeholder:text-[#393939] text-lg font-normal focus:outline-none"
+							placeholder="Search in marketplace"
+							onChange={(e) => setQuery(e.target.value)}
+						/>
 					</Combobox>
+					<Listbox value={selectedProductSearchCat} onChange={setSelectedProductSearchCat}>
+						<Listbox.Button className="text-[#878787] border-l-[1px] border-[#424242] px-4 h-6 align-middle my-auto">
+							{selectedProductSearchCat.name}
+						</Listbox.Button>
+						<Transition
+							as={Fragment}
+							leave="transition ease-in duration-100"
+							leaveFrom="opacity-100"
+							leaveTo="opacity-0"
+						>
+							<Listbox.Options className="absolute right-0 mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
+								{searchCategories.map((category) => (
+									<Listbox.Option
+										key={category.key}
+										value={category}
+										className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
+											active ? 'bg-[#504561]' : 'bg-transparent'
+										}`}
+									>
+										{({ active, selected }) => (
+											<>
+												<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{category.name}</span>
+												{selected ? (
+													<span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
+														<CheckIcon className="h-4 w-4" />
+													</span>
+												) 
+												: null}
+											</>
+										)}
+									</Listbox.Option>
+								))}
+							</Listbox.Options>
+						</Transition>
+					</Listbox>
 				</div>
 			</Transition>
 		</div>

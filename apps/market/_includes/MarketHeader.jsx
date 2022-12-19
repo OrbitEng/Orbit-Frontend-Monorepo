@@ -1,14 +1,31 @@
 import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from "next/router";
+
+import OrbitLogoFull from "../public/OrbitLogos/OrbitFullLogo.png"
 
 import * as anchor from "@project-serum/anchor";
 
-import { Bars3CenterLeftIcon, PlusCircleIcon, EnvelopeIcon, ShoppingCartIcon } from '@heroicons/react/24/outline'
-import { WalletConnectButton, WalletModalButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { Bars3CenterLeftIcon, MagnifyingGlassIcon, PlusCircleIcon, ShoppingCartIcon } from '@heroicons/react/24/outline'
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
+import { useContext, useEffect, useState } from 'react';
 
-const {DigitalMarketClient, PhysicalMarketClient, CommissionMarketClient, DisputeClient, MarketAccountsClient, ProductClient, TransactionClient} = require("orbit-clients");
-const {BundlrClient, ChatClient, PythClient, ArQueryClient} = require("data-transfer-clients");
+const {
+	DigitalMarketClient,
+	PhysicalMarketClient,
+	CommissionMarketClient,
+	DisputeClient,
+	MarketAccountsClient,
+	ProductClient,
+	TransactionClient
+} = require("orbit-clients");
 
+const {
+	BundlrClient,
+	ChatClient,
+	PythClient,
+	ArQueryClient
+} = require("data-transfer-clients");
 
 import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
 import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
@@ -21,7 +38,6 @@ import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import UserAccountCtx from '@contexts/UserAccountCtx';
 
-import Link from 'next/link';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
@@ -35,10 +51,29 @@ import { CreateChatModal } from './components/modals/CreateChatModal';
 import ArweaveCtx from '@contexts/ArweaveCtx';
 import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
 import { HeaderSearchBar, PageSearchBar } from './components/SearchBar';
+import { Category } from 'matrix-js-sdk';
+
+const categoryTags = [
+	{ name: "Local", value: "local" },
+	{ name: "Shipping", value: "shipping" },
+	{ name: "Digital Products", value: "digital products" },
+	{ name: "Commission Jobs", value: "commission jobs" },
+	{ name: "Cars", value: "Cars" },
+	{ name: "Logo Design", value: "logo design" },
+	{ name: "File Assets", value: "file assets" },
+	{ name: "Clothing", value: "clothing" },
+	{ name: "Sneakers", value: "sneakers" },
+	{ name: "Editor", value: "editor" },
+	{ name: "Furniture", value: "furniture" },
+	{ name: "Audio Equipment", value: "audio equipment" },
+	{ name: "Music Videos", value: "music videos" },
+	{ name: "Cellphones", value: "cellphones" },
+	{ name: "3D Models", value: "3D models" },
+];
 
 export function HomeHeader(props) {
 	// things for demoing cart funcs
-
+	const router = useRouter();
 	const {connection} = useConnection();
 	const wallet = useWallet();
 
@@ -172,47 +207,74 @@ export function HomeHeader(props) {
 	}, [marketAccountsClient, physicalMarketClient, digitalMarketClient, commissionMarketClient, transactionClient, arweaveClient, userAccount, arweaveClient, wallet])
 
 	return(
-		<header className="mx-auto max-w-[100rem] h-14 lg:h-32 top-0 inset-x-0 sticky flex flex-row justify-between bg-transparent z-50 overflow-visible w-full">
-			<div className="relative flex flex-shrink-0 py-auto w-40 align-middle content-start cursor-pointer p-2">
-				<Link href="/">
-					<div className="relative flex flex-shrink-0 h-1/2 w-1/2 my-auto">
+		<header className="mx-auto max-w-[100rem] h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">
+			<div className="flex flex-row mt-5 justify-between">
+				<div className="relative flex py-auto w-52 cursor-pointer justify-start">
+					<button className="text-white sm:hidden flex mr-1">
+						<Bars3CenterLeftIcon className="text-white h-6 w-6 my-auto"/>
+					</button>
+					<button 
+						className="relative flex flex-shrink-0 p-0 m-0 w-24 sm:w-32 h-6 sm:h-8 my-auto"
+						onClick={(e) =>  {
+							e.preventDefault()
+							router.push("/")
+						}}
+					>
 						<Image
-							src={"/OrbitLogos/OrbitFullLogo.png"}
+							src={OrbitLogoFull}
 							layout="fill"
 							alt="The Name and Logo for the Orbit market"
 							objectFit="contain"
 							priority={true}
 						/>
-					</div>
-				</Link>
-			</div>
-			<HeaderSearchBar />
-			<div className="flex flex-row align-middle my-auto justify-end z-[60] w-40 gap-x-2">
-				<button
-					className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]"
-					onClick={() => setMenuOpen(true)}
-				>
-					<ShoppingCartIcon className="w-3 h-3 lg:w-5 lg:h-5" />
-					{
-						(cart && cart.items.length > 0) &&
-						<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
-							{cart.items.length > 999 ? "+999" : cart.items.length}
-						</span>
-					}
-				</button>
-				<Link href="/sell">
-					<button className='rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]'>
-						<PlusCircleIcon className="w-3 h-3 lg:w-5 lg:h-5" />
 					</button>
-				</Link>
-				<button className="inline-flex relative rounded-full bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-[1px] transition hover:scale-[105%]" >
-					{
-						((!wallet.connected) && <WalletMultiButton />) || 
-						((!userAccount) && <CreateAccountModal connectedWallet={wallet}/>) || 
-						(<ProfileButton selfAccount={userAccount} />)
-					}
+				</div>
+				<div className="hidden sm:flex max-w-2xl w-full">
+					<HeaderSearchBar />
+				</div>
+				<div className="flex flex-row align-middle my-auto justify-end z-[60] w-52 gap-x-2 ml-2">
+					<button
+						className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]"
+						onClick={() => setMenuOpen(true)}
+					>
+						<ShoppingCartIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+						{
+							(cart && cart.items.length > 0) &&
+							<span className="absolute top-0 right-0 inline-flex items-center justify-center px-[5px] py-[3px] text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+								{cart.items.length > 999 ? "+999" : cart.items.length}
+							</span>
+						}
+					</button>
+					<Link href="/sell">
+						<button className='rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]'>
+							<PlusCircleIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+						</button>
+					</Link>
+					<button className="inline-flex relative rounded-full bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-[1px]" >
+						{
+							((!wallet.connected) && <WalletMultiButton />) || 
+							((!userAccount) && <CreateAccountModal connectedWallet={wallet}/>) || 
+							(<ProfileButton selfAccount={userAccount} />)
+						}
+					</button>
+					<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
+				</div>
+			</div>
+			<div className="hidden sm:flex flex-row bg-transparent h-10 my-3 text-white">
+				<button className="bg-[#17151C] rounded-md h-10 w-24 items-center">
+					<div className="flex flex-row mx-auto my-auto justify-evenly">
+						<MagnifyingGlassIcon className="h-5 w-5 text-[#A9A9A9] my-auto" />
+						<span className="text-[#A9A9A9] my-auto">Explore</span>
+					</div>
 				</button>
-				<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
+				<div className="border-r-[1px] border-x-[#424242] mx-3 my-[2px]" />
+				<div className="overflow-x-scroll w-full flex flex-row">
+					{categoryTags.map((tag, indx) => (
+						<button key={indx} className="bg-[#17151C] text-[#A9A9A9] rounded-md px-3 py-2 mr-4 whitespace-nowrap">
+							{tag.name}
+						</button>
+					))}
+				</div>
 			</div>
 		</header>
 	)

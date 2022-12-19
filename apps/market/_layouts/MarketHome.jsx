@@ -57,9 +57,9 @@ export function Home(props) {
 				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
-			<main className="bg-cover bg-[#0B090E]">
+			<main className="bg-[#0B090E] overflow-hidden">
 				<HomeHeader />
-				<div className="max-w-6xl align-center mx-auto">
+				<div className="max-w-6xl align-center mx-auto overflow-hidden">
 					<ProductShowcaseRow title="Local Products" prod_type="local" addresses={recentPhysicals} searchable />
 					<ProductShowcaseRow title="Physical Items" prod_type="physical" addresses={recentPhysicals} searchable />
 					<ProductShowcaseRow title="Digital Products" prod_type="digital" addresses={recentDigitals} searchable />
