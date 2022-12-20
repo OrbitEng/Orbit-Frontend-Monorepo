@@ -208,7 +208,7 @@ export function HomeHeader(props) {
 
 	return(
 		<header className="mx-auto max-w-[100rem] h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">
-			<div className="flex flex-row mt-5 justify-between">
+			<div className="flex flex-row mt-5 justify-between mr-3">
 				<div className="relative flex py-auto w-52 cursor-pointer justify-start">
 					<button className="text-white sm:hidden flex mr-1">
 						<Bars3CenterLeftIcon className="text-white h-6 w-6 my-auto"/>
@@ -260,15 +260,15 @@ export function HomeHeader(props) {
 					<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
 				</div>
 			</div>
-			<div className="hidden sm:flex flex-row bg-transparent h-10 my-3 text-white">
-				<button className="bg-[#17151C] rounded-md h-10 w-24 items-center">
-					<div className="flex flex-row mx-auto my-auto justify-evenly">
+			<div className="hidden relative sm:flex mx-3 flex-row bg-transparent h-10 my-3 text-white [mask:radial-gradient(ellipse_100%_75%_at_50%_25%,#00050%,#0000)]">
+				<button className="bg-[#17151C] rounded-md h-10 py-2 px-3 items-center">
+					<div className="flex flex-row mx-auto my-auto justify-evenly gap-2">
 						<MagnifyingGlassIcon className="h-5 w-5 text-[#A9A9A9] my-auto" />
 						<span className="text-[#A9A9A9] my-auto">Explore</span>
 					</div>
 				</button>
 				<div className="border-r-[1px] border-x-[#424242] mx-3 my-[2px]" />
-				<div className="overflow-x-scroll w-full flex flex-row">
+				<div className="overflow-x-scroll w-full flex flex-row scrollbar-none">
 					{categoryTags.map((tag, indx) => (
 						<button key={indx} className="bg-[#17151C] text-[#A9A9A9] rounded-md px-3 py-2 mr-4 whitespace-nowrap">
 							{tag.name}
