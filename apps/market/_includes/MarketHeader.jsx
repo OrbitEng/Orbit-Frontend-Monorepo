@@ -234,7 +234,7 @@ export function HomeHeader(props) {
 				</div>
 				<div className="flex flex-row align-middle my-auto justify-end z-[60] w-52 gap-x-2 ml-2">
 					<button
-						className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-2 transition hover:scale-[105%]"
+						className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-[#d9d9d9] align-middle my-auto p-2 transition hover:scale-[105%]"
 						onClick={() => setMenuOpen(true)}
 					>
 						<ShoppingCartIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -246,11 +246,11 @@ export function HomeHeader(props) {
 						}
 					</button>
 					<Link href="/sell">
-						<button className='rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle flex my-auto p-2 transition hover:scale-[105%]'>
+						<button className='rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-[#d9d9d9] align-middle flex my-auto p-2 transition hover:scale-[105%]'>
 							<PlusCircleIcon className="w-4 h-4 sm:w-5 sm:h-5" />
 						</button>
 					</Link>
-					<button className="inline-flex relative rounded-full bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-white align-middle my-auto p-[1px]" >
+					<button className="inline-flex relative rounded-full bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-[#d9d9d9] align-middle my-auto p-[1px]" >
 						{
 							((!wallet.connected) && <WalletMultiButton />) || 
 							((!userAccount) && <CreateAccountModal connectedWallet={wallet}/>) || 
@@ -260,17 +260,17 @@ export function HomeHeader(props) {
 					<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
 				</div>
 			</div>
-			<div className="hidden relative sm:flex mx-3 flex-row bg-transparent h-10 my-3 text-white [mask:radial-gradient(ellipse_100%_75%_at_50%_25%,#00050%,#0000)]">
-				<button className="bg-[#17151C] rounded-md h-10 py-2 px-3 items-center">
+			<div className="hidden relative sm:flex mx-3 flex-row bg-transparent h-8 my-3 text-white">
+				<button className="bg-[#17151C] rounded-md h-8 py-1 px-3 items-center">
 					<div className="flex flex-row mx-auto my-auto justify-evenly gap-2">
-						<MagnifyingGlassIcon className="h-5 w-5 text-[#A9A9A9] my-auto" />
-						<span className="text-[#A9A9A9] my-auto">Explore</span>
+						<MagnifyingGlassIcon className="h-4 w-4 text-[#878787] my-auto" />
+						<span className="text-[#878787] my-auto">Explore</span>
 					</div>
 				</button>
 				<div className="border-r-[1px] border-x-[#424242] mx-3 my-[2px]" />
 				<div className="overflow-x-scroll w-full flex flex-row scrollbar-none">
 					{categoryTags.map((tag, indx) => (
-						<button key={indx} className="bg-[#17151C] text-[#A9A9A9] rounded-md px-3 py-2 mr-4 whitespace-nowrap">
+						<button key={indx} className="bg-[#17151C] text-[#878787] rounded-md px-3 py-1 mr-4 whitespace-nowrap">
 							{tag.name}
 						</button>
 					))}
