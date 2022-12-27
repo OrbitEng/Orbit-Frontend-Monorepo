@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import bannerImage from 'public/Cards/Banner.png';
 
-export default function HomeCarousel(props) {
+export default function HomeNewsCarousel(props) {
 	return(
 		<div className="h-[26rem] w-screen mt-32">
 			<Carousel

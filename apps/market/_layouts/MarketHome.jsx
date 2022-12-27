@@ -11,7 +11,7 @@ import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx'
 import CommissionMarketCtx from '@contexts/CommissionMarketCtx'
 import ProductClientCtx from '@contexts/ProductClientCtx'
 import { ChatWidget } from '@includes/ChatWidget'
-import HomeCarousel from '@includes/components/HomeCarousel';
+import HomeNewsCarousel from '@includes/components/HomeNewsCarousel';
 import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 
 export function Home(props) {
@@ -61,7 +61,7 @@ export function Home(props) {
 			</Head>
 			<main className="bg-[#0B090E] overflow-hidden">
 				<HomeHeader />
-				<HomeCarousel />
+				<HomeNewsCarousel />
 				<div className="max-w-6xl align-center mx-auto overflow-hidden">
 					<ProductShowcaseRow title="Find Local Products" prod_type="local" addresses={recentPhysicals} searchable search_placeholder="Search in Local products"/>
 					<ProductShowcaseRow title="Find Shipped Products" prod_type="physical" addresses={recentPhysicals} searchable search_placeholder="Search in Shipped products"/>

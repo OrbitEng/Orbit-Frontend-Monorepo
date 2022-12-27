@@ -45,7 +45,7 @@ export function HeaderSearchBar(props) {
 							leaveFrom="opacity-100"
 							leaveTo="opacity-0"
 						>
-							<Listbox.Options className="absolute right-0 mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
+							<Listbox.Options className="z-40 absolute right-0 mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
 								{searchCategories.map((category) => (
 									<Listbox.Option
 										key={category.key}
