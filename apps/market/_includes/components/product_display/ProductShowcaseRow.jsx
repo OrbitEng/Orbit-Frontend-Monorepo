@@ -6,6 +6,8 @@ import {
 	EmptyProductDisplayCardHome
 } from "@includes/components/cards/ProductDisplayCards";
 
+import Link from "next/link";
+
 import Carousel from "react-multi-carousel";
 import 'react-multi-carousel/lib/styles.css'
 
@@ -54,29 +56,34 @@ export function ProductShowcaseRow(props) {
 	}, [props?.prod_type]);
 
 	return(
-		<div className="flex flex-col my-14">
+		<div className="flex flex-col my-14 overflow-visible mx-3">
 			<div className="flex flex-row justify-between align-middle mb-3">
 				<div className="flex flex-row gap-x-4">
-					<span className={`${flagColor} w-[5px] rounded-full`} />
-					<h1 className="flex text-3xl text-white align-middle my-auto">{"Find " + props.title}</h1>
+					<span className="relative h-3 w-3 my-auto">
+						<span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${flagColor}`} />
+						<span className={`absolute inline-flex h-full w-full rounded-full ${flagColor}`} />
+					</span>
+					<h1 className="flex text-2xl text-white align-middle my-auto">{props.title}</h1>
 				</div>
 				<div className="flex flex-row gap-2 justify-end">
 					{ 
 						props.searchable && ( 
-								<div className="flex gap-1 flex-row rounded-full bg-searchbartransparent border-[0.5px] border-[#474747] w-96 mx-auto h-10 align-middle px-2">
+								<div className="flex gap-1 flex-row rounded-full bg-searchbartransparent border-[1px] border-[#474747] w-96 mx-auto h-[34px] align-middle px-2 my-auto">
 									<Combobox value={selected} onChange={setSelected} >
 										<MagnifyingGlassIcon className="h-5 w-5 text-[#4A4A4A] my-auto"/>
 										<Combobox.Input
-										className="flex w-full bg-transparent text-[#888888] placeholder:text-[#4A4A4A] font-semibold focus:outline-none"
-										placeholder="Search in Marketplace"
+										className="flex w-full bg-transparent text-[#888888] placeholder:text-[#4A4A4A] font-medium text-sm focus:outline-none"
+										placeholder={props.search_placeholder}
 										onChange={(e) => setQuery(e.target.value)} />
 									</Combobox>
 								</div>
 						) 
 					}
-					<button className="rounded-[13px] bg-gradient-to-tr from-[#1F1E28] to-[#1E1B26] text-[#7E7E7E] align-middle flex my-auto py-2 px-4">
-						Explore All
-					</button>
+					<Link href={`/explore/${props.prod_type}`}>
+						<button className="rounded-full bg-transparent text-[#727272] border-[1px] border-[#727272] align-middle my-auto px-3 h-[34px] text-sm">
+							Explore All
+						</button>
+					</Link>
 				</div>
 			</div>
 			<Carousel 
