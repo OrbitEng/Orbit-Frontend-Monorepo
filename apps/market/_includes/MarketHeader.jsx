@@ -232,7 +232,7 @@ export function HomeHeader(props) {
 				<div className="hidden sm:flex max-w-2xl w-full">
 					<HeaderSearchBar />
 				</div>
-				<div className="flex flex-row align-middle my-auto justify-end z-[60] w-52 gap-x-2 ml-2">
+				<div className="flex flex-row align-middle my-auto justify-end z-[120] w-52 gap-x-2 ml-2">
 					<button
 						className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-[#d9d9d9] align-middle my-auto p-2 transition hover:scale-[105%]"
 						onClick={() => setMenuOpen(true)}
@@ -260,17 +260,17 @@ export function HomeHeader(props) {
 					<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
 				</div>
 			</div>
-			<div className="hidden relative sm:flex mx-3 flex-row bg-transparent h-8 my-3 text-white">
+			<div className="hidden relative sm:flex mx-3 flex-row bg-transparent h-8 my-auto text-white z-[60]">
 				<button className="bg-[#17151C] rounded-md h-8 py-1 px-3 items-center">
 					<div className="flex flex-row mx-auto my-auto justify-evenly gap-2">
 						<MagnifyingGlassIcon className="h-4 w-4 text-[#878787] my-auto" />
-						<span className="text-[#878787] my-auto">Explore</span>
+						<span className="text-[#878787] my-auto text-sm">Explore</span>
 					</div>
 				</button>
 				<div className="border-r-[1px] border-x-[#424242] mx-3 my-[2px]" />
-				<div className="overflow-x-scroll w-full flex flex-row scrollbar-none">
+				<div className="overflow-x-scroll w-full flex flex-row scrollbar-none z-[60]">
 					{categoryTags.map((tag, indx) => (
-						<button key={indx} className="bg-[#17151C] text-[#878787] rounded-md px-3 py-1 mr-4 whitespace-nowrap">
+						<button key={indx} className="bg-[#17151C] text-[#878787] rounded-md text-sm px-3 py-1 mr-4 whitespace-nowrap z-[60]">
 							{tag.name}
 						</button>
 					))}

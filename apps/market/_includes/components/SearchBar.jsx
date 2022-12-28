@@ -15,7 +15,7 @@ export function HeaderSearchBar(props) {
 	const [ selectedProductSearchCat, setSelectedProductSearchCat ] = useState(searchCategories[0]);
 
 	return(
-		<div className="flex flex-col my-auto align-middle justify-center overflow-visible w-full">
+		<div className="flex flex-col my-auto align-middle justify-center overflow-visible w-full z-[120]">
 			<Transition
 				show={true}
 				appear={true}
@@ -31,7 +31,7 @@ export function HeaderSearchBar(props) {
 						<MagnifyingGlassIcon className="h-5 w-5 text-[#393939] my-auto stroke-[1px] ml-2"/>
 						<Combobox.Input
 							className="flex w-full bg-transparent text-[#777777] placeholder:text-[#393939] text-lg font-normal focus:outline-none"
-							placeholder="Search in marketplace"
+							placeholder="Find everything on Orbit"
 							onChange={(e) => setQuery(e.target.value)}
 						/>
 					</Combobox>
@@ -45,7 +45,7 @@ export function HeaderSearchBar(props) {
 							leaveFrom="opacity-100"
 							leaveTo="opacity-0"
 						>
-							<Listbox.Options className="z-40 absolute right-0 mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
+							<Listbox.Options className="absolute right-0 mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
 								{searchCategories.map((category) => (
 									<Listbox.Option
 										key={category.key}

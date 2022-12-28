@@ -332,3 +332,52 @@ body {
     background-origin: border-box;
     background-clip: content-box, border-box;
 }
+
+.digitalCard {
+    position: relative;
+    border-radius: 10px;
+    border-style: solid;
+    border-image-source: radial-gradient(circle at 64% 50%, #651971 77%, #313131 83%);
+    border-width: 1px;
+    padding: 1px;
+    background-image: linear-gradient(to bottom, #14131B, #14131B), radial-gradient(circle at 64% 50%, #651971 77%, #313131 83%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}
+
+.commissionCard {
+    position: relative;
+    border-radius: 10px;
+    border-style: solid;
+    border-image-source: radial-gradient(circle at 64% 50%, #562188 77%, #313131 83%);
+    border-width: 1px;
+    padding: 1px;
+    background-image: linear-gradient(to bottom, #14131B, #14131B), radial-gradient(circle at 64% 50%, #562188 77%, #313131 83%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}
+
+.localCard {
+    position: relative;
+    border-radius: 10px;
+    border-style: solid;
+    border-image-source: radial-gradient(circle at 64% 50%, #194B2C 77%, #313131 83%);
+    border-width: 1px;
+    padding: 1px;
+    background-image: linear-gradient(to bottom, #14131B, #14131B), radial-gradient(circle at 64% 50%, #194B2C 77%, #313131 83%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}
+
+.physicalCard {
+    position: relative;
+    border-radius: 10px;
+    border-style: solid;
+    border-image-source: radial-gradient(circle at 64% 50%, #243E70 77%, #313131 83%);
+    border-width: 1px;
+    padding: 1px;
+    background-image: linear-gradient(to bottom, #14131B, #14131B), radial-gradient(circle at 64% 50%, #243E70 77%, #313131 83%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+
+}

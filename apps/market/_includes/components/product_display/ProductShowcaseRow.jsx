@@ -108,14 +108,20 @@ export function ProductShowcaseRow(props) {
 							return (
 								<ProductDisplayCardHome 
 									address={addr} // address of prod listing
-									type = {props.prod_type}
-									key = {index}
+									type={props.prod_type}
+									key={index}
 								/>
 							)
 						})
 						:
 						undefProdsArr.map((undef, ki) => {
-							return <EmptyProductDisplayCardHome key={ki}/>
+							return ( 
+								<ProductDisplayCardHome 
+									address={"1111111111111111"} // address of prod listing
+									type={props.prod_type}
+									key={ki}
+								/>
+							)
 						})
 				}
 			</Carousel>
