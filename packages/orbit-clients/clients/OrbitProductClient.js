@@ -4,33 +4,23 @@ import {PublicKey} from "@solana/web3.js";
 const idl = require("../deps/orbit_product");
 
 export default class ProductClient{
-    constructor(connection, provider){
+    constructor(){
         this.programid = new PublicKey(idl.metadata.address);
-
         
-        
-        if(connection){
-            this.connection = connection;
-        }
-
-        if(provider){
-            this.provider = provider;
-        }
-        
-        this.program = new anchor.Program(idl, idl.metadata.address, provider);
+        this.program = new anchor.Program(idl, idl.metadata.address);
     };
 
     ////////////////////////////////////
     /// ADMIN INITIALIZE
 
-    InitRecentListings = async() => {
+    InitRecentListings = async(payer_wallet) => {
         return this.program.methods
         .initRecentListings()
         .accounts({
             physicalRecentListings: this.GenRecentListings("physical"),
             digitalRecentListings:  this.GenRecentListings("digital"),
             commissionRecentListings:  this.GenRecentListings("commission"),
-            payer: this.provider.wallet.publicKey
+            payer: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -38,14 +28,36 @@ export default class ProductClient{
     ///////////////////////////////////////////////////////
     /// VENDOR LISTINGS
 
-    InitVendorListings = async(market_type) => {
+    InitCommissionsListings = async(market_type, payer_wallet) => {
         let listings_address = this.GenListingsAddress(market_type);
 
         await this.program.methods
-        .initVendorListings(market_type)
+        .initCommissionsListings()
         .accounts({
             vendorListings: listings_address,
-            wallet: this.provider.wallet.publicKey
+            wallet: payer_wallet.publicKey
+        })
+        .instruction()
+    }
+    InitDigitalListings = async(market_type, payer_wallet) => {
+        let listings_address = this.GenListingsAddress(market_type);
+
+        await this.program.methods
+        .initDigitalListings()
+        .accounts({
+            vendorListings: listings_address,
+            wallet: payer_wallet.publicKey
+        })
+        .instruction()
+    }
+    InitPhysicalListings = async(market_type, payer_wallet) => {
+        let listings_address = this.GenListingsAddress(market_type);
+
+        await this.program.methods
+        .initPhysicalListings()
+        .accounts({
+            vendorListings: listings_address,
+            wallet: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -57,7 +69,8 @@ export default class ProductClient{
     ListCommissionProduct = async(
         product,
         metadata,
-        add_to_recent
+        add_to_recent,
+        payer_wallet
     ) => {
         if(typeof product == "string"){
             product = new PublicKey(product)
@@ -76,7 +89,7 @@ export default class ProductClient{
         .accounts({
             commissionProduct: product,
             vendorListings: vendor_listings,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .remainingAccounts(remaining_accounts)
         .instruction()
@@ -85,7 +98,8 @@ export default class ProductClient{
         product,
         metadata,
         filetype,
-        add_to_recent
+        add_to_recent,
+        payer_wallet
     ) => {
         if(typeof product == "string"){
             product = new PublicKey(product)
@@ -104,7 +118,7 @@ export default class ProductClient{
         .accounts({
             digitalProduct: product,
             vendorListings: vendor_listings,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .remainingAccounts(remaining_accounts)
         .instruction()
@@ -113,7 +127,8 @@ export default class ProductClient{
         product,
         metadata,
         quantity,
-        add_to_recent
+        add_to_recent,
+        payer_wallet
     ) => {
         if(typeof product == "string"){
             product = new PublicKey(product)
@@ -133,7 +148,7 @@ export default class ProductClient{
         .accounts({
             physProduct: product,
             vendorListings: vendor_listings,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .remainingAccounts(remaining_accounts)
         .instruction()
@@ -141,7 +156,8 @@ export default class ProductClient{
 
     UnlistProduct = async(
         product,
-        listings
+        listings,
+        payer_wallet
     ) => {
         if(typeof product == "string"){
             product = new PublicKey(product)
@@ -155,14 +171,15 @@ export default class ProductClient{
         .accounts({
             prod: product,
             vendorListings: listings,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
 
     /// EMERGENCY
     FlushListings = async(
-        listings_addr
+        listings_addr,
+        payer_wallet
     ) => {
         if(typeof listings_addr == "string"){
             listings_addr = new PublicKey(listings_addr)
@@ -172,7 +189,7 @@ export default class ProductClient{
         .flushListings()
         .accounts({
             vendorListings: listings_addr,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -182,7 +199,8 @@ export default class ProductClient{
 
     TransferVendorListingsOwnership = async(
         listings_type,
-        new_wallet_addr
+        new_wallet_addr,
+        payer_wallet
     ) => {
         if(typeof new_wallet_addr == "string"){
             new_wallet_addr = new PublicKey(new_wallet_addr)
@@ -195,13 +213,14 @@ export default class ProductClient{
         .accounts({
             vendorListings: vendor_listings,
             destinationWallet: new_wallet_addr,
-            wallet: this.provider.wallet.publicKey
+            wallet: payer_wallet.publicKey
         })
         .instruction()
     }
 
     TransferAllVendorListingsOwnership = async(
-        new_wallet_addr
+        new_wallet_addr,
+        payer_wallet
     ) => {
 
         if(typeof new_wallet_addr == "string"){
@@ -219,7 +238,7 @@ export default class ProductClient{
             digitalVendorListings: digital_listings,
             commissionVendorListings: commission_listings,
             destinationWallet: new_wallet_addr,
-            listingsOwner: this.provider.wallet.publicKey
+            listingsOwner: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -230,7 +249,8 @@ export default class ProductClient{
     
     MarkProdAvailable = async(
         product,
-        listings_address
+        listings_address,
+        payer_wallet
     ) => {
 
         if(typeof product == "string"){
@@ -246,13 +266,14 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
     MarkProdUnavailable = async(
         product,
-        listings_address
+        listings_address,
+        payer_wallet
     ) => {
 
         if(typeof product == "string"){
@@ -268,7 +289,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -276,7 +297,8 @@ export default class ProductClient{
     UpdateProductPrice = async(
         product,
         listings_address,
-        price
+        price,
+        payer_wallet
     ) => {
         if(typeof product == "string"){
             product = new PublicKey(product)
@@ -291,7 +313,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -299,7 +321,8 @@ export default class ProductClient{
     SetMedia = async(
         product,
         listings_address,
-        media_address
+        media_address,
+        payer_wallet
     ) => {
         if(typeof product == "string"){
             product = new PublicKey(product)
@@ -316,7 +339,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -324,7 +347,8 @@ export default class ProductClient{
     SetProdInfo = async(
         product,
         listings_address,
-        info_address
+        info_address,
+        payer_wallet
     ) => {
         if(typeof product == "string"){
             product = new PublicKey(product)
@@ -341,7 +365,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -351,7 +375,8 @@ export default class ProductClient{
 
     UpdateProductQuantity = async(
         product,
-        qnt = 0
+        qnt = 0,
+        payer_wallet
     ) => {
         if(typeof product == "string"){
             product = new PublicKey(product)
@@ -364,7 +389,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -375,6 +400,7 @@ export default class ProductClient{
     // Text Video Audio Image Folder
     SetFileType = async(
         product,
+        payer_wallet,
         filetype = "Image"
     ) => {
 
@@ -392,7 +418,7 @@ export default class ProductClient{
         .accounts({
             product: product,
             vendorListings: listings_address,
-            sellerWallet: this.provider.wallet.publicKey
+            sellerWallet: payer_wallet.publicKey
         })
         .instruction()
     }
@@ -400,20 +426,12 @@ export default class ProductClient{
     //////////////////////////////////
     /// GENERATION UTILTIES
 
-    GenListingsAddress = (product_type, listings_wallet) => {
-        if(!listings_wallet){
-            listings_wallet = this.provider.wallet.publicKey;
-        }
-
-        if(typeof listings_wallet == "string"){
-            listings_wallet = new PublicKey(listings_wallet);
-        }
-
+    GenListingsAddress = (product_type, voter_id) => {
         return PublicKey.findProgramAddressSync(
             [
                 Buffer.from("vendor_listings"),
-                Buffer.from(product_type.toString()),
-                listings_wallet.toBuffer()
+                Buffer.from(["commission","digital","physical"].indexOf(product_type)),
+                voter_id.toBuffer()
             ],
             this.programid
         )[0]
