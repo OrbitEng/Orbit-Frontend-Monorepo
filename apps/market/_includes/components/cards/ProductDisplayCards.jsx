@@ -150,7 +150,7 @@ export function ProductDisplayCardHome(props) {
 	},[productClient, marketAccountsClient, props.address])
 
 	return(
-		<div className="row-span-1 col-span-1 my-3 mx-2">
+		<div className="row-span-1 col-span-1 my-3 mx-2 w-[265px]">
 			<Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable={true} glareColor="#ffffff" glareMaxOpacity={0.1} glareBorderRadius="10px" glarePosition="all">
 				<div className="relative group overflow-visible" onClick={()=>{setProductCache(prod); setVendorCache(vendor)}}>
 					<div className={`relative ${cardStyle} leading-none flex flex-col items-center overflow-visible`}>

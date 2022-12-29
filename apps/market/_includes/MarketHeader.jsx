@@ -207,11 +207,11 @@ export function HomeHeader(props) {
 	}, [marketAccountsClient, physicalMarketClient, digitalMarketClient, commissionMarketClient, transactionClient, arweaveClient, userAccount, arweaveClient, wallet])
 
 	return(
-		<header className="mx-auto max-w-[100rem] h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">
-			<div className="flex flex-row mt-5 justify-between mr-3">
+		<header className="mx-auto max-w-[100rem] h-28 sm:h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">
+			<div className="flex flex-row mt-5 justify-between sm:mr-3 mx-3">
 				<div className="relative flex py-auto w-52 cursor-pointer justify-start">
 					<button className="text-white sm:hidden flex mr-1">
-						<Bars3CenterLeftIcon className="text-white h-6 w-6 my-auto"/>
+						<Bars3CenterLeftIcon className="text-white h-7 w-7 my-auto"/>
 					</button>
 					<button 
 						className="relative flex flex-shrink-0 p-0 m-0 w-24 sm:w-32 h-6 sm:h-8 my-auto"
@@ -275,6 +275,9 @@ export function HomeHeader(props) {
 						</button>
 					))}
 				</div>
+			</div>
+			<div className="relative flex sm:hidden my-auto  mx-4">
+				<HeaderSearchBar />
 			</div>
 		</header>
 	)

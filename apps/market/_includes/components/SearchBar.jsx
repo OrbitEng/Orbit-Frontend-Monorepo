@@ -30,7 +30,7 @@ export function HeaderSearchBar(props) {
 					<Combobox value={selected} onChange={setSelected} >
 						<MagnifyingGlassIcon className="h-5 w-5 text-[#393939] my-auto stroke-[1px] ml-2"/>
 						<Combobox.Input
-							className="flex w-full bg-transparent text-[#777777] placeholder:text-[#393939] text-lg font-normal focus:outline-none"
+							className="flex w-full bg-transparent text-[#777777] placeholder:text-[#393939] sm:text-lg text-md font-normal focus:outline-none"
 							placeholder="Find everything on Orbit"
 							onChange={(e) => setQuery(e.target.value)}
 						/>
