@@ -43,7 +43,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
 import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 import ProfileButton from '@includes/components/buttons/ProfileButton';
-import CartSideMenu from './CartSideMenu';
+import CartSideModal from './components/modals/CartSideModal';
 import CartCtx from '@contexts/CartCtx';
 import PythClientCtx from '@contexts/PythClientCtx';
 import ChatCtx from '@contexts/ChatCtx';
@@ -51,7 +51,7 @@ import { CreateChatModal } from './components/modals/CreateChatModal';
 import ArweaveCtx from '@contexts/ArweaveCtx';
 import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
 import { HeaderSearchBar, PageSearchBar } from './components/SearchBar';
-import { Category } from 'matrix-js-sdk';
+import HeaderMenuModal from '@includes/components/modals/HeaderMenuModal';
 
 const categoryTags = [
 	{ name: "Local", value: "local" },
@@ -93,6 +93,7 @@ export function HomeHeader(props) {
 	const {arweaveClient, setArweaveClient} = useContext(ArweaveCtx);
 
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [cartOpen, setCartOpen] = useState(false);
 	const [hasChat, setHasChat] = useState(false);
 
 	const {cart} = useContext(CartCtx);
@@ -210,9 +211,16 @@ export function HomeHeader(props) {
 		<header className="mx-auto max-w-[100rem] h-28 sm:h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">
 			<div className="flex flex-row mt-5 justify-between sm:mr-3 mx-3">
 				<div className="relative flex py-auto w-52 cursor-pointer justify-start">
-					<button className="text-white sm:hidden flex mr-1">
+					<button
+						className="text-white sm:hidden flex mr-1"
+						onClick={(e) => {
+							e.preventDefault();
+							setMenuOpen(true);
+						}}
+					>
 						<Bars3CenterLeftIcon className="text-white h-7 w-7 my-auto"/>
 					</button>
+					<HeaderMenuModal open={menuOpen} setOpen={setMenuOpen} />
 					<button 
 						className="relative flex flex-shrink-0 p-0 m-0 w-24 sm:w-32 h-6 sm:h-8 my-auto"
 						onClick={(e) =>  {
@@ -235,7 +243,7 @@ export function HomeHeader(props) {
 				<div className="flex flex-row align-middle my-auto justify-end z-[120] w-52 gap-x-2 ml-2">
 					<button
 						className="inline-flex relative rounded-lg bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-[#d9d9d9] align-middle my-auto p-2 transition hover:scale-[105%]"
-						onClick={() => setMenuOpen(true)}
+						onClick={() => setCartOpen(true)}
 					>
 						<ShoppingCartIcon className="w-4 h-4 sm:w-5 sm:h-5" />
 						{
@@ -257,7 +265,7 @@ export function HomeHeader(props) {
 							(<ProfileButton selfAccount={userAccount} />)
 						}
 					</button>
-					<CartSideMenu open={menuOpen} setOpen={setMenuOpen}/>
+					<CartSideModal open={cartOpen} setOpen={setCartOpen}/>
 				</div>
 			</div>
 			<div className="hidden relative sm:flex mx-3 flex-row bg-transparent h-8 my-auto text-white z-[60]">

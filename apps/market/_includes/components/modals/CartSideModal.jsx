@@ -5,13 +5,13 @@ import { CartFunctionalities } from '@functionalities/Cart';
 import PythClientCtx from "@contexts/PythClientCtx";
 import Image from "next/image";
 import { useWallet } from '@solana/wallet-adapter-react';
-import PosModal from './components/modals/PosModal';
+import PosModal from './PosModal';
 
 import CartCtx from '@contexts/CartCtx';
 import UserAccountCtx from '@contexts/UserAccountCtx';
 
 
-export default function CartSideMenu(props) {
+export default function CartSideModal(props) {
 	const [openPos, setOpenPos] = useState(false);
 	const [solPrice, setSolPrice] = useState();
 	const {pythClient} = useContext(PythClientCtx);
