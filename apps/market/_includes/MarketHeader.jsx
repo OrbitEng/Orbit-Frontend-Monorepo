@@ -37,21 +37,19 @@ import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import UserAccountCtx from '@contexts/UserAccountCtx';
+import CartCtx from '@contexts/CartCtx';
+import PythClientCtx from '@contexts/PythClientCtx';
+import ChatCtx from '@contexts/ChatCtx';
+import ArweaveCtx from '@contexts/ArweaveCtx';
+import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
-import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 import ProfileButton from '@includes/components/buttons/ProfileButton';
-import CartSideModal from './components/modals/CartSideModal';
-import CartCtx from '@contexts/CartCtx';
-import PythClientCtx from '@contexts/PythClientCtx';
-import ChatCtx from '@contexts/ChatCtx';
-import { CreateChatModal } from './components/modals/CreateChatModal';
-import ArweaveCtx from '@contexts/ArweaveCtx';
-import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
-import { HeaderSearchBar, PageSearchBar } from './components/SearchBar';
+import CartSideModal from '@includes/components/modals/CartSideModal';
 import HeaderMenuModal from '@includes/components/modals/HeaderMenuModal';
+import { HeaderSearchBar, PageSearchBar } from '@includes/components/SearchBar';
 
 const categoryTags = [
 	{ name: "Local", value: "local" },
