@@ -1,0 +1,798 @@
+{
+  "version": "0.1.0",
+  "name": "orbit_transaction",
+  "instructions": [
+    {
+      "name": "createBuyerCommissionsTransactions",
+      "docs": [
+        "BUYER"
+      ],
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "accountsProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createBuyerDigitalTransactions",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "accountsProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createBuyerPhysicalTransactions",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "buyerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "accountsProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "addBuyerCommissionsTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tx",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "buyerAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "addBuyerDigitalTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tx",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "buyerAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "addBuyerPhysicalTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tx",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "buyerAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "clearBuyerCommissionsTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "callerAuth",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "clearBuyerDigitalTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "callerAuth",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "clearBuyerPhysicalTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "callerAuth",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "transferBuyerTransactionsLog",
+      "docs": [
+        "BUYER X-FER"
+      ],
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "transferStruct",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transferAllBuyerTransactionsLog",
+      "accounts": [
+        {
+          "name": "physicalLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "digitalLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "commissionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "transferStruct",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createSellerCommissionsTransactions",
+      "docs": [
+        "SELLER"
+      ],
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "accountsProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createSellerDigitalTransactions",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "accountsProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createSellerPhysicalTransactions",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "sellerAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "wallet",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "accountsProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "addSellerCommissionsTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tx",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "addSellerDigitalTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tx",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "addSellerPhysicalTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tx",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "clearSellerCommissionsTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "callerAuth",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "clearSellerDigitalTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "callerAuth",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "clearSellerPhysicalTransaction",
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "callerAuth",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "caller",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "transferSellerTransactionsLog",
+      "docs": [
+        "SELLER X-FER"
+      ],
+      "accounts": [
+        {
+          "name": "transactionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "transferStruct",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transferAllSellerTransactionsLog",
+      "accounts": [
+        {
+          "name": "physicalLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "digitalLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "commissionsLog",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "transferStruct",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "BuyerOpenTransactions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "buyerAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "indices",
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "openTransactions",
+            "type": {
+              "array": [
+                {
+                  "defined": "(u64,u8)"
+                },
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SellerOpenTransactions",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sellerAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "openTransactions",
+            "type": {
+              "array": [
+                "u64",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "OrbitTransactionStruct",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "buyer",
+            "type": "u64"
+          },
+          {
+            "name": "seller",
+            "type": "u64"
+          },
+          {
+            "name": "buyerTxIndex",
+            "type": "u8"
+          },
+          {
+            "name": "sellerTxIndex",
+            "type": "u8"
+          },
+          {
+            "name": "product",
+            "type": "u8"
+          },
+          {
+            "name": "transactionState",
+            "type": {
+              "defined": "TransactionState"
+            }
+          },
+          {
+            "name": "transactionPrice",
+            "type": "u64"
+          },
+          {
+            "name": "currency",
+            "type": "publicKey"
+          },
+          {
+            "name": "funded",
+            "type": "bool"
+          },
+          {
+            "name": "rate",
+            "type": "u8"
+          },
+          {
+            "name": "reviews",
+            "type": {
+              "defined": "TransactionReviews"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransactionReviews",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "buyer",
+            "type": "bool"
+          },
+          {
+            "name": "seller",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransactionState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Opened"
+          },
+          {
+            "name": "SellerConfirmed"
+          },
+          {
+            "name": "BuyerFunded"
+          },
+          {
+            "name": "Shipped"
+          },
+          {
+            "name": "BuyerConfirmedDelivery"
+          },
+          {
+            "name": "BuyerConfirmedProduct"
+          },
+          {
+            "name": "Closed"
+          },
+          {
+            "name": "Frozen"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransactionType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Commissions"
+          },
+          {
+            "name": "Digital"
+          },
+          {
+            "name": "Physical"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ConstraintsViolation",
+      "msg": "could not deserialize account"
+    },
+    {
+      "code": 6001,
+      "name": "IndexOutOfBounds",
+      "msg": "index out of bounds"
+    },
+    {
+      "code": 6002,
+      "name": "IndexUnavailable",
+      "msg": "index unavailable"
+    }
+  ],
+  "metadata": {
+    "address": "Gcrq61P6iuSHLceQECgmFqXHoV4zvVHQArRdZAtPLyij"
+  }
+}
