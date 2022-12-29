@@ -32,8 +32,6 @@ export function MainFooter(){
                             <Image 
                                 src={discordIcon}
                                 layout="fill"
-                                height={18}
-                                width={18}
                             />
                         </div>
                     </div>
@@ -42,8 +40,6 @@ export function MainFooter(){
                             <Image 
                                 src={instagramIcon}
                                 layout="fill"
-                                height={18}
-                                width={18}
                             />
                         </div>
                     </div>
@@ -52,8 +48,6 @@ export function MainFooter(){
                             <Image 
                                 src={twitterIcon}
                                 layout="fill"
-                                height={18}
-                                width={18}
                             />
                         </div>
                     </div>
