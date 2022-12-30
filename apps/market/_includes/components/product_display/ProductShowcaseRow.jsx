@@ -13,17 +13,17 @@ import 'react-multi-carousel/lib/styles.css'
 
 const responsive = {
 	desktop: {
-	  breakpoint: { max: 3000, min: 1024 },
+	  breakpoint: { max: 3000, min: 768 },
 	  items: 4,
-	  slidesToSlide: 4
+	  slidesToSlide: 1
 	},
 	tablet: {
-	  breakpoint: { max: 1024, min: 464 },
+	  breakpoint: { max: 768, min: 640 },
 	  items: 3,
-	  slidesToSlide: 3
+	  slidesToSlide: 1
 	},
 	mobile: {
-	  breakpoint: { max: 464, min: 0 },
+	  breakpoint: { max: 640, min: 0 },
 	  items: 2,
 	  slidesToSlide: 1
 	}
@@ -68,7 +68,7 @@ export function ProductShowcaseRow(props) {
 				<div className="flex flex-row gap-2 justify-end">
 					{ 
 						props.searchable && ( 
-								<div className="hidden sm:flex gap-1 flex-row rounded-full bg-searchbartransparent border-[1px] border-[#474747] w-96 mx-auto h-[34px] align-middle px-2 my-auto">
+								<div className="hidden md:flex gap-1 flex-row rounded-full bg-searchbartransparent border-[1px] border-[#474747] w-96 mx-auto h-[34px] align-middle px-2 my-auto">
 									<Combobox value={selected} onChange={setSelected} >
 										<MagnifyingGlassIcon className="h-5 w-5 text-[#4A4A4A] my-auto"/>
 										<Combobox.Input
@@ -86,7 +86,7 @@ export function ProductShowcaseRow(props) {
 					</Link>
 				</div>
 			</div>
-			<div className="min-w-[35rem] ml-3 sm:mx-0 -mt-3">
+			<div className="w-[35rem] sm:w-[55rem] md:w-[72rem] ml-3 sm:mx-0 -mt-3">
 				<Carousel 
 					responsive={responsive} 
 					arrows={true}
