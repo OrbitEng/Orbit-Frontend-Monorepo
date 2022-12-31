@@ -6,7 +6,7 @@ import {TRANSACTION_PROGRAM_ID} from "orbit-clients/transaction-program";
 import {MARKET_ACCOUNTS_PROGRAM_ID} from "orbit-clients/accounts-program";
 import { getMultisigWallet, MULTISIG_WALLET_ADDRESS} from "orbit-clients/multisig";
 
-import idl from "../deps/orbit_digital_market";
+import idl from "../idls/orbit_digital_market";
 
 export default class DigitalMarket{
 
@@ -44,7 +44,8 @@ export default class DigitalMarket{
             price,
             
             useDiscount,
-        ) =>{
+		payer_wallet
+	) =>{
             if(typeof product == "string"){
                 product = new PublicKey(product);
             }
@@ -57,7 +58,7 @@ export default class DigitalMarket{
                 digitalProduct: product,
                 buyerTransactionsLog: buyer_log_address,
                 buyerMarketAccount: buyer_account_address,
-                buyerWallet: this.provider.wallet.publicKey,
+                buyerWallet: payer_wallet.publicKey,
                 sellerListings: vendor_listings_address,
                 sellerTransactionsLog: vendor_log_address,
                 digitalAuth: this.GenMarketAuth(),
@@ -77,7 +78,7 @@ export default class DigitalMarket{
         seller_account_address,
         seller_wallet,
         reflink_accounts_chain
-    ) =>{
+	) =>{
 
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr_str);
@@ -120,7 +121,8 @@ export default class DigitalMarket{
     };
     
     FundEscrowSol = async (
-        tx_addr_str
+        tx_addr_str,
+        payer_wallet
     ) =>{
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr_str);
@@ -134,7 +136,7 @@ export default class DigitalMarket{
             digitalTransaction: tx_addr,
             escrowAccount: tx_struct.metadata.escrow_account,
             buyerTransactionsLog: tx_struct.buyer,
-            buyerWallet: this.provider.wallet.publicKey
+            buyerWallet: payer_wallet.publicKey
         })
         .instruction();
     };
@@ -143,8 +145,9 @@ export default class DigitalMarket{
         tx_addr_str,
 
         buyer_wallet,
-        buyer_account
-    ) =>{
+        buyer_account,
+	payer_wallet
+	) =>{
 
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr_str);
@@ -160,7 +163,7 @@ export default class DigitalMarket{
             buyerTransactionsLog: tx_struct.buyer,
             buyerWallet: buyer_wallet,
             sellerTransactionsLog: tx_struct.seller,
-            sellerWallet: this.provider.wallet.publicKey,
+            sellerWallet: payer_wallet.publicKey,
             digitalAuth: this.GenMarketAuth(),
             digitalProgram: this.programid,
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
@@ -184,8 +187,9 @@ export default class DigitalMarket{
         product_currency,
         price,
         
-        useDiscount
-    ) =>{
+        useDiscount,
+	payer_wallet
+	) =>{
         if(typeof product == "string"){
             product = new PublicKey(product);
         }
@@ -199,7 +203,7 @@ export default class DigitalMarket{
             digitalProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
-            buyerWallet: this.provider.wallet.publicKey,
+            buyerWallet: payer_wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
             digitalAuth: this.GenMarketAuth(),
@@ -220,7 +224,7 @@ export default class DigitalMarket{
         seller_wallet,
 
         reflink_accounts_chain
-    ) =>{
+	) =>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -289,6 +293,7 @@ export default class DigitalMarket{
     
     FundEscrowSpl = async (
         tx_addr,
+        payer_wallet
     ) =>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
@@ -304,7 +309,7 @@ export default class DigitalMarket{
             buyerTransactionsLog: tx_struct.buyer,
             buyerTokenAccount: getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.provider.wallet.publicKey        
+                payer_wallet.publicKey        
             ),
             buyerWallet: this.provider.wallet.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID
@@ -318,8 +323,9 @@ export default class DigitalMarket{
         tx_addr,
 
         buyer_wallet,
-        buyer_account
-    )=>{
+        buyer_account,
+	payer_wallet
+	)=>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -340,7 +346,7 @@ export default class DigitalMarket{
             sellerTransactionsLog: tx_struct.seller,
             sellerTokenAccount:  getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.provider.wallet.publicKey
+                payer_wallet.publicKey
             ),
             sellerWallet: this.provider.wallet.publicKey,
             digitalAuth: this.GenMarketAuth(),
@@ -356,8 +362,9 @@ export default class DigitalMarket{
     CloseTransactionAccount = async (
         tx_addr,
         tx_log,
-        buyer_wallet
-    ) =>{
+        buyer_wallet,
+	payer_wallet
+	) =>{
 
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
@@ -368,7 +375,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: tx_addr,
             transactionsLog: tx_log,
-            wallet: this.provider.wallet.publicKey,
+            wallet: payer_wallet.publicKey,
             buyerWallet: buyer_wallet
         })
         .instruction()
@@ -378,8 +385,9 @@ export default class DigitalMarket{
     /// BUYER UTILS
 
     ConfirmDelivered = async (
-        tx_addr
-    ) =>{
+        tx_addr,
+	payer_wallet
+	) =>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -391,14 +399,15 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: tx_addr,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.provider.wallet.publicKey
+            buyerWallet: payer_wallet.publicKey
         })
         .instruction()
     };
     
     ConfirmAccept = async (
-        tx_addr
-    ) =>{
+        tx_addr,
+	payer_wallet
+	) =>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -410,15 +419,16 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: tx_addr,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.provider.wallet.publicKey
+            buyerWallet: payer_wallet.publicKey
         })
         .instruction()
     };
     
     DenyAccept = async (
         tx_addr,
-        buyer_account
-    ) =>{
+        buyer_account,
+	payer_wallet
+	) =>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -431,7 +441,7 @@ export default class DigitalMarket{
             digitalTransaction: tx_addr,
             buyerAccount: buyer_account,
             buyerTransactions: tx_struct.buyer,
-            buyerWallet: this.provider.wallet.publicKey,
+            buyerWallet: payer_wallet.publicKey,
             digitalAuth: this.GenMarketAuth(),
             digitalProgram: this.programid,
             marketAccountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
@@ -444,7 +454,8 @@ export default class DigitalMarket{
     CommitInitKeys = async(
         tx_addr,
         enc_pubkeys,
-    ) =>{
+		payer_wallet
+	) =>{
         if(typeof transaction == "string"){
             transaction = new PublicKey(transaction)
         }
@@ -462,7 +473,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.provider.wallet.publicKey,
+            sellerWallet: payer_wallet.publicKey,
         })
         .instruction()
     }
@@ -470,7 +481,8 @@ export default class DigitalMarket{
     CommitLink = async(
         tx_addr,
         link,
-    ) =>{
+		payer_wallet
+	) =>{
         if(typeof transaction == "string"){
             transaction = new PublicKey(transaction)
         }
@@ -481,14 +493,15 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.provider.wallet.publicKey,
+            sellerWallet: payer_wallet.publicKey,
         })
         .instruction()
     }
 
     UpdateStatusToShipping = async(
-        tx_addr
-    ) =>{
+        tx_addr,
+	payer_wallet
+	) =>{
         if(typeof transaction == "string"){
             transaction = new PublicKey(transaction)
         }
@@ -499,7 +512,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.provider.wallet.publicKey,
+            sellerWallet: payer_wallet.publicKey,
         })
         .instruction()
 
@@ -507,8 +520,9 @@ export default class DigitalMarket{
 
     CommitSubkeys = async(
         tx_addr,
-        pk_map
-    ) =>{
+        pk_map,
+	payer_wallet
+	) =>{
         if(typeof transaction == "string"){
             transaction = new PublicKey(transaction)
         }
@@ -519,7 +533,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: transaction,
             sellerTransactions: tx_struct.seller,
-            sellerWallet: this.provider.wallet.publicKey,
+            sellerWallet: payer_wallet.publicKey,
         })
         .remainingAccounts(
             Object.values(pk_map).map((val)=>{
@@ -549,7 +563,7 @@ export default class DigitalMarket{
         .accounts({
             digitalTransaction: tx_addr,
             sellerAccount: tx_struct.seller,
-            wallet: this.provider.wallet.publicKey
+            wallet: payer_wallet.publicKey
         })
         .instruction()
     };
@@ -559,8 +573,9 @@ export default class DigitalMarket{
     LeaveReview = async (
         tx_addr,
         review_receiver,
-        market_account
-    ) =>{
+        market_account,
+	payer_wallet
+	) =>{
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr)
         };
@@ -571,7 +586,7 @@ export default class DigitalMarket{
             digitalTransaction: tx_addr,
             reviewedAccount: review_receiver,
             reviewer: market_account,
-            wallet: this.provider.wallet.publicKey,
+            wallet: payer_wallet.publicKey,
             digitalAuth: this.GenMarketAuth(),
             digitalProgram: this.programid,
             accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID

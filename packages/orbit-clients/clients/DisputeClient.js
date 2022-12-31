@@ -4,7 +4,7 @@ import { MARKET_ACCOUNTS_PROGRAM_ID } from 'orbit-clients/accounts-program';
 import { IDBClient } from 'browser-clients';
 
 
-const idl = require("../deps/dispute.json");
+const idl = require("../idls/dispute.json");
 
 export default class DisputeClient{
     constructor(connection, provider){
@@ -19,8 +19,9 @@ export default class DisputeClient{
     VoteDispute = async(
         dispute_addr,
         market_account,
-        side
-    ) =>{
+        side,
+	payer_wallet
+	) =>{
         if(typeof dispute_addr == "string"){
             dispute_addr = new PublicKey(dispute_addr);
         }
@@ -32,7 +33,7 @@ export default class DisputeClient{
         .accounts({
             disputeAccount: dispute_addr,
             marketAccount: market_account,
-            wallet: this.provider.wallet.publicKey
+            wallet: payer_wallet.publicKey
         })
         .instruction()
     }

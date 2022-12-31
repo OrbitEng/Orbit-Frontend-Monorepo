@@ -7,7 +7,7 @@ import {MARKET_ACCOUNTS_PROGRAM_ID} from "orbit-clients/accounts-program";
 import { DISPUTE_PROGRAM_ID } from 'orbit-clients/dispute-program';
 import { getMultisigWallet, MULTISIG_WALLET_ADDRESS} from 'orbit-clients/multisig';
 
-import idl from "../deps/orbit_physical_market.json";
+import idl from "../idls/orbit_physical_market.json";
 
 export default class PhysicalMarketClient{
     constructor(connection, provider){
@@ -45,7 +45,8 @@ export default class PhysicalMarketClient{
         price,
         
         useDiscount,
-    ) =>{
+		payer_wallet
+	) =>{
         if(typeof product == "string"){
             product = new PublicKey(product);
         }
@@ -58,7 +59,7 @@ export default class PhysicalMarketClient{
             physProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
-            buyerWallet: this.provider.wallet.publicKey,
+            buyerWallet: payer_wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
             physicalAuth: this.GenMarketAuth(),
@@ -78,7 +79,7 @@ export default class PhysicalMarketClient{
         seller_account_address,
         seller_wallet,
         reflink_accounts_chain
-    ) =>{
+	) =>{
 
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr_str);
@@ -123,7 +124,8 @@ export default class PhysicalMarketClient{
     };
     
     FundEscrowSol = async (
-        tx_addr_str
+        tx_addr_str,
+        payer_wallet
     ) =>{
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr_str);
@@ -137,7 +139,7 @@ export default class PhysicalMarketClient{
             physTransaction: tx_addr,
             escrowAccount: tx_struct.metadata.escrow_account,
             buyerTransactionsLog: tx_struct.buyer,
-            buyerWallet: this.provider.wallet.publicKey
+            buyerWallet: payer_wallet.publicKey
         })
         .instruction();
 
@@ -148,8 +150,9 @@ export default class PhysicalMarketClient{
         tx_addr_str,
 
         buyer_wallet,
-        buyer_account
-    ) =>{
+        buyer_account,
+	payer_wallet
+	) =>{
 
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr_str);
@@ -165,7 +168,7 @@ export default class PhysicalMarketClient{
             buyerTransactionsLog: tx_struct.buyer,
             buyerWallet: buyer_wallet,
             sellerTransactionsLog: tx_struct.seller,
-            sellerWallet: this.provider.wallet.publicKey,
+            sellerWallet: payer_wallet.publicKey,
             physicalAuth: this.GenMarketAuth(),
             physicalProgram: this.programid,
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
@@ -190,7 +193,8 @@ export default class PhysicalMarketClient{
         price,
         
         useDiscount,
-    ) =>{
+		payer_wallet
+	) =>{
         if(typeof product == "string"){
             product = new PublicKey(product);
         }
@@ -204,7 +208,7 @@ export default class PhysicalMarketClient{
             physProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
-            buyerWallet: this.provider.wallet.publicKey,
+            buyerWallet: payer_wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
             physicalAuth: this.GenMarketAuth(),
@@ -226,7 +230,7 @@ export default class PhysicalMarketClient{
         seller_wallet,
 
         reflink_accounts_chain
-    ) =>{
+	) =>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -295,6 +299,7 @@ export default class PhysicalMarketClient{
     
     FundEscrowSpl = async (
         tx_addr,
+        payer_wallet
     ) =>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
@@ -310,7 +315,7 @@ export default class PhysicalMarketClient{
             buyerTransactionsLog: tx_struct.buyer,
             buyerTokenAccount: getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.provider.wallet.publicKey        
+                payer_wallet.publicKey        
             ),
             buyerWallet: this.provider.wallet.publicKey,
             tokenProgram: TOKEN_PROGRAM_ID
@@ -324,8 +329,9 @@ export default class PhysicalMarketClient{
         tx_addr,
 
         buyer_wallet,
-        buyer_account
-    )=>{
+        buyer_account,
+	payer_wallet
+	)=>{
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -346,7 +352,7 @@ export default class PhysicalMarketClient{
             sellerTransactionsLog: tx_struct.seller,
             sellerTokenAccount:  getAssociatedTokenAddress(
                 tx_struct.metdata.currency,
-                this.provider.wallet.publicKey
+                payer_wallet.publicKey
             ),
             sellerWallet: this.provider.wallet.publicKey,
             physicalAuth: this.GenMarketAuth(),
@@ -366,8 +372,9 @@ export default class PhysicalMarketClient{
         threshold,
         
         buyer_account,
-        seller_account
-    ) =>{
+        seller_account,
+	payer_wallet
+	) =>{
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -377,7 +384,7 @@ export default class PhysicalMarketClient{
         .accounts({
             physTransaction: tx_addr,
             newDispute: dispute_addr,
-            openerWallet: this.provider.wallet.publicKey,
+            openerWallet: payer_wallet.publicKey,
             buyer: buyer_account,
             seller: seller_account,
             physicalAuth: this.GenMarketAuth(),
@@ -400,8 +407,9 @@ export default class PhysicalMarketClient{
         buyer_account,
         
         seller_account
-        
-    ) =>{
+        ,
+	payer_wallet
+	) =>{
         if(typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
         }
@@ -494,7 +502,7 @@ export default class PhysicalMarketClient{
             physTransaction: tx_addr,
             reviewedAccount: review_receiver,
             reviewer: market_account,
-            wallet: this.provider.wallet.publicKey,
+            wallet: payer_wallet.publicKey,
             physAuth: this.GenMarketAuth(),
             physicalProgram: this.programid,
             accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
@@ -506,8 +514,9 @@ export default class PhysicalMarketClient{
     CloseTransactionAccount = async (
         tx_addr,
         tx_log,
-        buyer_wallet
-    ) =>{
+        buyer_wallet,
+	payer_wallet
+	) =>{
 
         if (typeof tx_addr == "string"){
             tx_addr = new PublicKey(tx_addr);
@@ -518,7 +527,7 @@ export default class PhysicalMarketClient{
         .accounts({
             physTransaction: tx_addr,
             transactionsLog: tx_log,
-            wallet: this.provider.wallet.publicKey,
+            wallet: payer_wallet.publicKey,
             buyerWallet: buyer_wallet
         })
         .instruction()
