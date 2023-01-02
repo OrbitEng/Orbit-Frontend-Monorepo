@@ -19,7 +19,7 @@ export function HeaderSearchBar(props) {
 			<Transition
 				show={true}
 				appear={true}
-				enter="transition duration-700 ease-in-out"
+				enter="transition duration-[1200ms] ease-in-out"
 				enterFrom="opacity-0 scale-75"
 				enterTo="opacity-100 scale-100"
 				leave="transition-opacity duration-500"
@@ -87,28 +87,23 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 		<Transition
 			appear={true}
 			show={true}
-			enter="transition transform transition-opacity transition-transform transition-all duration-[1200ms] ease-in-out delay-[600ms]"
+			as={Fragment}
+			enter="transition transform transition-opacity transition-transform transition-all duration-[1200ms] ease-in-out delay-[900ms]"
 			enterFrom="opacity-0 -translate-y-10"
 			enterTo="opacity-100 -translate-y-0"
 			leave="transform duration-200 transition ease-in-out"
 			leaveFrom="opacity-100 rotate-0 scale-100 "
 			leaveTo="opacity-0 scale-95"
 		>
-			<div ref={ref} className="flex flex-col rounded-lg p-auto w-fill mt-8 mb-56 py-auto align-middle justify-center max-w-4xl mx-auto">
-				<div className="flex gap-3 flex-row rounded-full bg-searchbartransparent border-[1px] border-[#222222] p-2 w-full mx-auto py-auto align-middle">
+			<div ref={ref} className="flex flex-col rounded-lg p-auto w-fill py-auto align-middle justify-center max-w-4xl mx-auto my-auto">
+				<div className="flex gap-x-1 flex-row large-purple-search-container px-[26px] py-4 w-full mx-auto my-auto align-middle">
 					<Combobox value={selected} onChange={setSelected} >
 						<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px]"/>
 						<Combobox.Input
-						className="flex w-full bg-transparent text-[#777777] placeholder:text-[#4A4A4A] text-2xl font-semibold focus:outline-none"
+						className="flex w-full bg-transparent text-[#777777] placeholder:text-[#4A4A4A] text-lg font-semibold focus:outline-none"
 						placeholder="Search in marketplace"
 						onChange={(e) => setQuery(e.target.value)} />
 					</Combobox>
-				</div>
-				<div className="flex flex-row ml-4 gap-x-3 justify-center text-xs sm:text-base mt-4">
-					<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">� Commissions</button>
-					<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">�👾 Digital Products</button>
-					<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">📦 Physical Products</button>
-					<button className="font-semibold rounded-full p-2 text-[#7A7A7A] bg-gradient-to-bl from-[#181424] via-searchbuttontrans to-searchbuttontrans2 transition duration-200 border-0 hover:scale-[104%]">🎨 NFTs</button>
 				</div>
 			</div>
 		</Transition>

@@ -388,3 +388,14 @@ body {
 .home-button-bg {
     background-image: linear-gradient(to bottom, rgba(34, 33, 40, 0.74), rgba(34, 33, 40, 0.74)), linear-gradient(to bottom, #313131 0%, rgba(49, 49, 49, 0) 100%);
 }
+
+.large-purple-search-container {
+    border-radius: 999px;
+    border-style: solid;
+    border-width: 1px;
+    border-image-source: conic-gradient(from 0.6turn, rgba(255, 255, 255, 0.04), #fff 0.31turn, #6700ff 0.65turn, rgba(255, 255, 255, 0.04));
+    border-image-slice: 1;
+    background-image: linear-gradient(86deg, rgba(104, 1, 254, 0.06) 4%, rgba(217, 217, 217, 0.06) 97%), conic-gradient(from 0.6turn, rgba(255, 255, 255, 0.04), #fff 0.31turn, #6700ff 0.65turn, rgba(255, 255, 255, 0.04));
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+}

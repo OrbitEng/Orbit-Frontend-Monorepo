@@ -282,7 +282,7 @@ export function HomeHeader(props) {
 					))}
 				</div>
 			</div>
-			<div className="relative flex sm:hidden my-auto  mx-4">
+			<div className="relative flex sm:hidden my-auto mx-4">
 				<HeaderSearchBar />
 			</div>
 		</header>

@@ -86,7 +86,7 @@ export function ProductShowcaseRow(props) {
 					</Link>
 				</div>
 			</div>
-			<div className="w-[35rem] sm:w-[55rem] md:w-[72rem] ml-3 sm:mx-0 -mt-3">
+			<div className="w-[35rem] sm:w-[55rem] md:w-[72rem] ml-3 md:mx-0 -mt-3">
 				<Carousel 
 					responsive={responsive} 
 					arrows={true}
