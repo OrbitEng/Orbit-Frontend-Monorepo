@@ -4,6 +4,9 @@
   "instructions": [
     {
       "name": "initPhysicalBucketCache",
+      "docs": [
+        ""
+      ],
       "accounts": [
         {
           "name": "initBucket",
@@ -201,6 +204,250 @@
         {
           "name": "arweaveUrl",
           "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initPhysicalKwdsTreeCache",
+      "accounts": [
+        {
+          "name": "kwdCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "populatePhysicalKwdsToCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "syncPhysicalKwdsCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "bucketSize",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "updatePhysicalKwdsCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newBucket",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initPhysicalKwdsNode",
+      "accounts": [
+        {
+          "name": "indexer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "cacheNode",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "addPhysicalKwdsNode",
+      "accounts": [
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "nodeIndex",
+          "type": "i16"
+        },
+        {
+          "name": "priorMiddlePost",
+          "type": {
+            "defined": "(u16,u8,u8)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "splitPhysicalTreeNode",
+      "accounts": [
+        {
+          "name": "indexer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "leftBranch",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rightBranch",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwdsLen",
+          "type": "u8"
+        },
+        {
+          "name": "nodeIndex",
+          "type": "i16"
         }
       ]
     },
@@ -407,6 +654,250 @@
       ]
     },
     {
+      "name": "initCommissionKwdsTreeCache",
+      "accounts": [
+        {
+          "name": "kwdCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "populateCommissionKwdsToCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "syncCommissionKwdsCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "bucketSize",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "updateCommissionKwdsCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newBucket",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initCommissionKwdsNode",
+      "accounts": [
+        {
+          "name": "indexer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "cacheNode",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "addCommissionKwdsNode",
+      "accounts": [
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "nodeIndex",
+          "type": "i16"
+        },
+        {
+          "name": "priorMiddlePost",
+          "type": {
+            "defined": "(u16,u8,u8)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "splitCommissionTreeNode",
+      "accounts": [
+        {
+          "name": "indexer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "leftBranch",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rightBranch",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwdsLen",
+          "type": "u8"
+        },
+        {
+          "name": "nodeIndex",
+          "type": "i16"
+        }
+      ]
+    },
+    {
       "name": "initDigitalBucketCache",
       "accounts": [
         {
@@ -605,6 +1096,250 @@
         {
           "name": "arweaveUrl",
           "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initDigitalKwdsTreeCache",
+      "accounts": [
+        {
+          "name": "kwdCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "populateDigitalKwdsToCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "syncDigitalKwdsCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "bucketSize",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "updateDigitalKwdsCache",
+      "accounts": [
+        {
+          "name": "kwdsCache",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newBucket",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "initDigitalKwdsNode",
+      "accounts": [
+        {
+          "name": "indexer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "cacheNode",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "addDigitalKwdsNode",
+      "accounts": [
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwds",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "nodeIndex",
+          "type": "i16"
+        },
+        {
+          "name": "priorMiddlePost",
+          "type": {
+            "defined": "(u16,u8,u8)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "splitDigitalTreeNode",
+      "accounts": [
+        {
+          "name": "indexer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treeNode",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "leftBranch",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rightBranch",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bucketWord",
+          "type": "string"
+        },
+        {
+          "name": "kwdsLen",
+          "type": "u8"
+        },
+        {
+          "name": "nodeIndex",
+          "type": "i16"
         }
       ]
     }

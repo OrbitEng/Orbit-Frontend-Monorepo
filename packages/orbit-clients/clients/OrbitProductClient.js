@@ -3,15 +3,14 @@ import {PublicKey} from "@solana/web3.js";
 
 const idl = require("../idls/orbit_product");
 
-product_program_id = new PublicKey(idl.metadata.address);
-    
-product_program = new anchor.Program(idl, idl.metadata.address);
+export const PRODUCT_PROGRAM_ID = new PublicKey(idl.metadata.address);
+export const PRODUCT_PROGRAM = new anchor.Program(idl, idl.metadata.address);
 
 ////////////////////////////////////
 /// ADMIN INITIALIZE
 
-InitRecentListings = async(payer_wallet) => {
-    return product_program.methods
+export async function InitRecentListings (payer_wallet){
+    return PRODUCT_PROGRAM.methods
     .initRecentListings()
     .accounts({
         physicalRecentListings: this.GenRecentListings("physical"),
@@ -25,10 +24,10 @@ InitRecentListings = async(payer_wallet) => {
 ///////////////////////////////////////////////////////
 /// VENDOR LISTINGS
 
-InitCommissionsListings = async(market_type, payer_wallet) => {
+export async function InitCommissionsListings (market_type, payer_wallet){
     let listings_address = this.GenListingsAddress(market_type);
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .initCommissionsListings()
     .accounts({
         vendorListings: listings_address,
@@ -36,10 +35,10 @@ InitCommissionsListings = async(market_type, payer_wallet) => {
     })
     .instruction()
 }
-InitDigitalListings = async(market_type, payer_wallet) => {
+export async function InitDigitalListings (market_type, payer_wallet){
     let listings_address = this.GenListingsAddress(market_type);
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .initDigitalListings()
     .accounts({
         vendorListings: listings_address,
@@ -47,10 +46,10 @@ InitDigitalListings = async(market_type, payer_wallet) => {
     })
     .instruction()
 }
-InitPhysicalListings = async(market_type, payer_wallet) => {
+export async function InitPhysicalListings (market_type, payer_wallet){
     let listings_address = this.GenListingsAddress(market_type);
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .initPhysicalListings()
     .accounts({
         vendorListings: listings_address,
@@ -63,12 +62,12 @@ InitPhysicalListings = async(market_type, payer_wallet) => {
 /// LIST PRODUCT
 
 // can add recent_catalog to remaining accounts
-ListCommissionProduct = async(
+export async function ListCommissionProduct (
     product,
     metadata,
     add_to_recent,
     payer_wallet
-) => {
+){
     if(typeof product == "string"){
         product = new PublicKey(product)
     }
@@ -81,7 +80,7 @@ ListCommissionProduct = async(
         }] : [];
     let vendor_listings = this.GenListingsAddress("commission");
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .listCommissionProduct(metadata)
     .accounts({
         commissionProduct: product,
@@ -91,13 +90,13 @@ ListCommissionProduct = async(
     .remainingAccounts(remaining_accounts)
     .instruction()
 }
-ListDigitalProduct = async(
+export async function ListDigitalProduct (
     product,
     metadata,
     filetype,
     add_to_recent,
     payer_wallet
-) => {
+){
     if(typeof product == "string"){
         product = new PublicKey(product)
     }
@@ -110,7 +109,7 @@ ListDigitalProduct = async(
         }] : [];
     let vendor_listings = this.GenListingsAddress("digital");
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .listDigitalProduct(metadata, filetype)
     .accounts({
         digitalProduct: product,
@@ -120,13 +119,13 @@ ListDigitalProduct = async(
     .remainingAccounts(remaining_accounts)
     .instruction()
 }
-ListPhysicalProduct = async(
+export async function ListPhysicalProduct (
     product,
     metadata,
     quantity,
     add_to_recent,
     payer_wallet
-) => {
+){
     if(typeof product == "string"){
         product = new PublicKey(product)
     }
@@ -140,7 +139,7 @@ ListPhysicalProduct = async(
     let vendor_listings = this.GenListingsAddress("physical");
 
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .listPhysicalProduct(metadata, new anchor.BN(quantity))
     .accounts({
         physProduct: product,
@@ -151,11 +150,11 @@ ListPhysicalProduct = async(
     .instruction()
 }
 
-UnlistProduct = async(
+export async function UnlistProduct (
     product,
     listings,
     payer_wallet
-) => {
+){
     if(typeof product == "string"){
         product = new PublicKey(product)
     }
@@ -163,7 +162,7 @@ UnlistProduct = async(
         listings = new PublicKey(listings)
     }
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .unlistProduct()
     .accounts({
         prod: product,
@@ -174,15 +173,15 @@ UnlistProduct = async(
 }
 
 /// EMERGENCY
-FlushListings = async(
+export async function FlushListings (
     listings_addr,
     payer_wallet
-) => {
+){
     if(typeof listings_addr == "string"){
         listings_addr = new PublicKey(listings_addr)
     }
 
-    return product_program.methods
+    return PRODUCT_PROGRAM.methods
     .flushListings()
     .accounts({
         vendorListings: listings_addr,
@@ -194,18 +193,18 @@ FlushListings = async(
 //////////////////////////////////////////////////////////////
 /// TRANSFER LISTINGS
 
-TransferVendorListingsOwnership = async(
+export async function TransferVendorListingsOwnership (
     listings_type,
     new_wallet_addr,
     payer_wallet
-) => {
+){
     if(typeof new_wallet_addr == "string"){
         new_wallet_addr = new PublicKey(new_wallet_addr)
     }
 
     let vendor_listings = this.GenListingsAddress(listings_type);
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .transferVendorListingsOwnership()
     .accounts({
         vendorListings: vendor_listings,
@@ -215,10 +214,10 @@ TransferVendorListingsOwnership = async(
     .instruction()
 }
 
-TransferAllVendorListingsOwnership = async(
+export async function TransferAllVendorListingsOwnership (
     new_wallet_addr,
     payer_wallet
-) => {
+){
 
     if(typeof new_wallet_addr == "string"){
         new_wallet_addr = new PublicKey(new_wallet_addr)
@@ -228,7 +227,7 @@ TransferAllVendorListingsOwnership = async(
     let digital_listings = this.GenListingsAddress("digital");
     let physical_listings = this.GenListingsAddress("physical");
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .transferAllVendorListingsOwnership()
     .accounts({
         physicalVendorListings: physical_listings,
@@ -244,11 +243,11 @@ TransferAllVendorListingsOwnership = async(
 ///////////////////////////////////////////////
 /// PRODUCT COMMON MODIFIERS
 
-MarkProdAvailable = async(
+export async function MarkProdAvailable (
     product,
     listings_address,
     payer_wallet
-) => {
+){
 
     if(typeof product == "string"){
         product = new PublicKey(product)
@@ -258,7 +257,7 @@ MarkProdAvailable = async(
         listings_address = new PublicKey(listings_address)
     }
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .markProdAvailable()
     .accounts({
         product: product,
@@ -267,11 +266,11 @@ MarkProdAvailable = async(
     })
     .instruction()
 }
-MarkProdUnavailable = async(
+export async function MarkProdUnavailable (
     product,
     listings_address,
     payer_wallet
-) => {
+){
 
     if(typeof product == "string"){
         product = new PublicKey(product)
@@ -281,7 +280,7 @@ MarkProdUnavailable = async(
         listings_address = new PublicKey(listings_address)
     }
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .markProdUnavailable()
     .accounts({
         product: product,
@@ -291,12 +290,12 @@ MarkProdUnavailable = async(
     .instruction()
 }
 
-UpdateProductPrice = async(
+export async function UpdateProductPrice (
     product,
     listings_address,
     price,
     payer_wallet
-) => {
+){
     if(typeof product == "string"){
         product = new PublicKey(product)
     }
@@ -305,7 +304,7 @@ UpdateProductPrice = async(
         listings_address = new PublicKey(listings_address)
     }
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .updateProductPrice(new anchor.BN(price))
     .accounts({
         product: product,
@@ -315,12 +314,12 @@ UpdateProductPrice = async(
     .instruction()
 }
 
-SetMedia = async(
+export async function SetMedia (
     product,
     listings_address,
     media_address,
     payer_wallet
-) => {
+){
     if(typeof product == "string"){
         product = new PublicKey(product)
     }
@@ -329,7 +328,7 @@ SetMedia = async(
         listings_address = new PublicKey(listings_address)
     }
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .setMedia(
         media_address
     )
@@ -341,12 +340,12 @@ SetMedia = async(
     .instruction()
 }
 
-SetProdInfo = async(
+export async function SetProdInfo (
     product,
     listings_address,
     info_address,
     payer_wallet
-) => {
+){
     if(typeof product == "string"){
         product = new PublicKey(product)
     }
@@ -355,7 +354,7 @@ SetProdInfo = async(
         listings_address = new PublicKey(listings_address)
     }
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .setProdInfo(
         info_address
     )
@@ -370,18 +369,18 @@ SetProdInfo = async(
 //////////////////////////////////////////////////
 /// PHYSICAL ONLY
 
-UpdateProductQuantity = async(
+export async function UpdateProductQuantity (
     product,
     qnt = 0,
     payer_wallet
-) => {
+){
     if(typeof product == "string"){
         product = new PublicKey(product)
     }
 
     let listings_address = this.GenListingsAddress("physical")
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .updateProductQuantity(new anchor.BN(qnt))
     .accounts({
         product: product,
@@ -395,11 +394,11 @@ UpdateProductQuantity = async(
 /// DIGITAL ONLY
 
 // Text Video Audio Image Folder
-SetFileType = async(
+export async function SetFileType (
     product,
     payer_wallet,
     filetype = "Image"
-) => {
+){
 
     if(typeof product == "string"){
         product = new PublicKey(product)
@@ -410,7 +409,7 @@ SetFileType = async(
 
     let listings_address = this.GenListingsAddress("digital")
 
-    await product_program.methods
+    await PRODUCT_PROGRAM.methods
     .setFileType(param)
     .accounts({
         product: product,
@@ -423,18 +422,18 @@ SetFileType = async(
 //////////////////////////////////
 /// GENERATION UTILTIES
 
-GenListingsAddress = (product_type, voter_id) => {
+export function GenListingsAddress (product_type, voter_id){
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("vendor_listings"),
             Buffer.from(["commission","digital","physical"].indexOf(product_type)),
             voter_id.toBuffer()
         ],
-        product_program_id
+        PRODUCT_PROGRAM_ID
     )[0]
 }
 
-GenProductAddress = (product_index, vendor_listings, product_type) =>{
+export function GenProductAddress (product_index, vendor_listings, product_type){
     if(typeof vendor_listings == "string"){
         vendor_listings = new PublicKey(vendor_listings);
     };
@@ -444,46 +443,46 @@ GenProductAddress = (product_index, vendor_listings, product_type) =>{
             vendor_listings.toBuffer(),
             Buffer.from([product_index])
         ],
-        product_program_id
+        PRODUCT_PROGRAM_ID
     )[0]
 }
 
-GenRecentListings = (product_type) => {
+export function GenRecentListings (product_type){
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("recent_listings"),
             Buffer.from(product_type)
         ],
-        product_program_id
+        PRODUCT_PROGRAM_ID
     )[0]
 }
 
 ///////////////////////////////////
 /// STRUCT FETCH UTILS
 
-GetListingsStruct = async(address) =>{
+export async function GetListingsStruct (address){
     if(typeof address == "string"){
         address = new PublicKey(address)
     }
     return {
         address: address.toString(),
-        data: await product_program.account.listingsStruct.fetch(address),
+        data: await PRODUCT_PROGRAM.account.listingsStruct.fetch(address),
         type: "ListingsStruct"
     };
 }
-GetDigitalProduct = async(address) =>{
+export async function GetDigitalProduct (address){
     if(typeof address == "string"){
         address = new PublicKey(address)
     }
     return {
         address: address.toString(),
-        data: await product_program.account.digitalProduct.fetch(address),
+        data: await PRODUCT_PROGRAM.account.digitalProduct.fetch(address),
         type: "DigitalProduct"
     };
 }
 
-GetMultipleDigitalProducts = async(addresses) =>{
-    let prods = await product_program.account.digitalProduct.fetchMultiple(addresses);
+export async function GetMultipleDigitalProducts (addresses){
+    let prods = await PRODUCT_PROGRAM.account.digitalProduct.fetchMultiple(addresses);
     return prods.map((v, i)=>{
         return {
             address: addresses[i].toString(),
@@ -493,19 +492,19 @@ GetMultipleDigitalProducts = async(addresses) =>{
     })
 }
 
-GetPhysicalProduct = async(address) =>{
+export async function GetPhysicalProduct (address){
     if(typeof address == "string"){
         address = new PublicKey(address)
     }
     return {
         address: address.toString(),
-        data: await product_program.account.physicalProduct.fetch(address),
+        data: await PRODUCT_PROGRAM.account.physicalProduct.fetch(address),
         type: "PhysicalProduct"
     };
 }
 
-GetMultiplePhysicalProducts = async(addresses) =>{
-    let prods = await product_program.account.physicalProduct.fetchMultiple(addresses);
+export async function GetMultiplePhysicalProducts (addresses){
+    let prods = await PRODUCT_PROGRAM.account.physicalProduct.fetchMultiple(addresses);
     return prods.map((v, i)=>{
         return {
             address: addresses[i].toString(),
@@ -515,19 +514,19 @@ GetMultiplePhysicalProducts = async(addresses) =>{
     })
 }
 
-GetCommissionProduct = async(address) =>{
+export async function GetCommissionProduct (address){
     if(typeof address == "string"){
         address = new PublicKey(address)
     }
     return {
         address: address.toString(),
-        data: await product_program.account.commissionProduct.fetch(address),
+        data: await PRODUCT_PROGRAM.account.commissionProduct.fetch(address),
         type: "CommissionProduct"
     };
 }
 
-GetMultipleCommissionProducts = async(addresses) =>{
-    let prods = await product_program.account.commissionProduct.fetchMultiple(addresses);
+export async function GetMultipleCommissionProducts (addresses){
+    let prods = await PRODUCT_PROGRAM.account.commissionProduct.fetchMultiple(addresses);
     return prods.map((v, i)=>{
         return {
             address: addresses[i].toString(),
@@ -537,14 +536,14 @@ GetMultipleCommissionProducts = async(addresses) =>{
     })
 }
 
-GetRecentMarketListings = async(address) =>{
+export async function GetRecentMarketListings (address){
     if(typeof address == "string"){
         address = new PublicKey(address)
     }
     try{
         return {
             address: address.toString(),
-            data: await product_program.account.recentMarketListings.fetch(address),
+            data: await PRODUCT_PROGRAM.account.recentMarketListings.fetch(address),
             type: "RecentMarketListings"
         }
     }catch(e){
@@ -555,18 +554,18 @@ GetRecentMarketListings = async(address) =>{
 ///////////////////////////////////////
 /// PURE UTILS
 
-FindProductAvailability = (product_struct, listings_struct) => {
+export function FindProductAvailability(product_struct, listings_struct){
     let outerind = Math.floor((product_struct.metadata.index)/64);
     let innerind = product_struct.metadata.index%64;
     return listings_struct.productAvailable[outerind].toString(2).split("").reverse().join("").charAt(innerind) == "1"
 }
 
-FindNextAvailableListingsAddress = (listings_struct) => {
+export function FindNextAvailableListingsAddress(listings_struct){
     let all_addresses = listings_struct.addressAvailable[0].toString(2).split("").reverse().join("") + listings_struct.addressAvailable[1].toString(2).split("").reverse().join("") + listings_struct.addressAvailable[2].toString(2).split("").reverse().join("") + listings_struct.addressAvailable[3].toString(2).toString(2).split("").reverse().join("");
     return all_addresses.indexOf("1")
 }
 
-FindAllListings = (listings_struct) => {
+export function FindAllListings(listings_struct){
     let all_addresses = listings_struct.addressAvailable[0].toString(2).split("").reverse().join("") + listings_struct.addressAvailable[1].toString(2).split("").reverse().join("") + listings_struct.addressAvailable[2].toString(2).split("").reverse().join("") + listings_struct.addressAvailable[3].toString(2).toString(2).split("").reverse().join("");
     let avail = all_addresses.split("").reduce((prev, curr, ind) =>{
         if(curr == "0") prev.push(ind);

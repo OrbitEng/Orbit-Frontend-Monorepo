@@ -1,14 +1,14 @@
 import * as anchor from '@project-serum/anchor';
 import {PublicKey} from "@solana/web3.js";
-import {TOKEN_PROGRAM_ID, getAssociatedTokenAddress} from "../accounts-program/src/tokenCommon";
-import {PRODUCT_PROGRAM_ID} from "orbit-clients/product-program";
-import {TRANSACTION_PROGRAM_ID} from "orbit-clients/transaction-program";
+import {TOKEN_PROGRAM_ID, getAssociatedTokenAddress} from "@solana/spl-token";
+import {PRODUCT_PROGRAM_ID} from "./product-program";
+import {TRANSACTION_PROGRAM_ID} from "./transaction-program";
 
 
 const idl = require("../idls/orbit_market_accounts");
 
-market_accounts_program_id = new PublicKey(idl.metadata.address);
-market_accounts_program = new anchor.Program(idl, idl.metadata.address);
+export const MARKET_ACCOUNTS_PROGRAM_ID = new PublicKey(idl.metadata.address);
+export const MARKET_ACCOUNTS_PROGRAM = new anchor.Program(idl, idl.metadata.address);
 
 ///////////////////////////////////////
 /// RPC CALLS
@@ -33,7 +33,7 @@ CreateAccount = async (metadata_link, media_link, reflink,
 
     let voter_id_addr = this.GenVoterIdAddress();
     
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .createAccount(media_link, metadata_link)
     .accounts({
         marketAccount: this.GenAccountAddress(payer_wallet.publicKey),
@@ -44,13 +44,13 @@ CreateAccount = async (metadata_link, media_link, reflink,
     .instruction();
 };
 
-UpdatePFP = async(
+export async function UpdatePFP (
     new_pfp_link,
 payer_wallet
-) =>{
+){
     let market_account = this.GenAccountAddress();
 
-    return market_accounts_program.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .updateProfileImage(new_pfp_link)
     .accounts({
         marketAccount: market_account,
@@ -59,11 +59,11 @@ payer_wallet
     .instruction()
 };
 
-UpdateMetadata = async(
+export async function UpdateMetadata (
     metadata_link,
 payer_wallet
-) => {
-    return market_accounts_program.methods
+){
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .updateMetadata(metadata_link)
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -80,7 +80,7 @@ payer_wallet
         reflink = new PublicKey(reflink);
     }
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .setReflink()
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -90,13 +90,13 @@ payer_wallet
     .instruction();
 };
 
-RemoveReflink = async(
+export async function RemoveReflink (
         payer_wallet
-) => {
+){
     const market_acc = this.GenAccountAddress();
     const reflink_addr = (await this.GetAccount(market_acc)).data.reflink;
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .removeReflink()
     .accounts({
         marketAccount: market_acc,
@@ -109,15 +109,15 @@ RemoveReflink = async(
 ////////////////////////////////////////////////////////////////////
 /// VENDOR LISTINGS
 
-AddVendorPhysicalListings = async(
+export async function AddVendorPhysicalListings (
     listings_address,
 payer_wallet
-)=>{
+){
     if(typeof listings_address == "string"){
         listings_address = new PublicKey(listings_address)
     }
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addVendorPhysicalListings("physical")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -128,15 +128,15 @@ payer_wallet
     .instruction()
 }
 
-AddVendorDigitalListings = async(
+export async function AddVendorDigitalListings (
     listings_address,
 payer_wallet
-)=>{
+){
     if(typeof listings_address == "string"){
         listings_address = new PublicKey(listings_address)
     }
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addVendorDigitalListings("digital")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -147,15 +147,15 @@ payer_wallet
     .instruction()
 }
 
-AddVendorCommissionListings = async(
+export async function AddVendorCommissionListings (
     listings_address,
 payer_wallet
-)=>{
+){
     if(typeof listings_address == "string"){
         listings_address = new PublicKey(listings_address)
     }
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addVendorCommissionListings("commission")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -170,11 +170,11 @@ payer_wallet
 /// TRANSACTION LOGS
 
 /// :BUYER
-AddBuyerPhysicalTransactions = async(
+export async function AddBuyerPhysicalTransactions (
     transactions_log,
 payer_wallet
-)=>{
-    await market_accounts_program.methods
+){
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addBuyerPhysicalTransactions("physical")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -185,11 +185,11 @@ payer_wallet
     .instruction()
 }
 
-AddBuyerDigitalTransactions = async(
+export async function AddBuyerDigitalTransactions (
     transactions_log,
 payer_wallet
-)=>{
-    await market_accounts_program.methods
+){
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addBuyerDigitalTransactions("digital")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -200,11 +200,11 @@ payer_wallet
     .instruction()
 }
 
-AddBuyerCommissionTransactions = async(
+export async function AddBuyerCommissionTransactions (
     transactions_log,
 payer_wallet
-)=>{
-    await market_accounts_program.methods
+){
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addBuyerCommissionTransactions("commission")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -216,11 +216,11 @@ payer_wallet
 }
 
 /// :SELLER
-AddSellerPhysicalTransactions = async(
+export async function AddSellerPhysicalTransactions (
     transactions_log,
 payer_wallet
-)=>{
-    await market_accounts_program.methods
+){
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addSellerPhysicalTransactions("physical")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -231,11 +231,11 @@ payer_wallet
     .instruction()
 }
 
-AddSellerDigitalTransactions = async(
+export async function AddSellerDigitalTransactions (
     transactions_log,
 payer_wallet
-)=>{
-    await market_accounts_program.methods
+){
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addSellerDigitalTransactions("digital")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -246,11 +246,11 @@ payer_wallet
     .instruction()
 }
 
-AddSellerCommissionTransactions = async(
+export async function AddSellerCommissionTransactions (
     transactions_log,
 payer_wallet
-)=>{
-    await market_accounts_program.methods
+){
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .addSellerCommissionTransactions("commission")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -265,9 +265,9 @@ payer_wallet
 //////////////////////////////////////////////////////////////////
 /// TRANSFERS
 
-InitiateTransfer = async(destination_wallet,
+export async function InitiateTransfer (destination_wallet,
     payer_wallet
-) => {
+){
     
     if(typeof destination_wallet == "string"){
         destination_wallet = new PublicKey(destination_wallet);
@@ -277,7 +277,7 @@ InitiateTransfer = async(destination_wallet,
     let destination = this.GenAccountAddress(destination_wallet);
     let transfer_addr = this.GenTransferStruct(source, destination);
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .initiateTransfer()
     .accounts({
         transferStruct: transfer_addr,
@@ -290,9 +290,9 @@ InitiateTransfer = async(destination_wallet,
 
 }
 
-ConfirmTransfer = async(
+export async function ConfirmTransfer (
         payer_wallet
-) => {
+){
     const market_acc = this.GenAccountAddress();
     const transfer_addr = (await this.GetAccount(market_acc)).data.transfer_struct;
 
@@ -301,7 +301,7 @@ ConfirmTransfer = async(
     const source = transfer_struct.data.source;
     const source_wallet = (await this.GetAccount(source)).data.wallet;
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .confirmTransfer()
     .accounts({
         sourceMarketAccount: source,
@@ -313,9 +313,9 @@ ConfirmTransfer = async(
     .instruction()
 }
 
-DeclineTransfer = async(
+export async function DeclineTransfer (
         payer_wallet
-) => {
+){
     const market_acc = this.GenAccountAddress();
     const transfer_addr = (await this.GetAccount(market_acc)).data.transfer_struct;
 
@@ -326,7 +326,7 @@ DeclineTransfer = async(
     const destination = transfer_struct.data.destination;
     const destination_wallet = (await this.GetAccount(destination)).data.wallet;
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .declineTransfer()
     .accounts({
         sourceMarketAccount: source,
@@ -347,7 +347,7 @@ CreateReflink = async (
 ) => {
     let reflink_addr = this.GenReflinkAddress(payer_wallet.publicKey);
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .CreateReflink()
     .accounts({
         reflink: reflink_addr,
@@ -373,7 +373,7 @@ DeleteReflink = async (
         }
     });
 
-    await market_accounts_program.methods
+    await MARKET_ACCOUNTS_PROGRAM.methods
     .deleteReflink()
     .accounts({
         reflink: reflink_addr,
@@ -397,7 +397,7 @@ GetAccount = async (account_addr,
 
     return {
         address: account_addr,
-        data: await market_accounts_program.account.orbitMarketAccount.fetch(account_addr),
+        data: await MARKET_ACCOUNTS_PROGRAM.account.orbitMarketAccount.fetch(account_addr),
         type: "MarketAccount"
     };
     
@@ -410,7 +410,7 @@ GetAccountTransfer = async (transfer_addr) => {
             transfer_addr = new PublicKey(transfer_addr);
         }
 
-        let data = await market_accounts_program.account.accountTransfer.fetch(transfer_addr);
+        let data = await MARKET_ACCOUNTS_PROGRAM.account.accountTransfer.fetch(transfer_addr);
 
         return {
             address: transfer_addr,
@@ -435,7 +435,7 @@ GetMultipleMarketAccounts = async (account_addrs) => {
         return addr
     })
     
-    return (await market_accounts_program.account.orbitMarketAccount.fetchMultiple(account_addrs)).map((dat, ind)=>{
+    return (await MARKET_ACCOUNTS_PROGRAM.account.orbitMarketAccount.fetchMultiple(account_addrs)).map((dat, ind)=>{
 
         return {
             address: account_addrs[ind],
@@ -445,7 +445,7 @@ GetMultipleMarketAccounts = async (account_addrs) => {
     });
 };
 
-GetReflinkStruct = async(reflink_addr) =>{
+export async function GetReflinkStruct (reflink_addr){
     if(typeof reflink_addr == "string"){
         reflink_addr = new PublicKey(reflink_addr);
     }
@@ -453,7 +453,7 @@ GetReflinkStruct = async(reflink_addr) =>{
     try{
         return {
             "address": reflink_addr,
-            "data": (await market_accounts_program.account.orbitReflink.fetch(reflink_addr)),
+            "data": (await MARKET_ACCOUNTS_PROGRAM.account.orbitReflink.fetch(reflink_addr)),
             "type": "Reflink"
         }
     }catch{
@@ -464,7 +464,7 @@ GetReflinkStruct = async(reflink_addr) =>{
 //////////////////////////////////////////////////////////////////
 /// GENERATION UTILS
 
-GenReflinkAddress = (wallet_addr) => {
+export function GenReflinkAddress (wallet_addr){
     if(typeof wallet_addr == "string"){
         wallet_addr = new PublicKey(wallet_addr)
     };
@@ -476,11 +476,11 @@ GenReflinkAddress = (wallet_addr) => {
             Buffer.from("orbit_reflink"),
             account_addr.toBuffer()
         ],
-        market_accounts_program_id
+        MARKET_ACCOUNTS_PROGRAM_ID
     )[0];
 }
 
-GenAccountAddress = (wallet_addr) => {
+export function GenAccountAddress (wallet_addr){
     if(!wallet_addr){
         wallet_addr = payer_wallet.publicKey
     }
@@ -493,11 +493,11 @@ GenAccountAddress = (wallet_addr) => {
             Buffer.from("orbit_account"),
             wallet_addr.toBuffer()
         ],
-        market_accounts_program_id
+        MARKET_ACCOUNTS_PROGRAM_ID
     )[0];
 };
 
-GenTransferStruct = (source, destination) => {
+export function GenTransferStruct (source, destination){
     
     if (typeof source == "string"){
         source = new PublicKey(source)
@@ -513,27 +513,27 @@ GenTransferStruct = (source, destination) => {
             source.toBuffer(),
             destination.toBuffer()
         ],
-        market_accounts_program_id
+        MARKET_ACCOUNTS_PROGRAM_ID
     )[0];
 }
 
-GenVoterIdAddress = () =>{
+export function GenVoterIdAddress (){
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("orbit_voters")
         ],
-        market_accounts_program_id
+        MARKET_ACCOUNTS_PROGRAM_ID
     )[0]
 }
 
 //////////////////////////////////////////////////////////
 /// REFLINK
-ReflinkSolChain = async(reflink_address) =>{
+export async function ReflinkSolChain (reflink_address){
     let reflink = await this.GetReflinkStruct(reflink_address);
     return [reflink_address, reflink.data.reflinkOwner];
 }
 
-ReflinkSplChain = async(reflink_address, currency) => {
+export async function ReflinkSplChain (reflink_address, currency){
     let reflink_sol_chain = await this.ReflinkSolChain(reflink_address);
     let ata_addr = getAssociatedTokenAddress(currency, reflink_sol_chain[1]);
     return [...reflink_sol_chain, ata_addr];

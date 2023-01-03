@@ -6,7 +6,7 @@ import {DisputeClient} from "./dispute-program";
 import {ProductClient} from "./product-program";
 import {TransactionClient} from "./transaction-program";
 import {MULTISIG_WALLET_ADDRESS, MULTISIG_PROGRAM_ID, getMultisigWallet} from "./multisig";
-// import * as tokenUtils from "./tokenCommon";
+// import * as tokenUtils from "@solana/spl-token";
 
 export {
     PhysicalMarketClient,

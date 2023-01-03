@@ -3,16 +3,15 @@ import {PublicKey} from "@solana/web3.js";
 
 const idl = require("../idls/orbit_transaction");
 
-transaction_program_id = new PublicKey(idl.metadata.address);
+export const TRANSACTION_PROGRAM_ID = new PublicKey(idl.metadata.address);
+export const TRANSACTION_PROGRAM = new anchor.Program(idl, idl.metadata.address);
 
-transaction_program = new anchor.Program(idl, idl.metadata.address);
-
-CreateBuyerTransactionsLog = async(
+export async function CreateBuyerTransactionsLog (
     market_type,
 payer_wallet
-) => {
+){
 
-    await transaction_program.methods
+    await TRANSACTION_PROGRAM.methods
     .createBuyerTransactionsLog(market_type)
     .accounts({
         transactionsLog: this.GenBuyerTransactionLog(market_type),
@@ -21,11 +20,11 @@ payer_wallet
     .instruction()
 }
 
-CreateSellerTransactionsLog = async(market_type,
+export async function CreateSellerTransactionsLog (market_type,
     payer_wallet
-) => {
+){
 
-    await transaction_program.methods
+    await TRANSACTION_PROGRAM.methods
     .createSellerTransactionsLog(market_type)
     .accounts({
         transactionsLog: this.GenSellerTransactionLog(market_type),
@@ -34,12 +33,12 @@ CreateSellerTransactionsLog = async(market_type,
     .instruction()
 }
 
-TransferTransactionsLog = async(
+export async function TransferTransactionsLog (
     tx_log,
     new_owner,
 payer_wallet
-) => {
-    await transaction_program.methods
+){
+    await TRANSACTION_PROGRAM.methods
     .transferTransactionsLog()
     .accounts({
         transactionsLog: tx_log,
@@ -49,11 +48,11 @@ payer_wallet
     .instruction()
 }
 
-TransferAllTransactionsLog = async(
+export async function TransferAllTransactionsLog (
     new_owner,
     buyer_or_seller,
 payer_wallet
-) => {
+){
     let physicalLog;
     let digitalLog;
     let commissionsLog;
@@ -70,7 +69,7 @@ payer_wallet
             break;
     };
 
-    await transaction_program.methods
+    await TRANSACTION_PROGRAM.methods
     .transferAllTransactionsLog()
     .accounts({
         physicalLog: physicalLog,
@@ -85,9 +84,9 @@ payer_wallet
 //////////////////////////////////////////////////
 /// GENERATION UTILS
 
-GenBuyerTransactionLog = (market_type, wallet,
+export function GenBuyerTransactionLog (market_type, wallet,
     payer_wallet
-) => {
+){
     if(!wallet){
         wallet = payer_wallet.publicKey
     }
@@ -100,13 +99,13 @@ GenBuyerTransactionLog = (market_type, wallet,
             Buffer.from(market_type),
             wallet.toBuffer()
         ],
-        transaction_program_id
+        TRANSACTION_PROGRAM_ID
     )[0];
 }
 
-GenSellerTransactionLog = (market_type, wallet,
+export function GenSellerTransactionLog (market_type, wallet,
     payer_wallet
-) => {
+){
     if(!wallet){
         wallet = payer_wallet.publicKey
     }
@@ -120,30 +119,30 @@ GenSellerTransactionLog = (market_type, wallet,
             Buffer.from(market_type),
             wallet.toBuffer()
         ],
-        transaction_program_id
+        TRANSACTION_PROGRAM_ID
     )[0];
 }
 
 //////////////////////////////////////////////////
 /// STRUCT FETCHING
 
-GetBuyerOpenTransactions = async(address) =>{
+export async function GetBuyerOpenTransactions (address){
     return {
         address: address,
-        data: await transaction_program.account.buyerOpenTransactions.fetch(address),
+        data: await TRANSACTION_PROGRAM.account.buyerOpenTransactions.fetch(address),
         type: "BuyerTransactions"
     };
 }
-GetSellerOpenTransactions = async(address) =>{
+export async function GetSellerOpenTransactions (address){
     return {
         address: address,
-        data: await transaction_program.account.sellerOpenTransactions.fetch(address),
+        data: await TRANSACTION_PROGRAM.account.sellerOpenTransactions.fetch(address),
         type: "SellerTransactions"
     };
 }
 
 /// GENERAL RPC UTILS (really scuffed but >:D)
-GetTransactionSeller = async(tx_addr) => {
+export async function GetTransactionSeller (tx_addr){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr)
     }
@@ -152,12 +151,12 @@ GetTransactionSeller = async(tx_addr) => {
     return new PublicKey(tx.data.slice(40,72))
 }
 
-GetMultipleTransactionSeller = async(tx_addrs, include_tx = false) => {
+export async function GetMultipleTransactionSeller (tx_addrs, include_tx = false){
     let txs = await this.connection.getMultipleAccountsInfo(tx_addrs);
     return txs.map(tx => new PublicKey(tx.data.slice(40,72)))
 }
 
-GetTransactionBuyer = async(tx_addr) => {
+export async function GetTransactionBuyer (tx_addr){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr)
     }
@@ -166,12 +165,12 @@ GetTransactionBuyer = async(tx_addr) => {
     return new PublicKey(tx.data.slice(8,40))
 }
 
-GetMultipleTransactionBuyer = async(tx_addrs) => {
+export async function GetMultipleTransactionBuyer (tx_addrs){
     let txs = await this.connection.getMultipleAccountsInfo(tx_addrs);
     return txs.map(tx =>new PublicKey( tx.data.slice(8,40)))
 }
 
-GetMultipleTxLogOwners = async(log_addrs) => {
+export async function GetMultipleTxLogOwners (log_addrs){
     let logs = await this.connection.getMultipleAccountsInfo(log_addrs);
     return logs.map(log => new PublicKey(log.data.slice(40,72)))
 }
@@ -181,17 +180,17 @@ GetMultipleTxLogOwners = async(log_addrs) => {
 //////////////////////////////////////////////////
 /// UTILS
 
-FindNextOpenBuyerTransaction = async(
+export async function FindNextOpenBuyerTransaction (
     log_addr
-) => {
+){
     let log_struct = (await this.GetBuyerOpenTransactions(log_addr)).data;
     let indexes = log_struct.indices[0].toString(2).split("").reverse().join("") + log_struct.indices[1].toString(2).split("").reverse().join("") + log_struct.indices[2].toString(2).toString(2).split("").reverse().join("")
     return indexes.indexOf("0");
 }
 
-FindNextOpenSellerTransaction = async(
+export async function FindNextOpenSellerTransaction (
     log_addr
-) => {
+){
     let log_struct = (await this.GetSellerOpenTransactions(log_addr)).data;
     let indexes = log_struct.openTransactions[0].toString(2).split("").reverse().join("") + log_struct.openTransactions[1].toString(2).split("").reverse().join("") + log_struct.openTransactions[2].toString(2).split("").reverse().join("") + log_struct.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
     return indexes.indexOf("0");
