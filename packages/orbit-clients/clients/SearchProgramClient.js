@@ -390,13 +390,11 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
     let joined_kwds = remaining_kwds.join("");
 
     let bucket_size = remaining_kwds.length + 1;
-    
-    let indexer_addr = GenKwdIndexerAddress(word, bucket_size, "physical");
-    let indexer = (await FetchKwdsTreeIndex(indexer_addr)).data;
 
     let to_append = false;
     
-    let current_node = GenKwdTreeNodeAddress(word, bucket_size, 0, "physical");
+    let curr_index = 0;
+    let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "physical");
     let curr_node_data = FetchKwdsTreeNode(current_node).data;
     let encoding_head_len = bucket_size/2;
     let min_len = 5*((bucket_size*16)+encoding_head_len+1);
@@ -406,13 +404,13 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
         for(let i = 0; i < encoding_head_len; i++){
             left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let left_head_word = curr_node_data.slice(base+4, base+4+left_head);
+        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head));
         base += left_head;
         let left_tail = 0;
         for(let i = 0; i < encoding_head_len; i++){
             left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let left_tail_word = curr_node_data.slice(base+4, base+4+left_tail);
+        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail));
         base += right_head;
         let left_index = new anchor.BN(curr_node_data.slice(base,base+2));
 
@@ -421,45 +419,73 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
         for(let i = 0; i < encoding_head_len; i++){
             right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let right_head_word = curr_node_data.slice(base+4, base+4+right_head);
+        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head));
         base += right_head;
         let right_tail = 0;
         for(let i = 0; i < encoding_head_len; i++){
             right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let right_tail_word = curr_node_data.slice(base+4, base+4+right_tail);
+        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail));
         base += right_head;
         let right_index = new anchor.BN(curr_node_data.slice(base,base+2));
 
         if(joined_kwds > left_head_word && joined_kwds < right_head_word){
             current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "physical");
             if(left_tail_word < joined_kwds) to_append = true;
+            curr_index = left_index;
         }else{
             current_node = GenKwdTreeNodeAddress(word, bucket_size, right_index, "physical");
             if(right_tail_word < joined_kwds) to_append = true;
+            curr_index = right_index;
         }
 
         curr_node_data = await FetchKwdsTreeNode(current_node).data;
     }
 
+    let start = 0;
+    let middle = 0;
+    let end = 0;
+
     if(to_append){
         let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
-        let middle = tail_offset;
-        let start = middle-1;
-        let end = middle+1;
+        middle = tail_offset;
+        start = tail_offset-1;
+        // let end = 0;
         while(curr_node_data[start] != 0){
             start--;
         }
-        while(curr_node_data[end] != 0){
-            end++;
-        }
-        
-    }else{
+        // while(curr_node_data[end] != 0){
+        //     end++;
+        // }
 
+    }else{
+        start = 10;
+        while((start < curr_node_data.length) && (middle != 0) && (end != 0)){
+            for(let i = 0; i < encoding_head_len; i++){
+                middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+            };
+            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+encoding_head_len+middle));
+
+            // if our word is greater than the word we just traversed: insert here // break case
+            if(joined_kwds > prev_word){
+                let mid_base = start+middle+encoding_head_len + 1;
+                for(let i = 0; i < encoding_head_len; i++){
+                    end += new anchor.BN(curr_node_data[mid_base + i] >> 4) + new anchor.BN(curr_node_data[mid_base + i] & 15)
+                };
+                break;
+            }
+
+            start += encoding_head_len + middle+1;
+            middle = 0
+            end = 0;
+        }
     }
 
-    return SEARCH_PROGRAM.methods.addPhysicalKwdsNode(word, remaining_kwds, curr_index, )
-    .accounts({})
+    return SEARCH_PROGRAM.methods.addPhysicalKwdsNode(word, remaining_kwds, curr_index, start, middle, end)
+    .accounts({
+        treeNode: GenKwdTreeNodeAddress(word, bucket_size, curr_index, "physical"),
+        payer: payer_wallet.publicKey
+    })
     .instruction()
 }
 export async function SplitPhysicalTreeNode (word, remaining_kwds, payer_wallet){
