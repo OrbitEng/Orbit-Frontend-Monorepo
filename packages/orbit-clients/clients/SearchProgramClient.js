@@ -331,7 +331,7 @@ export async function PopulatePhysicalKwdsToCache (word, remaining_kwds, payer_w
     })
     .instruction()
 }
-export async function SyncPhysicalKwdsCache (word, payer_wallet){
+export async function SyncPhysicalKwdsCache (word){
     word = word.toLowerCase();
     
     let num_words = remaining_kwds.length+1
@@ -397,8 +397,9 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
     let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "physical");
     let curr_node_data = FetchKwdsTreeNode(current_node).data;
     let encoding_head_len = bucket_size/2;
-    let min_len = 5*((bucket_size*16)+encoding_head_len+1);
-    while(curr_node_data.length < min_len){
+    let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
+    let min_data_size = 5*min_entry_len;
+    while(curr_node_data.length < min_data_size){
         let base = 8;
         let left_head = 0;
         for(let i = 0; i < encoding_head_len; i++){
@@ -446,10 +447,10 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
     let middle = 0;
     let end = 0;
 
+    let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
     if(to_append){
-        let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
-        middle = tail_offset;
-        start = tail_offset-1;
+        middle = tail_offset-1;
+        start = middle-1;
         // let end = 0;
         while(curr_node_data[start] != 0){
             start--;
@@ -460,59 +461,501 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
 
     }else{
         start = 10;
-        while((start < curr_node_data.length) && (middle != 0) && (end != 0)){
+        // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
+        while((start < curr_node_data.length) && (middle <= encoding_head_len) && (end != 0)){
             for(let i = 0; i < encoding_head_len; i++){
                 middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
             };
-            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+encoding_head_len+middle));
+            middle += 1;
+            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle));
 
             // if our word is greater than the word we just traversed: insert here // break case
             if(joined_kwds > prev_word){
-                let mid_base = start+middle+encoding_head_len + 1;
+                end = encoding_head_len;
                 for(let i = 0; i < encoding_head_len; i++){
                     end += new anchor.BN(curr_node_data[mid_base + i] >> 4) + new anchor.BN(curr_node_data[mid_base + i] & 15)
                 };
+                end += 1;
                 break;
             }
 
-            start += encoding_head_len + middle+1;
-            middle = 0
+            start += middle+1;
+            middle = encoding_head_len;
             end = 0;
         }
     }
 
-    return SEARCH_PROGRAM.methods.addPhysicalKwdsNode(word, remaining_kwds, curr_index, start, middle, end)
+    
+    let ret = [
+        SEARCH_PROGRAM.methods.addPhysicalKwdsNode(word, remaining_kwds, curr_index, start, middle, end)
+        .accounts({
+            treeNode: GenKwdTreeNodeAddress(word, bucket_size, curr_index, "physical"),
+            payer: payer_wallet.publicKey
+        })
+        .instruction()
+    ];
+    
+    if ((tail_offset < min_entry_len) && ((min_entry_len + curr_node_data.length) > 8192)) {
+        ret.push(
+            await SplitPhysicalTreeNode(word, bucket_size, curr_index, payer_wallet)
+        );
+    }
+
+    return ret;
+}
+export async function SplitPhysicalTreeNode (word, bucket_len, bucket_index, payer_wallet){
+    word = word.toLowerCase();
+
+    let indexer_addr = GenKwdIndexerAddress(word, bucket_size, "physical");
+    let indexer = await FetchKwdsTreeIndex(indexer_addr);
+
+    let left_index = indexer.treeLength + 1;
+    let right_index = indexer.treeLength + 2;
+
+    return SEARCH_PROGRAM.methods.splitPhysicalTreeNode(word, bucket_len, bucket_index)
     .accounts({
-        treeNode: GenKwdTreeNodeAddress(word, bucket_size, curr_index, "physical"),
+        indexer: indexer_addr,
+        treeNode: GenKwdTreeNodeAddress(word, bucket_len, bucket_index, "physical"),
+        leftBranch: GenKwdTreeNodeAddress(word, bucket_len, left_index, "physical"),
+        rightBranch: GenKwdTreeNodeAddress(word, bucket_len, right_index, "physical"),
         payer: payer_wallet.publicKey
     })
     .instruction()
 }
-export async function SplitPhysicalTreeNode (word, remaining_kwds, payer_wallet){
-    word = word.toLowerCase();
-    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
-    remaining_kwds.sort();
-}
 
 /// DIGITAL
 
-export async function InitDigitalKwdsTreeCache (){}
-export async function PopulateDigitalKwdsToCache (){}
-export async function SyncDigitalKwdsCache (){}
-export async function UpdateDigitalKwdsCache (){}
-export async function InitDigitalKwdsNode (){}
-export async function AddDigitalKwdsNode (){}
-export async function SplitDigitalTreeNode (){}
+export async function InitDigitalKwdsTreeCache (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.sort();
+    return SEARCH_PROGRAM.methods.initDigitalKwdsTreeCache(word, remaining_kwds)
+    .accounts({
+        kwdCache: GenKwdTreeCacheAddress(word, remaining_kwds.length + 1, "digital"),
+        payer: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function PopulateDigitalKwdsToCache (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.sort();
+
+    return SEARCH_PROGRAM.methods.populateDigitalKwdsToCache(word, remaining_kwds)
+    .accounts({
+        kwdsCache: GenKwdTreeCacheAddress(word, remaining_kwds.length + 1, "digital"),
+        payer: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function SyncDigitalKwdsCache (word, payer_wallet){
+    word = word.toLowerCase();
+    
+    let num_words = remaining_kwds.length+1
+    let cache_addr = GenKwdTreeCacheAddress(word, num_words, "digital");
+    let tree_cache = (await FetchKwdsTreeCache(cache_addr)).data.slice(8);
+    let entry_byte_len = (num_words*16)+4;
+    for(let i = 0; i < 15; i++){
+        let words = [word];
+        for(let j = 0; j < num_words; j++){
+            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len)));
+        };
+        words.sort();
+        GenProductCacheAddress(words, "digital");
+    }
+
+    return SEARCH_PROGRAM.methods.syncDigitalKwdsCache(word, new anchor.BN(num_words))
+    .account({
+        kwdsCache: cache_addr
+    })
+    .instruction()
+}
+export async function UpdateDigitalKwdsCache (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.push(word);
+    remaining_kwds.sort();
+
+    return SEARCH_PROGRAM.methods.updateDigitalKwdsCache(word, remaining_kwds)
+    .accounts({
+        kwdsCache: GenKwdTreeCacheAddress(word, remaining_kwds.length+1),
+        newBucket: GenProductCacheAddress(remaining_kwds, "digital")
+    })
+    .instruction()
+}
+export async function InitDigitalKwdsNode (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.sort();
+
+    let bucket_size = remaining_kwds.length + 1;
+
+    return SEARCH_PROGRAM.methods.initDigitalKwdsNode(word, remaining_kwds)
+    .accounts({
+        indexer: GenKwdIndexerAddress(word, bucket_size, "digital"),
+        treeNode: GenKwdTreeNodeAddress(word, bucket_size, "digital"),
+        cacheNode: GenKwdTreeCacheAddress(word, bucket_size, "digital"),
+        payer: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.sort();
+
+    let joined_kwds = remaining_kwds.join("");
+
+    let bucket_size = remaining_kwds.length + 1;
+
+    let to_append = false;
+    
+    let curr_index = 0;
+    let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "digital");
+    let curr_node_data = FetchKwdsTreeNode(current_node).data;
+    let encoding_head_len = bucket_size/2;
+    let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
+    let min_data_size = 5*min_entry_len;
+    while(curr_node_data.length < min_data_size){
+        let base = 8;
+        let left_head = 0;
+        for(let i = 0; i < encoding_head_len; i++){
+            left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+        };
+        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head));
+        base += left_head;
+        let left_tail = 0;
+        for(let i = 0; i < encoding_head_len; i++){
+            left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+        };
+        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail));
+        base += right_head;
+        let left_index = new anchor.BN(curr_node_data.slice(base,base+2));
+
+
+        let right_head = 0;
+        for(let i = 0; i < encoding_head_len; i++){
+            right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+        };
+        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head));
+        base += right_head;
+        let right_tail = 0;
+        for(let i = 0; i < encoding_head_len; i++){
+            right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+        };
+        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail));
+        base += right_head;
+        let right_index = new anchor.BN(curr_node_data.slice(base,base+2));
+
+        if(joined_kwds > left_head_word && joined_kwds < right_head_word){
+            current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "digital");
+            if(left_tail_word < joined_kwds) to_append = true;
+            curr_index = left_index;
+        }else{
+            current_node = GenKwdTreeNodeAddress(word, bucket_size, right_index, "digital");
+            if(right_tail_word < joined_kwds) to_append = true;
+            curr_index = right_index;
+        }
+
+        curr_node_data = await FetchKwdsTreeNode(current_node).data;
+    }
+
+    let start = 0;
+    let middle = 0;
+    let end = 0;
+
+    let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
+    if(to_append){
+        middle = tail_offset-1;
+        start = middle-1;
+        // let end = 0;
+        while(curr_node_data[start] != 0){
+            start--;
+        }
+        // while(curr_node_data[end] != 0){
+        //     end++;
+        // }
+
+    }else{
+        start = 10;
+        // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
+        while((start < curr_node_data.length) && (middle <= encoding_head_len) && (end != 0)){
+            for(let i = 0; i < encoding_head_len; i++){
+                middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+            };
+            middle += 1;
+            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle));
+
+            // if our word is greater than the word we just traversed: insert here // break case
+            if(joined_kwds > prev_word){
+                end = encoding_head_len;
+                for(let i = 0; i < encoding_head_len; i++){
+                    end += new anchor.BN(curr_node_data[mid_base + i] >> 4) + new anchor.BN(curr_node_data[mid_base + i] & 15)
+                };
+                end += 1;
+                break;
+            }
+
+            start += middle+1;
+            middle = encoding_head_len;
+            end = 0;
+        }
+    }
+
+    
+    let ret = [
+        SEARCH_PROGRAM.methods.addDigitalKwdsNode(word, remaining_kwds, curr_index, start, middle, end)
+        .accounts({
+            treeNode: GenKwdTreeNodeAddress(word, bucket_size, curr_index, "digital"),
+            payer: payer_wallet.publicKey
+        })
+        .instruction()
+    ];
+    
+    if ((tail_offset < min_entry_len) && ((min_entry_len + curr_node_data.length) > 8192)) {
+        ret.push(
+            await SplitDigitalTreeNode(word, bucket_size, curr_index, payer_wallet)
+        );
+    }
+
+    return ret;
+}
+export async function SplitDigitalTreeNode (word, bucket_len, bucket_index, payer_wallet){
+    word = word.toLowerCase();
+
+    let indexer_addr = GenKwdIndexerAddress(word, bucket_size, "digital");
+    let indexer = await FetchKwdsTreeIndex(indexer_addr);
+
+    let left_index = indexer.treeLength + 1;
+    let right_index = indexer.treeLength + 2;
+
+    return SEARCH_PROGRAM.methods.splitDigitalTreeNode(word, bucket_len, bucket_index)
+    .accounts({
+        indexer: indexer_addr,
+        treeNode: GenKwdTreeNodeAddress(word, bucket_len, bucket_index, "digital"),
+        leftBranch: GenKwdTreeNodeAddress(word, bucket_len, left_index, "digital"),
+        rightBranch: GenKwdTreeNodeAddress(word, bucket_len, right_index, "digital"),
+        payer: payer_wallet.publicKey
+    })
+    .instruction()
+}
 
 /// COMMISSION
 
-export async function InitCommissionKwdsTreeCache (){}
-export async function PopulateCommissionKwdsToCache (){}
-export async function SyncCommissionKwdsCache (){}
-export async function UpdateCommissionKwdsCache (){}
-export async function InitCommissionKwdsNode (){}
-export async function AddCommissionKwdsNode (){}
-export async function SplitCommissionTreeNode (){}
+export async function InitCommissionKwdsTreeCache (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.sort();
+    return SEARCH_PROGRAM.methods.initCommissionKwdsTreeCache(word, remaining_kwds)
+    .accounts({
+        kwdCache: GenKwdTreeCacheAddress(word, remaining_kwds.length + 1, "commission"),
+        payer: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function PopulateCommissionKwdsToCache (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.sort();
+
+    return SEARCH_PROGRAM.methods.populateCommissionKwdsToCache(word, remaining_kwds)
+    .accounts({
+        kwdsCache: GenKwdTreeCacheAddress(word, remaining_kwds.length + 1, "commission"),
+        payer: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function SyncCommissionKwdsCache (word, payer_wallet){
+    word = word.toLowerCase();
+    
+    let num_words = remaining_kwds.length+1
+    let cache_addr = GenKwdTreeCacheAddress(word, num_words, "commission");
+    let tree_cache = (await FetchKwdsTreeCache(cache_addr)).data.slice(8);
+    let entry_byte_len = (num_words*16)+4;
+    for(let i = 0; i < 15; i++){
+        let words = [word];
+        for(let j = 0; j < num_words; j++){
+            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len)));
+        };
+        words.sort();
+        GenProductCacheAddress(words, "commission");
+    }
+
+    return SEARCH_PROGRAM.methods.syncCommissionKwdsCache(word, new anchor.BN(num_words))
+    .account({
+        kwdsCache: cache_addr
+    })
+    .instruction()
+}
+export async function UpdateCommissionKwdsCache (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.push(word);
+    remaining_kwds.sort();
+
+    return SEARCH_PROGRAM.methods.updateCommissionKwdsCache(word, remaining_kwds)
+    .accounts({
+        kwdsCache: GenKwdTreeCacheAddress(word, remaining_kwds.length+1),
+        newBucket: GenProductCacheAddress(remaining_kwds, "commission")
+    })
+    .instruction()
+}
+export async function InitCommissionKwdsNode (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.sort();
+
+    let bucket_size = remaining_kwds.length + 1;
+
+    return SEARCH_PROGRAM.methods.initCommissionKwdsNode(word, remaining_kwds)
+    .accounts({
+        indexer: GenKwdIndexerAddress(word, bucket_size, "commission"),
+        treeNode: GenKwdTreeNodeAddress(word, bucket_size, "commission"),
+        cacheNode: GenKwdTreeCacheAddress(word, bucket_size, "commission"),
+        payer: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet){
+    word = word.toLowerCase();
+    remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
+    remaining_kwds.sort();
+
+    let joined_kwds = remaining_kwds.join("");
+
+    let bucket_size = remaining_kwds.length + 1;
+
+    let to_append = false;
+    
+    let curr_index = 0;
+    let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "commission");
+    let curr_node_data = FetchKwdsTreeNode(current_node).data;
+    let encoding_head_len = bucket_size/2;
+    let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
+    let min_data_size = 5*min_entry_len;
+    while(curr_node_data.length < min_data_size){
+        let base = 8;
+        let left_head = 0;
+        for(let i = 0; i < encoding_head_len; i++){
+            left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+        };
+        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head));
+        base += left_head;
+        let left_tail = 0;
+        for(let i = 0; i < encoding_head_len; i++){
+            left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+        };
+        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail));
+        base += right_head;
+        let left_index = new anchor.BN(curr_node_data.slice(base,base+2));
+
+
+        let right_head = 0;
+        for(let i = 0; i < encoding_head_len; i++){
+            right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+        };
+        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head));
+        base += right_head;
+        let right_tail = 0;
+        for(let i = 0; i < encoding_head_len; i++){
+            right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+        };
+        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail));
+        base += right_head;
+        let right_index = new anchor.BN(curr_node_data.slice(base,base+2));
+
+        if(joined_kwds > left_head_word && joined_kwds < right_head_word){
+            current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "commission");
+            if(left_tail_word < joined_kwds) to_append = true;
+            curr_index = left_index;
+        }else{
+            current_node = GenKwdTreeNodeAddress(word, bucket_size, right_index, "commission");
+            if(right_tail_word < joined_kwds) to_append = true;
+            curr_index = right_index;
+        }
+
+        curr_node_data = await FetchKwdsTreeNode(current_node).data;
+    }
+
+    let start = 0;
+    let middle = 0;
+    let end = 0;
+
+    let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
+    if(to_append){
+        middle = tail_offset-1;
+        start = middle-1;
+        // let end = 0;
+        while(curr_node_data[start] != 0){
+            start--;
+        }
+        // while(curr_node_data[end] != 0){
+        //     end++;
+        // }
+
+    }else{
+        start = 10;
+        // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
+        while((start < curr_node_data.length) && (middle <= encoding_head_len) && (end != 0)){
+            for(let i = 0; i < encoding_head_len; i++){
+                middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+            };
+            middle += 1;
+            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle));
+
+            // if our word is greater than the word we just traversed: insert here // break case
+            if(joined_kwds > prev_word){
+                end = encoding_head_len;
+                for(let i = 0; i < encoding_head_len; i++){
+                    end += new anchor.BN(curr_node_data[mid_base + i] >> 4) + new anchor.BN(curr_node_data[mid_base + i] & 15)
+                };
+                end += 1;
+                break;
+            }
+
+            start += middle+1;
+            middle = encoding_head_len;
+            end = 0;
+        }
+    }
+
+    
+    let ret = [
+        SEARCH_PROGRAM.methods.addCommissionKwdsNode(word, remaining_kwds, curr_index, start, middle, end)
+        .accounts({
+            treeNode: GenKwdTreeNodeAddress(word, bucket_size, curr_index, "commission"),
+            payer: payer_wallet.publicKey
+        })
+        .instruction()
+    ];
+    
+    if ((tail_offset < min_entry_len) && ((min_entry_len + curr_node_data.length) > 8192)) {
+        ret.push(
+            await SplitCommissionTreeNode(word, bucket_size, curr_index, payer_wallet)
+        );
+    }
+
+    return ret;
+}
+export async function SplitCommissionTreeNode (word, bucket_len, bucket_index, payer_wallet){
+    word = word.toLowerCase();
+
+    let indexer_addr = GenKwdIndexerAddress(word, bucket_size, "commission");
+    let indexer = await FetchKwdsTreeIndex(indexer_addr);
+
+    let left_index = indexer.treeLength + 1;
+    let right_index = indexer.treeLength + 2;
+
+    return SEARCH_PROGRAM.methods.splitCommissionTreeNode(word, bucket_len, bucket_index)
+    .accounts({
+        indexer: indexer_addr,
+        treeNode: GenKwdTreeNodeAddress(word, bucket_len, bucket_index, "commission"),
+        leftBranch: GenKwdTreeNodeAddress(word, bucket_len, left_index, "commission"),
+        rightBranch: GenKwdTreeNodeAddress(word, bucket_len, right_index, "commission"),
+        payer: payer_wallet.publicKey
+    })
+    .instruction()
+}
 
 
 ////////////////////////////////////////////
@@ -582,27 +1025,30 @@ export function GenProductQueueAddress (kwds, market_type){
 ///////////////////////////////////////////
 /// FETCH UTILS
 
-FetchKwdsTreeCache = async (address) => {
+export async function FetchKwdsTreeCache (address){
     address = typeof address == "string" ? PublicKey(address) : address;
     return SEARCH_PROGRAM.account.kwdsTreeCache.getAccountInfo(address);
 }
 
-FetchKwdsTreeIndex = async (address) => {
+/**
+ * return the object rather than account info
+ */
+export async function FetchKwdsTreeIndex (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    return SEARCH_PROGRAM.account.kwdsTreeIndex.getAccountInfo(address);
+    return SEARCH_PROGRAM.account.kwdsTreeIndex.fetch(address);
 }
 
-FetchKwdsTreeNode = async (address) => {
+export async function FetchKwdsTreeNode (address){
     address = typeof address == "string" ? PublicKey(address) : address;
     return SEARCH_PROGRAM.account.kwdsTreeNode.getAccountInfo(address);
 }
 
-FetchBucketCacheRoot = async (address) => {
+export async function FetchBucketCacheRoot (address){
     address = typeof address == "string" ? PublicKey(address) : address;
     return SEARCH_PROGRAM.account.bucketCacheRoot.getAccountInfo(address);
 }
 
-FetchBucketDrainVec = async (address) => {
+export async function FetchBucketDrainVec (address){
     address = typeof address == "string" ? PublicKey(address) : address;
     return SEARCH_PROGRAM.account.bucketDrainVec.getAccountInfo(address);
 }
