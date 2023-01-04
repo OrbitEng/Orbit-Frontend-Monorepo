@@ -16,7 +16,7 @@ export const PHYSICAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.addr
 /// TRANSACTION GENERAL
 
 /// :SOL
-OpenTransactionSol = async (
+export async function OpenTransactionSol (
     tx_addr,
     sellerIndex,
     vendor_log_address,
@@ -31,7 +31,7 @@ OpenTransactionSol = async (
     
     useDiscount,
     payer_wallet
-) =>{
+){
     if(typeof product == "string"){
         product = new PublicKey(product);
     }
@@ -58,13 +58,13 @@ OpenTransactionSol = async (
     return new_physical_tx.toString()
 };
 
-CloseTransactionSol = async (tx_addr,
+export async function CloseTransactionSol (tx_addr,
     buyer_account_address,
     buyer_wallet,
     seller_account_address,
     seller_wallet,
     reflink_accounts_chain
-) =>{
+){
 
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr_str);
@@ -108,10 +108,10 @@ CloseTransactionSol = async (tx_addr,
     return tx_hash;
 };
 
-FundEscrowSol = async (
+export async function FundEscrowSol (
     tx_addr_str,
     payer_wallet
-) =>{
+){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr_str);
     }
@@ -131,13 +131,13 @@ FundEscrowSol = async (
     return tx_hash;
 };
 
-SellerEarlyDeclineSol = async (
+export async function SellerEarlyDeclineSol (
     tx_addr_str,
 
     buyer_wallet,
     buyer_account,
 payer_wallet
-) =>{
+){
 
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr_str);
@@ -163,7 +163,7 @@ payer_wallet
 };
 
 /// :SPL
-OpenTransactionSpl = async (
+export async function OpenTransactionSpl (
     tx_addr,
     sellerIndex,
     vendor_log_address,
@@ -179,7 +179,7 @@ OpenTransactionSpl = async (
     
     useDiscount,
     payer_wallet
-) =>{
+){
     if(typeof product == "string"){
         product = new PublicKey(product);
     }
@@ -208,14 +208,14 @@ OpenTransactionSpl = async (
 };
 
 
-CloseTransactionSpl = async (
+export async function CloseTransactionSpl (
     tx_addr,
 
     buyer_wallet,
     seller_wallet,
 
     reflink_accounts_chain
-) =>{
+){
     if (typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     }
@@ -282,10 +282,10 @@ CloseTransactionSpl = async (
     .instruction()
 };
 
-FundEscrowSpl = async (
+export async function FundEscrowSpl (
     tx_addr,
     payer_wallet
-) =>{
+){
     if (typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     }
@@ -351,7 +351,7 @@ payer_wallet
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// DISPUTE
-OpenDispute = async (
+export async function OpenDispute (
     tx_addr,
     dispute_addr,
     threshold,
@@ -359,7 +359,7 @@ OpenDispute = async (
     buyer_account,
     seller_account,
 payer_wallet
-) =>{
+){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     }
@@ -379,7 +379,7 @@ payer_wallet
     .instruction()
 }
 
-CloseDisputeSol = async (
+export async function CloseDisputeSol (
     tx_addr,
     tx_struct,
     dispute_struct,
@@ -394,7 +394,7 @@ CloseDisputeSol = async (
     seller_account
     ,
 payer_wallet
-) =>{
+){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     }
@@ -423,7 +423,7 @@ payer_wallet
     })
     .instruction()
 }
-CloseDisputeSpl = async (
+export async function CloseDisputeSpl (
     tx_addr,
     dispute_addr,
     dispute_funder,
@@ -435,7 +435,7 @@ CloseDisputeSpl = async (
     buyer_account,
     
     seller_account
-) =>{
+){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     }
@@ -472,11 +472,11 @@ CloseDisputeSpl = async (
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// GENERAL CALLS
-LeaveReview = async (
+export async function LeaveReview (
     tx_addr,
     review_receiver,
     market_account
-) =>{
+){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr)
     };
@@ -496,12 +496,12 @@ LeaveReview = async (
     
 };
 
-CloseTransactionAccount = async (
+export async function CloseTransactionAccount (
     tx_addr,
     tx_log,
     buyer_wallet,
 payer_wallet
-) =>{
+){
 
     if (typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
@@ -573,7 +573,7 @@ export function GenEscrow (tx_addr, buyer_log_addr){
 
 /// ACCESSORS RPC
 
-GetTransaction = async (tx_addr) => {
+export async function GetTransaction (tx_addr){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     };

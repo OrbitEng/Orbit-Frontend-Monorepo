@@ -96,7 +96,7 @@ export function GenMarketAuth (){
 ///////////////////////////////////////////////////
 /// ACCESSORS
 
-GetDispute = async (dispute_addr) =>{
+export async function GetDispute (dispute_addr){
     if(typeof dispute_addr == "string"){
         dispute_addr = new PublicKey(dispute_addr)
     }

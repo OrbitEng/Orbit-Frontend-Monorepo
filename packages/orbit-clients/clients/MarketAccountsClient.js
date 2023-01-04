@@ -16,9 +16,9 @@ export const MARKET_ACCOUNTS_PROGRAM = new anchor.Program(idl, idl.metadata.addr
 ////////////////////////////////////////////////////////////////
 /// ACCOUNT
 
-CreateAccount = async (metadata_link, media_link, reflink,
+export async function CreateAccount (metadata_link, media_link, reflink,
     payer_wallet
-) => {
+){
 
     if (typeof reflink == "string"){
         reflink = new PublicKey(reflink);
@@ -72,10 +72,10 @@ payer_wallet
     .instruction()
 }
 
-SetReflink = async (
+export async function SetReflink (
     reflink,
 payer_wallet
-) => {
+){
     if(typeof reflink == "string"){
         reflink = new PublicKey(reflink);
     }
@@ -342,9 +342,9 @@ export async function DeclineTransfer (
 //////////////////////////////////////////////////////////////////
 //// REFLINK
 
-CreateReflink = async (
+export async function CreateReflink (
         payer_wallet
-) => {
+){
     let reflink_addr = this.GenReflinkAddress(payer_wallet.publicKey);
 
     await MARKET_ACCOUNTS_PROGRAM.methods
@@ -357,9 +357,9 @@ CreateReflink = async (
     .instruction()
 }
 
-DeleteReflink = async (
+export async function DeleteReflink (
         payer_wallet
-) => {
+){
     const market_acc = this.GenAccountAddress();
     const reflink_addr = (await this.GetAccount(market_acc)).data.owned_reflink;
     const reflink_struct = await this.GetReflinkStruct(reflink_addr);
@@ -387,9 +387,9 @@ DeleteReflink = async (
 //////////////////////////////////////////////////////////////////
 /// STRUCT FETCHING
 
-GetAccount = async (account_addr,
+export async function GetAccount (account_addr,
     payer_wallet
-) => {
+){
     if(!account_addr) return;
     if (typeof account_addr == "string"){
         account_addr = new PublicKey(account_addr);
@@ -403,7 +403,7 @@ GetAccount = async (account_addr,
     
 };
 
-GetAccountTransfer = async (transfer_addr) => {
+export async function GetAccountTransfer (transfer_addr){
     if(!transfer_addr) return;
     try{
         if (typeof transfer_addr == "string"){
@@ -423,7 +423,7 @@ GetAccountTransfer = async (transfer_addr) => {
     
 };
 
-GetMultipleMarketAccounts = async (account_addrs) => {
+export async function GetMultipleMarketAccounts (account_addrs){
     if(!Array.isArray(account_addrs)){
         return [];
     }
