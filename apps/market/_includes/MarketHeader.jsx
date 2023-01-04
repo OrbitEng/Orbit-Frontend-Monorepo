@@ -11,16 +11,6 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { useContext, useEffect, useState } from 'react';
 
 const {
-	DigitalMarketClient,
-	PhysicalMarketClient,
-	CommissionMarketClient,
-	DisputeClient,
-	MarketAccountsClient,
-	ProductClient,
-	TransactionClient
-} = require("orbit-clients");
-
-const {
 	BundlrClient,
 	ChatClient,
 	PythClient,
@@ -134,36 +124,6 @@ export function HomeHeader(props) {
 			setAnchorProvider(new anchor.AnchorProvider(connection, temp_wallet, anchor.AnchorProvider.defaultOptions()));
 		}
 	},[connection, wallet])
-
-	useEffect(async ()=>{
-		if(!(anchorProvider && connection)) return;
-
-		if(!digitalMarketClient){
-			setDigitalMarketClient(new DigitalMarketClient(connection, anchorProvider));
-		}
-		if(!disputeProgramClient){
-			setDisputeProgramClient(new DisputeClient(connection, anchorProvider));
-		}
-		if(!physicalMarketClient){
-			setPhysicalMarketClient(new PhysicalMarketClient(connection, anchorProvider));
-		}
-		if(!commissionMarketClient){
-			setCommissionMarketClient(new CommissionMarketClient(connection, anchorProvider))
-		}
-		
-		if(!productClient){
-			setProductClient(new ProductClient(connection, anchorProvider));
-		}
-
-		if(!transactionClient){
-			setTransactionClient(new TransactionClient(connection, anchorProvider));
-		}
-
-		if(!marketAccountsClient){
-			setMarketAccountsClient(new MarketAccountsClient(connection, anchorProvider));
-		}
-
-	}, [anchorProvider, connection])
 
 	useEffect(async ()=>{
 		if (!(wallet && wallet.publicKey && arweaveClient && marketAccountsClient)) return;

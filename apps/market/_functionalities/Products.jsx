@@ -28,8 +28,8 @@ export function DigitalProductFunctionalities(props){
         
         let buffers = files.join(">UwU<");
 
-        let media_url = await bundlrClient.UploadBuffer(buffers);
-        let desc_url = await bundlrClient.UploadBuffer(
+        let media_url = await bundlrClient.UploadBufferInstruction(buffers);
+        let desc_url = await bundlrClient.UploadBufferInstruction(
             JSON.stringify({
                 name: name,
                 description: description
@@ -96,7 +96,7 @@ export function DigitalProductFunctionalities(props){
         
         let buffers = files.join(">UwU<")
 
-        let tx_id = await bundlrClient.UploadBuffer(buffers);
+        let tx_id = await bundlrClient.UploadBufferInstruction(buffers);
 
         productClient.SetMedia(
             prod_addr,
@@ -106,7 +106,7 @@ export function DigitalProductFunctionalities(props){
     }
 
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
-        let tx_url = await bundlrClient.UploadBuffer(JSON.stringify({
+        let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
                 name: name,
                 description: desc
             }))
@@ -169,8 +169,8 @@ export function PhysicalProductFunctionalities(props){
 
         let buffers =files.join(">UwU<");
 
-        let media_url = await bundlrClient.UploadBuffer(buffers);
-        let desc_url = await bundlrClient.UploadBuffer(JSON.stringify({
+        let media_url = await bundlrClient.UploadBufferInstruction(buffers);
+        let desc_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
             name: name,
             description: description
         }));
@@ -230,7 +230,7 @@ export function PhysicalProductFunctionalities(props){
 
         let buffers = files.join(">UwU<")
 
-        let tx_id = await bundlrClient.UploadBuffer(buffers);
+        let tx_id = await bundlrClient.UploadBufferInstruction(buffers);
 
         return productClient.SetMedia(
             prod_addr,
@@ -242,7 +242,7 @@ export function PhysicalProductFunctionalities(props){
 
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
 
-        let tx_url = await bundlrClient.UploadBuffer(JSON.stringify({
+        let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
                 name: name,
                 description: desc
             }))
@@ -308,8 +308,8 @@ export function CommissionProductFunctionalities(props){
 
         let buffers = files.join(">UwU<")
 
-        let media_url = await bundlrClient.UploadBuffer(buffers);
-        let desc_url = await bundlrClient.UploadBuffer(JSON.stringify({
+        let media_url = await bundlrClient.UploadBufferInstruction(buffers);
+        let desc_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
                 name: name,
                 description: description
             }));
@@ -361,7 +361,7 @@ export function CommissionProductFunctionalities(props){
 
         let buffers = files.join(">UwU<")
 
-        let tx_id = await bundlrClient.UploadBuffer(buffers);
+        let tx_id = await bundlrClient.UploadBufferInstruction(buffers);
 
         return productClient.SetMedia(
             prod_addr,
@@ -373,7 +373,7 @@ export function CommissionProductFunctionalities(props){
 
     const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
 
-        let tx_url = await bundlrClient.UploadBuffer(JSON.stringify({
+        let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
                 name: name,
                 description: desc
             }))

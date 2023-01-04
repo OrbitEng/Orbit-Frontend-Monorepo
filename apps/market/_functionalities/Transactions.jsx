@@ -710,7 +710,7 @@ export function CommissionFunctionalities(){
         if(preview_file_dataurl.join){
             preview_file_dataurl = preview_file_dataurl.join(">UwU<")
         }
-        let ar_addr = await bundlrClient.UploadBuffer(preview_file_dataurl);
+        let ar_addr = await bundlrClient.UploadBufferInstruction(preview_file_dataurl);
 
         await commissionMarketClient.CommitPreview(
             tx_addr,
