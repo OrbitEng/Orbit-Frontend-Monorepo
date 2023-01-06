@@ -1,26 +1,25 @@
 import olmWasmPath from '@matrix-org/olm/olm.wasm'
 import Olm from '@matrix-org/olm';
 import sdk from "matrix-js-sdk";
-import {IDBClient, enc_common} from "browser-clients";
+import { GetAccount, GenAccountAddress} from 'orbit-clients/clients/MarketAccountsClient';
+import { GetBuyerOpenTransactions, GetSellerOpenTransactions, GetMultipleTxLogOwners } from 'orbit-clients/clients/OrbitTransactionClient';
+import { GetMultiplePhysicalTransactions } from 'orbit-clients/clients/PhysicalMarketClient';
+import { GetMultipleDigitalTransactions } from 'orbit-clients/clients/DigitalMarketClient';
+import { GetMultipleCommissionTransactions } from 'orbit-clients/clients/CommissionMarketClient';
+import { GetMultipleCommissionProducts, GetMultiplePhysicalProducts, GetMultipleDigitalProducts } from 'orbit-clients/clients/OrbitProductClient';
 const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
 
 export default class ChatClient{
-    constructor(auth_keypair, accounts_client, productClient, transactionClient, physicalClient, digitalClient, commissionClient, ar_client, userAccount){
+    constructor(auth_keypair, ar_client, userAccount){
         if(auth_keypair){
             this.auth_keypair = auth_keypair;
             this.matrix_name = this.UnsanitizeName(this.auth_keypair.publicKey.toString())
-            this.marketAccountsClient = accounts_client;
-            this.transactionClient = transactionClient;
             this.arweaveClient = ar_client;
             this.userAccount = userAccount;
-            this.physicalClient = physicalClient;
-            this.digitalClient = digitalClient;
-            this.commissionClient = commissionClient;
-            this.productclient = productClient;
         }
         
         this.matrixclient = sdk.createClient({
-            baseUrl: 'https://matrix.orbitmarketplace.net',
+            baseUrl: 'https://orbitmarkets.space',
             deviceId: "orbit_client"
         });
         
@@ -46,7 +45,7 @@ export default class ChatClient{
         }
 
         this.matrixclient = sdk.createClient({
-            baseUrl: 'https://matrix.orbitmarketplace.net',
+            baseUrl: 'https://orbitmarkets.space',
             userId: res.user_id,
             accessToken: res.access_token,
             sessionStore: window.localStorage,
@@ -93,8 +92,8 @@ export default class ChatClient{
                     let other_party_data;
 
                     try{
-                        other_party_data = await this.marketAccountsClient.GetAccount(
-                            this.marketAccountsClient.GenAccountAddress(desanitized_acc_address)
+                        other_party_data = await GetAccount(
+                            GenAccountAddress(desanitized_acc_address)
                         );
                     }catch(e){
                         console.log("error", e)
@@ -120,7 +119,7 @@ export default class ChatClient{
                 
                 let buyerindlengths = {};
                 if(this.userAccount.data.buyerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerDigitalTransactions)).data;
+                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerDigitalTransactions)).data;
                     let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -129,7 +128,7 @@ export default class ChatClient{
                     buyerindlengths.digital = indexes.length;
                 }
                 if(this.userAccount.data.buyerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerPhysicalTransactions)).data;
+                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerPhysicalTransactions)).data;
                     let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -138,7 +137,7 @@ export default class ChatClient{
                     buyerindlengths.physical = indexes.length;
                 }
                 if(this.userAccount.data.buyerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await this.transactionClient.GetBuyerOpenTransactions(this.userAccount.data.buyerCommissionTransactions)).data;
+                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerCommissionTransactions)).data;
                     let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -147,11 +146,11 @@ export default class ChatClient{
                     buyerindlengths.commission = indexes.length;
                 }
 
-                let buyer_digital_transactions = await this.digitalClient.GetMultipleTransactions(buyer_transactions.slice(0,sellerindlengths.digital));
-                let buyer_physical_transactions = await this.physicalClient.GetMultipleTransactions(buyer_transactions.slice(0,sellerindlengths.physical));
-                let buyer_commission_transactions = await this.commissionClient.GetMultipleTransactions(buyer_transactions.slice(0,sellerindlengths.commission));
+                let buyer_digital_transactions = await GetMultipleDigitalTransactions(buyer_transactions.slice(0,sellerindlengths.digital));
+                let buyer_physical_transactions = await GetMultiplePhysicalTransactions(buyer_transactions.slice(0,sellerindlengths.physical));
+                let buyer_commission_transactions = await GetMultipleCommissionTransactions(buyer_transactions.slice(0,sellerindlengths.commission));
 
-                let buyer_digital_products = await this.productclient.GetMultipleDigitalProducts(
+                let buyer_digital_products = await GetMultipleDigitalProducts(
                     buyer_digital_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 buyer_digital_products.forEach(async (prod)=>{
@@ -159,7 +158,7 @@ export default class ChatClient{
                     prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
                 });
 
-                let buyer_physical_products = await this.productclient.GetMultipleDigitalProducts(
+                let buyer_physical_products = await GetMultiplePhysicalProducts(
                     buyer_physical_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 buyer_physical_products.forEach(async (prod)=>{
@@ -167,7 +166,7 @@ export default class ChatClient{
                     prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
                 });
 
-                let buyer_commission_products = await this.productclient.GetMultipleDigitalProducts(
+                let buyer_commission_products = await GetMultipleCommissionProducts(
                     buyer_commission_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 buyer_commission_products.forEach(async (prod)=>{
@@ -176,7 +175,7 @@ export default class ChatClient{
                 });
 
                 let seller_tx_logs = [...buyer_digital_transactions, ...buyer_physical_transactions, ...buyer_commission_transactions].map(tx => tx.data.metadata.seller);
-                let seller_wallets = await this.transactionClient.GetMultipleTxLogOwners(seller_tx_logs);
+                let seller_wallets = await GetMultipleTxLogOwners(seller_tx_logs);
                 
                 ////////////////////////////////////////////////////////////////
                 /// SELLER TX CHUNK
@@ -215,7 +214,7 @@ export default class ChatClient{
 
                 let sellerindlengths = {};
                 if(this.userAccount.data.sellerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerDigitalTransactions)).data;
+                    let txs = (await GetSellerOpenTransactions(this.userAccount.data.sellerDigitalTransactions)).data;
                     let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -224,7 +223,7 @@ export default class ChatClient{
                     sellerindlengths.digital = indexes.length;
                 }
                 if(this.userAccount.data.sellerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerPhysicalTransactions)).data;
+                    let txs = (await GetSellerOpenTransactions(this.userAccount.data.sellerPhysicalTransactions)).data;
                     let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -233,7 +232,7 @@ export default class ChatClient{
                     sellerindlengths.physical = indexes.length;
                 }
                 if(this.userAccount.data.sellerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await this.transactionClient.GetSellerOpenTransactions(this.userAccount.data.sellerCommissionTransactions)).data;
+                    let txs = (await GetSellerOpenTransactions(this.userAccount.data.sellerCommissionTransactions)).data;
                     let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -242,11 +241,11 @@ export default class ChatClient{
                     sellerindlengths.commission = indexes.length;
                 }
 
-                let seller_digital_transactions = await this.digitalClient.GetMultipleTransactions(seller_transactions.slice(0,sellerindlengths.digital));
-                let seller_physical_transactions = await this.physicalClient.GetMultipleTransactions(seller_transactions.slice(0,sellerindlengths.physical));
-                let seller_commission_transactions = await this.commissionClient.GetMultipleTransactions(seller_transactions.slice(0,sellerindlengths.commission));
+                let seller_digital_transactions = await GetMultipleDigitalTransactions(seller_transactions.slice(0,sellerindlengths.digital));
+                let seller_physical_transactions = await GetMultiplePhysicalTransactions(seller_transactions.slice(0,sellerindlengths.physical));
+                let seller_commission_transactions = await GetMultipleCommissionTransactions(seller_transactions.slice(0,sellerindlengths.commission));
 
-                let seller_digital_products = await this.productclient.GetMultipleDigitalProducts(
+                let seller_digital_products = await GetMultipleDigitalProducts(
                     seller_digital_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 seller_digital_products.forEach(async (prod)=>{
@@ -254,7 +253,7 @@ export default class ChatClient{
                     prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
                 });
 
-                let seller_physical_products = await this.productclient.GetMultipleDigitalProducts(
+                let seller_physical_products = await GetMultiplePhysicalProducts(
                     seller_physical_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 seller_physical_products.forEach(async (prod)=>{
@@ -262,7 +261,7 @@ export default class ChatClient{
                     prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
                 });
 
-                let seller_commission_products = await this.productclient.GetMultipleDigitalProducts(
+                let seller_commission_products = await GetMultipleCommissionProducts(
                     seller_commission_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 seller_commission_products.forEach(async (prod)=>{
@@ -271,7 +270,7 @@ export default class ChatClient{
                 });
 
                 let buyer_tx_logs = [...seller_digital_transactions, ...seller_physical_transactions, ...seller_commission_transactions].map(tx => tx.data.metadata.buyer);
-                let buyer_wallets = await this.transactionClient.GetMultipleTxLogOwners(buyer_tx_logs);
+                let buyer_wallets = await GetMultipleTxLogOwners(buyer_tx_logs);
 
                 for(let i = 0; i < sellerindlengths.digital; i++){
                     seller_digital_transactions[i].data.metadata.product =
@@ -381,7 +380,7 @@ export default class ChatClient{
             room_id: roomId,
         } = await this.matrixclient.createRoom({
             visibility: 'private',
-            invite: ["@"+this.UnsanitizeName(userprofile.data.wallet.toString())+":orbitmarketplace"],
+            invite: ["@"+this.UnsanitizeName(userprofile.data.wallet.toString())+":orbitmarkets.space"],
             initial_state:[{
                 type: "m.room.encryption",
                 state_key: "",

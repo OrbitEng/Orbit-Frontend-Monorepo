@@ -18,7 +18,7 @@ export default class BundlrClient{
     }
 
 
-    UploadImageFinal = async(image_blob, x_slices, y_slices) =>{
+    UploadFinalBufferInstruction = async(image_blob, x_slices, y_slices) =>{
         
         let [width, height, dataurls] = await file_client.ChopImage(image_blob, x_slices, y_slices);
         
@@ -28,10 +28,10 @@ export default class BundlrClient{
         let buffs = encrypted.map(arr => arr[1]);
 
         buffs.unshift(width, height, x_slices, y_slices);
-        let tx = await this.UploadBufferInstruction(buffs.join(">UwU<"));
+        let [funding_tx, data_item] = await this.UploadBufferInstruction(buffs.join(">UwU<"));
 
-        await this.idb.WriteDatabase("transactions", tx, {"keypairs": kps});
-        return [tx, kps]
+        await this.idb.WriteDatabase("transactions", data_item.id, {"keypairs": kps});
+        return [funding_tx, data_item, kps]
 
     }
 
@@ -47,7 +47,7 @@ export default class BundlrClient{
      *  tx_id = DataItem.id
      *  ret[0].sendTx(), DataItem.upload()
      * @param {Buffer | TypedArray} buffer_in 
-     * @returns {[]FundingInstruction, DataItem}
+     * @returns {Promise<[]FundingInstruction, DataItem>}
      */
     UploadBufferInstruction = async(buffer_in) => {
         let dataitem = this.bundlr.createTransaction(buffer_in);
@@ -80,7 +80,7 @@ export default class BundlrClient{
     FundInstruction = async(price) =>{
         
         const c = this.bundlr.utils.currencyConfig;
-        const to = await this.bundlr.utils.getBundlerAddress(this.utils.currency);
+        const to = await this.bundlr.utils.getBundlerAddress(this.bundlr.utils.currency);
         let fee = "0";
         if (c.needsFee) {
             // winston's fee is actually for amount of data, not funds, so we have to 0 this.

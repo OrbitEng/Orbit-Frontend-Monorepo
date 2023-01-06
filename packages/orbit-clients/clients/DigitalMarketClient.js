@@ -16,7 +16,7 @@ export const DIGITAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.addre
 /// TRANSACTIONS
 
 /// :SOL
-export async function OpenTransactionSol (
+export async function DigitalOpenTransactionSol (
         tx_addr,
         sellerIndex,
         vendor_log_address,
@@ -56,7 +56,7 @@ export async function OpenTransactionSol (
         .instruction();
 };
 
-export async function CloseTransactionSol (
+export async function DigitalCloseTransactionSol (
     tx_addr,
     tx_struct,
     buyer_account_address,
@@ -106,7 +106,7 @@ export async function CloseTransactionSol (
     return tx_hash;
 };
 
-export async function FundEscrowSol (
+export async function DigitalFundEscrowSol (
     tx_addr_str,
     payer_wallet
 ){
@@ -127,7 +127,7 @@ export async function FundEscrowSol (
     .instruction();
 };
 
-export async function SellerEarlyDeclineSol (
+export async function DigitalSellerEarlyDeclineSol (
     tx_addr_str,
 
     buyer_wallet,
@@ -159,7 +159,7 @@ payer_wallet
 }
 
 /// :SPL
-export async function OpenTransactionSpl (
+export async function DigitalOpenTransactionSpl (
     tx_addr,
     sellerIndex,
     vendor_log_address,
@@ -203,7 +203,7 @@ payer_wallet
 
 };
 
-export async function CloseTransactionSpl (
+export async function DigitalCloseTransactionSpl (
     tx_addr,
 
     buyer_wallet,
@@ -277,7 +277,7 @@ export async function CloseTransactionSpl (
     .instruction()
 };
 
-export async function FundEscrowSpl (
+export async function DigitalFundEscrowSpl (
     tx_addr,
     payer_wallet
 ){
@@ -305,7 +305,7 @@ export async function FundEscrowSpl (
     return tx_hash
 };
 
-export async function SellerEarlyDeclineSpl (
+export async function DigitalSellerEarlyDeclineSpl (
     tx_addr,
 
     buyer_wallet,
@@ -345,7 +345,7 @@ payer_wallet
 }
 
 /// CLOSE TRANSACTION COMMON
-export async function CloseTransactionAccount (
+export async function DigitalCloseTransactionAccount (
     tx_addr,
     tx_log,
     buyer_wallet,
@@ -370,7 +370,7 @@ payer_wallet
 ////////////////////////////////////////
 /// BUYER UTILS
 
-export async function ConfirmDelivered (
+export async function DigitalConfirmDelivered (
     tx_addr,
 payer_wallet
 ){
@@ -390,7 +390,7 @@ payer_wallet
     .instruction()
 };
 
-export async function ConfirmAccept (
+export async function DigitalConfirmAccept (
     tx_addr,
 payer_wallet
 ){
@@ -410,7 +410,7 @@ payer_wallet
     .instruction()
 };
 
-export async function DenyAccept (
+export async function DigitalDenyAccept (
     tx_addr,
     buyer_account,
 payer_wallet
@@ -437,7 +437,7 @@ payer_wallet
 
 ////////////////////////////////////////
 /// SELLER COMMITS
-export async function CommitInitKeys (
+export async function DigitalCommitInitKeys (
     tx_addr,
     enc_pubkeys,
     payer_wallet
@@ -464,7 +464,7 @@ export async function CommitInitKeys (
     .instruction()
 }
 
-export async function CommitLink (
+export async function DigitalCommitLink (
     tx_addr,
     link,
     payer_wallet
@@ -484,7 +484,7 @@ export async function CommitLink (
     .instruction()
 }
 
-export async function UpdateStatusToShipping (
+export async function DigitalUpdateStatusToShipping (
     tx_addr,
 payer_wallet
 ){
@@ -504,7 +504,7 @@ payer_wallet
 
 }
 
-export async function CommitSubkeys (
+export async function DigitalCommitSubkeys (
     tx_addr,
     pk_map,
 payer_wallet
@@ -536,7 +536,7 @@ payer_wallet
 
 /////////////////////////////////
 /// SELLER UTILS
-export async function SellerAcceptTransaction (
+export async function DigitalSellerAcceptTransaction (
     tx_addr
 ){
     if (typeof tx_addr == "string"){
@@ -556,7 +556,7 @@ export async function SellerAcceptTransaction (
 
 ////////////////////////////////////////////////////
 /// POST TX
-export async function LeaveReview (
+export async function DigitalLeaveReview (
     tx_addr,
     review_receiver,
     market_account,
@@ -634,7 +634,7 @@ export function GenEscrow (tx_addr, buyer_log_addr){
 ///////////////////////////////////
 /// STRUCT FETCH UTILS
 
-export async function GetTransaction (tx_addr){
+export async function GetDigitalTransaction (tx_addr){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     };
@@ -650,7 +650,7 @@ export async function GetTransaction (tx_addr){
     }
 }
 
-export async function GetMultipleTransactions (tx_addrs){
+export async function GetMultipleDigitalTransactions (tx_addrs){
     if(!Array.isArray(tx_addrs)){
         return []
     }

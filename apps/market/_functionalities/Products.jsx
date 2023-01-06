@@ -2,17 +2,20 @@ import { useContext, useState, useCallback } from "react";
 import {PublicKey} from "@solana/web3.js";
 import { BN } from "@project-serum/anchor";
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+import UserAccountCtx from "@contexts/UserAccountCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
+import { useWallet } from "@solana/wallet-adapter-react";
 
-import { ArQueryClient } from "data-transfer-clients";
+import { PRODUCT_PROGRAM } from "orbit-clients";
 
 export function DigitalProductFunctionalities(props){
+    const {userAccount} = useContext(UserAccountCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {productClient} = useContext(ProductClientCtx);
+    const wallet = useWallet();
 
     const CreateDigitalListingsCatalog = async()=>{
-        await productClient.InitVendorListings("digital");
+        await PRODUCT_PROGRAM.InitDigitalListings(wallet, userAccount.data.metadata.voter_id);
     }
 
     const ListProduct = async(
@@ -35,15 +38,15 @@ export function DigitalProductFunctionalities(props){
                 description: description
             })
         );
-        let listings_addr = productClient.GenListingsAddress("digital");
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber);
 
-        let next_index = productClient.FindNextAvailableListingsAddress(
-            (await productClient.GetListingsStruct(
+        let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
+            (await PRODUCT_PROGRAM.GetListingsStruct(
                 listings_addr
             )).data
         );
 
-        let prod_addr = productClient.GenProductAddress(
+        let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
             next_index, listings_addr, "digital"
         )
 
@@ -76,9 +79,9 @@ export function DigitalProductFunctionalities(props){
 
     const ChangeAvailability = async(prod_addr, available = false) =>{
         if (available){
-            await productClient.MarkProdAvailable(prod_addr, productClient.GenListingsAddress("digital"));
+            await productClient.MarkProdAvailable(prod_addr, PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber));
         }else{
-            await productClient.MarkProdUnavailable(prod_addr, productClient.GenListingsAddress("digital"));
+            await productClient.MarkProdUnavailable(prod_addr, PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber));
         }
     }
 
@@ -86,7 +89,7 @@ export function DigitalProductFunctionalities(props){
         
         return productClient.UpdateProductPrice(
             prod_addr,
-            productClient.GenListingsAddress("digital"),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber),
             new_price
         )
     }
@@ -100,7 +103,7 @@ export function DigitalProductFunctionalities(props){
 
         productClient.SetMedia(
             prod_addr,
-            productClient.GenListingsAddress("digital"),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber),
             tx_id
         )
     }
@@ -113,7 +116,7 @@ export function DigitalProductFunctionalities(props){
 
         productClient.SetProdInfo(
             prod_addr,
-            productClient.GenListingsAddress("digital"),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber),
             tx_url
         )
     }
@@ -121,15 +124,16 @@ export function DigitalProductFunctionalities(props){
     ////////////////////////////////////////////////
     /// FETCHING UTILS
 
-    const GetAllVendorDigitalProducts = async(listings_addr) =>{
-        let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
-        let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
-            return productClient.GenProductAddress(
+    const GetAllVendorDigitalProducts = async(voter_id) =>{
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", voter_id);
+        let listings_struct = (await PRODUCT_PROGRAM.GetListingsStruct(listings_addr)).data;
+        let indexes = PRODUCT_PROGRAM.FindAllListings(listings_struct).map((ind)=>{
+            return PRODUCT_PROGRAM.GenProductAddress(
                 ind, listings_addr, "digital"
             )
         })
 
-        return (await productClient.GetMultipleDigitalProducts(
+        return (await PRODUCT_PROGRAM.GetMultipleDigitalProducts(
             indexes
         )).filter(prod => prod.data != undefined);
     }
@@ -147,13 +151,15 @@ export function DigitalProductFunctionalities(props){
 }
 
 export function PhysicalProductFunctionalities(props){
+    const {userAccount} = useContext(UserAccountCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {productClient} = useContext(ProductClientCtx);
+    const wallet = useWallet();
     
 
     /// SELLER UTILS
     const CreatePhysicalListingsCatalog = async()=>{
-        await productClient.InitVendorCatalog("physical")
+        await PRODUCT_PROGRAM.InitPhysicalListings(wallet, userAccount.data.metadata.voter_id)
     }
 
     const ListProduct = async(
@@ -175,15 +181,15 @@ export function PhysicalProductFunctionalities(props){
             description: description
         }));
 
-        let listings_addr = await productClient.GenListingsAddress("physical");
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id);
 
-        let next_index = productClient.FindNextAvailableListingsAddress(
-            (await productClient.GetListingsStruct(
+        let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
+            (await PRODUCT_PROGRAM.GetListingsStruct(
                 listings_addr
             )).data
         );
 
-        let prod_addr = productClient.GenProductAddress(
+        let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
             next_index, listings_addr, "physical"
         )
 
@@ -204,9 +210,9 @@ export function PhysicalProductFunctionalities(props){
 
     const ChangeAvailability = async(prod_addr, available = false) =>{
         if (available){
-            await productClient.MarkProdAvailable(prod_addr, productClient.GenListingsAddress("physical"));
+            await productClient.MarkProdAvailable(prod_addr, PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()));
         }else{
-            await productClient.MarkProdUnavailable(prod_addr, productClient.GenListingsAddress("physical"));
+            await productClient.MarkProdUnavailable(prod_addr, PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()));
         }
     }
 
@@ -214,7 +220,7 @@ export function PhysicalProductFunctionalities(props){
 
         return productClient.UpdateProductPrice(
             prod_addr,
-            productClient.GenListingsAddress("physical"),
+            PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()),
             new_price
         )
     }
@@ -234,7 +240,7 @@ export function PhysicalProductFunctionalities(props){
 
         return productClient.SetMedia(
             prod_addr,
-            productClient.GenListingsAddress("physical"),
+            PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()),
             tx_id
         )
 
@@ -249,7 +255,7 @@ export function PhysicalProductFunctionalities(props){
 
         productClient.SetProdInfo(
             prod_addr,
-            productClient.GenListingsAddress("physical"),
+            PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()),
             tx_url
         )
     }
@@ -257,18 +263,19 @@ export function PhysicalProductFunctionalities(props){
     /////////////////////////////////////////////////
     /// FETCHING UTILS
 
-    const GetAllVendorPhysicalProducts = async(listings_addr) =>{
-        let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
+    const GetAllVendorPhysicalProducts = async(voter_id) =>{
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("physical", voter_id);
+        let listings_struct = (await PRODUCT_PROGRAM.GetListingsStruct(listings_addr)).data;
         if(!listings_struct){
             return ""
         }
-        let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
-            return productClient.GenProductAddress(
+        let indexes = PRODUCT_PROGRAM.FindAllListings(listings_struct).map((ind)=>{
+            return PRODUCT_PROGRAM.GenProductAddress(
                 ind, listings_addr, "physical"
             )
         });
 
-        return (await productClient.GetMultiplePhysicalProducts(
+        return (await PRODUCT_PROGRAM.GetMultiplePhysicalProducts(
             indexes
         )).filter(prod => prod.data != undefined);
     };
@@ -286,14 +293,15 @@ export function PhysicalProductFunctionalities(props){
 }
 
 export function CommissionProductFunctionalities(props){
-    const {marketAccountsClient} = useContext(MarketAccountsCtx);
+    const {userAccount} = useContext(UserAccountCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {productClient} = useContext(ProductClientCtx);
+    const wallet = useWallet();
     
 
     /// SELLER UTILS
     const CreateCommissionsListingsCatalog = async()=>{
-        await productClient.InitVendorCatalog("commissions")
+        await PRODUCT_PROGRAM.InitCommissionsListings(wallet, userAccount.data.metadata.voter_id);
     }
 
     const ListProduct = async(
@@ -314,15 +322,15 @@ export function CommissionProductFunctionalities(props){
                 description: description
             }));
 
-        let listings_addr = await productClient.GenListingsAddress("commission");
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.metadata.voter_id.toNumber);
 
-        let next_index = productClient.FindNextAvailableListingsAddress(
-            (await productClient.GetListingsStruct(
+        let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
+            (await PRODUCT_PROGRAM.GetListingsStruct(
                 listings_addr
             )).data
         );
 
-        let prod_addr = productClient.GenProductAddress(
+        let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
             next_index, listings_addr, "commission"
         )
 
@@ -352,7 +360,7 @@ export function CommissionProductFunctionalities(props){
 
         return productClient.UpdateProductPrice(
             prod_addr,
-            productClient.GenListingsAddress("commission"),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.metadata.voter_id.toNumber),
             new_price
         )
     }
@@ -365,7 +373,7 @@ export function CommissionProductFunctionalities(props){
 
         return productClient.SetMedia(
             prod_addr,
-            productClient.GenListingsAddress("commission"),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.metadata.voter_id.toNumber),
             tx_id
         )
 
@@ -380,26 +388,27 @@ export function CommissionProductFunctionalities(props){
 
         productClient.SetProdInfo(
             prod_addr,
-            productClient.GenListingsAddress("commission"),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.metadata.voter_id.toNumber),
             tx_url
         )
     }
 
     /// BUYER UTILS
 
-    const GetAllVendorCommissionProducts = async(listings_addr) =>{
-        let listings_struct = (await productClient.GetListingsStruct(listings_addr)).data;
+    const GetAllVendorCommissionProducts = async(voter_id) =>{
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", voter_id);
+        let listings_struct = (await PRODUCT_PROGRAM.GetListingsStruct(listings_addr)).data;
         if(!listings_struct){
             return ""
         }
 
-        let indexes = productClient.FindAllListings(listings_struct).map((ind)=>{
-            return productClient.GenProductAddress(
+        let indexes = PRODUCT_PROGRAM.FindAllListings(listings_struct).map((ind)=>{
+            return PRODUCT_PROGRAM.GenProductAddress(
                 ind, listings_addr, "commission"
             )
         })
 
-        return (await productClient.GetMultipleCommissionProducts(
+        return (await PRODUCT_PROGRAM.GetMultipleCommissionProducts(
             indexes
         )).filter(prod => prod.data != undefined);
     };

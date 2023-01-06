@@ -17,13 +17,6 @@ const {
 	ArQueryClient
 } = require("data-transfer-clients");
 
-import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
-import DisputeProgramCtx from '@contexts/DisputeProgramCtx';
-import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
-import CommissionMarketCtx from '@contexts/CommissionMarketCtx';
-import ProductClientCtx from '@contexts/ProductClientCtx';
-import TransactionClientCtx from '@contexts/TransactionClientCtx';
-import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
 import BundlrCtx from '@contexts/BundlrCtx';
 import MatrixClientCtx from '@contexts/MatrixClientCtx';
 import UserAccountCtx from '@contexts/UserAccountCtx';
@@ -33,15 +26,16 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
 import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 import ProfileButton from '@includes/components/buttons/ProfileButton';
+import { CreateChatModal } from './components/modals/CreateChatModal';
 import CartSideMenu from './CartSideMenu';
 import CartCtx from '@contexts/CartCtx';
 import PythClientCtx from '@contexts/PythClientCtx';
 import ChatCtx from '@contexts/ChatCtx';
-import { CreateChatModal } from './components/modals/CreateChatModal';
 import ArweaveCtx from '@contexts/ArweaveCtx';
 import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
 import { HeaderSearchBar, PageSearchBar } from './components/SearchBar';
-import { Category } from 'matrix-js-sdk';
+
+import { ACCOUNTS_PROGRAM } from 'orbit-clients';
 
 const categoryTags = [
 	{ name: "Local", value: "local" },
@@ -69,15 +63,8 @@ export function HomeHeader(props) {
 
 	const {anchorProvider, setAnchorProvider} = useContext(AnchorProviderCtx)
 
-	const {digitalMarketClient, setDigitalMarketClient} = useContext(DigitalMarketCtx);
-	const {disputeProgramClient, setDisputeProgramClient} = useContext(DisputeProgramCtx);
-	const {physicalMarketClient, setPhysicalMarketClient} = useContext(PhysicalMarketCtx);
-	const {commissionMarketClient, setCommissionMarketClient} = useContext(CommissionMarketCtx);
-	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
-	const {productClient, setProductClient} = useContext(ProductClientCtx);
-	const {transactionClient, setTransactionClient} = useContext(TransactionClientCtx);
 	const {userAccount, setUserAccount} = useContext(UserAccountCtx);
 	const {pythClient, setPythClient} = useContext(PythClientCtx);
 	const {arweaveClient, setArweaveClient} = useContext(ArweaveCtx);
@@ -92,7 +79,7 @@ export function HomeHeader(props) {
 		if(!arweaveClient){
 			setArweaveClient(new ArQueryClient())
 		}
-	})
+	},[])
 	
 	/// pure conn dep
 	useEffect(()=>{
@@ -126,12 +113,12 @@ export function HomeHeader(props) {
 	},[connection, wallet])
 
 	useEffect(async ()=>{
-		if (!(wallet && wallet.publicKey && arweaveClient && marketAccountsClient)) return;
+		if (!(wallet && wallet.publicKey && arweaveClient)) return;
 		if((userAccount && userAccount.data.wallet && wallet.publicKey) && (wallet.publicKey.toString() == userAccount.data.wallet.toString())) return;
 
 		try{
-			let account_address = (marketAccountsClient.GenAccountAddress(wallet.publicKey));
-			let account = await marketAccountsClient.GetAccount(account_address);
+			let account_address = (ACCOUNTS_PROGRAM.GenAccountAddress(wallet.publicKey));
+			let account = await ACCOUNTS_PROGRAM.GetAccount(account_address);
 			account.data.profilePic = await arweaveClient.GetPfp(account.data.profilePic);
 			account.data.metadata = await arweaveClient.GetMetadata(account.data.metadata);
 			
@@ -142,19 +129,19 @@ export function HomeHeader(props) {
 			console.log(e)
 			setUserAccount(undefined)
 		}
-	},[wallet.publicKey, marketAccountsClient, userAccount])
+	},[wallet.connected, arweaveClient, userAccount])
 
 	useEffect( async ()=>{
-		if(!(marketAccountsClient && transactionClient && arweaveClient && userAccount && arweaveClient)) return;
+		if(!(userAccount && arweaveClient)) return;
 		if(!(wallet.connected && wallet.publicKey)){
 			setMatrixClient(undefined);
 			return;
 		}
-		if((wallet.connected && wallet.publicKey && matrixClient) && (matrixClient.auth_keypair.publicKey.toString() == wallet.publicKey.toString())){
+		if((matrixClient) && (matrixClient.auth_keypair.publicKey.toString() == wallet.publicKey.toString())){
 			return
 		}
 		try{
-			let chat_client = new ChatClient(wallet, marketAccountsClient, physicalMarketClient, digitalMarketClient, commissionMarketClient, transactionClient, arweaveClient, userAccount);
+			let chat_client = new ChatClient(wallet, arweaveClient, userAccount);
 			setMatrixClient(chat_client)
 			await chat_client.initialize();
 			if(await chat_client.Login()){
@@ -164,7 +151,7 @@ export function HomeHeader(props) {
 			console.log(e);
 			setHasChat(false);
 		}
-	}, [marketAccountsClient, physicalMarketClient, digitalMarketClient, commissionMarketClient, transactionClient, arweaveClient, userAccount, arweaveClient, wallet])
+	}, [arweaveClient, userAccount, arweaveClient, wallet])
 
 	return(
 		<header className="mx-auto max-w-[100rem] h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">

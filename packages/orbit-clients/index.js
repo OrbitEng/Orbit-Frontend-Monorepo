@@ -1,23 +1,22 @@
-import {PhysicalMarketClient} from "./physical-market";
-import {DigitalMarketClient} from "./digital-market";
-import {CommissionMarketClient} from "./commissions-market";
-import {MarketAccountsClient} from "./accounts-program";
-import {DisputeClient} from "./dispute-program";
-import {ProductClient} from "./product-program";
-import {TransactionClient} from "./transaction-program";
-import {MULTISIG_WALLET_ADDRESS, MULTISIG_PROGRAM_ID, getMultisigWallet} from "./multisig";
+import * as PHYSICAL_MARKET from "./clients/PhysicalMarketClient";
+import * as DIGITAL_MARKET from "./clients/DigitalMarketClient";
+import * as COMMISSIONS_MARKET from "./clients/CommissionMarketClient";
+import * as ACCOUNTS_PROGRAM from "./clients/MarketAccountsClient";
+import * as DISPUTE_PROGRAM from "./clients/DisputeClient";
+import * as PRODUCT_PROGRAM from "./clients/OrbitProductClient";
+import * as TRANSACTION_PROGRAM from "./clients/OrbitTransactionClient";
+import * as SEARCH_PROGRAM from "./clients/SearchProgramClient";
+// import * as MULTISIG_PROGRAM from "./clients/multisig";
 // import * as tokenUtils from "@solana/spl-token";
 
 export {
-    PhysicalMarketClient,
-    DigitalMarketClient,
-    CommissionMarketClient,
-    MarketAccountsClient,
-    DisputeClient,
-    ProductClient,
-    TransactionClient,
-    MULTISIG_WALLET_ADDRESS,
-    MULTISIG_PROGRAM_ID,
-    getMultisigWallet,
-    // tokenUtils
+    PHYSICAL_MARKET,
+    DIGITAL_MARKET,
+    COMMISSIONS_MARKET,
+    ACCOUNTS_PROGRAM,
+    DISPUTE_PROGRAM,
+    PRODUCT_PROGRAM,
+    TRANSACTION_PROGRAM,
+    SEARCH_PROGRAM
+    // MULTISIG_PROGRAM
 }

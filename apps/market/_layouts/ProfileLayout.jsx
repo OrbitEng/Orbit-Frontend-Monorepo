@@ -1,13 +1,12 @@
 import { useState, useContext, useEffect } from "react";
 import { Listbox } from "@headlessui/react";
 import Image from "next/image";
-import { LargeProductExplorer } from "@includes/components/product_display/LargeProductExplorer";
 import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
-import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
-import ProductClientCtx from "@contexts/ProductClientCtx";
-import {EditProfileModal} from "@includes/components/modals/EditProfileModal";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import { LargeProductExplorer } from "@includes/components/product_display/LargeProductExplorer";
+import {EditProfileModal} from "@includes/components/modals/EditProfileModal";
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from "@functionalities/Products";
+import { ACCOUNTS_PROGRAM } from "orbit-clients";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import ChatCtx from "@contexts/ChatCtx";
@@ -25,8 +24,6 @@ export function ProfileLayout(props) {
 
 	const [marketAccount, setMarketAccount] = useState();
 	const [isSelf, setIsSelf] = useState(false);
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {productClient} = useContext(ProductClientCtx);
 
 	const [listingsExplorerCategory, setListingsExplorerCategory] = useState();
 	const [displayOption, setDisplayOption] = useState("Physical");
@@ -56,13 +53,13 @@ export function ProfileLayout(props) {
 	},[props.accountAddr, userAccount])
 
 	useEffect(async () => {
-		if (!(marketAccountsClient && props.accountAddr)) return;
+		if (!(props.accountAddr)) return;
 
 		console.log(props.accountAddr)
 
 		let market_account;
 		try{
-			market_account = await marketAccountsClient.GetAccount(props.accountAddr);
+			market_account = await ACCOUNTS_PROGRAM.GetAccount(props.accountAddr);
 			console.log(market_account)
 			market_account.data.profilePic = await arweaveClient.GetPfp(market_account.data.profilePic);
 			market_account.data.metadata = await arweaveClient.GetMetadata(market_account.data.metadata);
@@ -72,20 +69,20 @@ export function ProfileLayout(props) {
 		}
 
 		setMarketAccount(market_account);
-		if(market_account.data.physicalListings.toString() != "11111111111111111111111111111111"){
-			let listings = await GetAllVendorPhysicalProducts(market_account.data.physicalListings);
+		if(market_account.data.physicalListings){
+			let listings = await GetAllVendorPhysicalProducts(market_account.data.voterId.toNumber());
 			setPhysicalListings(listings);
 		}
-		if(market_account.data.digitalListings.toString() != "11111111111111111111111111111111"){
-			let listings = await GetAllVendorDigitalProducts(market_account.data.digitalListings);
+		if(market_account.data.digitalListings){
+			let listings = await GetAllVendorDigitalProducts(market_account.data.voterId.toNumber());
 			setDigitalListings(listings);
 		}
-		if(market_account.data.commissionListings.toString() != "11111111111111111111111111111111"){
-			let listings = await GetAllVendorCommissionProducts(market_account.data.commissionListings);
+		if(market_account.data.commissionListings){
+			let listings = await GetAllVendorCommissionProducts(market_account.data.voterId.toNumber());
 			setCommissionListings(listings);
 		}
 
-	}, [marketAccountsClient, props.accountAddr, productClient, arweaveClient])
+	}, [props.accountAddr, arweaveClient])
 
 	return(
 		<div className="flex flex-col max-w-6xl mx-auto">

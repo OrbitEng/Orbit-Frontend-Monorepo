@@ -6,38 +6,30 @@ import { MainFooter } from '@includes/Footer';
 import { useState, useEffect, useRef, useContext } from 'react'
 import useOnScreen from '@hooks/useOnScreen'
 
-import DigitalMarketCtx from '@contexts/DigitalMarketCtx'
-import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx'
-import CommissionMarketCtx from '@contexts/CommissionMarketCtx'
-import ProductClientCtx from '@contexts/ProductClientCtx'
 import { ChatWidget } from '@includes/ChatWidget'
 import HomeNewsCarousel from '@includes/components/HomeNewsCarousel';
 import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 
+import {PRODUCT_PROGRAM} from "orbit-clients";
+
 export function Home(props) {
 	const ref = useRef();
 	const searchBarVisible = useOnScreen(ref);
-
-	const {digitalMarketClient} = useContext(DigitalMarketCtx);
-	const {physicalMarketClient} = useContext(PhysicalMarketCtx);
-	const {commissionMarketClient} = useContext(CommissionMarketCtx);
-	const {productClient} = useContext(ProductClientCtx);
 
 	const [recentCommissions, setRecentCommissions] = useState([]);
 	const [recentDigitals, setRecentDigitals] = useState([]);
 	const [recentPhysicals, setRecentPhysicals] = useState([]);
 
 	useEffect(async ()=>{
-		if(!digitalMarketClient || !physicalMarketClient || !productClient) return;
 
-		let digital_catalog = await productClient.GetRecentMarketListings(
-			productClient.GenRecentListings("digital")
+		let digital_catalog = await PRODUCT_PROGRAM.GetRecentMarketListings(
+			PRODUCT_PROGRAM.GenRecentListings("digital")
 		);
-		let commission_catalog = await productClient.GetRecentMarketListings(
-			productClient.GenRecentListings("commission")
+		let commission_catalog = await PRODUCT_PROGRAM.GetRecentMarketListings(
+			PRODUCT_PROGRAM.GenRecentListings("commission")
 		);
-		let physical_catalog = await productClient.GetRecentMarketListings(
-			productClient.GenRecentListings("physical")
+		let physical_catalog = await PRODUCT_PROGRAM.GetRecentMarketListings(
+			PRODUCT_PROGRAM.GenRecentListings("physical")
 		);
 		
 		digital_catalog.data.pubkeys = digital_catalog.data.pubkeys.filter( pk => pk.toString() != "11111111111111111111111111111111");
@@ -51,7 +43,7 @@ export function Home(props) {
 		setRecentDigitals(digital_catalog.data.pubkeys);
 		setRecentPhysicals(physical_catalog.data.pubkeys);
 
-	}, [digitalMarketClient, physicalMarketClient, commissionMarketClient]);
+	}, []);
 
 	return(
 		<div className="w-full min-h-screen bg-transparent">

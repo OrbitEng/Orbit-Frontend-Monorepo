@@ -24,8 +24,8 @@ export async function InitRecentListings (payer_wallet){
 ///////////////////////////////////////////////////////
 /// VENDOR LISTINGS
 
-export async function InitCommissionsListings (market_type, payer_wallet){
-    let listings_address = this.GenListingsAddress(market_type);
+export async function InitCommissionsListings (payer_wallet, voter_id){
+    let listings_address = this.GenListingsAddress("commission", voter_id);
 
     await PRODUCT_PROGRAM.methods
     .initCommissionsListings()
@@ -35,8 +35,8 @@ export async function InitCommissionsListings (market_type, payer_wallet){
     })
     .instruction()
 }
-export async function InitDigitalListings (market_type, payer_wallet){
-    let listings_address = this.GenListingsAddress(market_type);
+export async function InitDigitalListings (payer_wallet, voter_id){
+    let listings_address = this.GenListingsAddress("digital", voter_id);
 
     await PRODUCT_PROGRAM.methods
     .initDigitalListings()
@@ -46,8 +46,8 @@ export async function InitDigitalListings (market_type, payer_wallet){
     })
     .instruction()
 }
-export async function InitPhysicalListings (market_type, payer_wallet){
-    let listings_address = this.GenListingsAddress(market_type);
+export async function InitPhysicalListings (payer_wallet, voter_id){
+    let listings_address = this.GenListingsAddress("physical", voter_id);
 
     await PRODUCT_PROGRAM.methods
     .initPhysicalListings()

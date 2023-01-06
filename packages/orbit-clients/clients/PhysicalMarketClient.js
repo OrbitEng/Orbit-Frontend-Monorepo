@@ -16,7 +16,7 @@ export const PHYSICAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.addr
 /// TRANSACTION GENERAL
 
 /// :SOL
-export async function OpenTransactionSol (
+export async function PhysicalOpenTransactionSol (
     tx_addr,
     sellerIndex,
     vendor_log_address,
@@ -58,7 +58,7 @@ export async function OpenTransactionSol (
     return new_physical_tx.toString()
 };
 
-export async function CloseTransactionSol (tx_addr,
+export async function PhysicalCloseTransactionSol (tx_addr,
     buyer_account_address,
     buyer_wallet,
     seller_account_address,
@@ -108,7 +108,7 @@ export async function CloseTransactionSol (tx_addr,
     return tx_hash;
 };
 
-export async function FundEscrowSol (
+export async function PhysicalFundEscrowSol (
     tx_addr_str,
     payer_wallet
 ){
@@ -131,7 +131,7 @@ export async function FundEscrowSol (
     return tx_hash;
 };
 
-export async function SellerEarlyDeclineSol (
+export async function PhysicalSellerEarlyDeclineSol (
     tx_addr_str,
 
     buyer_wallet,
@@ -163,7 +163,7 @@ payer_wallet
 };
 
 /// :SPL
-export async function OpenTransactionSpl (
+export async function PhysicalOpenTransactionSpl (
     tx_addr,
     sellerIndex,
     vendor_log_address,
@@ -208,7 +208,7 @@ export async function OpenTransactionSpl (
 };
 
 
-export async function CloseTransactionSpl (
+export async function PhysicalCloseTransactionSpl (
     tx_addr,
 
     buyer_wallet,
@@ -282,7 +282,7 @@ export async function CloseTransactionSpl (
     .instruction()
 };
 
-export async function FundEscrowSpl (
+export async function PhysicalFundEscrowSpl (
     tx_addr,
     payer_wallet
 ){
@@ -310,7 +310,7 @@ export async function FundEscrowSpl (
     return tx_hash
 };
 
-export async function SellerEarlyDeclineSpl (
+export async function PhysicalSellerEarlyDeclineSpl (
     tx_addr,
 
     buyer_wallet,
@@ -351,7 +351,7 @@ payer_wallet
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// DISPUTE
-export async function OpenDispute (
+export async function PhysicalOpenDispute (
     tx_addr,
     dispute_addr,
     threshold,
@@ -379,7 +379,7 @@ payer_wallet
     .instruction()
 }
 
-export async function CloseDisputeSol (
+export async function PhysicalCloseDisputeSol (
     tx_addr,
     tx_struct,
     dispute_struct,
@@ -423,7 +423,7 @@ payer_wallet
     })
     .instruction()
 }
-export async function CloseDisputeSpl (
+export async function PhysicalCloseDisputeSpl (
     tx_addr,
     dispute_addr,
     dispute_funder,
@@ -472,7 +472,7 @@ export async function CloseDisputeSpl (
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// GENERAL CALLS
-export async function LeaveReview (
+export async function PhysicalLeaveReview (
     tx_addr,
     review_receiver,
     market_account
@@ -496,7 +496,7 @@ export async function LeaveReview (
     
 };
 
-export async function CloseTransactionAccount (
+export async function PhysicalCloseTransactionAccount (
     tx_addr,
     tx_log,
     buyer_wallet,
@@ -573,7 +573,7 @@ export function GenEscrow (tx_addr, buyer_log_addr){
 
 /// ACCESSORS RPC
 
-export async function GetTransaction (tx_addr){
+export async function GetPhysicalTransaction (tx_addr){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     };
@@ -589,7 +589,7 @@ export async function GetTransaction (tx_addr){
     }
 }
 
-export async function GetMultipleTransactions (tx_addrs){
+export async function GetMultiplePhysicalTransactions (tx_addrs){
     if(!Array.isArray(tx_addrs)){
         return []
     }

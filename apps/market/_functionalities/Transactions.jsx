@@ -230,7 +230,7 @@ export function DigitalFunctionalities(){
     // CommitInitKeys, CommitLink bundled together
     const UploadProductFile = async(tx_addr, datafile, xslices, yslices) =>{
 
-        let [ar_addr, kps] = await bundlrClient.UploadImageFinal(datafile, xslices, yslices);
+        let [ar_addr, kps] = await bundlrClient.UploadFinalBufferInstruction(datafile, xslices, yslices);
 
         await digitalMarketClient.CommitInitKeys(
             kps.map(k => k.publicKey),
@@ -605,7 +605,7 @@ export function CommissionFunctionalities(){
 
     // commit keys and commit link together
     const UploadProductFile = async(tx_addr, datafile, xslices, yslices) =>{
-        let [ar_addr, kps] = await bundlrClient.UploadImageFinal(datafile, xslices, yslices);
+        let [ar_addr, kps] = await bundlrClient.UploadFinalBufferInstruction(datafile, xslices, yslices);
 
         await commissionMarketClient.CommitInitKeys(
             kps.map(k => k.publicKey),
