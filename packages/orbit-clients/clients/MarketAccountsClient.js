@@ -106,66 +106,6 @@ export async function RemoveReflink (
     .instruction()
 };
 
-////////////////////////////////////////////////////////////////////
-/// VENDOR LISTINGS
-
-export async function AddVendorPhysicalListings (
-    listings_address,
-payer_wallet
-){
-    if(typeof listings_address == "string"){
-        listings_address = new PublicKey(listings_address)
-    }
-
-    await MARKET_ACCOUNTS_PROGRAM.methods
-    .addVendorPhysicalListings("physical")
-    .accounts({
-        marketAccount: this.GenAccountAddress(),
-        listingsStruct: listings_address,
-        wallet: payer_wallet.publicKey,
-        productProgram: PRODUCT_PROGRAM_ID
-    })
-    .instruction()
-}
-
-export async function AddVendorDigitalListings (
-    listings_address,
-payer_wallet
-){
-    if(typeof listings_address == "string"){
-        listings_address = new PublicKey(listings_address)
-    }
-
-    await MARKET_ACCOUNTS_PROGRAM.methods
-    .addVendorDigitalListings("digital")
-    .accounts({
-        marketAccount: this.GenAccountAddress(),
-        listingsStruct: listings_address,
-        wallet: payer_wallet.publicKey,
-        productProgram: PRODUCT_PROGRAM_ID
-    })
-    .instruction()
-}
-
-export async function AddVendorCommissionListings (
-    listings_address,
-payer_wallet
-){
-    if(typeof listings_address == "string"){
-        listings_address = new PublicKey(listings_address)
-    }
-
-    await MARKET_ACCOUNTS_PROGRAM.methods
-    .addVendorCommissionListings("commission")
-    .accounts({
-        marketAccount: this.GenAccountAddress(),
-        listingsStruct: listings_address,
-        wallet: payer_wallet.publicKey,
-        productProgram: PRODUCT_PROGRAM_ID
-    })
-    .instruction()
-}
-
 //////////////////////////////////////////////////////////////////
 /// TRANSACTION LOGS
 

@@ -1,24 +1,21 @@
 import { useContext, useState, useCallback } from "react";
 import {PublicKey} from "@solana/web3.js";
 import { BN } from "@project-serum/anchor";
-import ProductClientCtx from "@contexts/ProductClientCtx";
-import UserAccountCtx from "@contexts/UserAccountCtx";
+import PRODUCT_PROGRAMCtx from "@contexts/PRODUCT_PROGRAMCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
-import { useWallet } from "@solana/wallet-adapter-react";
 
 import { PRODUCT_PROGRAM } from "orbit-clients";
 
 export function DigitalProductFunctionalities(props){
-    const {userAccount} = useContext(UserAccountCtx);
     const {bundlrClient} = useContext(BundlrCtx);
-    const {productClient} = useContext(ProductClientCtx);
-    const wallet = useWallet();
+    
 
-    const CreateDigitalListingsCatalog = async()=>{
-        await PRODUCT_PROGRAM.InitDigitalListings(wallet, userAccount.data.metadata.voter_id);
+    const CreateDigitalListingsCatalog = async(market_acc, wallet)=>{
+        await PRODUCT_PROGRAM.InitDigitalListings(wallet, market_acc.data.metadata.voter_id);
     }
 
     const ListProduct = async(
+        market_acc,
         price,
         deliveryEstimate = 14,
         name,
@@ -38,7 +35,7 @@ export function DigitalProductFunctionalities(props){
                 description: description
             })
         );
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber);
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber);
 
         let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
             (await PRODUCT_PROGRAM.GetListingsStruct(
@@ -50,7 +47,7 @@ export function DigitalProductFunctionalities(props){
             next_index, listings_addr, "digital"
         )
 
-        await productClient.ListDigitalProduct(
+        await PRODUCT_PROGRAM.ListDigitalProduct(
             prod_addr,
             {
                 info: desc_url,
@@ -71,52 +68,52 @@ export function DigitalProductFunctionalities(props){
         file_type = "Image"
     ) =>{
         
-        return productClient.SetFileType(
+        return PRODUCT_PROGRAM.SetFileType(
             prod_addr,
             file_type
         )
     }
 
-    const ChangeAvailability = async(prod_addr, available = false) =>{
+    const ChangeAvailability = async(market_acc, prod_addr, vendor_wallet, available = false) =>{
         if (available){
-            await productClient.MarkProdAvailable(prod_addr, PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber));
+            await PRODUCT_PROGRAM.MarkProdAvailable(prod_addr, prod_addr, market_acc, vendor_wallet);
         }else{
-            await productClient.MarkProdUnavailable(prod_addr, PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber));
+            await PRODUCT_PROGRAM.MarkProdUnavailable(prod_addr, prod_addr, market_acc, vendor_wallet);
         }
     }
 
-    const ChangePrice = async(prod_addr, new_price = 0) =>{
+    const ChangePrice = async(market_acc, prod_addr, new_price = 0) =>{
         
-        return productClient.UpdateProductPrice(
+        return PRODUCT_PROGRAM.UpdateProductPrice(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber),
             new_price
         )
     }
 
 
-    const SetMedia = async(prod_addr, files) =>{
+    const SetMedia = async(market_acc, prod_addr, files) =>{
         
         let buffers = files.join(">UwU<")
 
         let tx_id = await bundlrClient.UploadBufferInstruction(buffers);
 
-        productClient.SetMedia(
+        PRODUCT_PROGRAM.SetMedia(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber),
             tx_id
         )
     }
 
-    const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
+    const SetInfo = async (market_acc, prod_addr, name = "prod name", desc = "prod desc") =>{
         let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
                 name: name,
                 description: desc
             }))
 
-        productClient.SetProdInfo(
+        PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", userAccount.data.metadata.voter_id.toNumber),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber),
             tx_url
         )
     }
@@ -151,18 +148,17 @@ export function DigitalProductFunctionalities(props){
 }
 
 export function PhysicalProductFunctionalities(props){
-    const {userAccount} = useContext(UserAccountCtx);
+    
     const {bundlrClient} = useContext(BundlrCtx);
-    const {productClient} = useContext(ProductClientCtx);
-    const wallet = useWallet();
     
 
     /// SELLER UTILS
-    const CreatePhysicalListingsCatalog = async()=>{
-        await PRODUCT_PROGRAM.InitPhysicalListings(wallet, userAccount.data.metadata.voter_id)
+    const CreatePhysicalListingsCatalog = async(market_acc, wallet)=>{
+        await PRODUCT_PROGRAM.InitPhysicalListings(wallet, market_acc.data.metadata.voter_id)
     }
 
     const ListProduct = async(
+        market_acc,
         price,
         deliveryEstimate = 14,
         name,
@@ -181,7 +177,7 @@ export function PhysicalProductFunctionalities(props){
             description: description
         }));
 
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id);
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id);
 
         let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
             (await PRODUCT_PROGRAM.GetListingsStruct(
@@ -193,7 +189,7 @@ export function PhysicalProductFunctionalities(props){
             next_index, listings_addr, "physical"
         )
 
-        await productClient.ListPhysicalProduct(
+        await PRODUCT_PROGRAM.ListPhysicalProduct(
             prod_addr,
             {
                 info: desc_url,
@@ -208,54 +204,54 @@ export function PhysicalProductFunctionalities(props){
         );
     }
 
-    const ChangeAvailability = async(prod_addr, available = false) =>{
+    const ChangeAvailability = async(market_acc, prod_addr, vendor_wallet, available = false) =>{
         if (available){
-            await productClient.MarkProdAvailable(prod_addr, PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()));
+            await PRODUCT_PROGRAM.PhysicalMarkProdAvailable(prod_addr, market_acc, vendor_wallet);
         }else{
-            await productClient.MarkProdUnavailable(prod_addr, PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()));
+            await PRODUCT_PROGRAM.PhysicalMarkProdUnavailable(prod_addr, market_acc, vendor_wallet);
         }
     }
 
-    const ChangePrice = async(prod_addr, new_price = 0) =>{
+    const ChangePrice = async(market_acc, prod_addr, new_price = 0) =>{
 
-        return productClient.UpdateProductPrice(
+        return PRODUCT_PROGRAM.UpdateProductPrice(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id.toNumber()),
             new_price
         )
     }
     const ChangeQuantity = async(prod_addr, new_quantity = 0) =>{
 
-        return productClient.UpdateProductQuantity(
+        return PRODUCT_PROGRAM.UpdateProductQuantity(
             prod_addr,
             new_quantity
         )
     }
 
-    const SetMedia = async(prod_addr, files) =>{
+    const SetMedia = async(market_acc, prod_addr, files) =>{
 
         let buffers = files.join(">UwU<")
 
-        let tx_id = await bundlrClient.UploadBufferInstruction(buffers);
+        let [funding_tx, data_item, kps] = await bundlrClient.UploadBufferInstruction(buffers);
 
-        return productClient.SetMedia(
+        return PRODUCT_PROGRAM.SetMedia(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()),
-            tx_id
+            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id.toNumber()),
+            data_item.id
         )
 
     }
 
-    const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
+    const SetInfo = async (market_acc, prod_addr, name = "prod name", desc = "prod desc") =>{
 
         let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
                 name: name,
                 description: desc
             }))
 
-        productClient.SetProdInfo(
+        PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("physical", userAccount.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id.toNumber()),
             tx_url
         )
     }
@@ -293,18 +289,18 @@ export function PhysicalProductFunctionalities(props){
 }
 
 export function CommissionProductFunctionalities(props){
-    const {userAccount} = useContext(UserAccountCtx);
+    
     const {bundlrClient} = useContext(BundlrCtx);
-    const {productClient} = useContext(ProductClientCtx);
-    const wallet = useWallet();
+    
     
 
     /// SELLER UTILS
-    const CreateCommissionsListingsCatalog = async()=>{
-        await PRODUCT_PROGRAM.InitCommissionsListings(wallet, userAccount.data.metadata.voter_id);
+    const CreateCommissionsListingsCatalog = async(market_acc, wallet)=>{
+        await PRODUCT_PROGRAM.InitCommissionsListings(wallet, market_acc.data.metadata.voter_id);
     }
 
     const ListProduct = async(
+        market_acc,
         price,
         deliveryEstimate = 14,
         name,
@@ -322,7 +318,7 @@ export function CommissionProductFunctionalities(props){
                 description: description
             }));
 
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.metadata.voter_id.toNumber);
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber);
 
         let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
             (await PRODUCT_PROGRAM.GetListingsStruct(
@@ -334,7 +330,7 @@ export function CommissionProductFunctionalities(props){
             next_index, listings_addr, "commission"
         )
 
-        await productClient.ListCommissionProduct(
+        await PRODUCT_PROGRAM.ListCommissionProduct(
             prod_addr,
             {
                 info: desc_url,
@@ -348,47 +344,47 @@ export function CommissionProductFunctionalities(props){
         )
     }
 
-    const ChangeAvailability = async(prod_addr, available = false) =>{
+    const ChangeAvailability = async(market_acc, prod_addr, vendor_wallet, available = false) =>{
         if (available){
-            await productClient.ProductAvailable(prod_addr);
+            await PRODUCT_PROGRAM.ProductAvailable(prod_addr, market_acc, vendor_wallet);
         }else{
-            await productClient.ProductUnavailable(prod_addr);
+            await PRODUCT_PROGRAM.ProductUnavailable(prod_addr, market_acc, vendor_wallet);
         }
     }
 
-    const ChangePrice = async(prod_addr, new_price = 0) =>{
+    const ChangePrice = async(market_acc, prod_addr, new_price = 0) =>{
 
-        return productClient.UpdateProductPrice(
+        return PRODUCT_PROGRAM.UpdateProductPrice(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.metadata.voter_id.toNumber),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber),
             new_price
         )
     }
 
-    const SetMedia = async(prod_addr, files) =>{
+    const SetMedia = async(market_acc, prod_addr, files) =>{
 
         let buffers = files.join(">UwU<")
 
         let tx_id = await bundlrClient.UploadBufferInstruction(buffers);
 
-        return productClient.SetMedia(
+        return PRODUCT_PROGRAM.SetMedia(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.metadata.voter_id.toNumber),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber),
             tx_id
         )
 
     }
 
-    const SetInfo = async(prod_addr, name = "prod name", desc = "prod desc") =>{
+    const SetInfo = async (market_acc, prod_addr, name = "prod name", desc = "prod desc") =>{
 
         let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
                 name: name,
                 description: desc
             }))
 
-        productClient.SetProdInfo(
+        PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.metadata.voter_id.toNumber),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber),
             tx_url
         )
     }

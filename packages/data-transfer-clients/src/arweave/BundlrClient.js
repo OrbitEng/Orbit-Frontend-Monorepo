@@ -88,6 +88,7 @@ export default class BundlrClient{
             fee = (baseFee.multipliedBy(multiplier)).toFixed(0).toString();
         }
         const tx = await c.createTx(price, to, fee);
+        // c.sendTx
         return tx
     }
 }

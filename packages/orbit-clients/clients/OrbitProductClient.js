@@ -25,34 +25,31 @@ export async function InitRecentListings (payer_wallet){
 /// VENDOR LISTINGS
 
 export async function InitCommissionsListings (payer_wallet, voter_id){
-    let listings_address = this.GenListingsAddress("commission", voter_id);
 
     await PRODUCT_PROGRAM.methods
     .initCommissionsListings()
     .accounts({
-        vendorListings: listings_address,
+        vendorListings: this.GenListingsAddress("commission", voter_id),
         wallet: payer_wallet.publicKey
     })
     .instruction()
 }
 export async function InitDigitalListings (payer_wallet, voter_id){
-    let listings_address = this.GenListingsAddress("digital", voter_id);
 
     await PRODUCT_PROGRAM.methods
     .initDigitalListings()
     .accounts({
-        vendorListings: listings_address,
+        vendorListings: this.GenListingsAddress("digital", voter_id),
         wallet: payer_wallet.publicKey
     })
     .instruction()
 }
 export async function InitPhysicalListings (payer_wallet, voter_id){
-    let listings_address = this.GenListingsAddress("physical", voter_id);
 
     await PRODUCT_PROGRAM.methods
     .initPhysicalListings()
     .accounts({
-        vendorListings: listings_address,
+        vendorListings: this.GenListingsAddress("physical", voter_id),
         wallet: payer_wallet.publicKey
     })
     .instruction()
@@ -150,22 +147,47 @@ export async function ListPhysicalProduct (
     .instruction()
 }
 
-export async function UnlistProduct (
+export async function UnlistPhysicalProduct (
     product,
-    listings,
+    market_account,
     payer_wallet
 ){
-    if(typeof product == "string"){
-        product = new PublicKey(product)
-    }
-    if(typeof listings == "string"){
-        listings = new PublicKey(listings)
-    }
-
+    let listings = this.GenListingsAddress("physical", market_account.data.metadata.voter_id);
     await PRODUCT_PROGRAM.methods
-    .unlistProduct()
+    .unlistPhysicalProduct()
+    .accounts({
+        prod: typeof product == "string" ? new PublicKey(product) : product,
+        vendorListings: listings,
+        vendorAccount: market_account.address,
+        wallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function UnlistDigitalProduct (
+    product,
+    market_account,
+    payer_wallet
+){
+    let listings = this.GenListingsAddress("digital", market_account.data.metadata.voter_id);
+    await PRODUCT_PROGRAM.methods
+    .unlistDigitalProduct()
     .accounts({
         prod: product,
+        vendorListings: listings,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function UnlistCommissionProduct (
+    product,
+    market_account,
+    payer_wallet
+){
+    let listings = this.GenListingsAddress("commission", market_account.data.metadata.voter_id);
+    await PRODUCT_PROGRAM.methods
+    .unlistCommissionProduct()
+    .accounts({
+        vendorListings: product,
         vendorListings: listings,
         sellerWallet: payer_wallet.publicKey
     })
@@ -241,126 +263,315 @@ export async function TransferAllVendorListingsOwnership (
 
 
 ///////////////////////////////////////////////
-/// PRODUCT COMMON MODIFIERS
+/// PHYSICAL PROD COMMON MODIFIERS
 
-export async function MarkProdAvailable (
+export async function PhysicalMarkProdAvailable (
     product,
-    listings_address,
+    market_acc,
     payer_wallet
 ){
 
-    if(typeof product == "string"){
-        product = new PublicKey(product)
-    }
-
-    if(typeof listings_address == "string"){
-        listings_address = new PublicKey(listings_address)
-    }
-
     await PRODUCT_PROGRAM.methods
-    .markProdAvailable()
+    .physicalMarkAvailable()
     .accounts({
-        product: product,
-        vendorListings: listings_address,
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorListings: this.GenListingsAddress("physical", market_acc.data.metadata.voter_id),
+        vendorAccount: market_acc.address,
         sellerWallet: payer_wallet.publicKey
     })
     .instruction()
 }
-export async function MarkProdUnavailable (
+export async function PhysicalMarkProdUnavailable (
     product,
-    listings_address,
+    market_acc,
     payer_wallet
 ){
-
-    if(typeof product == "string"){
-        product = new PublicKey(product)
-    }
-
-    if(typeof listings_address == "string"){
-        listings_address = new PublicKey(listings_address)
-    }
-
     await PRODUCT_PROGRAM.methods
-    .markProdUnavailable()
+    .physicalMarkUnavailable()
     .accounts({
-        product: product,
-        vendorListings: listings_address,
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorListings: this.GenListingsAddress("physical", market_acc.data.metadata.voter_id),
+        vendorAccount: market_acc.address,
         sellerWallet: payer_wallet.publicKey
     })
     .instruction()
 }
 
-export async function UpdateProductPrice (
+export async function PhysicalUpdateProductPrice (
     product,
-    listings_address,
     price,
     payer_wallet
 ){
-    if(typeof product == "string"){
-        product = new PublicKey(product)
-    }
-
-    if(typeof listings_address == "string"){
-        listings_address = new PublicKey(listings_address)
-    }
 
     await PRODUCT_PROGRAM.methods
-    .updateProductPrice(new anchor.BN(price))
+    .physicalUpdatePrice(new anchor.BN(price))
     .accounts({
-        product: product,
-        vendorListings: listings_address,
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
         sellerWallet: payer_wallet.publicKey
     })
     .instruction()
 }
 
-export async function SetMedia (
+export async function PhysicalSetMedia (
     product,
-    listings_address,
     media_address,
     payer_wallet
 ){
-    if(typeof product == "string"){
-        product = new PublicKey(product)
-    }
-
-    if(typeof listings_address == "string"){
-        listings_address = new PublicKey(listings_address)
-    }
 
     await PRODUCT_PROGRAM.methods
-    .setMedia(
+    .physicalUpdateMedia(
         media_address
     )
     .accounts({
-        product: product,
-        vendorListings: listings_address,
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
         sellerWallet: payer_wallet.publicKey
     })
     .instruction()
 }
 
-export async function SetProdInfo (
+export async function PhysicalSetDeliveryEstimate (
     product,
-    listings_address,
+    delivery_eta,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .physicalUpdateDeliveryEstimate(
+        new anchor.BN(delivery_eta)
+    )
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function PhysicalSetProdInfo (
+    product,
     info_address,
     payer_wallet
 ){
-    if(typeof product == "string"){
-        product = new PublicKey(product)
-    }
-
-    if(typeof listings_address == "string"){
-        listings_address = new PublicKey(listings_address)
-    }
 
     await PRODUCT_PROGRAM.methods
-    .setProdInfo(
+    .physicalUpdateInfo(
         info_address
     )
     .accounts({
-        product: product,
-        vendorListings: listings_address,
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+///////////////////////////////////////////////
+/// DIGITAL PROD COMMON MODIFIERS
+
+export async function DigitalMarkProdAvailable (
+    product,
+    market_acc,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .digitalMarkAvailable()
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorListings: this.GenListingsAddress("digital", market_acc.data.metadata.voter_id),
+        vendorAccount: market_acc.address,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function DigitalMarkProdUnavailable (
+    product,
+    market_acc,
+    payer_wallet
+){
+    await PRODUCT_PROGRAM.methods
+    .digitalMarkUnavailable()
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorListings: this.GenListingsAddress("digital", market_acc.data.metadata.voter_id),
+        vendorAccount: market_acc.address,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function DigitalUpdateProductPrice (
+    product,
+    price,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .digitalUpdatePrice(new anchor.BN(price))
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function DigitalSetMedia (
+    product,
+    media_address,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .digitalUpdateMedia(
+        media_address
+    )
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function DigitalSetDeliveryEstimate (
+    product,
+    delivery_eta,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .digitalUpdateDeliveryEstimate(
+        new anchor.BN(delivery_eta)
+    )
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function DigitalSetProdInfo (
+    product,
+    info_address,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .digitalUpdateInfo(
+        info_address
+    )
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+///////////////////////////////////////////////
+/// COMMISSION PROD COMMON MODIFIERS
+
+export async function CommissionMarkProdAvailable (
+    product,
+    market_acc,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .commissionMarkAvailable()
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorListings: this.GenListingsAddress("commission", market_acc.data.metadata.voter_id),
+        vendorAccount: market_acc.address,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+export async function CommissionMarkProdUnavailable (
+    product,
+    market_acc,
+    payer_wallet
+){
+    await PRODUCT_PROGRAM.methods
+    .commissionMarkUnavailable()
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorListings: this.GenListingsAddress("commission", market_acc.data.metadata.voter_id),
+        vendorAccount: market_acc.address,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function CommissionUpdateProductPrice (
+    product,
+    price,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .commissionUpdatePrice(new anchor.BN(price))
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function CommissionSetMedia (
+    product,
+    media_address,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .commissionUpdateMedia(
+        media_address
+    )
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function CommissionSetDeliveryEstimate (
+    product,
+    delivery_eta,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .commissionUpdateDeliveryEstimate(
+        new anchor.BN(delivery_eta)
+    )
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
+        sellerWallet: payer_wallet.publicKey
+    })
+    .instruction()
+}
+
+export async function CommissionSetProdInfo (
+    product,
+    info_address,
+    payer_wallet
+){
+
+    await PRODUCT_PROGRAM.methods
+    .commissionUpdateInfo(
+        info_address
+    )
+    .accounts({
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorAccount: typeof account_addr == "string" ? new PublicKey(account_addr) : account_addr,
         sellerWallet: payer_wallet.publicKey
     })
     .instruction()
@@ -372,19 +583,15 @@ export async function SetProdInfo (
 export async function UpdateProductQuantity (
     product,
     qnt = 0,
+    market_acc,
     payer_wallet
 ){
-    if(typeof product == "string"){
-        product = new PublicKey(product)
-    }
-
-    let listings_address = this.GenListingsAddress("physical")
 
     await PRODUCT_PROGRAM.methods
     .updateProductQuantity(new anchor.BN(qnt))
     .accounts({
-        product: product,
-        vendorListings: listings_address,
+        product: typeof product == "string" ? new PublicKey(product) : product,
+        vendorListings: this.GenListingsAddress("physical", market_acc.data.metadata.voter_id),
         sellerWallet: payer_wallet.publicKey
     })
     .instruction()
@@ -396,6 +603,7 @@ export async function UpdateProductQuantity (
 // Text Video Audio Image Folder
 export async function SetFileType (
     product,
+    market_acc,
     payer_wallet,
     filetype = "Image"
 ){
@@ -407,13 +615,11 @@ export async function SetFileType (
     let param = {};
     param[filetype] = {};
 
-    let listings_address = this.GenListingsAddress("digital")
-
     await PRODUCT_PROGRAM.methods
     .setFileType(param)
     .accounts({
         product: product,
-        vendorListings: listings_address,
+        vendorListings: this.GenListingsAddress("digital", market_acc.data.metadata.voter_id),
         sellerWallet: payer_wallet.publicKey
     })
     .instruction()
