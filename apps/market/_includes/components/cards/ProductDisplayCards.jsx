@@ -41,13 +41,14 @@ export function EmptyProductDisplayCardHomeDep(props) {
 
 export function EmptyProductDisplayCardHome(props) {
 	return(
-		<div className="row-span-1 col-span-1 my-3 mx-4">
-			<div className="relative group">
-				<div className="bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-6">
+		<div className="row-span-1 col-span-1 my-3 mx-auto w-[265px] h-[440px]">
+			<div className="relative group h-full w-full">
+				<div className="bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-3 h-full w-full">
 					<div className="overflow-hidden bg-[#535353] animate-pulse rounded-[9px] w-full h-[230px] mb-4" />
-					<div className="w-full h-7 bg-[#535353] animate-pulse rounded-[6px] mb-2"/>
-					<div className="w-[40%] h-5 bg-[#535353] animate-pulse rounded-[4px] mr-auto mb-4"/>
-					<div className="w-[40%] h-9 bg-[#535353] animate-pulse rounded-[12px] mx-auto"/>
+					<div className="w-full h-8 bg-[#535353] animate-pulse rounded-[6px] mb-3"/>
+					<div className="w-[40%] h-8 bg-[#535353] animate-pulse rounded-[6px] mr-auto mb-3"/>
+					<div className="w-[75%] h-8 bg-[#535353] animate-pulse rounded-[6px] mr-auto mb-5"/>
+					<div className="w-full h-12 bg-[#535353] animate-pulse rounded-[9px] mx-auto"/>
 				</div>
 			</div>
 		</div>
@@ -185,13 +186,13 @@ export function ProductDisplayCardHome(props) {
 								<span className="my-auto align-middle text-center truncate text-sm">{"$" + (Math.round(prod?.data?.metadata?.price) ? Math.round(prod?.data?.metadata?.price)?.toString() : "123")}</span>
 							</div>							
 						</div>
-						<span className="text-xl text-white truncate w-full text-left px-2 mt-2">{prod?.data?.metadata?.info?.name || "Icon Pack"}</span>
-						<div className="flex flex-row gap-x-2 w-full px-2 justify-start mt-1 mb-5">
+						<span className="text-xl text-white truncate w-full text-left px-2 mt-2">{prod?.data?.metadata?.info?.name ? (prod?.data?.metadata?.info?.name?.charAt(0).toUpperCase() + prod?.data?.metadata?.info?.name?.slice(1)) : "Icon Pack"}</span>
+						<div className="flex flex-row gap-x-2 w-full px-2 justify-start mt-2 mb-5">
 							{categoryTag}
 							{productTags?.map((tagName) => {
 								return(
 									<div className="flex flex-row py-1 px-2 bg-[#23212F] rounded-[4px]">
-										<span className="my-auto text-sm text-[#686868]">{tagName}</span>
+										<span className="my-auto text-sm text-[#686868]">{tagName.charAt(0).toUpperCase() + tagName.slice(1)}</span>
 									</div>
 								)
 							})}

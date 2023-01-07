@@ -111,6 +111,7 @@ export default function DoubleRangeInput(props, { rtl }) {
 								display: 'flex',
 								justifyContent: 'center',
 								alignItems: 'center',
+								outline: 'none'
 							}}
 							>
 								<ThumbLabel

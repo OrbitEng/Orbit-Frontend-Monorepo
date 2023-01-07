@@ -12,11 +12,6 @@ const sortMethods = [
 	{ key: 3, name: "Price High", value: "phigh"},
 ];
 
-const MIN = 0;
-const MAX = 999999;
-const STEP = 1;
-const RTL = false;
-
 /* this is the explore component that sits anywhere but profile page */
 export function LargeProductExplorer(props) {
 	const [sortMethod, setSortMethod] = useState(sortMethods[0]);
@@ -37,6 +32,9 @@ export function LargeProductExplorer(props) {
 		));
 		setProdsToDisplay(a.length < 16 ? a.concat(Array(16-props.items.length).fill(<EmptyProductDisplayCardHome/>)) : a)
 	}, [props.items, props.category])
+
+
+	console.log(prodsToDisplay);
 
 	return(
 		<div className="flex flex-col mx-auto w-full mt-6">
@@ -86,7 +84,7 @@ export function LargeProductExplorer(props) {
 							leaveFrom="opacity-100"
 							leaveTo="opacity-0"
 						>
-							<Listbox.Options className="absolute right-0 mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
+							<Listbox.Options className="absolute right-0 inset-y mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
 								{sortMethods.map((method) => (
 									<Listbox.Option
 										key={method.key}
@@ -114,18 +112,18 @@ export function LargeProductExplorer(props) {
 				</div>
 			</div>
 			{
-				(props?.items == undefined || props?.items?.length == 0) ? 
+				(/*props?.items == undefined || props?.items?.length == 0*/ false) ? 
 				(
 					<div className="flex flex-col my-56 mx-auto text-center">
 						<h2 className="text-center text-5xl font-semibold text-white my-4 mx-auto">No Listings</h2>
-						<span className="text-[#5B5B5B] font-semibold text-lg mx-auto w-9/12 mb-2">No items to display. Create some listings or browse others!</span>
+						<span className="text-[#5B5B5B] font-semibold text-lg mx-auto w-full mb-2">No items to display.<br/>Create some listings or browse others!</span>
 						<div className="flex flex-row gap-x-3 content-center mx-auto">
 							<button className="text-white font-bold bg-[#13171D] border-[1px] border-[#515151] rounded-lg px-3 py-2">Create</button>
 							<button className="text-white font-bold bg-[#13171D] border-[1px] border-[#515151] rounded-lg px-3 py-2">Explore</button>
 						</div>
 					</div>
 				):(
-					<div className="grid grid-flow-row grid-cols-4 mt-4 mb-28">
+					<div className="grid grid-flow-row grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-4 mb-28">
 						{prodsToDisplay}
 					</div>
 				)
