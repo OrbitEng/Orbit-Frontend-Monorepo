@@ -15,9 +15,19 @@ const sortMethods = [
 /* this is the explore component that sits anywhere but profile page */
 export function LargeProductExplorer(props) {
 	const [sortMethod, setSortMethod] = useState(sortMethods[0]);
-	const [prodsToDisplay, setProdsToDisplay] = useState(Array(16).fill(<EmptyProductDisplayCardHome/>));
 	const [listingsExplorerCategory, setListingsExplorerCategory] = useState("all");
 	const [rangePrice, setRangePrice] = useState([0,999999]); 
+
+	const [prodsToDisplay, setProdsToDisplay] = useState(
+		Array(16)
+			.fill(
+				<ProductDisplayCardHome 
+					address={"1111111111111111"} // address of prod listing
+					type={"local"}
+					key={1}
+				/>
+			)
+	);
 
 	useEffect(()=>{
 		if(!(props.items && props.category)) return;
@@ -30,11 +40,19 @@ export function LargeProductExplorer(props) {
 				/>
 			</div>
 		));
-		setProdsToDisplay(a.length < 16 ? a.concat(Array(16-props.items.length).fill(<EmptyProductDisplayCardHome/>)) : a)
+		setProdsToDisplay(a.length < 16 ?
+			a
+				.concat(
+					Array(16-props.items.length)
+						.fill(
+							<ProductDisplayCardHome 
+								address={"1111111111111111"} // address of prod listing
+								type={props.prod_type}
+								key={1} // this is gonna complain :/
+							/>
+						)
+				) : a)
 	}, [props.items, props.category])
-
-
-	console.log(prodsToDisplay);
 
 	return(
 		<div className="flex flex-col mx-auto w-full mt-6">
@@ -112,9 +130,9 @@ export function LargeProductExplorer(props) {
 				</div>
 			</div>
 			{
-				(/*props?.items == undefined || props?.items?.length == 0*/ false) ? 
+				(props?.items == undefined || props?.items?.length == 0) ? 
 				(
-					<div className="flex flex-col my-56 mx-auto text-center">
+					<div className="flex flex-col my-28 md:my-56 mx-auto text-center">
 						<h2 className="text-center text-5xl font-semibold text-white my-4 mx-auto">No Listings</h2>
 						<span className="text-[#5B5B5B] font-semibold text-lg mx-auto w-full mb-2">No items to display.<br/>Create some listings or browse others!</span>
 						<div className="flex flex-row gap-x-3 content-center mx-auto">
@@ -123,7 +141,7 @@ export function LargeProductExplorer(props) {
 						</div>
 					</div>
 				):(
-					<div className="grid grid-flow-row grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-4 mb-28">
+					<div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mt-4 mb-28 mx-auto">
 						{prodsToDisplay}
 					</div>
 				)

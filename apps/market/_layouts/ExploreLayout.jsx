@@ -37,7 +37,7 @@ export default function ExploreLayout(props) {
 				<title>Orbit</title>
 				<link rel="icon" href="orbit.png" />
 			</Head>
-			<main className="bg-[url('/ExploreBg/Explore.svg')] bg-auto overflow-hidden bg-no-repeat min-h-screen">
+			<main className="bg-[url('/ExploreBg/Explore.svg')] bg-auto sm:bg-cover overflow-hidden min-h-screen">
 				<HomeHeader />
 				{/* Hero Section */}
 				<div className="w-full flex h-[28rem] sm:mt-56 mt-[7.5rem]"> 
@@ -54,7 +54,7 @@ export default function ExploreLayout(props) {
 							leaveTo="opacity-0 scale-95"
 						>	
 							<div className="flex relative max-w-[200px] sm:max-w-sm w-full h-1/2 mt-auto mx-auto"> 
-								<div className="relative max-w-[180px] max-h-[90px] sm:max-w-sm sm:max-h-[182px] w-full h-full mt-auto mx-auto">
+								<div className="relative max-w-[180px] max-h-[90px] sm:max-w-sm sm:max-h-[182px] w-full h-full mt-auto lg:mb-10 mx-auto">
 									<Image 
 										layout="fill"
 										objectFit="contain"
@@ -63,7 +63,7 @@ export default function ExploreLayout(props) {
 								</div>
 							</div>
 						</Transition>
-						<div className="relative max-w-sm w-full h-1/2 mx-auto mb-auto"> 
+						<div className="relative max-w-[350px] sm:max-w-lg md:max-w-2xl lg:max-w-5xl w-full h-1/2 mx-auto mb-auto"> 
 							<PageSearchBar />
 						</div>
 					</div>

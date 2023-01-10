@@ -96,7 +96,7 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 			leaveTo="opacity-0 scale-95"
 		>
 			<div ref={ref} className="flex flex-col rounded-full p-auto w-fill py-auto align-middle justify-center max-w-4xl mx-auto my-auto large-purple-search-container">
-				<div className="flex gap-x-1 flex-row px-3 md:px-[26px] py-2 md:py-4 w-full mx-auto my-auto align-middle rounded-full bg-[#16121E]">
+				<div className="flex gap-x-1 flex-row px-3 md:px-[26px] py-3 md:py-4 w-full mx-auto my-auto align-middle rounded-full bg-[#16121E]">
 					<Combobox value={selected} onChange={setSelected} >
 						<MagnifyingGlassIcon className="h-6 w-6 text-[#4A4A4A] my-auto stroke-[2px]"/>
 						<Combobox.Input
