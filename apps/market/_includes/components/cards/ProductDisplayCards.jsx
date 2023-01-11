@@ -12,6 +12,9 @@ import ArweaveCtx from "@contexts/ArweaveCtx";
 import { useRouter } from "next/router";
 import { ACCOUNTS_PROGRAM } from "orbit-clients";
 
+import usdcIcon from "../../../public/Icons/usdcMarkColor.svg";
+import { PlusIcon } from "@heroicons/react/24/solid";
+
 export function EmptyProductDisplayCardHomeDep(props) {
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 transition duration-700">
@@ -36,13 +39,14 @@ export function EmptyProductDisplayCardHomeDep(props) {
 
 export function EmptyProductDisplayCardHome(props) {
 	return(
-		<div className="row-span-1 col-span-1 my-3 mx-4">
-			<div className="relative group">
-				<div className="bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-6">
+		<div className="row-span-1 col-span-1 my-3 mx-auto w-[265px] h-[440px]">
+			<div className="relative group h-full w-full">
+				<div className="bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-3 h-full w-full">
 					<div className="overflow-hidden bg-[#535353] animate-pulse rounded-[9px] w-full h-[230px] mb-4" />
-					<div className="w-full h-7 bg-[#535353] animate-pulse rounded-[6px] mb-2"/>
-					<div className="w-[40%] h-5 bg-[#535353] animate-pulse rounded-[4px] mr-auto mb-4"/>
-					<div className="w-[40%] h-9 bg-[#535353] animate-pulse rounded-[12px] mx-auto"/>
+					<div className="w-full h-8 bg-[#535353] animate-pulse rounded-[6px] mb-3"/>
+					<div className="w-[40%] h-8 bg-[#535353] animate-pulse rounded-[6px] mr-auto mb-3"/>
+					<div className="w-[75%] h-8 bg-[#535353] animate-pulse rounded-[6px] mr-auto mb-5"/>
+					<div className="w-full h-12 bg-[#535353] animate-pulse rounded-[9px] mx-auto"/>
 				</div>
 			</div>
 		</div>
@@ -56,47 +60,40 @@ export function ProductDisplayCardHome(props) {
 
 	const {setProductCache} = useContext(ProductCacheCtx);
 	const {setVendorCache} = useContext(VendorCacheCtx);
-	const {arweaveClient} = useContext(ArweaveCtx);
+	const {arweaveClient} = useContext(ArweaveCtx)
 
 	let productTags = ["UX/UI", "design"];
 
-	let categoryTagBg, categoryTagGlow, categoryTagText, categoryCardGlow;
+	let categoryTagBg, categoryTagGlow, categoryTagText, categoryCardGlow, cardStyle;
 
-	
 	// This is maybe slow, can get spedup from memo
 	switch(props?.type) {
 		case "commission":
-			categoryTagBg = "bg-[#2A1D4F]";
-			categoryTagGlow = "bg-[#875EFF]";
-			categoryTagText = "text-[#875EFF]";
-			categoryCardGlow = "rgba(135, 94, 255, 0.5)";
+			categoryTagBg = "bg-[#1A1023] border-[#7F10EA] border-[1px]";
+			categoryTagText = "text-[#7F10EA]";
+			cardStyle = "commissionCard";
 			break;
 		case "digital":
-			categoryTagBg = "bg-[#331837]";
-			categoryTagGlow = "bg-[#7F1790]";
-			categoryTagText = "text-[#C442DA]";
-			categoryCardGlow = "rgba(196, 66, 218, 0.5)"
+			categoryTagBg = "bg-[#230E26] border-[#D947EF] border-[1px]";
+			categoryTagText = "text-[#D947EF]";
+			cardStyle = "digitalCard";
 			break;
 		case "local": 
-			categoryTagBg = "bg-[#002513]";
-			categoryTagGlow = "bg-[#064F2B]";
-			categoryTagText = "text-[#00934C]";
-			categoryCardGlow = "rgba(0, 177, 89, 0.5)"
+			categoryTagBg = "bg-[#0E1F14] border-[#29E06D] border-[1px]";
+			categoryTagText = "text-[#29E06D]";
+			cardStyle = "localCard"
 			break;
 		case "physical":  
-			categoryTagBg = "bg-[#192328BF]";
-			categoryTagGlow = "bg-[#205C7D]";
-			categoryTagText = "text-[#00A3FF]";
-			categoryCardGlow = "rgba(0, 163, 255, 0.5)"
+			categoryTagBg = "bg-[#0F1625] border-[#3F72D3] border-[1px]";
+			categoryTagText = "text-[#3F72D3]";
+			cardStyle = "physicalCard"
 			break;
 	}
  
-
 	let categoryTag = (
-		<div className="relative">
-			<div className={`absolute -inset-0 ${categoryTagGlow} blur`}/>
+		<div className="relative overflow-visible">
 			<div className={`relative flex flex-row py-1 px-2 rounded-[4px] ${categoryTagBg}`}>
-				<span className={`${categoryTagText} my-auto text-sm`}>{props?.type}</span>
+				<span className={`${categoryTagText} my-auto text-sm`}>{props?.type?.charAt(0).toUpperCase() + props?.type?.slice(1)}</span>
 				<span className="h-4"/>
 			</div>
 		</div>
@@ -150,13 +147,23 @@ export function ProductDisplayCardHome(props) {
 	},[props.address])
 
 	return(
-		<div className="row-span-1 col-span-1 my-3 mx-4">
+		<div className="row-span-1 col-span-1 my-3 mx-2 w-[265px]">
 			<Tilt tiltMaxAngleX={10} tiltMaxAngleY={10} glareEnable={true} glareColor="#ffffff" glareMaxOpacity={0.1} glareBorderRadius="10px" glarePosition="all">
 				<div className="relative group overflow-visible" onClick={()=>{setProductCache(prod); setVendorCache(vendor)}}>
-					<div className="absolute -inset-0 -rotate-1 blur-sm" style={{background: `radial-gradient(ellipse at center, transparent, ${categoryCardGlow} 90%, rgba(71,71,71,0.24) 100%)`}}/>
-					<div className="relative bg-[#13111C] rounded-[10px] leading-none flex flex-col items-center overflow-hidden px-3 pt-3 pb-4">
-						<div className="flex relative w-full overflow-visible">
-							<div className="absolute flex flex-row gap-x-1 gradient-box -bottom-3 left-1 z-40 py-1 px-2 bg-gradient-to-br from-[#181424] via-[#2D2A35] to-[#181424] text-white rounded-lg border-t-[1.5px] border-[#3F3F3F] max-w-[50%]">
+					<div className={`relative ${cardStyle} leading-none flex flex-col items-center overflow-visible`}>
+						<div className="flex relative w-full overflow-visible p-2">
+							<div className="flex relative overflow-hidden rounded-[9px] w-full h-[230px]">
+								<Image
+									alt="product image"
+									src={(prod?.data?.metadata?.media && prod?.data.metadata.media[0]) || "/demobgpack.png"}
+									layout="fill"
+									objectFit="cover"
+									loading="lazy"
+								/>
+							</div>
+						</div>
+						<div className="flex flex-row w-full justify-between px-2 mt-2">
+							<div className="relative flex flex-row gap-x-1 py-1 px-2 bg-[#28253F] text-white rounded-lg max-w-[50%]">
 								<span className="overflow-hidden relative flex rounded-full h-6 w-6 flex-shrink-0">
 									<Image
 										src={vendorUS?.data.profilePic  || "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"}
@@ -167,54 +174,49 @@ export function ProductDisplayCardHome(props) {
 								</span>
 								<span className="my-auto text-[#EFEFEF] text-sm truncate">{("@" + vendorUS?.address?.toString())}</span>
 							</div>
-							<div className="absolute flex flex-row gradient-box -bottom-3 right-1 z-40 text-white rounded-lg overflow-hidden px-2 py-1 bg-gradient-to-br from-[#181424] via-[#2D2A35] to-[#181424] max-w-[40%]">
+							<div className="relative flex flex-row text-white rounded-lg overflow-hidden bg-[#28253F] px-2 py-1 max-w-[40%]">
 								{/* For now I am just leaving the prices in USD but talk to indy about this... */}
+								<span className="my-auto mr-1">
+									<Image src={usdcIcon} layout="fixed" height={20} width={20} />
+								</span>
 								<span className="my-auto align-middle text-center truncate text-sm">{"$" + (Math.round(prod?.data?.metadata?.price) ? Math.round(prod?.data?.metadata?.price)?.toString() : "123")}</span>
-								<span className="h-6"/>
-							</div>
-							<div className="flex relative overflow-hidden rounded-[9px] w-full h-[230px]">
-								<Image
-									alt="product image"
-									src={(prod?.data?.metadata?.media && prod?.data.metadata.media[0]) || "/demologos.png"}
-									layout="fill"
-									objectFit="cover"
-									loading="lazy"
-								/>
-							</div>
+							</div>							
 						</div>
-						<span className="text-2xl text-white font-bold truncate w-full text-left px-2 mt-4">{prod?.data?.metadata?.info?.name || "Icon Pack"}</span>
-						<span
-							className="text-sm font-semibold text-[#7B7B7B] underline text-left w-full px-2 cursor-pointer"
-							onClick={(e) => {
-								e.preventDefault()
-								router.push("/product/" + props?.type + "/" + props?.address?.toString())
-							}}
-						>
-							View Listing
-						</span>
-						<div className="flex flex-row gap-x-2 w-full px-2 justify-start mt-3 mb-5">
+						<span className="text-xl text-white truncate w-full text-left px-2 mt-2">{prod?.data?.metadata?.info?.name ? (prod?.data?.metadata?.info?.name?.charAt(0).toUpperCase() + prod?.data?.metadata?.info?.name?.slice(1)) : "Icon Pack"}</span>
+						<div className="flex flex-row gap-x-2 w-full px-2 justify-start mt-2 mb-5">
 							{categoryTag}
 							{productTags?.map((tagName) => {
 								return(
-									<div className="flex flex-row py-1 px-2 bg-[#1B1B1B] rounded-[4px]">
-										<span className="my-auto text-sm text-[#646464]">{tagName}</span>
+									<div className="flex flex-row py-1 px-2 bg-[#23212F] rounded-[4px]">
+										<span className="my-auto text-sm text-[#686868]">{tagName.charAt(0).toUpperCase() + tagName.slice(1)}</span>
 									</div>
 								)
 							})}
 						</div>
-						{!(props?.type == "commission" || "local") ? (
-							<button
-								className="font-bold text-lg py-1 px-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-[12px] drop-shadow border-2 border-[#2D2D2D] border-opacity-60"
-							>
-								&#9889; Quick Buy
-							</button>
-						) : (
-							<button
-								className="font-bold text-lg py-1 px-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-[12px] drop-shadow border-2 border-[#2D2D2D] border-opacity-60"
-							>
-								&#9993;&#65039; Request
-							</button>
-						)}
+						<div className="flex w-full justify-center mb-4">
+							{!(props?.type == "commission" || props?.type ==  "local") ? (
+								<div className="flex flex-row flex-grow mx-2 gap-x-2">
+									<button
+										className="flex flex-grow basis-4/5 font-bold text-lg py-2 text-white bg-[#28252F] rounded-[10px]"
+									>
+										<span className="mx-auto my-auto">&#9889; Buy Now</span>
+									</button>
+									<button className="flex py-2 px-[10px] bg-[#2057C0] rounded-[10px]">
+										<PlusIcon className="h-6 w-6 text-white my-auto mx-auto"/>
+									</button>
+								</div>
+							) : (
+								<button
+									onClick={(e) => {
+										e.preventDefault()
+										router.push("/product/" + props?.type + "/" + props?.address?.toString())
+									}}
+									className="font-bold flex flex-grow text-lg py-2 bg-[#2057C0] text-white rounded-[10px] mx-2"
+								>
+									<span className="mx-auto my-auto">View Listing</span>
+								</button>
+							)}
+						</div>
 					</div>
 				</div>
 			</Tilt>

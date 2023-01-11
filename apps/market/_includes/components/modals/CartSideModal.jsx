@@ -5,13 +5,13 @@ import { CartFunctionalities } from '@functionalities/Cart';
 import PythClientCtx from "@contexts/PythClientCtx";
 import Image from "next/image";
 import { useWallet } from '@solana/wallet-adapter-react';
-import PosModal from './components/modals/PosModal';
+import PosModal from './PosModal';
 
 import CartCtx from '@contexts/CartCtx';
 import UserAccountCtx from '@contexts/UserAccountCtx';
 
 
-export default function CartSideMenu(props) {
+export default function CartSideModal(props) {
 	const [openPos, setOpenPos] = useState(false);
 	const [solPrice, setSolPrice] = useState();
 	const {pythClient} = useContext(PythClientCtx);
@@ -46,7 +46,7 @@ export default function CartSideMenu(props) {
 				leaveFrom="opacity-100"
 				leaveTo="opacity-0"
 				>
-					<div className="fixed inset-0 bg-opacity-100 transition-opacity backdrop-blur-xl" />
+					<div className="fixed inset-0 bg-opacity-100 transition-opacity backdrop-blur-[60px] bg-[rgba(15, 13, 20, 0.68)]" />
 				</Transition.Child>
 				<div className="fixed inset-0 overflow-hidden">
 					<div className="absolute inset-0 overflow-hidden">
@@ -61,7 +61,7 @@ export default function CartSideMenu(props) {
 								leaveTo="translate-x-full"
 							>
 								<Dialog.Panel className="pointer-events-auto relative w-screen max-w-lg flex">
-									<div className="flex h-[90%] w-[85%] flex-col overflow-hidden bg-gradient-to-t from-[#32254E78] to-[#26232C9C] border-t border-x border-[#545454] border-opacity-30 py-6 shadow-xl my-auto px-5 rounded-xl">
+									<div className="flex h-[90%] w-[85%] flex-col overflow-hidden backdrop-blur-[154px] border-t border-x border-[#545454] border-opacity-30 py-6 shadow-xl my-auto px-5 rounded-xl defaultModalCard">
 										<div className="relative top-0 right-0 flex pt-1 pr-4 justify-end">
 											<button
 												type="button"
