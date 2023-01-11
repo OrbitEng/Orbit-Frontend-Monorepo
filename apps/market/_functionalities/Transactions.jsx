@@ -1,17 +1,12 @@
 import { useContext, useState, useCallback } from "react";
-import PhysicalMarketCtx from "@contexts/PhysicalMarketCtx";
-import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
-import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
+import { DIGITAL_MARKET, PHYSICAL_MARKET, COMMISSIONS_MARKET, TRANSACTION_PROGRAM, PRODUCT_PROGRAM, DISPUTE_PROGRAM } from "orbit-clients";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 
 
 import {file_client, file_common, enc_common} from "browser-clients";
 import { ArQueryClient } from "data-transfer-clients";
 import { PublicKey } from "@solana/web3.js";
-import DisputeProgramCtx from "@contexts/DisputeProgramCtx";
-import CommissionMarketCtx from "@contexts/CommissionMarketCtx";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 
 export function CommonTxFunctionalities(props){
@@ -32,11 +27,8 @@ export function CommonTxFunctionalities(props){
 export function DigitalFunctionalities(){
     const {OpenChat} = CommonTxFunctionalities();
 
-    const {digitalMarketClient} = useContext(DigitalMarketCtx);
-    const {marketAccountsClient} = useContext(MarketAccountsCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {matrixClient} = useContext(MatrixClientCtx);
-    const {transactionClient} = useContext(TransactionClientCtx);
     const {userAccount} = useContext(UserAccountCtx);
 
     ////////////////////////////////////////////////////////////
@@ -45,7 +37,8 @@ export function DigitalFunctionalities(){
     /// :SOL
     const OpenTransactionSol = async(
         product,
-        use_discount
+        use_discount,
+        payer_wallet
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -53,13 +46,14 @@ export function DigitalFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerDigitalTransactions;
 
-        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await TRANSACTION_PROGRAM.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = userAccount.data.buyerDigitalTransactions;
-        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-        let tx_addr = digitalMarketClient.GenTransactionAddress(vendor_log_address, sellerIndex);
+        let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let tx_addr = DIGITAL_PROGRAM.GenTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = userAccount.address;
-        await digitalMarketClient.OpenTransactionSol(
+        await OpenChat(vendor_account.address.toString(), tx_addr)
+        return DIGITAL_PROGRAM.DigitalOpenTransactionSol(
             tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
@@ -69,32 +63,32 @@ export function DigitalFunctionalities(){
             buyer_account_addr,
             product_addr,
             product.price,
-            use_discount
+            use_discount,
+        payer_wallet
         );
 
-        await OpenChat(vendor_account.address.toString(), tx_addr)
     }
 
     const CloseTransactionSol = async(
         tx_addr
     )=>{
 
-        let tx_struct = (await digitalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let seller_tx_log_struct = await transactionClient.GetSellerOpenTransactions(tx_struct.seller);
+        let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
+        let seller_tx_log_struct = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller);
         let seller_wallet = seller_tx_log_struct.sellerWallet;
-        let seller_market_account_addr = marketAccountsClient.GenAccountAddress(seller_wallet);
-        let buyer_tx_log_struct = await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer);
-        let buyer_market_account_addr = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let seller_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(seller_wallet);
+        let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer);
+        let buyer_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
         let buyer_wallet = buyer_tx_log_struct.buyer_wallet;
 
-        let buyer_acc_struct = await marketAccountsClient.GetAccount(buyer_market_account_addr);
+        let buyer_acc_struct = await ACCOUNTS_PROGRAM.GetAccount(buyer_market_account_addr);
         let reflink_chain;
         if(buyer_acc_struct.used_reflink){
-            reflink_chain = marketAccountsClient.ReflinkSolChain(buyer_acc_struct.used_reflink);
+            reflink_chain = ACCOUNTS_PROGRAM.ReflinkSolChain(buyer_acc_struct.used_reflink);
         };
 
 
-        return digitalMarketClient.CloseTransactionSol(
+        return DIGITAL_PROGRAM.DigitalCloseTransactionSol(
             tx_addr,
             tx_struct,
             buyer_market_account_addr,
@@ -107,23 +101,29 @@ export function DigitalFunctionalities(){
     }
 
     const FundEscrowSol = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        return digitalMarketClient.FundEscrowSol(tx_addr)
+        return DIGITAL_PROGRAM.DigitalFundEscrowSol(
+            tx_addr,
+            payer_wallet
+        )
 
     }
 
     const SellerEarlyDeclineSol = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        let tx_struct = (await digitalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_wallet = buyer_tx_log.buyer_wallet;
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_wallet);
-        return digitalMarketClient.SellerEarlyDeclineSol(
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
+        return DIGITAL_PROGRAM.DigitalSellerEarlyDeclineSol(
             tx_addr,
             buyer_wallet,
-            buyer_account
+            buyer_account,
+            payer_wallet
         )
 
     }
@@ -132,7 +132,8 @@ export function DigitalFunctionalities(){
     const OpenTransactionSpl = async(
         product,
         use_discount,
-        currency
+        currency,
+        payer_wallet
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -140,14 +141,15 @@ export function DigitalFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;;
         let seller_tx_log_addr = vendor_account.sellerDigitalTransactions;
 
-        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await TRANSACTION_PROGRAM.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = userAccount.data.buyerDigitalTransactions;
-        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-        let tx_addr = digitalMarketClient.GenTransactionAddress(vendor_log_address, sellerIndex);
+        let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let tx_addr = DIGITAL_PROGRAM.GenDigitalTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = userAccount.address;
 
-        await digitalMarketClient.OpenTransactionSpl(
+        await OpenChat(vendor_account.address.toString(), tx_addr);
+        return DIGITAL_PROGRAM.DigitalOpenTransactionSpl(
             tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
@@ -158,28 +160,28 @@ export function DigitalFunctionalities(){
             product_addr,
             currency,
             product.price,
-            use_discount
+            use_discount,
+            payer_wallet
         );
-        await OpenChat(vendor_account.address.toString(), tx_addr);
 
     }
 
     const CloseTransactionSpl = async(
         tx_addr
     )=>{
-        let tx_struct = (await digitalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let seller_tx_log_struct = (await transactionClient.GetSellerOpenTransactions(tx_struct.seller)).data;
+        let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
+        let seller_tx_log_struct = (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller)).data;
         let seller_wallet = seller_tx_log_struct.sellerWallet;
-        let buyer_tx_log_struct = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
-        let buyer_market_account_addr = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let buyer_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let buyer_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
         let buyer_wallet = buyer_tx_log_struct.buyer_wallet;
 
-        let buyer_acc_struct = (await marketAccountsClient.GetAccount(buyer_market_account_addr)).data;
+        let buyer_acc_struct = (await ACCOUNTS_PROGRAM.GetAccount(buyer_market_account_addr)).data;
         let reflink_chain;
         if(buyer_acc_struct.used_reflink){
-            reflink_chain = marketAccountsClient.ReflinkSplChain(buyer_acc_struct.used_reflink, tx_struct.metadata.currency);
+            reflink_chain = ACCOUNTS_PROGRAM.ReflinkSplChain(buyer_acc_struct.used_reflink, tx_struct.metadata.currency);
         };
-        return digitalMarketClient.CloseTransactionSpl(
+        return DIGITAL_PROGRAM.DigitalCloseTransactionSpl(
             tx_addr,
 
             buyer_wallet,
@@ -191,25 +193,31 @@ export function DigitalFunctionalities(){
     }
 
     const FundEscrowSpl = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        return digitalMarketClient.FundEscrowSpl(tx_addr)
+        return DIGITAL_PROGRAM.DigitalFundEscrowSpl(
+            tx_addr,
+            payer_wallet
+            )
 
     }
 
     const SellerEarlyDeclineSpl = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        let tx_struct = (await digitalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_wallet = buyer_tx_log.buyer_wallet;
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
 
-        return digitalMarketClient.SellerEarlyDeclineSpl(
+        return DIGITAL_PROGRAM.DigitalSellerEarlyDeclineSpl(
             tx_addr,
 
             buyer_wallet,
-            buyer_account
+            buyer_account,
+            payer_wallet
         )
 
     }
@@ -218,73 +226,76 @@ export function DigitalFunctionalities(){
     //////////////////////////////////////////////////////
     /// SELLER UTILS
 
-    const UpdateStatusToShipping = async(tx_addr)=>{
+    const UpdateStatusToShipping = async(tx_addr, payer_wallet)=>{
 
-        await digitalMarketClient.UpdateStatusToShipping(
+        return DIGITAL_PROGRAM.DigitalUpdateStatusToShipping(
             tx_addr,
             market_acc,
-            market_auth
+            market_auth,
+            payer_wallet
         );
     }
 
     // CommitInitKeys, CommitLink bundled together
-    const UploadProductFile = async(tx_addr, datafile, xslices, yslices) =>{
+    // funding_ix.sendTx, data_item.upload()
+    const UploadProductFile = async(tx_addr, datafile, xslices, yslices, payer_wallet) =>{
 
-        let [ar_addr, kps] = await bundlrClient.UploadFinalBufferInstruction(datafile, xslices, yslices);
+        let [funding_ix, data_item, kps] = await bundlrClient.UploadFinalBufferInstruction(datafile, xslices, yslices);
 
-        await digitalMarketClient.CommitInitKeys(
+        return [
+        funding_ix,
+        data_item,
+        await DIGITAL_PROGRAM.DigitalCommitInitKeys(
+            tx_addr,
             kps.map(k => k.publicKey),
+            payer_wallet
+        ),
+        await DIGITAL_PROGRAM.DigitalCommitLink(
             tx_addr,
-            market_acc,
-            market_auth
-        );
-
-        await digitalMarketClient.CommitLink(
-            ar_addr,
-            tx_addr,
-            market_acc,
-            market_auth
-        );
+            data_item.id,
+            payer_wallet
+        )];
     }
 
-    const CommitSubkeys = async (tx_addr, indexes)=>{
+    const CommitSubkeys = async (tx_addr, indexes, payer_wallet)=>{
 
-        let link = await digitalMarketClient.GetLink(tx_addr);
+        let link = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.dataAddress;
         let kps = bundlrClient.GetTransactionsKp(link);
         let kp_dict = {};
         
         indexes.forEach((ind)=>{
             kp_dict[ind] = kps[ind]
         });
-        await digitalMarketClient.CommitSubkeys(
-            kp_dict,
+        return DIGITAL_PROGRAM.DigitalCommitSubkeys(
             tx_addr,
-            market_acc,
-            market_auth
+            kp_dict,
+            payer_wallet
         );
     };
 
     const SellerAcceptTransaction = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) =>{
-        return digitalMarketClient.SellerAcceptTransaction(tx_addr)
+        return DIGITAL_PROGRAM.DigitalSellerAcceptTransaction(tx_addr, payer_wallet)
     }
 
     ////////////////////////////////////////////////////
     /// BOTH PARTIES GENERAL UTILS
     const LeaveReview = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) =>{
-        let tx_struct = (await digitalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let other_party = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
+        let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
+        let other_party = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
 
-        if(transactionClient.GenBuyerTransactionLog("digital").toString() == other_party.toString()){
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey).toString() == other_party.toString()){
             other_party = tx_struct.seller;
         }
 
-        let market_account = marketAccountsClient.GenAccountAddress();
+        let market_account = ACCOUNTS_PROGRAM.GenAccountAddress(payer_wallet.publicKey);
 
-        await digitalMarketClient.LeaveReview(
+        return DIGITAL_PROGRAM.DigitalLeaveReview(
             tx_addr,
             other_party,
             market_account
@@ -293,20 +304,22 @@ export function DigitalFunctionalities(){
     }
 
     const CloseTransactionAccount = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) =>{
-        let tx_struct = (await digitalMarketClient.GetTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
         let buyer_tx_log_addr = tx_struct.buyer;
-        let buyer_tx_log_struct = await transactionClient.GetBuyerOpenTransactions(buyer_tx_log_addr);
-        let tx_log = transactionClient.GenBuyerTransactionLog("digital");
-        if(transactionClient.GenBuyerTransactionLog("digital").toString() != buyer_tx_log_addr.toString()){
-            tx_log = transactionClient.GenSellerTransactionLog("digital")
+        let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(buyer_tx_log_addr);
+        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey);
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey).toString() != buyer_tx_log_addr.toString()){
+            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("digital", payer_wallet.publicKey)
         }
 
-        return digitalMarketClient.CloseTransactionAccount(
+        return DIGITAL_PROGRAM.DigitalCloseTransactionAccount(
             tx_addr,
             tx_log,
-            buyer_tx_log_struct.data.buyer_wallet
+            buyer_tx_log_struct.data.buyer_wallet,
+            payer_wallet
         )
     }
 
@@ -314,27 +327,31 @@ export function DigitalFunctionalities(){
     /// BUYER UTILS
 
     const ConfirmDelivered = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) => {
-        return digitalMarketClient.ConfirmDelivered(tx_addr)
+        return DIGITAL_PROGRAM.DigitalConfirmDelivered(tx_addr, payer_wallet)
     };
 
     const ConfirmAccept = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) => {
-        return digitalMarketClient.ConfirmAccept(tx_addr)
+        return DIGITAL_PROGRAM.DigitalConfirmAccept(tx_addr, payer_wallet)
     };
 
     const DenyAccept = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) => {
-        let tx_struct = (await digitalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log_struct = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_tx_log_struct.buyer_wallet);
+        let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_tx_log_struct.buyer_wallet);
         
-        return digitalMarketClient.DenyAccept(
+        return DIGITAL_PROGRAM.DigitalDenyAccept(
             tx_addr,
-            buyer_account
+            buyer_account,
+            payer_wallet
         )
     };
 
@@ -346,14 +363,14 @@ export function DigitalFunctionalities(){
 
     const DecryptImage = async(tx_addr) =>{
 
-        let raw_blocks = await (new ArQueryClient()).FetchData( (await digitalMarketClient.GetTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
+        let raw_blocks = await (new ArQueryClient()).FetchData( (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
 
         return file_client.AssembleImage(
             raw_blocks[0],
             raw_blocks[1],
             raw_blocks[2],
             raw_blocks[3],
-            await enc_common.DecryptStrings(await digitalMarketClient.GetCommittedKeys(), raw_blocks.slice(4))
+            await enc_common.DecryptStrings(await DIGITAL_PROGRAM.DigitalGetCommittedKeys(), raw_blocks.slice(4))
         )
     }
 
@@ -385,12 +402,9 @@ export function DigitalFunctionalities(){
 export function CommissionFunctionalities(){
     const {OpenChat} = CommonTxFunctionalities();
 
-    const {commissionMarketClient} = useContext(CommissionMarketCtx);
-    const {marketAccountsClient} = useContext(MarketAccountsCtx);
-    const {transactionClient} = useContext(TransactionClientCtx);
-    const {userAccount} = useContext(UserAccountCtx);
     const {matrixClient} = useContext(MatrixClientCtx);
     const {bundlrClient} = useContext(BundlrCtx);
+    const {userAccount} = useContext(UserAccountCtx);
 
     ////////////////////////////////////////
     /// TRANSACTIONS
@@ -398,7 +412,8 @@ export function CommissionFunctionalities(){
     /// :SOL
     const OpenTransactionSol = async(
         product,
-        use_discount
+        use_discount,
+        payer_wallet
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -406,14 +421,16 @@ export function CommissionFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerCommissionTransactions;
 
-        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await TRANSACTION_PROGRAM.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = userAccount.data.buyerCommissionTransactions;
-        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-        let tx_addr = commissionMarketClientGenTransactionAddress(vendor_log_address, sellerIndex);
+        let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let tx_addr = COMMISSION_PROGRAM.GenTransactionAddress(vendor_log_address, sellerIndex);
 
         let buyer_account_addr = userAccount.address;
-        await commissionMarketClient.OpenTransactionSol(
+        
+        await OpenChat(vendor_account.address.toString(), tx_addr);
+        return COMMISSION_PROGRAM.CommissionOpenTransactionSol(
             tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
@@ -423,32 +440,31 @@ export function CommissionFunctionalities(){
             buyer_account_addr,
             product_addr,
             product.price,
-            use_discount
+            use_discount,
+            payer_wallet
         )
-
-        await OpenChat(vendor_account.address.toString(), tx_addr);
     }
 
     const CloseTransactionSol = async(
         tx_addr
     )=>{
 
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let seller_tx_log_struct = await transactionClient.GetSellerOpenTransactions(tx_struct.seller);
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let seller_tx_log_struct = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller);
         let seller_wallet = seller_tx_log_struct.sellerWallet;
-        let seller_market_account_addr = marketAccountsClient.GenAccountAddress(seller_wallet);
-        let buyer_tx_log_struct = await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer);
-        let buyer_market_account_addr = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let seller_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(seller_wallet);
+        let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer);
+        let buyer_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
         let buyer_wallet = buyer_tx_log_struct.buyer_wallet;
 
-        let buyer_acc_struct = await marketAccountsClient.GetAccount(buyer_market_account_addr);
+        let buyer_acc_struct = await ACCOUNTS_PROGRAM.GetAccount(buyer_market_account_addr);
         let reflink_chain;
         if(buyer_acc_struct.used_reflink){
-            reflink_chain = marketAccountsClient.ReflinkSolChain(buyer_acc_struct.used_reflink);
+            reflink_chain = ACCOUNTS_PROGRAM.ReflinkSolChain(buyer_acc_struct.used_reflink);
         };
 
 
-        return commissionMarketClient.CloseTransactionSol(
+        return COMMISSION_PROGRAM.CommissionCloseTransactionSol(
             tx_addr,
             tx_struct,
             buyer_market_account_addr,
@@ -461,23 +477,26 @@ export function CommissionFunctionalities(){
     }
 
     const FundEscrowSol = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        return commissionMarketClient.FundEscrowSol(tx_addr)
+        return COMMISSION_PROGRAM.CommissionFundEscrowSol(tx_addr, payer_wallet)
 
     }
 
     const SellerEarlyDeclineSol = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_wallet = buyer_tx_log.buyer_wallet;
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_wallet);
-        return commissionMarketClient.SellerEarlyDeclineSol(
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
+        return COMMISSION_PROGRAM.CommissionSellerEarlyDeclineSol(
             tx_addr,
             buyer_wallet,
-            buyer_account
+            buyer_account,
+            payer_wallet
         )
 
     }
@@ -486,7 +505,8 @@ export function CommissionFunctionalities(){
     const OpenTransactionSpl = async(
         product,
         use_discount,
-        currency
+        currency,
+        payer_wallet
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -494,15 +514,16 @@ export function CommissionFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerCommissionTransactions;
 
-        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await TRANSACTION_PROGRAM.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = userAccount.data.buyerCommissionTransactions;
-        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
-        let tx_addr = commissionMarketClientGenTransactionAddress(vendor_log_address, sellerIndex);
+        let tx_addr = COMMISSION_PROGRAM.GenCommissionTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = userAccount.address;
 
-        await commissionMarketClient.OpenTransactionSpl(
+        await OpenChat(vendor_account.address.toString(), tx_addr);
+        return COMMISSION_PROGRAM.CommissionOpenTransactionSpl(
             tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
@@ -516,28 +537,27 @@ export function CommissionFunctionalities(){
             currency,
             product.price,
             
-            use_discount
+            use_discount,
+            payer_wallet
         )
-
-        await OpenChat(vendor_account.address.toString(), tx_addr);
     }
 
     const CloseTransactionSpl = async(
         tx_addr
     )=>{
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let seller_tx_log_struct = (await transactionClient.GetSellerOpenTransactions(tx_struct.seller)).data;
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let seller_tx_log_struct = (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller)).data;
         let seller_wallet = seller_tx_log_struct.sellerWallet;
-        let buyer_tx_log_struct = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
-        let buyer_market_account_addr = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let buyer_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let buyer_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
         let buyer_wallet = buyer_tx_log_struct.buyer_wallet;
 
-        let buyer_acc_struct = (await marketAccountsClient.GetAccount(buyer_market_account_addr)).data;
+        let buyer_acc_struct = (await ACCOUNTS_PROGRAM.GetAccount(buyer_market_account_addr)).data;
         let reflink_chain;
         if(buyer_acc_struct.used_reflink){
-            reflink_chain = marketAccountsClient.ReflinkSplChain(buyer_acc_struct.used_reflink, tx_struct.metadata.currency);
+            reflink_chain = ACCOUNTS_PROGRAM.ReflinkSplChain(buyer_acc_struct.used_reflink, tx_struct.metadata.currency);
         };
-        return commissionMarketClient.CloseTransactionSpl(
+        return COMMISSION_PROGRAM.CommissionCloseTransactionSpl(
             tx_addr,
 
             buyer_wallet,
@@ -549,25 +569,27 @@ export function CommissionFunctionalities(){
     }
 
     const FundEscrowSpl = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        return commissionMarketClient.FundEscrowSpl(tx_addr)
-
+        return COMMISSION_PROGRAM.CommissionFundEscrowSpl(tx_addr, payer_wallet)
     }
 
     const SellerEarlyDeclineSpl = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_wallet = buyer_tx_log.buyer_wallet;
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
 
-        return commissionMarketClient.SellerEarlyDeclineSpl(
+        return COMMISSION_PROGRAM.CommissionSellerEarlyDeclineSpl(
             tx_addr,
 
             buyer_wallet,
-            buyer_account
+            buyer_account,
+            payer_wallet
         )
 
     }
@@ -577,26 +599,30 @@ export function CommissionFunctionalities(){
     /// BUYER UTILS
 
     const ConfirmDelivered = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) => {
-        return commissionMarketClient.ConfirmDelivered(tx_addr)
+        return COMMISSION_PROGRAM.CommissionConfirmDelivered(tx_addr, payer_wallet)
     };
 
     const ConfirmAccept = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) => {
-        return commissionMarketClient.ConfirmAccept(tx_addr)
+        return COMMISSION_PROGRAM.CommissionConfirmAccept(tx_addr, payer_wallet)
     };
     const DenyAccept = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) => {
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log_struct = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_tx_log_struct.buyer_wallet);
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_tx_log_struct.buyer_wallet);
         
-        return commissionMarketClient.DenyAccept(
+        return COMMISSION_PROGRAM.CommissionDenyAccept(
             tx_addr,
-            buyer_account
+            buyer_account,
+            payer_wallet
         )
     }
 
@@ -604,47 +630,53 @@ export function CommissionFunctionalities(){
     /// SELLER COMMITS
 
     // commit keys and commit link together
-    const UploadProductFile = async(tx_addr, datafile, xslices, yslices) =>{
-        let [ar_addr, kps] = await bundlrClient.UploadFinalBufferInstruction(datafile, xslices, yslices);
+    const UploadProductFile = async(tx_addr, datafile, xslices, yslices,
+        payer_wallet) =>{
+        let [funding_ix, data_item, kps] = await bundlrClient.UploadFinalBufferInstruction(datafile, xslices, yslices);
 
-        await commissionMarketClient.CommitInitKeys(
-            kps.map(k => k.publicKey),
+        return [
+            funding_ix,
+            data_item,
+            await COMMISSION_PROGRAM.CommissionCommitInitKeys(
+                tx_addr,
+                kps.map(k => k.publicKey),
+                payer_wallet
+            ),
+            await COMMISSION_PROGRAM.CommissionCommitLink(
+                tx_addr,
+                ar_addr,
+                payer_wallet
+            )
+        ]
+    }
+
+    const UpdateStatusToShipping = async(tx_addr,
+        payer_wallet)=>{
+
+        return COMMISSION_PROGRAM.CommissionUpdateStatusToShipping(
             tx_addr,
             market_acc,
-            market_auth
-        )
-
-        await commissionMarketClient.CommitLink(
-            ar_addr,
-            tx_addr,
-            market_acc,
-            market_auth
+            market_auth,
+            payer_wallet
         );
     }
 
-    const UpdateStatusToShipping = async(tx_addr)=>{
+    const CommitSubkeys = async (tx_addr, indexes,
+        payer_wallet)=>{
 
-        await commissionMarketClient.UpdateStatusToShipping(
-            tx_addr,
-            market_acc,
-            market_auth
-        );
-    }
-
-    const CommitSubkeys = async (tx_addr, indexes)=>{
-
-        let link = await commissionMarketClient.GetLink(tx_addr);
+        let link = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.dataAddress;
         let kps = bundlrClient.GetTransactionsKp(link);
         let kp_dict = {};
         
         indexes.forEach((ind)=>{
             kp_dict[ind] = kps[ind]
         });
-        await commissionMarketClient.CommitSubkeys(
+        return COMMISSION_PROGRAM.CommissionCommitSubkeys(
             kp_dict,
             tx_addr,
             market_acc,
-            market_auth
+            market_auth,
+            payer_wallet
         );
     };
 
@@ -653,46 +685,52 @@ export function CommissionFunctionalities(){
     /// SELLER UTILS
     
     const SellerAcceptTransaction = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) =>{
-        return commissionMarketClient.SellerAcceptTransaction(tx_addr)
+        return COMMISSION_PROGRAM.CommissionSellerAcceptTransaction(tx_addr,
+            payer_wallet)
     }
 
     ////////////////////////////////////////////////////
     /// POST TX
 
     const LeaveReview = async(
-        tx_addr
+        tx_addr,
+        payer_wallet,
+        payer_wallet
     ) =>{
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let other_party = (await commissionMarketClient.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let other_party = (await COMMISSION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
 
-        if(transactionClient.GenBuyerTransactionLog("commission").toString() == other_party.toString()){
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey).toString() == other_party.toString()){
             other_party = tx_struct.seller;
         }
 
-        let market_account = marketAccountsClient.GenAccountAddress();
+        let market_account = ACCOUNTS_PROGRAM.GenAccountAddress(payer_wallet.publicKey);
 
-        await commissionMarketClient.LeaveReview(
+        return COMMISSION_PROGRAM.CommissionLeaveReview(
             tx_addr,
             other_party,
-            market_account
+            market_account,
+            payer_wallet
         )
 
     }
 
     const CloseTransactionAccount = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) =>{
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let buyer_tx_log_addr = tx_struct.buyer;
-        let buyer_tx_log_struct = await transactionClient.GetBuyerOpenTransactions(buyer_tx_log_addr);
-        let tx_log = transactionClient.GenBuyerTransactionLog("commission");
+        let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(buyer_tx_log_addr);
+        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
         if(tx_log.toString() != buyer_tx_log_addr.toString()){
-            tx_log = transactionClient.GenSellerTransactionLog("commission")
+            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("commission", payer_wallet.publicKey)
         }
 
-        return commissionMarketClient.CloseTransactionAccount(
+        return COMMISSION_PROGRAM.CommissionCloseTransactionAccount(
             tx_addr,
             tx_log,
             buyer_tx_log_struct.data.buyer_wallet
@@ -704,7 +742,8 @@ export function CommissionFunctionalities(){
 
     const CommitPreview = async(
         tx_addr,
-        preview_file_dataurl
+        preview_file_dataurl,
+        payer_wallet
     ) =>{
 
         if(preview_file_dataurl.join){
@@ -712,38 +751,44 @@ export function CommissionFunctionalities(){
         }
         let ar_addr = await bundlrClient.UploadBufferInstruction(preview_file_dataurl);
 
-        await commissionMarketClient.CommitPreview(
+        return COMMISSION_PROGRAM.CommissionCommitPreview(
             tx_addr,
-            ar_addr
+            ar_addr,
+            payer_wallet
         );
     }
 
     const ProposeRate = async(
         tx_addr,
-        new_rate
+        new_rate,
+        payer_wallet
     ) =>{
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data;
-        let tx_log_addr = transactionClient.GenBuyerTransactionLog("commission");
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data;
+        let tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
         if(tx_log_addr.toString() != tx_struct.buyer){
             tx_log_addr = tx_struct.seller;
         }
-        return commissionMarketClient.ProposeRate(
+        return COMMISSION_PROGRAM.CommissionProposeRate(
             tx_addr,
             tx_log_addr,
-            new_rate
+            new_rate,
+            payer_wallet
         )
     }
     const AcceptRate = async(
-        tx_addr
+        tx_addr,
+        payer_wallet,
+        payer_wallet
     ) =>{
-        let tx_struct = (await commissionMarketClient.GetTransaction(tx_addr)).data;
-        let tx_log_addr = transactionClient.GenBuyerTransactionLog("commission");
+        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data;
+        let tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
         if(tx_log_addr.toString() != tx_struct.buyer){
             tx_log_addr = tx_struct.seller;
         }
-        return commissionMarketClient.AcceptRate(
+        return COMMISSION_PROGRAM.CommissionAcceptRate(
             tx_addr,
-            tx_log_addr
+            tx_log_addr,
+            payer_wallet
         )
     }
 
@@ -756,14 +801,14 @@ export function CommissionFunctionalities(){
 
     const DecryptImage = async(tx_addr) =>{
 
-        let raw_blocks = await (new ArQueryClient()).FetchData( (await commissionMarketClient.GetTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
+        let raw_blocks = await (new ArQueryClient()).FetchData((await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
 
         return file_client.AssembleImage(
             raw_blocks[0],
             raw_blocks[1],
             raw_blocks[2],
             raw_blocks[3],
-            await enc_common.DecryptStrings(await commissionMarketClient.GetCommittedKeys(), raw_blocks.slice(4))
+            await enc_common.DecryptStrings(await COMMISSION_PROGRAM.CommissionGetCommittedKeys(), raw_blocks.slice(4))
         )
     }
 
@@ -775,7 +820,7 @@ export function CommissionFunctionalities(){
      * @returns {Blob} for now. add proper decoding later
      */
     const SeePreview = async(tx_addr) =>{
-        let ar_addr = (await commissionMarketClient.GetTransaction(tx_addr)).data.previewAddress;
+        let ar_addr = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.previewAddress;
 
         return (new ArQueryClient()).GetImageData(ar_addr);
     }
@@ -810,10 +855,6 @@ export function CommissionFunctionalities(){
 export function PhysicalFunctionalities(){
     const {OpenChat} = CommonTxFunctionalities();
 
-    const {physicalMarketClient} = useContext(PhysicalMarketCtx);
-    const {marketAccountsClient} = useContext(MarketAccountsCtx);
-    const {disputeProgramClient} = useContext(DisputeProgramCtx);
-    const {transactionClient} = useContext(TransactionClientCtx);
     const {userAccount} = useContext(UserAccountCtx);
 
     ////////////////////////////////////////
@@ -822,7 +863,8 @@ export function PhysicalFunctionalities(){
     /// :SOL
     const OpenTransactionSol = async(
         product,
-        use_discount
+        use_discount,
+        payer_wallet
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -830,15 +872,15 @@ export function PhysicalFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerPhysicalTransactions;
 
-        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await TRANSACTION_PROGRAM.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
         let buyer_tx_log_addr = userAccount.data.buyerPhysicalTransactions;
-        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-        let tx_addr = physicalMarketClient.GenTransactionAddress(vendor_log_address, sellerIndex);
+        let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let tx_addr = PHYSICAL_PROGRAM.GenPhysicalTransactionAddress(vendor_log_address, sellerIndex);
 
         let buyer_account_addr = userAccount.address;
 
-        await  physicalMarketClient.OpenTransactionSol(
+        await  PHYSICAL_PROGRAM.PhysicalOpenTransactionSol(
             tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
@@ -851,7 +893,8 @@ export function PhysicalFunctionalities(){
             product_addr,
             product.price,
             
-            use_discount
+            use_discount,
+            payer_wallet
         );
 
         await OpenChat(vendor_account.address.toString(), tx_addr);
@@ -861,22 +904,22 @@ export function PhysicalFunctionalities(){
         tx_addr
     )=>{
 
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let seller_tx_log_struct = await transactionClient.GetSellerOpenTransactions(tx_struct.seller);
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
+        let seller_tx_log_struct = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller);
         let seller_wallet = seller_tx_log_struct.sellerWallet;
-        let seller_market_account_addr = marketAccountsClient.GenAccountAddress(seller_wallet);
-        let buyer_tx_log_struct = await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer);
-        let buyer_market_account_addr = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let seller_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(seller_wallet);
+        let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer);
+        let buyer_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
         let buyer_wallet = buyer_tx_log_struct.buyer_wallet;
 
-        let buyer_acc_struct = await marketAccountsClient.GetAccount(buyer_market_account_addr);
+        let buyer_acc_struct = await ACCOUNTS_PROGRAM.GetAccount(buyer_market_account_addr);
         let reflink_chain;
         if(buyer_acc_struct.used_reflink){
-            reflink_chain = marketAccountsClient.ReflinkSolChain(buyer_acc_struct.used_reflink);
+            reflink_chain = ACCOUNTS_PROGRAM.ReflinkSolChain(buyer_acc_struct.used_reflink);
         };
 
 
-        return physicalMarketClient.CloseTransactionSol(
+        return PHYSICAL_PROGRAM.PhysicalCloseTransactionSol(
             tx_addr,
             tx_struct,
             buyer_market_account_addr,
@@ -889,23 +932,26 @@ export function PhysicalFunctionalities(){
     }
 
     const FundEscrowSol = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        return physicalMarketClient.FundEscrowSol(tx_addr)
+        return PHYSICAL_PROGRAM.PhysicalFundEscrowSol(tx_addr, payer_wallet)
 
     }
 
     const SellerEarlyDeclineSol = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_wallet = buyer_tx_log.buyer_wallet;
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_wallet);
-        return physicalMarketClient.SellerEarlyDeclineSol(
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
+        return PHYSICAL_PROGRAM.PhysicalSellerEarlyDeclineSol(
             tx_addr,
             buyer_wallet,
-            buyer_account
+            buyer_account,
+            payer_wallet
         )
 
     }
@@ -914,7 +960,8 @@ export function PhysicalFunctionalities(){
     const OpenTransactionSpl = async(
         product,
         use_discount,
-        currency
+        currency,
+        payer_wallet
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -922,14 +969,14 @@ export function PhysicalFunctionalities(){
         let vendor_account = product.data.metadata.seller.data;
         let seller_tx_log_addr = vendor_account.sellerPhysicalTransactions;
 
-        let next_open_seller_index = await transactionClient.FindNextOpenSellerTransaction(seller_tx_log_addr);
+        let next_open_seller_index = await TRANSACTION_PROGRAM.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
-        let buyer_tx_log_addr = transactionClient.GenBuyerTransactionLog("physical");
-        let next_open_buyer_index = await transactionClient.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-        let tx_addr = physicalMarketClient.GenTransactionAddress(vendor_log_address, sellerIndex);
-        let buyer_account_addr = marketAccountsClient.GenAccountAddress();
+        let buyer_tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", payer_wallet.publicKey);
+        let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
+        let tx_addr = PHYSICAL_PROGRAM.GenPhysicalTransactionAddress(vendor_log_address, sellerIndex);
+        let buyer_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(payer_wallet.publicKey);
 
-        await physicalMarketClient.OpenTransactionSpl(
+        await PHYSICAL_PROGRAM.PhysicalOpenTransactionSpl(
             tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
@@ -943,7 +990,8 @@ export function PhysicalFunctionalities(){
             currency,
             product.price,
             
-            use_discount
+            use_discount,
+            payer_wallet
         );
 
         await OpenChat(vendor_account.address.toString(), tx_addr);
@@ -953,19 +1001,19 @@ export function PhysicalFunctionalities(){
     const CloseTransactionSpl = async(
         tx_addr
     )=>{
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let seller_tx_log_struct = (await transactionClient.GetSellerOpenTransactions(tx_struct.seller)).data;
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
+        let seller_tx_log_struct = (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller)).data;
         let seller_wallet = seller_tx_log_struct.sellerWallet;
-        let buyer_tx_log_struct = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
-        let buyer_market_account_addr = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let buyer_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let buyer_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
         let buyer_wallet = buyer_tx_log_struct.buyer_wallet;
 
-        let buyer_acc_struct = (await marketAccountsClient.GetAccount(buyer_market_account_addr)).data;
+        let buyer_acc_struct = (await ACCOUNTS_PROGRAM.GetAccount(buyer_market_account_addr)).data;
         let reflink_chain;
         if(buyer_acc_struct.used_reflink){
-            reflink_chain = marketAccountsClient.ReflinkSplChain(buyer_acc_struct.used_reflink, tx_struct.metadata.currency);
+            reflink_chain = ACCOUNTS_PROGRAM.ReflinkSplChain(buyer_acc_struct.used_reflink, tx_struct.metadata.currency);
         };
-        return physicalMarketClient.CloseTransactionSpl(
+        return PHYSICAL_PROGRAM.PhysicalCloseTransactionSpl(
             tx_addr,
 
             buyer_wallet,
@@ -977,25 +1025,28 @@ export function PhysicalFunctionalities(){
     }
 
     const FundEscrowSpl = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        return physicalMarketClient.FundEscrowSpl(tx_addr)
+        return PHYSICAL_PROGRAM.PhysicalFundEscrowSpl(tx_addr, payer_wallet)
 
     }
 
     const SellerEarlyDeclineSpl = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     )=>{
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_wallet = buyer_tx_log.buyer_wallet;
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_wallet);
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
 
-        return physicalMarketClient.SellerEarlyDeclineSpl(
+        return PHYSICAL_PROGRAM.PhysicalSellerEarlyDeclineSpl(
             tx_addr,
 
             buyer_wallet,
-            buyer_account
+            buyer_account,
+            payer_wallet
         )
 
     }
@@ -1004,87 +1055,98 @@ export function PhysicalFunctionalities(){
     ////////////////////////////////////////////////////
     /// BOTH PARTIES GENERAL UTILS
     const LeaveReview = async(
-        tx_addr
+        tx_addr,
+        payer_wallet
     ) =>{
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let other_party = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
+        let other_party = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
 
-        if(transactionClient.GenBuyerTransactionLog("digital").toString() == other_party.toString()){
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey).toString() == other_party.toString()){
             other_party = tx_struct.seller;
         }
 
-        let market_account = marketAccountsClient.GenAccountAddress();
+        let market_account = ACCOUNTS_PROGRAM.GenAccountAddress(payer_wallet.publicKey);
 
-        await physicalMarketClient.LeaveReview(
+        await PHYSICAL_PROGRAM.PhysicalLeaveReview(
             tx_addr,
             other_party,
-            market_account
+            market_account,
+            payer_wallet
         )
 
     }
 
     const CloseTransactionAccount = async(
-        tx_addr
+        tx_addr,
+        payer_wallet,
+        payer_wallet
     ) =>{
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
         let buyer_tx_log_addr = tx_struct.buyer;
-        let buyer_tx_log_struct = await transactionClient.GetBuyerOpenTransactions(buyer_tx_log_addr);
-        let tx_log = transactionClient.GenBuyerTransactionLog("physical");
-        if(transactionClient.GenBuyerTransactionLog("physical").toString() != buyer_tx_log_addr.toString()){
-            tx_log = transactionClient.GenSellerTransactionLog("physical")
+        let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(buyer_tx_log_addr);
+        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", payer_wallet.publicKey);
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", payer_wallet.publicKey).toString() != buyer_tx_log_addr.toString()){
+            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("physical", payer_wallet.publicKey)
         }
 
-        return physicalMarketClient.CloseTransactionAccount(
+        return PHYSICAL_PROGRAM.PhysicalCloseTransactionAccount(
             tx_addr,
             tx_log,
-            buyer_tx_log_struct.data.buyer_wallet
+            buyer_tx_log_struct.data.buyer_wallet,
+            payer_wallet
         )
     }
 
     //////////////////////////////////////////////////////
     /// DISPUTE UTILS
 
+
+    // todo: populate more
     const OpenDispute = async(
         tx_addr,
-        threshold = 3
+        threshold = 3,
+        payer_wallet
     ) =>{
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let buyer_tx_log_struct = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
-        let seller_tx_log_struct = (await transactionClient.GetBuyerOpenTransactions(tx_struct.seller)).data;
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
+        let buyer_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let seller_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.seller)).data;
 
-        let buyer_account = marketAccountsClient.GenAccountAddress(buyer_tx_log_struct.buyer_wallet)
-        let seller_account = marketAccountsClient.GenAccountAddress(seller_tx_log_struct.seller_wallet)
+        let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_tx_log_struct.buyer_wallet)
+        let seller_account = ACCOUNTS_PROGRAM.GenAccountAddress(seller_tx_log_struct.seller_wallet);
 
-        return physicalMarketClient.OpenDispute(
+        let dispute_addr = DISPUTE_PROGRAM.GenDisputeAddress(tx_addr);
+
+        return PHYSICAL_PROGRAM.PhysicalOpenDispute(
             tx_addr,
             threshold,
             
             buyer_account,
-            seller_account
+            seller_account,
+            payer_wallet
         )
     }
     const CloseDisputeSol = async(
         tx_addr
     ) =>{
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let dispute_addr = disputeProgramClient.GenDisputeAddress(tx_addr);
-        let dispute_struct = (await disputeProgramClient.GetDispute(dispute_addr)).data;
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
+        let dispute_addr = DISPUTE_PROGRAM.GenDisputeAddress(tx_addr);
+        let dispute_struct = (await DISPUTE_PROGRAM.GetDispute(dispute_addr)).data;
 
         
-        let buyer_tx_logs = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
-        let seller_tx_logs= (await transactionClient.GetSellerOpenTransactions(tx_struct.seller)).data;
-        let buyer_market_acc_addr = marketAccountsClient.GenAccountAddress(buyer_tx_logs.buyer_wallet);
-        let seller_market_acc_addr = marketAccountsClient.GenAccountAddress(seller_tx_logs.seller_wallet);
+        let buyer_tx_logs = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let seller_tx_logs= (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller)).data;
+        let buyer_market_acc_addr = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_tx_logs.buyer_wallet);
+        let seller_market_acc_addr = ACCOUNTS_PROGRAM.GenAccountAddress(seller_tx_logs.seller_wallet);
 
-        let buyer_account = (await marketAccountsClient.GetAccount(buyer_market_acc_addr));
-        let seller_account = (await marketAccountsClient.GetAccount(seller_market_acc_addr));
+        let buyer_account = (await ACCOUNTS_PROGRAM.GetAccount(buyer_market_acc_addr));
+        let seller_account = (await ACCOUNTS_PROGRAM.GetAccount(seller_market_acc_addr));
 
         let favor = buyer_account;
         if(favor.data.voterId != dispute_struct.favor){
             favor = seller_account;
         }
 
-        return physicalMarketClient.CloseDisputeSol(
+        return PHYSICAL_PROGRAM.PhysicalCloseDisputeSol(
             tx_addr,
             tx_struct,
             dispute_addr,
@@ -1103,18 +1165,18 @@ export function PhysicalFunctionalities(){
         tx_addr
     ) =>{
 
-        let tx_struct = (await physicalMarketClient.GetTransaction(tx_addr)).data.metadata;
-        let dispute_addr = disputeProgramClient.GenDisputeAddress(tx_addr);
-        let dispute_struct = (await disputeProgramClient.GetDispute(dispute_addr)).data;
+        let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
+        let dispute_addr = DISPUTE_PROGRAM.GenDisputeAddress(tx_addr);
+        let dispute_struct = (await DISPUTE_PROGRAM.GetDispute(dispute_addr)).data;
 
         
-        let buyer_tx_logs = (await transactionClient.GetBuyerOpenTransactions(tx_struct.buyer)).data;
-        let seller_tx_logs= (await transactionClient.GetSellerOpenTransactions(tx_struct.seller)).data;
-        let buyer_market_acc_addr = marketAccountsClient.GenAccountAddress(buyer_tx_logs.buyer_wallet);
-        let seller_market_acc_addr = marketAccountsClient.GenAccountAddress(seller_tx_logs.seller_wallet);
+        let buyer_tx_logs = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
+        let seller_tx_logs= (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller)).data;
+        let buyer_market_acc_addr = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_tx_logs.buyer_wallet);
+        let seller_market_acc_addr = ACCOUNTS_PROGRAM.GenAccountAddress(seller_tx_logs.seller_wallet);
 
-        let buyer_account = (await marketAccountsClient.GetAccount(buyer_market_acc_addr));
-        let seller_account = (await marketAccountsClient.GetAccount(seller_market_acc_addr));
+        let buyer_account = (await ACCOUNTS_PROGRAM.GetAccount(buyer_market_acc_addr));
+        let seller_account = (await ACCOUNTS_PROGRAM.GetAccount(seller_market_acc_addr));
 
         let favor = buyer_account;
         if(favor.data.voterId != dispute_struct.favor){
@@ -1124,7 +1186,7 @@ export function PhysicalFunctionalities(){
         const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
         const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
 
-        return physicalMarketClient.CloseDisputeSpl(
+        return PHYSICAL_PROGRAM.PhysicalCloseDisputeSpl(
             tx_addr,
             dispute_addr,
             dispute_struct.funder,
@@ -1139,6 +1201,7 @@ export function PhysicalFunctionalities(){
                 [buyer_account.wallet.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tx_struct.currency.toBuffer()],
                 ASSOCIATED_TOKEN_PROGRAM_ID
             )[0],
+
             buyer_market_acc_addr,
             
             seller_market_acc_addr

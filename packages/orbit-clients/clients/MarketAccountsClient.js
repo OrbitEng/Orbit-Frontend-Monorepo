@@ -112,7 +112,7 @@ export async function RemoveReflink (
 /// :BUYER
 export async function AddBuyerPhysicalTransactions (
     transactions_log,
-payer_wallet
+    payer_wallet
 ){
     await MARKET_ACCOUNTS_PROGRAM.methods
     .addBuyerPhysicalTransactions("physical")
@@ -420,18 +420,12 @@ export function GenReflinkAddress (wallet_addr){
     )[0];
 }
 
-export function GenAccountAddress (wallet_addr){
-    if(!wallet_addr){
-        wallet_addr = payer_wallet.publicKey
-    }
-    if(typeof wallet_addr == "string"){
-        wallet_addr = new PublicKey(wallet_addr)
-    };
+export function GenAccountAddress (payer_wallet){
 
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("orbit_account"),
-            wallet_addr.toBuffer()
+            (typeof payer_wallet == "string" ? new PublicKey(payer_wallet) : payer_wallet).toBuffer()
         ],
         MARKET_ACCOUNTS_PROGRAM_ID
     )[0];

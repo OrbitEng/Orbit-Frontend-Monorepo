@@ -60,9 +60,7 @@ export function ProductDisplayCardHome(props) {
 	const {productClient} = useContext(ProductClientCtx);
 	const {setProductCache} = useContext(ProductCacheCtx);
 	const {setVendorCache} = useContext(VendorCacheCtx);
-	const {arweaveClient} = useContext(ArweaveCtx)
-
-	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
+	const {arweaveClient} = useContext(ArweaveCtx);
 
 	let productTags = ["UX/UI", "design"];
 

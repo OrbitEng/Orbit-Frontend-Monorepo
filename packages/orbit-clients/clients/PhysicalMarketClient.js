@@ -40,14 +40,14 @@ export async function PhysicalOpenTransactionSol (
     .openTransactionSol(buyerIndex, sellerIndex, new anchor.BN(price), useDiscount)
     .accounts({
         physTransaction: new_physical_tx,
-        escrowAccount: this.GenEscrow(new_physical_tx, buyer_log_address),
+        escrowAccount: this.GenPhysicalEscrow(new_physical_tx, buyer_log_address),
         physProduct: product,
         buyerTransactionsLog: buyer_log_address,
         buyerMarketAccount: buyer_account_address,
         buyerWallet: payer_wallet.publicKey,
         sellerListings: vendor_listings_address,
         sellerTransactionsLog: vendor_log_address,
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
@@ -70,7 +70,7 @@ export async function PhysicalCloseTransactionSol (tx_addr,
         tx_addr = new PublicKey(tx_addr_str);
     }
     
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetPhysicalTransaction(tx_addr)).data;
 
     let remaining_accs = [];
     if (reflink_accounts_chain){
@@ -97,7 +97,7 @@ export async function PhysicalCloseTransactionSol (tx_addr,
         sellerTransactionsLog: tx_struct.seller,
         sellerWallet: seller_wallet,
         multisigWallet: MULTISIG_WALLET_ADDRESS,
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID
@@ -116,7 +116,7 @@ export async function PhysicalFundEscrowSol (
         tx_addr = new PublicKey(tx_addr_str);
     }
 
-    let tx_struct = this.GetTransaction(tx_addr);
+    let tx_struct = this.GetPhysicalTransaction(tx_addr);
     
     await PHYSICAL_MARKET_PROGRAM.methods
     .fundEscrowSol()
@@ -142,7 +142,7 @@ payer_wallet
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr_str);
     }
-    let tx_struct = this.GetTransaction(tx_addr);
+    let tx_struct = this.GetPhysicalTransaction(tx_addr);
 
     await PHYSICAL_MARKET_PROGRAM.methods
     .sellerEarlyDeclineSol()
@@ -154,7 +154,7 @@ payer_wallet
         buyerWallet: buyer_wallet,
         sellerTransactionsLog: tx_struct.seller,
         sellerWallet: payer_wallet.publicKey,
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID
@@ -188,7 +188,7 @@ export async function PhysicalOpenTransactionSpl (
     .openTransactionSpl(sellerIndex, buyerIndex, new anchor.BN(price), useDiscount)
     .accounts({
         physTransaction:tx_addr,
-        escrowAccount: this.GenEscrow(tx_addr, buyer_log_address),
+        escrowAccount: this.GenPhysicalEscrow(tx_addr, buyer_log_address),
         tokenMint: product_currency,
         physProduct: product,
         buyerTransactionsLog: buyer_log_address,
@@ -196,7 +196,7 @@ export async function PhysicalOpenTransactionSpl (
         buyerWallet: payer_wallet.publicKey,
         sellerListings: vendor_listings_address,
         sellerTransactionsLog: vendor_log_address,
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -220,7 +220,7 @@ export async function PhysicalCloseTransactionSpl (
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetPhysicalTransaction(tx_addr)).data;
     
     let remaining_accs = [];
 
@@ -268,7 +268,7 @@ export async function PhysicalCloseTransactionSpl (
             tx_struct.metdata.currency,
             seller_wallet        
         ),
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         multisigAta: getAssociatedTokenAddress(
             mint,
             MULTISIG_SIGNER_ADDRESS
@@ -290,7 +290,7 @@ export async function PhysicalFundEscrowSpl (
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetPhysicalTransaction(tx_addr)).data;
 
     let tx_hash = await PHYSICAL_MARKET_PROGRAM.methods
     .fundEscrowSpl()
@@ -321,7 +321,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetPhysicalTransaction(tx_addr)).data;
 
     await PHYSICAL_MARKET_PROGRAM.methods
     .SellerEarlyDeclineSpl()
@@ -340,7 +340,7 @@ payer_wallet
             payer_wallet.publicKey
         ),
         sellerWallet: this.provider.wallet.publicKey,
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID,
@@ -360,19 +360,16 @@ export async function PhysicalOpenDispute (
     seller_account,
 payer_wallet
 ){
-    if(typeof tx_addr == "string"){
-        tx_addr = new PublicKey(tx_addr);
-    }
     
     await PHYSICAL_MARKET_PROGRAM.methods
     .openDispute(new anchor.BN(threshold))
     .accounts({
-        physTransaction: tx_addr,
+        physTransaction: typeof tx_addr == "string" ? tx_addr : new PublicKey(tx_addr),
         newDispute: dispute_addr,
         openerWallet: payer_wallet.publicKey,
         buyer: buyer_account,
         seller: seller_account,
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         disputeProgram: DISPUTE_PROGRAM_ID,
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID
     })
@@ -392,17 +389,12 @@ export async function PhysicalCloseDisputeSol (
     buyer_account,
     
     seller_account
-    ,
-payer_wallet
 ){
-    if(typeof tx_addr == "string"){
-        tx_addr = new PublicKey(tx_addr);
-    }
     
     await PHYSICAL_MARKET_PROGRAM.methods
     .closeDisputeSol()
     .accounts({
-        physTransaction: tx_addr,
+        physTransaction: typeof tx_addr == "string" ? tx_addr : new PublicKey(tx_addr),
         escrowAccount: tx_struct.metadata.escrowAccount,
         physDispute: dispute_addr,
         favorMarketAccount: favor_account,
@@ -414,7 +406,7 @@ payer_wallet
         sellerAccount: seller_account,
         sellerTransactionsLog: tx_struct.seller,
         multisigWallet: MULTISIG_WALLET_ADDRESS,
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID,
         marketAccountsProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID,
@@ -440,7 +432,7 @@ export async function PhysicalCloseDisputeSpl (
         tx_addr = new PublicKey(tx_addr);
     }
     
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetPhysicalTransaction(tx_addr)).data;
     
     await PHYSICAL_MARKET_PROGRAM.methods
     .closeDisputeSpl()
@@ -456,7 +448,7 @@ export async function PhysicalCloseDisputeSpl (
         buyerTokenAccount: buyer_token_account,
         sellerAccount: seller_account,
         sellerTransactionsLog: tx_struct.seller,
-        physicalAuth: this.GenMarketAuth(),
+        physicalAuth: this.GenPhysicalMarketAuth(),
         multisigAta: getAssociatedTokenAddress(
             mint,
             MULTISIG_SIGNER_ADDRESS
@@ -475,7 +467,8 @@ export async function PhysicalCloseDisputeSpl (
 export async function PhysicalLeaveReview (
     tx_addr,
     review_receiver,
-    market_account
+    market_account,
+    payer_wallet
 ){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr)
@@ -488,7 +481,7 @@ export async function PhysicalLeaveReview (
         reviewedAccount: review_receiver,
         reviewer: market_account,
         wallet: payer_wallet.publicKey,
-        physAuth: this.GenMarketAuth(),
+        physAuth: this.GenPhysicalMarketAuth(),
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID,
         accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
     })
@@ -524,7 +517,7 @@ payer_wallet
 
 ///////////////////////////////////////////////////
 /// UTILS
-export function GenTransactionAddress (
+export function GenPhysicalTransactionAddress (
     vendor_logs_address,
     tx_index
 ){
@@ -543,7 +536,7 @@ export function GenTransactionAddress (
     )[0]
 }
 
-export function GenMarketAuth (){
+export function GenPhysicalMarketAuth (){
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("market_authority")
@@ -552,7 +545,7 @@ export function GenMarketAuth (){
     )[0];
 }
 
-export function GenEscrow (tx_addr, buyer_log_addr){
+export function GenPhysicalEscrow (tx_addr, buyer_log_addr){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     };

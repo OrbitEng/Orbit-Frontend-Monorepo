@@ -30,7 +30,7 @@ export function BuyerTxLogModal(props){
 				if(props.setTxLog){
 					await AddBuyerPhysicalTransactions();
 					await props.setTxLog(
-						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("physical"))
+						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("physical", wallet.publicKey))
 					)
 				}
 
@@ -39,7 +39,7 @@ export function BuyerTxLogModal(props){
 				if(props.setTxLog){
 					await AddBuyerDigitalTransactions();
 					await props.setTxLog(
-						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("digital"))
+						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("digital", wallet.publicKey))
 					)
 				}
 				break;
@@ -47,7 +47,7 @@ export function BuyerTxLogModal(props){
 				if(props.setTxLog){
 					await AddBuyerCommissionTransactions();
 					await props.setTxLog(
-						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("commission"))
+						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("commission", wallet.publicKey))
 					)
 				}
 				break;

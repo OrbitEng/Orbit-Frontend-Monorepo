@@ -40,14 +40,14 @@ export async function DigitalOpenTransactionSol (
         .openTransactionSol(sellerIndex, buyerIndex, new anchor.BN(price), useDiscount)
         .accounts({
             digitalTransaction: tx_addr,
-            escrowAccount: this.GenEscrow(tx_addr, buyer_log_address),
+            escrowAccount: this.GenDigitalEscrow(tx_addr, buyer_log_address),
             digitalProduct: product,
             buyerTransactionsLog: buyer_log_address,
             buyerMarketAccount: buyer_account_address,
             buyerWallet: payer_wallet.publicKey,
             sellerListings: vendor_listings_address,
             sellerTransactionsLog: vendor_log_address,
-            digitalAuth: this.GenMarketAuth(),
+            digitalAuth: this.GenDigitalMarketAuth(),
             digitalProgram: DIGITAL_MARKET_PROGRAM_ID,
             transactionProgram: TRANSACTION_PROGRAM_ID,
             marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
@@ -95,7 +95,7 @@ export async function DigitalCloseTransactionSol (
         sellerTransactionsLog: tx_struct.seller,
         sellerWallet: seller_wallet,
         multisigWallet: MULTISIG_WALLET_ADDRESS,
-        digitalAuth: this.GenMarketAuth(),
+        digitalAuth: this.GenDigitalMarketAuth(),
         digitalProgram: DIGITAL_MARKET_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID
@@ -114,7 +114,7 @@ export async function DigitalFundEscrowSol (
         tx_addr = new PublicKey(tx_addr_str);
     }
 
-    let tx_struct = this.GetTransaction(tx_addr);
+    let tx_struct = this.GetDigitalTransaction(tx_addr);
 
     await DIGITAL_MARKET_PROGRAM.methods
     .fundEscrowSol()
@@ -138,7 +138,7 @@ payer_wallet
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr_str);
     }
-    let tx_struct = this.GetTransaction(tx_addr);
+    let tx_struct = this.GetDigitalTransaction(tx_addr);
 
     await DIGITAL_MARKET_PROGRAM.methods
     .sellerEarlyDeclineSol()
@@ -150,7 +150,7 @@ payer_wallet
         buyerWallet: buyer_wallet,
         sellerTransactionsLog: tx_struct.seller,
         sellerWallet: payer_wallet.publicKey,
-        digitalAuth: this.GenMarketAuth(),
+        digitalAuth: this.GenDigitalMarketAuth(),
         digitalProgram: DIGITAL_MARKET_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID
@@ -184,7 +184,7 @@ payer_wallet
     .openTransactionSpl(sellerIndex, buyerIndex, new anchor.BN(price), useDiscount)
     .accounts({
         digitalTransaction:tx_addr,
-        escrowAccount: this.GenEscrow(tx_addr, buyer_log_address),
+        escrowAccount: this.GenDigitalEscrow(tx_addr, buyer_log_address),
         tokenMint: product_currency,
         digitalProduct: product,
         buyerTransactionsLog: buyer_log_address,
@@ -192,7 +192,7 @@ payer_wallet
         buyerWallet: payer_wallet.publicKey,
         sellerListings: vendor_listings_address,
         sellerTransactionsLog: vendor_log_address,
-        digitalAuth: this.GenMarketAuth(),
+        digitalAuth: this.GenDigitalMarketAuth(),
         digitalProgram: DIGITAL_MARKET_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -215,7 +215,7 @@ export async function DigitalCloseTransactionSpl (
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
     
     let remaining_accs = [];
 
@@ -263,7 +263,7 @@ export async function DigitalCloseTransactionSpl (
             tx_struct.metdata.currency,
             seller_wallet        
         ),
-        digitalAuth: this.GenMarketAuth(),
+        digitalAuth: this.GenDigitalMarketAuth(),
         multisigAta: getAssociatedTokenAddress(
             mint,
             MULTISIG_SIGNER_ADDRESS
@@ -285,7 +285,7 @@ export async function DigitalFundEscrowSpl (
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     let tx_hash = await DIGITAL_MARKET_PROGRAM.methods
     .fundEscrowSpl()
@@ -316,7 +316,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     await DIGITAL_MARKET_PROGRAM.methods
     .SellerEarlyDeclineSpl()
@@ -335,7 +335,7 @@ payer_wallet
             payer_wallet.publicKey
         ),
         sellerWallet: this.provider.wallet.publicKey,
-        digitalAuth: this.GenMarketAuth(),
+        digitalAuth: this.GenDigitalMarketAuth(),
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         digitalProgram: DIGITAL_MARKET_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID,
@@ -378,7 +378,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     return DIGITAL_MARKET_PROGRAM.methods
     .confirmDelivered()
@@ -398,7 +398,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     return DIGITAL_MARKET_PROGRAM.methods
     .confirmAccept()
@@ -419,7 +419,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     return DIGITAL_MARKET_PROGRAM.methods
     .denyAccept()
@@ -428,7 +428,7 @@ payer_wallet
         buyerAccount: buyer_account,
         buyerTransactions: tx_struct.buyer,
         buyerWallet: payer_wallet.publicKey,
-        digitalAuth: this.GenMarketAuth(),
+        digitalAuth: this.GenDigitalMarketAuth(),
         digitalProgram: DIGITAL_MARKET_PROGRAM_ID,
         marketAccountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
     })
@@ -445,7 +445,7 @@ export async function DigitalCommitInitKeys (
     if(typeof transaction == "string"){
         transaction = new PublicKey(transaction)
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     let submission_keys = await Promise.all(enc_pubkeys.map(async (pk)=>{
         if(typeof pk == "string"){
@@ -472,7 +472,7 @@ export async function DigitalCommitLink (
     if(typeof transaction == "string"){
         transaction = new PublicKey(transaction)
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     return DIGITAL_MARKET_PROGRAM.methods
     .commitLink(link)
@@ -491,7 +491,7 @@ payer_wallet
     if(typeof transaction == "string"){
         transaction = new PublicKey(transaction)
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     return DIGITAL_MARKET_PROGRAM.methods
     .updateStatusToShipping()
@@ -512,7 +512,7 @@ payer_wallet
     if(typeof transaction == "string"){
         transaction = new PublicKey(transaction)
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     return DIGITAL_MARKET_PROGRAM.methods
     .commitSubkeys(Object.keys(pk_map))
@@ -537,12 +537,13 @@ payer_wallet
 /////////////////////////////////
 /// SELLER UTILS
 export async function DigitalSellerAcceptTransaction (
-    tx_addr
+    tx_addr,
+    payer_wallet
 ){
     if (typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetDigitalTransaction(tx_addr)).data;
 
     return DIGITAL_MARKET_PROGRAM.methods
     .sellerAcceptTransaction()
@@ -573,7 +574,7 @@ payer_wallet
         reviewedAccount: review_receiver,
         reviewer: market_account,
         wallet: payer_wallet.publicKey,
-        digitalAuth: this.GenMarketAuth(),
+        digitalAuth: this.GenDigitalMarketAuth(),
         digitalProgram: DIGITAL_MARKET_PROGRAM_ID,
         accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
     })
@@ -584,7 +585,7 @@ payer_wallet
 //////////////////////////////////
 /// GENERATION UTILTIES
 
-export function GenTransactionAddress (
+export function GenDigitalTransactionAddress (
     vendor_logs_address,
     tx_index
 ){
@@ -603,7 +604,7 @@ export function GenTransactionAddress (
     )[0]
 }
 
-export function GenMarketAuth (){
+export function GenDigitalMarketAuth (){
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("market_authority")
@@ -612,7 +613,7 @@ export function GenMarketAuth (){
     )[0];
 }
 
-export function GenEscrow (tx_addr, buyer_log_addr){
+export function GenDigitalEscrow (tx_addr, buyer_log_addr){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     };

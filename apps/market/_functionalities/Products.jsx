@@ -22,7 +22,8 @@ export function DigitalProductFunctionalities(props){
         description,
         files,
         fileType = "Image",
-        add_to_recent
+        add_to_recent,
+        payer_wallet
     ) => {
         if(files.length <= 0) return;
         
@@ -58,7 +59,8 @@ export function DigitalProductFunctionalities(props){
                 media: media_url
             },
             fileType,
-            add_to_recent
+            add_to_recent,
+            payer_wallet
         );
     }
 
@@ -165,7 +167,8 @@ export function PhysicalProductFunctionalities(props){
         description,
         quantity,
         files,
-        add_to_recent
+        add_to_recent,
+        payer_wallet
     ) => {
         if(files.length <= 0) return;
 
@@ -200,7 +203,8 @@ export function PhysicalProductFunctionalities(props){
                 media: media_url
             },
             quantity,
-            add_to_recent
+            add_to_recent,
+            payer_wallet
         );
     }
 
@@ -306,7 +310,8 @@ export function CommissionProductFunctionalities(props){
         name,
         description,
         files,
-        add_to_recent
+        add_to_recent,
+        payer_wallet
     ) => {
         if(files.length <= 0) return;
 
@@ -340,7 +345,8 @@ export function CommissionProductFunctionalities(props){
                 deliveryEstimate: new BN(deliveryEstimate),
                 media: media_url
             },
-            add_to_recent
+            add_to_recent,
+            payer_wallet
         )
     }
 

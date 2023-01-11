@@ -35,20 +35,18 @@ export async function CommissionOpenTransactionSol (
         product = new PublicKey(product);
     }
 
-    
-
     await COMMISSION_PROGRAM.methods
     .openTransactionSol(sellerIndex, buyerIndex, new anchor.BN(price), useDiscount)
     .accounts({
         commissionTransaction: tx_addr,
-        escrowAccount: this.GenEscrow(tx_addr, buyer_log_address),
+        escrowAccount: this.GenCommissionEscrow(tx_addr, buyer_log_address),
         commissionProduct: product,
         buyerTransactionsLog: buyer_log_address,
         buyerMarketAccount: buyer_account_address,
         buyerWallet: payer_wallet.publicKey,
         sellerListings: vendor_listings_address,
         sellerTransactionsLog: vendor_log_address,
-        commissionAuth: this.GenMarketAuth(),
+        commissionAuth: this.GenCommissonMarketAuth(),
         commissionProgram: COMMISSION_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
@@ -70,7 +68,7 @@ export async function CommissionCloseTransactionSol (
         tx_addr = new PublicKey(tx_addr_str);
     }
     
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     let remaining_accs = [];
     if (reflink_accounts_chain){
@@ -97,7 +95,7 @@ export async function CommissionCloseTransactionSol (
         sellerTransactionsLog: tx_struct.seller,
         sellerWallet: seller_wallet,
         multisigWallet: MULTISIG_WALLET_ADDRESS,
-        commissionAuth: this.GenMarketAuth(),
+        commissionAuth: this.GenCommissonMarketAuth(),
         commissionProgram: COMMISSION_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID
@@ -116,7 +114,7 @@ export async function CommissionFundEscrowSol (
         tx_addr = new PublicKey(tx_addr_str);
     }
 
-    let tx_struct = this.GetTransaction(tx_addr);
+    let tx_struct = this.GetCommissionTransaction(tx_addr);
 
     await COMMISSION_PROGRAM.methods
     .fundEscrowSol()
@@ -140,7 +138,7 @@ payer_wallet
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr_str);
     }
-    let tx_struct = this.GetTransaction(tx_addr);
+    let tx_struct = this.GetCommissionTransaction(tx_addr);
 
     await COMMISSION_PROGRAM.methods
     .sellerEarlyDeclineSol()
@@ -152,7 +150,7 @@ payer_wallet
         buyerWallet: buyer_wallet,
         sellerTransactionsLog: tx_struct.seller,
         sellerWallet: payer_wallet.publicKey,
-        commissionAuth: this.GenMarketAuth(),
+        commissionAuth: this.GenCommissonMarketAuth(),
         commissionProgram: COMMISSION_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID
@@ -186,7 +184,7 @@ export async function CommissionOpenTransactionSpl (
     .openTransactionSpl(sellerIndex, buyerIndex, new anchor.BN(price), useDiscount)
     .accounts({
         commissionTransaction:tx_addr,
-        escrowAccount: this.GenEscrow(tx_addr, buyer_log_address),
+        escrowAccount: this.GenCommissionEscrow(tx_addr, buyer_log_address),
         tokenMint: product_currency,
         commissionProduct: product,
         buyerTransactionsLog: buyer_log_address,
@@ -194,7 +192,7 @@ export async function CommissionOpenTransactionSpl (
         buyerWallet: payer_wallet.publicKey,
         sellerListings: vendor_listings_address,
         sellerTransactionsLog: vendor_log_address,
-        commissionAuth: this.GenMarketAuth(),
+        commissionAuth: this.GenCommissonMarketAuth(),
         commissionProgram: COMMISSION_PROGRAM_ID,
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         tokenProgram: TOKEN_PROGRAM_ID,
@@ -217,7 +215,7 @@ export async function CommissionCloseTransactionSpl (
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
     
     let remaining_accs = [];
 
@@ -265,7 +263,7 @@ export async function CommissionCloseTransactionSpl (
             tx_struct.metdata.currency,
             seller_wallet        
         ),
-        commissionAuth: this.GenMarketAuth(),
+        commissionAuth: this.GenCommissonMarketAuth(),
         multisigAta: getAssociatedTokenAddress(
             mint,
             MULTISIG_SIGNER_ADDRESS
@@ -287,7 +285,7 @@ export async function CommissionFundEscrowSpl (
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     let tx_hash = await COMMISSION_PROGRAM.methods
     .fundEscrowSpl()
@@ -318,7 +316,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     await COMMISSION_PROGRAM.methods
     .SellerEarlyDeclineSpl()
@@ -337,7 +335,7 @@ payer_wallet
             payer_wallet.publicKey
         ),
         sellerWallet: payer_wallet.publicKey,
-        commissionAuth: this.GenMarketAuth(),
+        commissionAuth: this.GenCommissonMarketAuth(),
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         commissionProgram: COMMISSION_PROGRAM_ID,
         transactionProgram: TRANSACTION_PROGRAM_ID,
@@ -380,7 +378,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     return COMMISSION_PROGRAM.methods
     .confirmDelivered()
@@ -400,7 +398,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     return COMMISSION_PROGRAM.methods
     .confirmAccept()
@@ -421,7 +419,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr);
     }
 
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     return COMMISSION_PROGRAM.methods
     .denyAccept()
@@ -430,7 +428,7 @@ payer_wallet
         buyerAccount: buyer_account,
         buyerTransactions: tx_struct.buyer,
         buyerWallet: payer_wallet.publicKey,
-        commissionAuth: this.GenMarketAuth(),
+        commissionAuth: this.GenCommissonMarketAuth(),
         commissionProgram: COMMISSION_PROGRAM_ID,
         marketAccountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
     })
@@ -447,7 +445,7 @@ export async function CommissionCommitInitKeys (
     if(typeof transaction == "string"){
         transaction = new PublicKey(transaction)
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     let submission_keys = await Promise.all(enc_pubkeys.map(async (pk)=>{
         if(typeof pk == "string"){
@@ -474,7 +472,7 @@ export async function CommissionCommitLink (
     if(typeof transaction == "string"){
         transaction = new PublicKey(transaction)
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     return COMMISSION_PROGRAM.methods
     .commitLink(link)
@@ -493,7 +491,7 @@ payer_wallet
     if(typeof transaction == "string"){
         transaction = new PublicKey(transaction)
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     return COMMISSION_PROGRAM.methods
     .updateStatusToShipping()
@@ -514,7 +512,7 @@ payer_wallet
     if(typeof transaction == "string"){
         transaction = new PublicKey(transaction)
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     return COMMISSION_PROGRAM.methods
     .commitSubkeys(Object.keys(pk_map))
@@ -546,7 +544,7 @@ export async function CommissionSellerAcceptTransaction (
     if (typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     }
-    let tx_struct = (await this.GetTransaction(tx_addr)).data;
+    let tx_struct = (await this.GetCommissionTransaction(tx_addr)).data;
 
     return COMMISSION_PROGRAM.methods
     .sellerAcceptTransaction()
@@ -577,7 +575,7 @@ payer_wallet
         reviewedAccount: review_receiver,
         reviewer: market_account,
         wallet: payer_wallet.publicKey,
-        commissionAuth: this.GenMarketAuth(),
+        commissionAuth: this.GenCommissonMarketAuth(),
         commissionProgram: COMMISSION_PROGRAM_ID,
         accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
     })
@@ -597,7 +595,7 @@ payer_wallet
         tx_addr = new PublicKey(tx_addr)
     };
 
-    let tx_struct = await this.GetTransaction(tx_addr);
+    let tx_struct = await this.GetCommissionTransaction(tx_addr);
 
     return COMMISSION_PROGRAM.methods
     .commitPreview(preview_link)
@@ -651,7 +649,7 @@ payer_wallet
 
 /// UTILS
 
-export function GenTransactionAddress (
+export function GenCommissionTransactionAddress (
     vendor_logs_address,
     tx_index
 ){
@@ -670,7 +668,7 @@ export function GenTransactionAddress (
     )[0]
 }
 
-export function GenMarketAuth (){
+export function GenCommissonMarketAuth (){
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("market_authority")
@@ -679,7 +677,7 @@ export function GenMarketAuth (){
     )[0];
 }
 
-export function GenEscrow (tx_addr, buyer_log_addr){
+export function GenCommissionEscrow (tx_addr, buyer_log_addr){
     if(typeof tx_addr == "string"){
         tx_addr = new PublicKey(tx_addr);
     };
@@ -735,12 +733,12 @@ export async function GetMultipleCommissionTransactions (tx_addrs){
 }
 
 export async function GetCommissionMissingKeys (tx_addr){
-    let committed = (await this.GetTransaction(tx_addr)).data.numKeys.toString(2);
+    let committed = (await this.GetCommissionTransaction(tx_addr)).data.numKeys.toString(2);
     return [...Array(committed.length).keys()].filter(ind=> committed[ind] == "1");
 }
 
 export async function GetCommissionCommittedKeys (tx_addr){
-    let tx_data = (await this.GetTransaction(tx_addr)).data;
+    let tx_data = (await this.GetCommissionTransaction(tx_addr)).data;
     let committed = tx_data.numKeys.toString(2).padEnd("0", tx_data.keyArr.length);
     return [...Array(committed.length).keys()].filter(ind=> committed[ind] == "0")
     .map((ind)=>{

@@ -3,7 +3,7 @@ import { useContext, useCallback } from "react";
 import {ArQueryClient} from "data-transfer-clients";
 import BundlrCtx from "@contexts/BundlrCtx";
 import ProductClientCtx from "@contexts/ProductClientCtx";
-import { ACCOUNTS_PROGRAM } from "orbit-clients";
+import { ACCOUNTS_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 
 export function MarketAccountFunctionalities(props){
     const {bundlrClient} = useContext(BundlrCtx);
@@ -52,7 +52,7 @@ export function MarketAccountFunctionalities(props){
     }
 
     const UnsetReflink = async(payer_wallet) =>{
-        await marketAccountsClient.RemoveReflink(payer_wallet);
+        await ACCOUNTS_PROGRAM.RemoveReflink(payer_wallet);
     }
 
     ////////////////////////////////////////////////////////////////
@@ -70,19 +70,22 @@ export function MarketAccountFunctionalities(props){
     /// INIT TX LOGS
 
     /// :BUYER
-    const AddBuyerPhysicalTransactions = async() => {
-        return marketAccountsClient.AddBuyerPhysicalTransactions(
-            transactionClient.GenBuyerTransactionLog("physical")
+    const AddBuyerPhysicalTransactions = async(payer_wallet) => {
+        return ACCOUNTS_PROGRAM.AddBuyerPhysicalTransactions(
+            TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", payer_wallet.publicKey),
+            payer_wallet
         );
     }
-    const AddBuyerDigitalTransactions = async() => {
-        return marketAccountsClient.AddBuyerDigitalTransactions(
-            transactionClient.GenBuyerTransactionLog("digital")
+    const AddBuyerDigitalTransactions = async(payer_wallet) => {
+        return ACCOUNTS_PROGRAM.AddBuyerDigitalTransactions(
+            TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey),
+            payer_wallet
         );
     }
-    const AddBuyerCommissionTransactions = async() => {
-        return marketAccountsClient.AddBuyerCommissionTransactions(
-            transactionClient.GenBuyerTransactionLog("commission")
+    const AddBuyerCommissionTransactions = async(payer_wallet) => {
+        return ACCOUNTS_PROGRAM.AddBuyerCommissionTransactions(
+            TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey),
+            payer_wallet
         );
     }
 

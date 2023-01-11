@@ -14,7 +14,7 @@ payer_wallet
     await TRANSACTION_PROGRAM.methods
     .createBuyerTransactionsLog(market_type)
     .accounts({
-        transactionsLog: this.GenBuyerTransactionLog(market_type),
+        transactionsLog: this.GenBuyerTransactionLog(market_type, payer_wallet.publicKey),
         wallet: payer_wallet.publicKey
     })
     .instruction()
@@ -27,7 +27,7 @@ export async function CreateSellerTransactionsLog (market_type,
     await TRANSACTION_PROGRAM.methods
     .createSellerTransactionsLog(market_type)
     .accounts({
-        transactionsLog: this.GenSellerTransactionLog(market_type),
+        transactionsLog: this.GenSellerTransactionLog(market_type, payer_wallet.publicKey),
         wallet: payer_wallet.publicKey,
     })
     .instruction()
@@ -58,14 +58,14 @@ payer_wallet
     let commissionsLog;
     switch(buyer_or_seller){
         case "buyer":
-            physicalLog = this.GenBuyerTransactionLog("physical")
-            digitalLog = this.GenBuyerTransactionLog("digital")
-            commissionsLog = this.GenBuyerTransactionLog("commission")
+            physicalLog = this.GenBuyerTransactionLog("physical", payer_wallet.publicKey)
+            digitalLog = this.GenBuyerTransactionLog("digital", payer_wallet.publicKey)
+            commissionsLog = this.GenBuyerTransactionLog("commission", payer_wallet.publicKey)
             break;
         case "seller":
-            physicalLog = this.GenSellerTransactionLog("physical")
-            digitalLog = this.GenSellerTransactionLog("digital")
-            commissionsLog = this.GenSellerTransactionLog("commission")
+            physicalLog = this.GenSellerTransactionLog("physical", payer_wallet.publicKey)
+            digitalLog = this.GenSellerTransactionLog("digital", payer_wallet.publicKey)
+            commissionsLog = this.GenSellerTransactionLog("commission", payer_wallet.publicKey)
             break;
     };
 
@@ -84,40 +84,30 @@ payer_wallet
 //////////////////////////////////////////////////
 /// GENERATION UTILS
 
-export function GenBuyerTransactionLog (market_type, wallet,
+export function GenBuyerTransactionLog (
+    market_type,
     payer_wallet
 ){
-    if(!wallet){
-        wallet = payer_wallet.publicKey
-    }
-    if(typeof wallet == "string"){
-        wallet = new PublicKey(wallet)
-    }
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("buyer_transactions"),
             Buffer.from(market_type),
-            wallet.toBuffer()
+            (typeof payer_wallet == "string" ? new PublicKey(payer_wallet) : payer_wallet).toBuffer()
         ],
         TRANSACTION_PROGRAM_ID
     )[0];
 }
 
-export function GenSellerTransactionLog (market_type, wallet,
+export function GenSellerTransactionLog (
+    market_type,
     payer_wallet
 ){
-    if(!wallet){
-        wallet = payer_wallet.publicKey
-    }
-    if(typeof wallet == "string"){
-        wallet = new PublicKey(wallet)
-    }
         
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("seller_transactions"),
             Buffer.from(market_type),
-            wallet.toBuffer()
+            (typeof payer_wallet == "string" ? new PublicKey(payer_wallet) : payer_wallet).toBuffer()
         ],
         TRANSACTION_PROGRAM_ID
     )[0];
@@ -151,7 +141,7 @@ export async function GetTransactionSeller (tx_addr){
     return new PublicKey(tx.data.slice(40,72))
 }
 
-export async function GetMultipleTransactionSeller (tx_addrs, include_tx = false){
+export async function GetMultipleTransactionSeller (tx_addrs){
     let txs = await this.connection.getMultipleAccountsInfo(tx_addrs);
     return txs.map(tx => new PublicKey(tx.data.slice(40,72)))
 }
