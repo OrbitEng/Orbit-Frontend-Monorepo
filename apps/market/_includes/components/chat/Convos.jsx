@@ -126,7 +126,7 @@ export function FullScreenConvos(props){
             return;
         }
         setChatRooms(matrixClient.chatrooms);
-    }, [matrixClient, matrixClient && matrixClient.chatrooms])
+    }, [matrixClient?.chatrooms])
 
     return(
         <div className="flex flex-col w-full h-full p-4">

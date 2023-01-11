@@ -4,7 +4,7 @@ import {TOKEN_PROGRAM_ID, getAssociatedTokenAddress} from "@solana/spl-token";
 import { MARKET_ACCOUNTS_PROGRAM_ID} from "./MarketAccountsClient";
 import {PRODUCT_PROGRAM_ID} from "./OrbitProductClient";
 import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
-import { getMultisigWallet, MULTISIG_WALLET_ADDRESS} from "orbit-clients/multisig";
+import { MULTISIG_WALLET_ADDRESS} from "orbit-clients/multisig";
 
 import idl from "../idls/orbit_digital_market";
 

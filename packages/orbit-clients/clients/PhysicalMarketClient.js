@@ -5,7 +5,7 @@ import { MARKET_ACCOUNTS_PROGRAM_ID} from "./MarketAccountsClient";
 import {PRODUCT_PROGRAM_ID} from "./OrbitProductClient";
 import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
 import { DISPUTE_PROGRAM_ID } from 'orbit-clients/dispute-program';
-import { getMultisigWallet, MULTISIG_WALLET_ADDRESS} from 'orbit-clients/multisig';
+import { MULTISIG_WALLET_ADDRESS} from 'orbit-clients/multisig';
 
 import idl from "../idls/orbit_physical_market.json";
 
