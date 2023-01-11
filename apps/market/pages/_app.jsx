@@ -52,7 +52,6 @@ import CartCtx from '@contexts/CartCtx';
 import ShippingCtx from '@contexts/ShippingCtx';
 import ChatCtx from '@contexts/ChatCtx';
 
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
 
 // TODO: init redux here too

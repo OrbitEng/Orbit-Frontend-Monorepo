@@ -37,7 +37,6 @@ export function ProductShowcaseRow(props) {
 	const [flagColor, setFlagColor] = useState(`#FFFFFF`);
 
 	useEffect(() => {
-		console.log(props?.prod_type)
 		switch(props?.prod_type) {
 			case "local":
 				setFlagColor(`bg-[#04DE71]`);
@@ -52,7 +51,6 @@ export function ProductShowcaseRow(props) {
 				setFlagColor(`bg-[#00A3FF]`);
 				break;
 		}
-		console.log(flagColor)
 	}, [props?.prod_type]);
 
 	return(

@@ -24,19 +24,18 @@ export function LargeProductExplorer(props) {
 				<ProductDisplayCardHome 
 					address={"1111111111111111"} // address of prod listing
 					type={"local"}
-					key={1}
 				/>
 			)
 	);
 
 	useEffect(()=>{
 		if(!(props.items && props.category)) return;
-		let a = props.items.map((elem)=>(
+		let a = props.items.map((elem, i) => (
 			<div>
 				<ProductDisplayCardHome
 					address = {elem.address}
 					type = {props.category}
-					key = {elem.address}
+					key = {i}
 				/>
 			</div>
 		));
@@ -48,7 +47,6 @@ export function LargeProductExplorer(props) {
 							<ProductDisplayCardHome 
 								address={"1111111111111111"} // address of prod listing
 								type={props.prod_type}
-								key={1} // this is gonna complain :/
 							/>
 						)
 				) : a)

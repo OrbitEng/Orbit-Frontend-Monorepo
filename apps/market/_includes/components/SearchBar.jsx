@@ -15,7 +15,7 @@ export function HeaderSearchBar(props) {
 	const [ selectedProductSearchCat, setSelectedProductSearchCat ] = useState(searchCategories[0]);
 
 	return(
-		<div className="flex flex-col my-auto align-middle justify-center overflow-visible w-full z-[120]">
+		<div className="flex flex-col my-auto align-middle justify-center overflow-visible w-full z-[100]">
 			<Transition
 				show={true}
 				appear={true}
@@ -28,7 +28,7 @@ export function HeaderSearchBar(props) {
 			>
 				<div className="relative flex gap-3 flex-row rounded-lg bg-[#0F0D14] border-[1px] border-[#202020] p-1 w-full max-w-2xl mx-auto align-middle">
 					<Combobox value={selected} onChange={setSelected} >
-						<MagnifyingGlassIcon className="h-5 w-5 text-[#393939] my-auto stroke-[1px] ml-2"/>
+						<MagnifyingGlassIcon className="h-4 w-4 text-[#393939] my-auto stroke-[1px] ml-2 flex-shrink-0"/>
 						<Combobox.Input
 							className="flex w-full bg-transparent text-[#777777] placeholder:text-[#393939] sm:text-lg text-md font-normal focus:outline-none"
 							placeholder="Find everything on Orbit"

@@ -64,42 +64,42 @@ export default function ProfileButton(props) {
 							</div>
 						</Link>
 					</Popover.Group>
-					<div className="flex flex-col mt-5 gap-y-2 ml-2">
-						<Popover.Group>
-							<button className="cursor-pointer group">
+					<div className="flex flex-col mt-5 gap-y-2 ml-2 mr-auto">
+						<Popover.Group className="mr-auto">
+							<button className="cursor-pointer group content-start">
 								<Link href={"/profile/"+props.selfAccount?.address?.toString()}>
 									<div className="flex flex-row align-middle gap-x-4">
-										<UserCircleIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+										<UserCircleIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto flex-shrink-0"/>
 										<span className="text-white font-bold text-lg my-auto">Profile</span>
 									</div>
 								</Link>
 							</button>
 						</Popover.Group>
-						<Popover.Group>
-							<button className="cursor-pointer group">
+						<Popover.Group className="mr-auto">
+							<button className="cursor-pointer group content-start">
 								<Link href="/orders">
 									<div className="flex flex-row align-middle gap-x-4">
-										<TruckIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+										<TruckIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto flex-shrink-0"/>
 										<span className="text-white font-bold text-lg my-auto">Orders</span>
 									</div>
 								</Link>
 							</button>
 						</Popover.Group>
-						<Popover.Group>
-							<button className="cursor-pointer group">
+						<Popover.Group className="mr-auto" >
+							<button className="cursor-pointer group content-start mr-auto">
 								<Link href="/referrals">
 									<div className="flex flex-row align-middle gap-x-4">
-										<UsersIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+										<UsersIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto flex-shrink-0"/>
 										<span className="text-white font-bold text-lg my-auto">Referrals</span>
 									</div>
 								</Link>
 							</button>
 						</Popover.Group>
-						<Popover.Group>
-							<button className="cursor-pointer group">
+						<Popover.Group className="mr-auto">
+							<button className="cursor-pointer group content-start">
 								<Link href="/favorites">
 									<div className="flex flex-row align-middle gap-x-4">
-										<StarIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto"/>
+										<StarIcon className="h-6 w-6 text-white stroke-[2.5px] my-auto flex-shrink-0"/>
 										<span className="text-white font-bold text-lg my-auto">Favorites</span>
 									</div>
 								</Link>
@@ -115,7 +115,7 @@ export default function ProfileButton(props) {
 									</div>
 								</div>
 								<div
-									className="flex flex-row gap-x-2 group cursor-pointer group"
+									className="flex flex-row group cursor-pointer group"
 								>
 									<div className="flex flex-row gap-x-2 absolute transition duration-300 opacity-0 group-hover:opacity-100">
 										<button onClick={() => wallet.disconnect()} className="hover:bg-opacity-40 text-md font-semibold z-50 text-white truncate bg-[#5F5F5F] bg-opacity-20 py-1 px-2 rounded-lg max-w-1/2 text-center my-2 transition duration-300">Disconnect</button>
@@ -129,9 +129,9 @@ export default function ProfileButton(props) {
 											objectFit="contain"
 										/>
 									</div>
-									<div className="flex flex-col align-middle my-auto group-hover:opacity-0 transition duration-300 w-4/5">
-										<span className="text-[#A4A4A4] w-1/4 truncate text-xs">{wallet.wallet.adapter.name}</span>
-										<span className="font-semibold text-white truncate text-sm max-w-full -mt-1">{wallet.publicKey.toString().slice(0,10) + "..."}</span>
+									<div className="flex flex-col align-middle my-auto group-hover:opacity-0 transition duration-300 flex-grow mr-auto overflow-hidden">
+										<span className="text-[#A4A4A4] truncate text-xs text-left ml-2">{wallet?.wallet?.adapter?.name}</span>
+										<span className="font-semibold text-white truncate text-sm max-w-full text-left -mt-1 ml-2">{wallet?.publicKey?.toString()?.slice(0,10) + "..."}</span>
 									</div>
 								</div>
 							</div>
