@@ -37,6 +37,7 @@
     "react-google-recaptcha": "^2.1.0",
     "react-multi-carousel": "^2.8.2",
     "react-parallax-tilt": "^1.7.69",
+    "react-range": "^1.8.14",
     "react-responsive-carousel": "^3.2.23",
     "react-spring": "^9.5.5",
     "rerousel": "^0.1.9",
