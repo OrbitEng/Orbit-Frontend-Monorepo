@@ -1,5 +1,3 @@
-import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
-import ProductClientCtx from "@contexts/ProductClientCtx";
 import { useContext, useEffect, useState } from "react";
 import { ArQueryClient } from "data-transfer-clients";
 import { enc_common } from "browser-clients";
@@ -13,9 +11,6 @@ function handleVendor(vendorArr) {
 }
 
 export default function TopVendorsDisplay(props) {
-
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {productClient} = useContext(ProductClientCtx);
 
 	const [topVendors, setTopVendors] = useState();
 

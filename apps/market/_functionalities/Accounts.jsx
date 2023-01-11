@@ -2,12 +2,10 @@ import { useContext, useCallback } from "react";
 
 import {ArQueryClient} from "data-transfer-clients";
 import BundlrCtx from "@contexts/BundlrCtx";
-import ProductClientCtx from "@contexts/ProductClientCtx";
 import { ACCOUNTS_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 
 export function MarketAccountFunctionalities(props){
     const {bundlrClient} = useContext(BundlrCtx);
-    const {productClient} = useContext(ProductClientCtx);
 
 
     // AFTER CREATING MAKE SURE TO CALL MATRIX REGISTER/LOGIN ALL THAT SHIT
@@ -91,18 +89,18 @@ export function MarketAccountFunctionalities(props){
 
     /// :SELLER
     const AddSellerPhysicalTransactions = async() => {
-        return marketAccountsClient.AddSellerPhysicalTransactions(
-            transactionClient.GenSellerTransactionLog("physical")
+        return ACCOUNTS_PROGRAM.AddSellerPhysicalTransactions(
+            TRANSACTION_PROGRAM.GenSellerTransactionLog("physical")
         );
     }
     const AddSellerDigitalTransactions = async() => {
-        return marketAccountsClient.AddSellerDigitalTransactions(
-            transactionClient.GenSellerTransactionLog("digital")
+        return ACCOUNTS_PROGRAM.AddSellerDigitalTransactions(
+            TRANSACTION_PROGRAM.GenSellerTransactionLog("digital")
         );
     }
     const AddSellerCommissionTransactions = async() => {
-        return marketAccountsClient.AddSellerCommissionTransactions(
-            transactionClient.GenSellerTransactionLog("commission")
+        return ACCOUNTS_PROGRAM.AddSellerCommissionTransactions(
+            TRANSACTION_PROGRAM.GenSellerTransactionLog("commission")
         );
     }
 
@@ -110,15 +108,15 @@ export function MarketAccountFunctionalities(props){
     /// TRANSFER
 
     const InitiateTransfer = async(destination_wallet) =>{
-        return marketAccountsClient.InitiateTransfer(destination_wallet)
+        return ACCOUNTS_PROGRAM.InitiateTransfer(destination_wallet)
     }
 
     const ConfirmTransfer = async() =>{
-        return marketAccountsClient.ConfirmTransfer()
+        return ACCOUNTS_PROGRAM.ConfirmTransfer()
     }
 
     const DeclineTransfer = async() =>{
-        return marketAccountsClient.DeclineTransfer()
+        return ACCOUNTS_PROGRAM.DeclineTransfer()
     }
 
     return {

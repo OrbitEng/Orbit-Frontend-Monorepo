@@ -114,7 +114,7 @@ export function HomeHeader(props) {
 
 	useEffect(async ()=>{
 		if (!(wallet && wallet.publicKey && arweaveClient)) return;
-		if((userAccount && userAccount.data.wallet && wallet.publicKey) && (wallet.publicKey.toString() == userAccount.data.wallet.toString())) return;
+		if((userAccount && userAccount.data.wallet) && (wallet.publicKey.toString() == userAccount.data.wallet.toString())) return;
 
 		try{
 			let account_address = (ACCOUNTS_PROGRAM.GenAccountAddress(wallet.publicKey));
@@ -151,7 +151,7 @@ export function HomeHeader(props) {
 			console.log(e);
 			setHasChat(false);
 		}
-	}, [arweaveClient, userAccount, arweaveClient, wallet])
+	}, [arweaveClient, userAccount, wallet])
 
 	return(
 		<header className="mx-auto max-w-[100rem] h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">

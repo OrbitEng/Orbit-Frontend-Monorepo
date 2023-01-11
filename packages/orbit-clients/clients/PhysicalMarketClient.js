@@ -1,9 +1,9 @@
 import * as anchor from '@project-serum/anchor';
 import {TOKEN_PROGRAM_ID, getAssociatedTokenAddress} from "@solana/spl-token";
 import {PublicKey} from "@solana/web3.js";
-import {PRODUCT_PROGRAM_ID} from "./product-program";
-import {TRANSACTION_PROGRAM_ID} from "./transaction-program";
-import {MARKET_ACCOUNTS_PROGRAM_ID} from "./accounts-program";
+import { MARKET_ACCOUNTS_PROGRAM_ID} from "./MarketAccountsClient";
+import {PRODUCT_PROGRAM_ID} from "./OrbitProductClient";
+import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
 import { DISPUTE_PROGRAM_ID } from 'orbit-clients/dispute-program';
 import { getMultisigWallet, MULTISIG_WALLET_ADDRESS} from 'orbit-clients/multisig';
 

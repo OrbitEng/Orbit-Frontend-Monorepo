@@ -4,8 +4,6 @@ import { useContext, useState } from "react";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import ChatCtx from "@contexts/ChatCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
-import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import { useCallback } from "react";
 import { useEffect } from "react";
 
@@ -111,9 +109,7 @@ export function ChatPersona(props) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // Fullscreen Components
 export function FullScreenConvos(props){
-	const {transactionClient} = useContext(TransactionClientCtx)
 	const {userAccount} = useContext(UserAccountCtx);
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
 
     const {chatState} = useContext(ChatCtx);
     const {matrixClient} = useContext(MatrixClientCtx)

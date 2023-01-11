@@ -3,16 +3,14 @@ import Link from "next/link";
 import { useState, useEffect, useContext } from "react";
 import Tilt from "react-parallax-tilt";
 
-import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
-
 import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
 
 import { ProductCommonUtils } from "@functionalities/Products";
 
-import ProductClientCtx from "@contexts/ProductClientCtx";
 import ArweaveCtx from "@contexts/ArweaveCtx";
 import { useRouter } from "next/router";
+import { ACCOUNTS_PROGRAM } from "orbit-clients";
 
 export function EmptyProductDisplayCardHomeDep(props) {
 	return(
@@ -56,8 +54,6 @@ export function ProductDisplayCardHome(props) {
 	const [vendorUS, setVendorUS] = useState();
 	const router = useRouter();
 
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {productClient} = useContext(ProductClientCtx);
 	const {setProductCache} = useContext(ProductCacheCtx);
 	const {setVendorCache} = useContext(VendorCacheCtx);
 	const {arweaveClient} = useContext(ArweaveCtx);
@@ -107,26 +103,26 @@ export function ProductDisplayCardHome(props) {
 	);
 
 	useEffect(async () => {
-		if((props.address == "11111111111111111111111111111111") || !marketAccountsClient){
+		if(props.address == "11111111111111111111111111111111"){
 			return
 		};
 
 		let tp = undefined;
 		switch(props.type){
 			case "commission":
-				tp = (await productClient.GetCommissionProduct(props.address));
+				tp = (await PRODUCT_CLIENT.GetCommissionProduct(props.address));
 				if(!tp){
 					return;
 				}
 				break;
 			case "digital":
-				tp = (await productClient.GetDigitalProduct(props.address));
+				tp = (await PRODUCT_CLIENT.GetDigitalProduct(props.address));
 				if(!tp){
 					return;
 				}
 				break;
 			case "physical":
-				tp = await productClient.GetPhysicalProduct(props.address);
+				tp = await PRODUCT_CLIENT.GetPhysicalProduct(props.address);
 				if(!tp){
 					return;
 				}
@@ -139,11 +135,11 @@ export function ProductDisplayCardHome(props) {
 			tp.data.metadata.info = JSON.parse(await arweaveClient.FetchData(tp.data.metadata.info));
 			tp.data.metadata.media = await arweaveClient.GetImageData(tp.data.metadata.media);
 
-			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
+			let vendor_listings_struct = (await PRODUCT_CLIENT.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
-			tp.data.metadata.availability = productClient.FindProductAvailability(tp.data, vendor_listings_struct)
-			let vendor = await marketAccountsClient.GetAccount(
-				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
+			tp.data.metadata.availability = PRODUCT_CLIENT.FindProductAvailability(tp.data, vendor_listings_struct)
+			let vendor = await ACCOUNTS_PROGRAM.GetAccount(
+				ACCOUNTS_PROGRAM.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);
 			vendor.data.profilePic = await arweaveClient.GetPfp(vendor.data.profilePic);
 			vendor.data.metadata = await arweaveClient.GetMetadata(vendor.data.metadata);
@@ -151,7 +147,7 @@ export function ProductDisplayCardHome(props) {
 			setVendorUS(vendor);
 		};
 		setProd(tp);
-	},[productClient, marketAccountsClient, props.address])
+	},[props.address])
 
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4">
@@ -227,8 +223,6 @@ export function ProductDisplayCardHome(props) {
 }
 
 export function ProductDisplayCardHomeDep(props) {
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {productClient} = useContext(ProductClientCtx);
 	const {setProductCache} = useContext(ProductCacheCtx);
 	const {setVendorCache} = useContext(VendorCacheCtx);
 	const {arweaveClient} = useContext(ArweaveCtx)
@@ -249,7 +243,7 @@ export function ProductDisplayCardHomeDep(props) {
 	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
 
 	useEffect(async ()=>{
-		if((props.address == "11111111111111111111111111111111") || !marketAccountsClient){
+		if(props.address == "11111111111111111111111111111111"){
 			return
 		};
 		let tp = undefined;
@@ -260,19 +254,19 @@ export function ProductDisplayCardHomeDep(props) {
 						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
 					</div>
 				);
-				tp = (await productClient.GetCommissionProduct(props.address));
+				tp = (await PRODUCT_CLIENT.GetCommissionProduct(props.address));
 				if(!tp){
 					return;
 				}
 				break;
 			case "digital":
-				tp = (await productClient.GetDigitalProduct(props.address));
+				tp = (await PRODUCT_CLIENT.GetDigitalProduct(props.address));
 				if(!tp){
 					return;
 				}
 				break;
 			case "physical":
-				tp = await productClient.GetPhysicalProduct(props.address);
+				tp = await PRODUCT_CLIENT.GetPhysicalProduct(props.address);
 				if(!tp){
 					return;
 				}
@@ -285,11 +279,11 @@ export function ProductDisplayCardHomeDep(props) {
 			tp.data.metadata.info = JSON.parse(await arweaveClient.FetchData(tp.data.metadata.info));
 			tp.data.metadata.media = await arweaveClient.GetImageData(tp.data.metadata.media);
 
-			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
+			let vendor_listings_struct = (await PRODUCT_CLIENT.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
-			tp.data.metadata.availability = productClient.FindProductAvailability(tp.data, vendor_listings_struct)
-			let vendor = await marketAccountsClient.GetAccount(
-				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
+			tp.data.metadata.availability = PRODUCT_CLIENT.FindProductAvailability(tp.data, vendor_listings_struct)
+			let vendor = await ACCOUNTS_PROGRAM.GetAccount(
+				ACCOUNTS_PROGRAM.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);
 			vendor.data.profilePic = await arweaveClient.GetPfp(vendor.data.profilePic);
 			vendor.data.metadata = await arweaveClient.GetMetadata(vendor.data.metadata);
@@ -297,7 +291,7 @@ export function ProductDisplayCardHomeDep(props) {
 			setVendorUS(vendor);
 		};
 		setProd(tp);
-	},[productClient, marketAccountsClient, props.address])
+	},[props.address])
 
 	return(
 		<div className="row-span-1 col-span-1 my-3 mx-4 hover:scale-[101%] transition duration-700">

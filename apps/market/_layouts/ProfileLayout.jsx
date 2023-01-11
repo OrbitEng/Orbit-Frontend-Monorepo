@@ -16,11 +16,11 @@ export function ProfileLayout(props) {
 	const { GetAllVendorPhysicalProducts } = PhysicalProductFunctionalities();
 	const { GetAllVendorDigitalProducts } = DigitalProductFunctionalities();
 	const { GetAllVendorCommissionProducts } = CommissionProductFunctionalities();
-	const { arweaveClient } = useContext(ArweaveCtx)
+	const { arweaveClient } = useContext(ArweaveCtx);
 	const { userAccount } = useContext(UserAccountCtx);
-	const {setChatState} = useContext(ChatCtx)
+	const { matrixClient } = useContext(MatrixClientCtx);
+	const { setChatState } = useContext(ChatCtx);
 
-	const {matrixClient} = useContext(MatrixClientCtx)
 
 	const [marketAccount, setMarketAccount] = useState();
 	const [isSelf, setIsSelf] = useState(false);

@@ -1,16 +1,9 @@
-import { useContext, useState } from 'react'
-import MarketAccountsCtx from '@contexts/MarketAccountsCtx';
-import DigitalMarketCtx from '@contexts/DigitalMarketCtx';
-import PhysicalMarketCtx from '@contexts/PhysicalMarketCtx';
-import CommissionMarketCtx from '@contexts/CommissionMarketCtx';
-import ProductClientCtx from '@contexts/ProductClientCtx';
-import TransactionClientCtx from '@contexts/TransactionClientCtx';
+import { useContext, useState } from 'react';
 
 import { HomeHeader } from '@includes/MarketHeader';
+import { PRODUCT_PROGRAM, ACCOUNTS_PROGRAM } from 'orbit-clients';
 
 export default function AdminLayout(){
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
-	const {productClient} = useContext(ProductClientCtx);
 
 	return(
         
@@ -20,7 +13,7 @@ export default function AdminLayout(){
 				<div>
 					Initialize Voter Struct
 				</div>
-				<button className="bg-white m-2 border-2 w-32 h-12 text-black" onClick={e => {marketAccountsClient.InitializeVoterStruct()}}>
+				<button className="bg-white m-2 border-2 w-32 h-12 text-black" onClick={e => {ACCOUNTS_PROGRAM.InitializeVoterStruct()}}>
 					button
 				</button>
 			</div>
@@ -29,7 +22,7 @@ export default function AdminLayout(){
 			<div>
 					Initialize Recent Listings
 				</div>
-				<button className="bg-white m-2 border-2 w-32 h-12 text-black" onClick={e => {productClient.InitRecentListings()}}>
+				<button className="bg-white m-2 border-2 w-32 h-12 text-black" onClick={e => {PRODUCT_PROGRAM.InitRecentListings()}}>
 					button
 				</button>
 			</div>

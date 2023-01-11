@@ -1,5 +1,4 @@
 import { useContext, useState, useCallback } from "react";
-import DigitalMarketCtx from "@contexts/DigitalMarketCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import { DigitalFunctionalities } from "@functionalities/Transactions";
 import { SelfMessage, Message  } from "@includes/components/chat/Messages";
@@ -10,9 +9,7 @@ export function ChatRoomFunctionalities(
     pfpData = "https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=mp&f=y"
 ){
     const {matrixClient} = useContext(MatrixClientCtx);
-    // const {digitalMarketClient} = useContext(DigitalMarketCtx);
     const {DecryptImage} = DigitalFunctionalities();
-    // const [arweaveClient, setArweaveClient] = useState(new ArQueryClient());
 
     const FilterNewChatLogs = async(events) =>{
         console.log(events)

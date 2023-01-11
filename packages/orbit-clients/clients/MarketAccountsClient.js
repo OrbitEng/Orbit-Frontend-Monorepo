@@ -1,8 +1,7 @@
 import * as anchor from '@project-serum/anchor';
 import {PublicKey} from "@solana/web3.js";
 import {TOKEN_PROGRAM_ID, getAssociatedTokenAddress} from "@solana/spl-token";
-import {PRODUCT_PROGRAM_ID} from "./product-program";
-import {TRANSACTION_PROGRAM_ID} from "./transaction-program";
+import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
 
 
 const idl = require("../idls/orbit_market_accounts");

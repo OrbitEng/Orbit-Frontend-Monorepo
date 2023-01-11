@@ -5,9 +5,9 @@ import BundlrCtx from "@contexts/BundlrCtx";
 
 
 import {file_client, file_common, enc_common} from "browser-clients";
-import { ArQueryClient } from "data-transfer-clients";
 import { PublicKey } from "@solana/web3.js";
 import UserAccountCtx from "@contexts/UserAccountCtx";
+import ArweaveCtx from "@contexts/ArweaveCtx";
 
 export function CommonTxFunctionalities(props){
     const {matrixClient} = useContext(MatrixClientCtx);
@@ -30,6 +30,7 @@ export function DigitalFunctionalities(){
     const {bundlrClient} = useContext(BundlrCtx);
     const {matrixClient} = useContext(MatrixClientCtx);
     const {userAccount} = useContext(UserAccountCtx);
+    const {arweaveClient} = useContext(ArweaveCtx);
 
     ////////////////////////////////////////////////////////////
     /// TRANSACTIONS
@@ -363,7 +364,7 @@ export function DigitalFunctionalities(){
 
     const DecryptImage = async(tx_addr) =>{
 
-        let raw_blocks = await (new ArQueryClient()).FetchData( (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
+        let raw_blocks = await arweaveClient.FetchData( (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
 
         return file_client.AssembleImage(
             raw_blocks[0],
@@ -405,6 +406,7 @@ export function CommissionFunctionalities(){
     const {matrixClient} = useContext(MatrixClientCtx);
     const {bundlrClient} = useContext(BundlrCtx);
     const {userAccount} = useContext(UserAccountCtx);
+    const {arweaveClient} = useContext(ArweaveCtx);
 
     ////////////////////////////////////////
     /// TRANSACTIONS
@@ -697,7 +699,6 @@ export function CommissionFunctionalities(){
 
     const LeaveReview = async(
         tx_addr,
-        payer_wallet,
         payer_wallet
     ) =>{
         let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
@@ -777,7 +778,6 @@ export function CommissionFunctionalities(){
     }
     const AcceptRate = async(
         tx_addr,
-        payer_wallet,
         payer_wallet
     ) =>{
         let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data;
@@ -801,7 +801,7 @@ export function CommissionFunctionalities(){
 
     const DecryptImage = async(tx_addr) =>{
 
-        let raw_blocks = await (new ArQueryClient()).FetchData((await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
+        let raw_blocks = await arweaveClient.FetchData((await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
 
         return file_client.AssembleImage(
             raw_blocks[0],
@@ -822,7 +822,7 @@ export function CommissionFunctionalities(){
     const SeePreview = async(tx_addr) =>{
         let ar_addr = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.previewAddress;
 
-        return (new ArQueryClient()).GetImageData(ar_addr);
+        return arweaveClient.GetImageData(ar_addr);
     }
 
     return {
@@ -854,7 +854,7 @@ export function CommissionFunctionalities(){
 
 export function PhysicalFunctionalities(){
     const {OpenChat} = CommonTxFunctionalities();
-
+    const {arweaveClient} = useContext(ArweaveCtx);
     const {userAccount} = useContext(UserAccountCtx);
 
     ////////////////////////////////////////
@@ -1078,7 +1078,6 @@ export function PhysicalFunctionalities(){
 
     const CloseTransactionAccount = async(
         tx_addr,
-        payer_wallet,
         payer_wallet
     ) =>{
         let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;

@@ -1,6 +1,6 @@
 import * as anchor from '@project-serum/anchor';
 import {PublicKey} from "@solana/web3.js";
-import { MARKET_ACCOUNTS_PROGRAM_ID } from 'orbit-clients/accounts-program';
+import { MARKET_ACCOUNTS_PROGRAM_ID} from "./MarketAccountsClient";
 import { IDBClient } from 'browser-clients';
 
 

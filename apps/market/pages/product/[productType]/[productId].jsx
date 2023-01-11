@@ -9,12 +9,10 @@ import {CommissionProductLayout} from "@layouts/ProductLayouts/CommissionProduct
 import {PhysicalProductLayout} from "@layouts/ProductLayouts/PhysicalProductLayout";
 import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
-import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 
 import { ProductCommonUtils } from "@functionalities/Products";
 
 import { useState, useEffect, useContext } from "react";
-import ProductClientCtx from "@contexts/ProductClientCtx";
 import { PublicKey } from "@solana/web3.js";
 import ArweaveCtx from "@contexts/ArweaveCtx";
 
@@ -61,9 +59,7 @@ export default function ProductsPage(props) {
 	const router = useRouter();
 	const { productType, productId } = router.query;
 
-	const {productClient} = useContext(ProductClientCtx)
 	const {productCache} = useContext(ProductCacheCtx);
-	const {marketAccountsClient} = useContext(MarketAccountsCtx);
 	const {arweaveClient} = useContext(ArweaveCtx);
 	const {ResolveProductInfo, ResolveProductMedia} = ProductCommonUtils();
 
@@ -80,11 +76,10 @@ export default function ProductsPage(props) {
 		let tp;
 		if(!productId || (productId == "11111111111111111111111111111111")) return;
 		
-		if(!(productClient && marketAccountsClient)) return;
 		switch (productType){
 			case "commission":
 				try{
-					tp = await productClient.GetCommissionProduct(productId);
+					tp = await PRODUCT_PROGRAM.GetCommissionProduct(productId);
 					if(!tp){
 						return;
 					}
@@ -95,7 +90,7 @@ export default function ProductsPage(props) {
 				break;
 			case "digital":
 				try{
-					tp = await productClient.GetDigitalProduct(productId);
+					tp = await PRODUCT_PROGRAM.GetDigitalProduct(productId);
 					if(!tp){
 						return;
 					}
@@ -106,7 +101,7 @@ export default function ProductsPage(props) {
 				break;
 			case "physical":
 				try{
-					tp = await productClient.GetPhysicalProduct(productId);
+					tp = await PRODUCT_PROGRAM.GetPhysicalProduct(productId);
 					if(!tp){
 						return;
 					}
@@ -122,11 +117,11 @@ export default function ProductsPage(props) {
 		if(tp){
 			tp.data.metadata.info = JSON.parse(await arweaveClient.FetchData(tp.data.metadata.info));
 			tp.data.metadata.media = await arweaveClient.GetImageData(tp.data.metadata.media);
-			let vendor_listings_struct = (await productClient.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
+			let vendor_listings_struct = (await PRODUCT_PROGRAM.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
-			tp.data.metadata.availability = productClient.FindProductAvailability(tp.data, vendor_listings_struct);
-			let vendor = await marketAccountsClient.GetAccount(
-				marketAccountsClient.GenAccountAddress(vendor_listings_struct.listingsOwner)
+			tp.data.metadata.availability = PRODUCT_PROGRAM.FindProductAvailability(tp.data, vendor_listings_struct);
+			let vendor = await ACCOUNTS_PROGRAM.GetAccount(
+				ACCOUNTS_PROGRAM.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);
 			vendor.data.profilePic = await arweaveClient.GetPfp(vendor.data.profilePic);
 			vendor.data.metadata = await arweaveClient.GetMetadata(vendor.data.metadata)
@@ -134,7 +129,7 @@ export default function ProductsPage(props) {
 			setVendor(vendor);
 		};
 		setProd(tp);
-	},[productType, productId, productCache, productClient, marketAccountsClient, arweaveClient])
+	},[productType, productId, productCache, PRODUCT_PROGRAM, ACCOUNTS_PROGRAM, arweaveClient])
 
 	// here I'm just using the digital layout because it's the same for pretty much everything...
 	// todo: add nfts later

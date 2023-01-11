@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import MarketAccountsCtx from "@contexts/MarketAccountsCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import { Menu, Popover, Transition } from "@headlessui/react";
 import { Fragment } from "react";
@@ -11,7 +10,6 @@ import { LAMPORTS_PER_SOL } from "@solana/web3.js";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 
 export default function ProfileButton(props) {
-	const {marketAccountsClient, setMarketAccountsClient} = useContext(MarketAccountsCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx)
 	const {userAccount, setUserAccount} = useContext(UserAccountCtx)
 	const [ balance, setBalance ] = useState(0);
