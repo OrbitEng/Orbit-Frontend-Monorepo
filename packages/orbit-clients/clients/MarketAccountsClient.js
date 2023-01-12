@@ -7,7 +7,7 @@ import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
 const idl = require("../idls/orbit_market_accounts");
 
 export const MARKET_ACCOUNTS_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const MARKET_ACCOUNTS_PROGRAM = new anchor.Program(idl, idl.metadata.address);
+export const MARKET_ACCOUNTS_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 ///////////////////////////////////////
 /// RPC CALLS

@@ -621,7 +621,12 @@
             "type": {
               "array": [
                 {
-                  "defined": "(u64,u8)"
+                  "type": {
+                    "array": [
+                      "u8",
+                      9
+                    ]
+                  }
                 },
                 32
               ]

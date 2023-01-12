@@ -6,11 +6,11 @@ import { MainFooter } from '@includes/Footer';
 import { useState, useEffect, useRef, useContext } from 'react'
 import useOnScreen from '@hooks/useOnScreen'
 
-import { ChatWidget } from '@includes/ChatWidget'
 import HomeNewsCarousel from '@includes/components/HomeNewsCarousel';
 import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 
-import {PRODUCT_PROGRAM} from "orbit-clients";
+console.log(require('orbit-clients'))
+// import {PRODUCT_PROGRAM} from "orbit-clients";
 
 export function Home(props) {
 	const ref = useRef();
@@ -37,7 +37,7 @@ export function Home(props) {
 		physical_catalog.data.pubkeys = physical_catalog.data.pubkeys.filter( pk => pk.toString() != "11111111111111111111111111111111");
 
 
-		if(!(digital_catalog.data.pubkeys.length) || !(commission_catalog.data.pubkeys.length) || !(physical_catalog.data.pubkeys.length)) return;
+		if(!(digital_catalog.data.pubkeys.length && commission_catalog.data.pubkeys.length && physical_catalog.data.pubkeys.length)) return;
 
 		setRecentCommissions(commission_catalog.data.pubkeys);
 		setRecentDigitals(digital_catalog.data.pubkeys);

@@ -4,13 +4,13 @@ import {PublicKey} from "@solana/web3.js";
 import { MARKET_ACCOUNTS_PROGRAM_ID} from "./MarketAccountsClient";
 import {PRODUCT_PROGRAM_ID} from "./OrbitProductClient";
 import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
-import { DISPUTE_PROGRAM_ID } from 'orbit-clients/dispute-program';
-import { MULTISIG_WALLET_ADDRESS} from 'orbit-clients/multisig';
+import { DISPUTE_PROGRAM_ID } from './DisputeClient';
+import { MULTISIG_WALLET_ADDRESS} from "./MultisigClient";
 
 import idl from "../idls/orbit_physical_market.json";
 
 export const PHYSICAL_MARKET_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const PHYSICAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address);
+export const PHYSICAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /// TRANSACTION GENERAL

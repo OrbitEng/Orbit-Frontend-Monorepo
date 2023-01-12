@@ -4,12 +4,12 @@ import {TOKEN_PROGRAM_ID, getAssociatedTokenAddress} from "@solana/spl-token";
 import { MARKET_ACCOUNTS_PROGRAM_ID} from "./MarketAccountsClient";
 import {PRODUCT_PROGRAM_ID} from "./OrbitProductClient";
 import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
-import { MULTISIG_WALLET_ADDRESS} from "orbit-clients/multisig";
+import { MULTISIG_WALLET_ADDRESS} from "./MultisigClient";
 
 const idl = require("../idls/orbit_commission_market");
 
 export const COMMISSION_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const COMMISSION_PROGRAM = new anchor.Program(idl, idl.metadata.address);
+export const COMMISSION_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 ////////////////////////////////////////
 /// TRANSACTIONS
