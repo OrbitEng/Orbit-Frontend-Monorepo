@@ -3,10 +3,11 @@ import Olm from '@matrix-org/olm';
 import sdk from "matrix-js-sdk";
 import { GetAccount, GenAccountAddress} from 'orbit-clients/clients/MarketAccountsClient';
 import { GetBuyerOpenTransactions, GetSellerOpenTransactions, GetMultipleTxLogOwners } from 'orbit-clients/clients/OrbitTransactionClient';
-import { GetMultiplePhysicalTransactions } from 'orbit-clients/clients/PhysicalMarketClient';
-import { GetMultipleDigitalTransactions } from 'orbit-clients/clients/DigitalMarketClient';
-import { GetMultipleCommissionTransactions } from 'orbit-clients/clients/CommissionMarketClient';
-import { GetMultipleCommissionProducts, GetMultiplePhysicalProducts, GetMultipleDigitalProducts } from 'orbit-clients/clients/OrbitProductClient';
+import { GenPhysicalTransactionAddress, GetMultiplePhysicalTransactions } from 'orbit-clients/clients/PhysicalMarketClient';
+import { GenDigitalTransactionAddress, GetMultipleDigitalTransactions } from 'orbit-clients/clients/DigitalMarketClient';
+import { GenCommissionTransactionAddress, GetMultipleCommissionTransactions } from 'orbit-clients/clients/CommissionMarketClient';
+import { GetMultipleCommissionProducts, GetMultiplePhysicalProducts, GetMultipleDigitalProducts, GenProductAddress, GenListingsAddress } from 'orbit-clients/clients/OrbitProductClient';
+import { BN } from '@project-serum/anchor';
 const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
 
 export default class ChatClient{
@@ -117,33 +118,35 @@ export default class ChatClient{
                 let buyer_transactions = [];
                 let seller_transactions = [];
                 
-                let buyerindlengths = {};
+                let buyerindlengths = {
+                    digital: 0, physical: 0, commission: 0
+                };
                 if(this.userAccount.data.buyerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerDigitalTransactions)).data;
-                    let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-                    for(let i = 0; i < indexes.length; i++){
-                        if(indexes[i] == "0") continue;
-                        buyer_transactions.push(txs.openTransactions[i])
+                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerDigitalTransactions)).data.openTransactions;
+                    for(let i = 0; i < 32; i++){
+                        let chunk = txs.slice(i*9, (i*9)+9);
+                        if(chunk.reduce((partialSum, a) => partialSum + a, 0) == 0) continue;
+                        buyer_transactions.push(GenDigitalTransactionAddress(GenListingsAddress("digital", new BN(chunk.slice(0,8))), chunk[8]))
+                        buyerindlengths.digital += 1;
                     }
-                    buyerindlengths.digital = indexes.length;
                 }
                 if(this.userAccount.data.buyerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerPhysicalTransactions)).data;
-                    let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-                    for(let i = 0; i < indexes.length; i++){
-                        if(indexes[i] == "0") continue;
-                        buyer_transactions.push(txs.openTransactions[i])
+                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerPhysicalTransactions)).data.openTransactions;
+                    for(let i = 0; i < 32; i++){
+                        let chunk = txs.slice(i*9, (i*9)+9);
+                        if(chunk.reduce((partialSum, a) => partialSum + a, 0) == 0) continue;
+                        buyer_transactions.push(GenPhysicalTransactionAddress(GenListingsAddress("physical", new BN(chunk.slice(0,8))), chunk[8]))
+                        buyerindlengths.physical += 1;
                     }
-                    buyerindlengths.physical = indexes.length;
                 }
                 if(this.userAccount.data.buyerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerCommissionTransactions)).data;
-                    let indexes = txs.indices[0].toString(2).split("").reverse().join("") + txs.indices[1].toString(2).split("").reverse().join("") + txs.indices[2].toString(2).toString(2).split("").reverse().join("")
-                    for(let i = 0; i < indexes.length; i++){
-                        if(indexes[i] == "0") continue;
-                        buyer_transactions.push(txs.openTransactions[i])
+                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerCommissionTransactions)).data.openTransactions;
+                    for(let i = 0; i < 32; i++){
+                        let chunk = txs.slice(i*9, (i*9)+9);
+                        if(chunk.reduce((partialSum, a) => partialSum + a, 0) == 0) continue;
+                        buyer_transactions.push(GenCommissionTransactionAddress(GenListingsAddress("commission", new BN(chunk.slice(0,8))), chunk[8]))
+                        buyerindlengths.commission += 1;
                     }
-                    buyerindlengths.commission = indexes.length;
                 }
 
                 let buyer_digital_transactions = await GetMultipleDigitalTransactions(buyer_transactions.slice(0,sellerindlengths.digital));

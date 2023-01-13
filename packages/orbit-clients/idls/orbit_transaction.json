@@ -608,15 +608,6 @@
             "type": "publicKey"
           },
           {
-            "name": "indices",
-            "type": {
-              "array": [
-                "u8",
-                3
-              ]
-            }
-          },
-          {
             "name": "openTransactions",
             "type": {
               "array": [

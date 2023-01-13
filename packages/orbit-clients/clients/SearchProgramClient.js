@@ -42,7 +42,7 @@ export async function SyncPhysicalProductCache (kwds){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
     let cache_addr = GenProductCacheAddress(kwds, "physical");
-    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(51);
+    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(53);
     let remaining_accs = [];
     for(let i = 0; i < 25; i++ ){
         let vendor_listings_addr = GenListingsAddress("physical", new anchor.BN(cache_node.slice((13*i)+4,(13*i)+12)));
@@ -138,7 +138,7 @@ export async function SyncDigitalProductCache (kwds){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
     let cache_addr = GenProductCacheAddress(kwds, "digital");
-    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(51);
+    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(53);
     let remaining_accs = [];
     for(let i = 0; i < 25; i++ ){
         let vendor_listings_addr = GenListingsAddress("digital", new anchor.BN(cache_node.slice((13*i)+4,(13*i)+12)));
@@ -234,7 +234,7 @@ export async function SyncCommissionProductCache (kwds){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
     let cache_addr = GenProductCacheAddress(kwds, "commission");
-    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(51);
+    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(53);
     let remaining_accs = [];
     for(let i = 0; i < 25; i++ ){
         let vendor_listings_addr = GenListingsAddress("commission", new anchor.BN(cache_node.slice((13*i)+4,(13*i)+12)));
