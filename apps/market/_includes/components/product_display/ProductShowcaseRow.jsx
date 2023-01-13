@@ -116,7 +116,7 @@ export function ProductShowcaseRow(props) {
 							undefProdsArr.map((undef, ki) => {
 								return ( 
 									<ProductDisplayCardHome 
-										address={"1111111111111111"} // address of prod listing
+										address={"11111111111111111111111111111111"} // address of prod listing
 										type={props.prod_type}
 										key={ki}
 									/>

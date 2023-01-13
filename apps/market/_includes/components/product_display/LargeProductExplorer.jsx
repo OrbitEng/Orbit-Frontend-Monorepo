@@ -22,7 +22,7 @@ export function LargeProductExplorer(props) {
 		Array(16)
 			.fill(
 				<ProductDisplayCardHome 
-					address={"1111111111111111"} // address of prod listing
+					address={"11111111111111111111111111111111"} // address of prod listing
 					type={"local"}
 				/>
 			)
@@ -45,7 +45,7 @@ export function LargeProductExplorer(props) {
 					Array(16-props.items.length)
 						.fill(
 							<ProductDisplayCardHome 
-								address={"1111111111111111"} // address of prod listing
+								address={"11111111111111111111111111111111"} // address of prod listing
 								type={props.prod_type}
 							/>
 						)

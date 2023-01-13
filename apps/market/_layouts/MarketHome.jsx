@@ -4,13 +4,12 @@ import {ProductShowcaseRow} from '@includes/components/product_display/ProductSh
 import Head from 'next/head'
 import { MainFooter } from '@includes/Footer';
 import { useState, useEffect, useRef, useContext } from 'react'
+import { PRODUCT_PROGRAM } from 'orbit-clients';
 import useOnScreen from '@hooks/useOnScreen'
 
 import HomeNewsCarousel from '@includes/components/HomeNewsCarousel';
 import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 
-console.log(require('orbit-clients'))
-// import {PRODUCT_PROGRAM} from "orbit-clients";
 
 export function Home(props) {
 	const ref = useRef();
@@ -20,6 +19,8 @@ export function Home(props) {
 	const [recentDigitals, setRecentDigitals] = useState([]);
 	const [recentPhysicals, setRecentPhysicals] = useState([]);
 
+	// todo: split this up
+	
 	useEffect(async ()=>{
 
 		let digital_catalog = await PRODUCT_PROGRAM.GetRecentMarketListings(

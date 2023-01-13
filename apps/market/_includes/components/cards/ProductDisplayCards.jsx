@@ -10,7 +10,7 @@ import { ProductCommonUtils } from "@functionalities/Products";
 
 import ArweaveCtx from "@contexts/ArweaveCtx";
 import { useRouter } from "next/router";
-import { ACCOUNTS_PROGRAM } from "orbit-clients";
+import { ACCOUNTS_PROGRAM, PRODUCT_PROGRAM  } from "orbit-clients";
 
 import usdcIcon from "../../../public/Icons/usdcMarkColor.svg";
 import { PlusIcon } from "@heroicons/react/24/solid";
@@ -107,19 +107,19 @@ export function ProductDisplayCardHome(props) {
 		let tp = undefined;
 		switch(props.type){
 			case "commission":
-				tp = (await PRODUCT_CLIENT.GetCommissionProduct(props.address));
+				tp = (await PRODUCT_PROGRAM.GetCommissionProduct(props.address));
 				if(!tp){
 					return;
 				}
 				break;
 			case "digital":
-				tp = (await PRODUCT_CLIENT.GetDigitalProduct(props.address));
+				tp = (await PRODUCT_PROGRAM.GetDigitalProduct(props.address));
 				if(!tp){
 					return;
 				}
 				break;
 			case "physical":
-				tp = await PRODUCT_CLIENT.GetPhysicalProduct(props.address);
+				tp = await PRODUCT_PROGRAM.GetPhysicalProduct(props.address);
 				if(!tp){
 					return;
 				}
@@ -132,9 +132,9 @@ export function ProductDisplayCardHome(props) {
 			tp.data.metadata.info = JSON.parse(await arweaveClient.FetchData(tp.data.metadata.info));
 			tp.data.metadata.media = await arweaveClient.GetImageData(tp.data.metadata.media);
 
-			let vendor_listings_struct = (await PRODUCT_CLIENT.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
+			let vendor_listings_struct = (await PRODUCT_PROGRAM.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
-			tp.data.metadata.availability = PRODUCT_CLIENT.FindProductAvailability(tp.data, vendor_listings_struct)
+			tp.data.metadata.availability = PRODUCT_PROGRAM.FindProductAvailability(tp.data, vendor_listings_struct)
 			let vendor = await ACCOUNTS_PROGRAM.GetAccount(
 				ACCOUNTS_PROGRAM.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);
@@ -256,19 +256,19 @@ export function ProductDisplayCardHomeDep(props) {
 						<button className="font-semibold p-3 text-white bg-gradient-to-t from-[#000] to-[#0F1025] rounded-full drop-shadow text-[.75rem] border-2 border-[#2C2C4A]">✉️ Request</button>
 					</div>
 				);
-				tp = (await PRODUCT_CLIENT.GetCommissionProduct(props.address));
+				tp = (await PRODUCT_PROGRAM.GetCommissionProduct(props.address));
 				if(!tp){
 					return;
 				}
 				break;
 			case "digital":
-				tp = (await PRODUCT_CLIENT.GetDigitalProduct(props.address));
+				tp = (await PRODUCT_PROGRAM.GetDigitalProduct(props.address));
 				if(!tp){
 					return;
 				}
 				break;
 			case "physical":
-				tp = await PRODUCT_CLIENT.GetPhysicalProduct(props.address);
+				tp = await PRODUCT_PROGRAM.GetPhysicalProduct(props.address);
 				if(!tp){
 					return;
 				}
@@ -281,9 +281,9 @@ export function ProductDisplayCardHomeDep(props) {
 			tp.data.metadata.info = JSON.parse(await arweaveClient.FetchData(tp.data.metadata.info));
 			tp.data.metadata.media = await arweaveClient.GetImageData(tp.data.metadata.media);
 
-			let vendor_listings_struct = (await PRODUCT_CLIENT.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
+			let vendor_listings_struct = (await PRODUCT_PROGRAM.GetListingsStruct(tp.data.metadata.ownerCatalog)).data;
 			if(!vendor_listings_struct) return;
-			tp.data.metadata.availability = PRODUCT_CLIENT.FindProductAvailability(tp.data, vendor_listings_struct)
+			tp.data.metadata.availability = PRODUCT_PROGRAM.FindProductAvailability(tp.data, vendor_listings_struct)
 			let vendor = await ACCOUNTS_PROGRAM.GetAccount(
 				ACCOUNTS_PROGRAM.GenAccountAddress(vendor_listings_struct.listingsOwner)
 			);
