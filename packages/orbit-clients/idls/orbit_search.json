@@ -397,7 +397,10 @@
         {
           "name": "priorMiddlePost",
           "type": {
-            "defined": "(u16,u8,u8)"
+            "array": [
+              "u8",
+              4
+            ]
           }
         }
       ]
@@ -843,7 +846,10 @@
         {
           "name": "priorMiddlePost",
           "type": {
-            "defined": "(u16,u8,u8)"
+            "array": [
+              "u8",
+              4
+            ]
           }
         }
       ]
@@ -1289,7 +1295,10 @@
         {
           "name": "priorMiddlePost",
           "type": {
-            "defined": "(u16,u8,u8)"
+            "array": [
+              "u8",
+              4
+            ]
           }
         }
       ]

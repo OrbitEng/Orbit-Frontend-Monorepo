@@ -125,9 +125,7 @@
       "args": [
         {
           "name": "rating",
-          "type": {
-            "defined": "usize"
-          }
+          "type": "u8"
         }
       ]
     },

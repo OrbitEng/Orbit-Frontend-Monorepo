@@ -27,13 +27,14 @@ import ArweaveCtx from '@contexts/ArweaveCtx';
 import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-
-import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
-import ProfileButton from '@includes/components/buttons/ProfileButton';
 import { CreateChatModal } from './components/modals/CreateChatModal';
 import { HeaderSearchBar, PageSearchBar } from './components/SearchBar';
-
 import { ACCOUNTS_PROGRAM } from 'orbit-clients';
+
+import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
+import CartSideModal from './components/modals/CartSideModal';
+import ProfileButton from '@includes/components/buttons/ProfileButton';
+
 import HeaderMenuModal from '@includes/components/modals/HeaderMenuModal';
 
 const categoryTags = [

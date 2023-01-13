@@ -184,9 +184,7 @@
           },
           {
             "name": "threshold",
-            "type": {
-              "defined": "usize"
-            }
+            "type": "u8"
           }
         ]
       }

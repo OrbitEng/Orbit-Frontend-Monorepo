@@ -1,16 +1,15 @@
 import * as anchor from '@project-serum/anchor';
-import {PublicKey} from "@solana/web3.js";
 import {TOKEN_PROGRAM_ID, getAssociatedTokenAddress} from "@solana/spl-token";
+import {PublicKey} from "@solana/web3.js";
 import { MARKET_ACCOUNTS_PROGRAM_ID} from "./MarketAccountsClient";
 import {PRODUCT_PROGRAM_ID} from "./OrbitProductClient";
 import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
 import { MULTISIG_WALLET_ADDRESS} from "./MultisigClient";
 
-import idl from "../idls/orbit_digital_market";
-
+import idl from "../idls/orbit_digital_market.json";
 
 export const DIGITAL_MARKET_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const DIGITAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, provider);
+export const DIGITAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 ////////////////////////////////////////
 /// TRANSACTIONS

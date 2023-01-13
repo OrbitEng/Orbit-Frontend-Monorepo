@@ -611,15 +611,8 @@
             "name": "openTransactions",
             "type": {
               "array": [
-                {
-                  "type": {
-                    "array": [
-                      "u8",
-                      9
-                    ]
-                  }
-                },
-                32
+                "u8",
+                288
               ]
             }
           }

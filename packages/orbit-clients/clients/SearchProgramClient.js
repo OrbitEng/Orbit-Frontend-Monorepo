@@ -483,7 +483,7 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
 
     
     let ret = [
-        SEARCH_PROGRAM.methods.addPhysicalKwdsNode(word, remaining_kwds, curr_index, start, middle, end)
+        SEARCH_PROGRAM.methods.addPhysicalKwdsNode(word, remaining_kwds, curr_index, [start & 255,  start << 8, middle, end])
         .accounts({
             treeNode: GenKwdTreeNodeAddress(word, bucket_size, curr_index, "physical"),
             payer: payer_wallet.publicKey
@@ -700,7 +700,7 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
 
     
     let ret = [
-        SEARCH_PROGRAM.methods.addDigitalKwdsNode(word, remaining_kwds, curr_index, start, middle, end)
+        SEARCH_PROGRAM.methods.addDigitalKwdsNode(word, remaining_kwds, curr_index, [start & 255,  start << 8, middle, end])
         .accounts({
             treeNode: GenKwdTreeNodeAddress(word, bucket_size, curr_index, "digital"),
             payer: payer_wallet.publicKey
@@ -917,7 +917,7 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
 
     
     let ret = [
-        SEARCH_PROGRAM.methods.addCommissionKwdsNode(word, remaining_kwds, curr_index, start, middle, end)
+        SEARCH_PROGRAM.methods.addCommissionKwdsNode(word, remaining_kwds, curr_index, [start & 255,  start << 8, middle, end])
         .accounts({
             treeNode: GenKwdTreeNodeAddress(word, bucket_size, curr_index, "commission"),
             payer: payer_wallet.publicKey
