@@ -24,7 +24,6 @@ import CartCtx from '@contexts/CartCtx';
 import PythClientCtx from '@contexts/PythClientCtx';
 import ChatCtx from '@contexts/ChatCtx';
 import ArweaveCtx from '@contexts/ArweaveCtx';
-import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { CreateChatModal } from './components/modals/CreateChatModal';
@@ -102,13 +101,14 @@ export function HomeHeader(props) {
 	},[wallet])
 
 	useEffect(()=>{
-		PRODUCT_PROGRAM.PRODUCT_PROGRAM.provider = wallet;
-		TRANSACTIONS_PROGRAM.TRANSACTIONS_PROGRAM.provider = wallet;
-		COMMISSION_MARKET.COMMISSION_MARKET_PROGRAM.provider = wallet;
-		PHYSICAL_MARKET.PHYSICAL_MARKET_PROGRAM.provider = wallet;
-		DIGITAL_MARKET.DIGITAL_MARKET_PROGRAM.provider = wallet;
-		SEARCH_PROGRAM.SEARCH_PROGRAM.provider = wallet;
-		DISPUTE_PROGRAM.DISPUTE_PROGRAM.provider = wallet;
+		if(!wallet.publicKey) return;
+		PRODUCT_PROGRAM && PRODUCT_PROGRAM.SetProgramWallet(wallet);
+		TRANSACTIONS_PROGRAM && TRANSACTIONS_PROGRAM.SetProgramWallet(wallet);
+		COMMISSION_MARKET && COMMISSION_MARKET.SetProgramWallet(wallet);
+		PHYSICAL_MARKET && PHYSICAL_MARKET.SetProgramWallet(wallet);
+		DIGITAL_MARKET && DIGITAL_MARKET.SetProgramWallet(wallet);
+		SEARCH_PROGRAM && SEARCH_PROGRAM.SetProgramWallet(wallet);
+		DISPUTE_PROGRAM && DISPUTE_PROGRAM.SetProgramWallet(wallet);
 	}, [wallet.publicKey])
 
 	useEffect(async ()=>{

@@ -11,6 +11,9 @@ import idl from "../idls/orbit_physical_market.json";
 
 export var PHYSICAL_MARKET_PROGRAM_ID = new PublicKey(idl.metadata.address);
 export var PHYSICAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
+export function SetProgramWallet(prov){
+    PHYSICAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, prov);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /// TRANSACTION GENERAL

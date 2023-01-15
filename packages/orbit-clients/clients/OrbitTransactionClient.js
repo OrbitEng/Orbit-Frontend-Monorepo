@@ -5,6 +5,9 @@ const idl = require("../idls/orbit_transaction");
 
 export var TRANSACTION_PROGRAM_ID = new PublicKey(idl.metadata.address);
 export var TRANSACTION_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
+export function SetProgramWallet(prov){
+    TRANSACTION_PROGRAM = new anchor.Program(idl, idl.metadata.address, prov);
+}
 
 export async function CreateBuyerTransactionsLog (
     market_type,

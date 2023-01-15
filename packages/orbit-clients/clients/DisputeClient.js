@@ -9,6 +9,9 @@ const idl = require("../idls/dispute.json");
 export var DISPUTE_PROGRAM_ID = new PublicKey(idl.metadata.address);
 export var DISPUTE_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
+export function SetProgramWallet(prov){
+    DISPUTE_PROGRAM = new anchor.Program(idl, idl.metadata.address, prov);
+}
 
 export async function VoteDispute (
     dispute_addr,

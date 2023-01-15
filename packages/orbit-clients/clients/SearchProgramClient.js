@@ -8,6 +8,10 @@ const idl = require("../idls/orbit_search");
 export var SEARCH_PROGRAM_ID = new PublicKey(idl.metadata.address);
 export var SEARCH_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
+export function SetProgramWallet(prov){
+    SEARCH_PROGRAM = new anchor.Program(idl, idl.metadata.address, prov);
+}
+
 ///////////////////////////////////////////////////////////////
 /// PRODUCT QUEUES
 

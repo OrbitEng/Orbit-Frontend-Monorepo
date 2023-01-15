@@ -11,6 +11,10 @@ import idl from "../idls/orbit_commission_market.json";
 export var COMMISSION_MARKET_PROGRAM_ID = new PublicKey(idl.metadata.address);
 export var COMMISSION_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
+export function SetProgramWallet(prov){
+    COMMISSION_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, prov);
+}
+
 ////////////////////////////////////////
 /// TRANSACTIONS
 

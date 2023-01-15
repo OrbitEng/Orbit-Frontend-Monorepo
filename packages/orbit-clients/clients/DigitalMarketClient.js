@@ -10,6 +10,9 @@ import idl from "../idls/orbit_digital_market.json";
 
 export var DIGITAL_MARKET_PROGRAM_ID = new PublicKey(idl.metadata.address);
 export var DIGITAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
+export function SetProgramWallet(prov){
+    DIGITAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, prov);
+}
 
 ////////////////////////////////////////
 /// TRANSACTIONS

@@ -45,8 +45,6 @@ import CartCtx from '@contexts/CartCtx';
 import ShippingCtx from '@contexts/ShippingCtx';
 import ChatCtx from '@contexts/ChatCtx';
 
-import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
-
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
