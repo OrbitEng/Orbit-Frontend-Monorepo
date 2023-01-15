@@ -58,7 +58,6 @@ function MyApp({ Component, pageProps }) {
   const [userAccount, setUserAccount] = useState();
   const [pythClient, setPythClient] = useState();
   const [arweaveClient, setArweaveClient] = useState();
-  const[anchorProvider, setAnchorProvider] = useState();
 
   const [ productCache, setProductCache] = useState();
   const [ vendorCache, setVendorCache ] = useState();
@@ -116,7 +115,6 @@ function MyApp({ Component, pageProps }) {
           <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                  <AnchorProviderCtx.Provider value={{anchorProvider, setAnchorProvider}}>
                     <UserAccountCtx.Provider value={{userAccount, setUserAccount}}>
                       <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
                         <MatrixClientCtx.Provider value={{matrixClient, setMatrixClient}}>
@@ -138,7 +136,6 @@ function MyApp({ Component, pageProps }) {
                         </MatrixClientCtx.Provider>
                       </BundlrCtx.Provider>
                     </UserAccountCtx.Provider>
-                  </AnchorProviderCtx.Provider>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

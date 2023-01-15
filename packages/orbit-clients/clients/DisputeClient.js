@@ -6,8 +6,8 @@ import { IDBClient } from 'browser-clients';
 
 const idl = require("../idls/dispute.json");
 
-export const DISPUTE_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const DISPUTE_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
+export var DISPUTE_PROGRAM_ID = new PublicKey(idl.metadata.address);
+export var DISPUTE_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 
 export async function VoteDispute (

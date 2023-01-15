@@ -29,7 +29,7 @@ import AnchorProviderCtx from '@contexts/AnchorProviderCtx';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { CreateChatModal } from './components/modals/CreateChatModal';
 import { HeaderSearchBar, PageSearchBar } from './components/SearchBar';
-import { ACCOUNTS_PROGRAM } from 'orbit-clients';
+import { ACCOUNTS_PROGRAM, PRODUCT_PROGRAM, TRANSACTIONS_PROGRAM, COMMISSION_MARKET, PHYSICAL_MARKET, DIGITAL_MARKET, SEARCH_PROGRAM, DISPUTE_PROGRAM } from 'orbit-clients';
 
 import CreateAccountModal from '@includes/components/buttons/CreateAccountModal';
 import CartSideModal from './components/modals/CartSideModal';
@@ -60,8 +60,6 @@ export function HomeHeader(props) {
 	const router = useRouter();
 	const {connection} = useConnection();
 	const wallet = useWallet();
-
-	const {anchorProvider, setAnchorProvider} = useContext(AnchorProviderCtx)
 
 	const {bundlrClient, setBundlrClient} = useContext(BundlrCtx);
 	const {matrixClient, setMatrixClient} = useContext(MatrixClientCtx);
@@ -104,14 +102,14 @@ export function HomeHeader(props) {
 	},[wallet])
 
 	useEffect(()=>{
-		let temp_wallet = (wallet && wallet.publicKey) ? wallet : {};
-		if(anchorProvider && anchorProvider.wallet){
-			if(anchorProvider.wallet.publicKey && temp_wallet.publicKey && (anchorProvider.wallet.publicKey.toString() == wallet.publicKey.toString())) return;
-			anchorProvider.wallet = temp_wallet;
-		}else{
-			setAnchorProvider(new anchor.AnchorProvider(connection, temp_wallet, anchor.AnchorProvider.defaultOptions()));
-		}
-	},[connection, wallet])
+		PRODUCT_PROGRAM.PRODUCT_PROGRAM.provider = wallet;
+		TRANSACTIONS_PROGRAM.TRANSACTIONS_PROGRAM.provider = wallet;
+		COMMISSION_MARKET.COMMISSION_MARKET_PROGRAM.provider = wallet;
+		PHYSICAL_MARKET.PHYSICAL_MARKET_PROGRAM.provider = wallet;
+		DIGITAL_MARKET.DIGITAL_MARKET_PROGRAM.provider = wallet;
+		SEARCH_PROGRAM.SEARCH_PROGRAM.provider = wallet;
+		DISPUTE_PROGRAM.DISPUTE_PROGRAM.provider = wallet;
+	}, [wallet.publicKey])
 
 	useEffect(async ()=>{
 		if (!(wallet && wallet.publicKey && arweaveClient)) return;
@@ -130,7 +128,7 @@ export function HomeHeader(props) {
 			console.log(e)
 			setUserAccount(undefined)
 		}
-	},[wallet.connected, arweaveClient, userAccount])
+	},[wallet.publicKey, arweaveClient, userAccount])
 
 	useEffect( async ()=>{
 		if(!(userAccount && arweaveClient)) return;
@@ -152,7 +150,7 @@ export function HomeHeader(props) {
 			console.log(e);
 			setHasChat(false);
 		}
-	}, [arweaveClient, userAccount, wallet])
+	}, [arweaveClient, userAccount, wallet.publicKey])
 
 	return(
 		<header className="mx-auto max-w-[100rem] h-28 sm:h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">
@@ -205,13 +203,13 @@ export function HomeHeader(props) {
 							<PlusCircleIcon className="w-4 h-4 sm:w-5 sm:h-5" />
 						</button>
 					</Link>
-					<button className="inline-flex relative rounded-full bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-[#d9d9d9] align-middle my-auto p-[1px]" >
+					<div className="inline-flex relative rounded-full bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-[#d9d9d9] align-middle my-auto p-[1px]" >
 						{
 							((!wallet.connected) && <WalletMultiButton />) || 
 							((!userAccount) && <CreateAccountModal connectedWallet={wallet}/>) || 
 							(<ProfileButton selfAccount={userAccount} />)
 						}
-					</button>
+					</div>
 					<CartSideModal open={cartOpen} setOpen={setCartOpen}/>
 				</div>
 			</div>

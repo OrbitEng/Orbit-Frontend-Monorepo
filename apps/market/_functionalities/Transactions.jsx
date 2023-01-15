@@ -1,5 +1,5 @@
 import { useContext, useState, useCallback } from "react";
-import { DIGITAL_MARKET, PHYSICAL_MARKET, COMMISSIONS_MARKET, TRANSACTION_PROGRAM, PRODUCT_PROGRAM, DISPUTE_PROGRAM } from "orbit-clients";
+import { DIGITAL_MARKET, PHYSICAL_MARKET, COMMISSION_MARKET, TRANSACTION_PROGRAM, PRODUCT_PROGRAM, DISPUTE_PROGRAM } from "orbit-clients";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import BundlrCtx from "@contexts/BundlrCtx";
 
@@ -427,12 +427,12 @@ export function CommissionFunctionalities(){
 
         let buyer_tx_log_addr = userAccount.data.buyerCommissionTransactions;
         let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
-        let tx_addr = COMMISSION_PROGRAM.GenTransactionAddress(vendor_log_address, sellerIndex);
+        let tx_addr = COMMISSION_MARKET_PROGRAM.GenTransactionAddress(vendor_log_address, sellerIndex);
 
         let buyer_account_addr = userAccount.address;
         
         await OpenChat(vendor_account.address.toString(), tx_addr);
-        return COMMISSION_PROGRAM.CommissionOpenTransactionSol(
+        return COMMISSION_MARKET_PROGRAM.CommissionOpenTransactionSol(
             tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
@@ -451,7 +451,7 @@ export function CommissionFunctionalities(){
         tx_addr
     )=>{
 
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let seller_tx_log_struct = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller);
         let seller_wallet = seller_tx_log_struct.sellerWallet;
         let seller_market_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(seller_wallet);
@@ -466,7 +466,7 @@ export function CommissionFunctionalities(){
         };
 
 
-        return COMMISSION_PROGRAM.CommissionCloseTransactionSol(
+        return COMMISSION_MARKET_PROGRAM.CommissionCloseTransactionSol(
             tx_addr,
             tx_struct,
             buyer_market_account_addr,
@@ -482,7 +482,7 @@ export function CommissionFunctionalities(){
         tx_addr,
         payer_wallet
     )=>{
-        return COMMISSION_PROGRAM.CommissionFundEscrowSol(tx_addr, payer_wallet)
+        return COMMISSION_MARKET_PROGRAM.CommissionFundEscrowSol(tx_addr, payer_wallet)
 
     }
 
@@ -490,11 +490,11 @@ export function CommissionFunctionalities(){
         tx_addr,
         payer_wallet
     )=>{
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let buyer_tx_log = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_wallet = buyer_tx_log.buyer_wallet;
         let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
-        return COMMISSION_PROGRAM.CommissionSellerEarlyDeclineSol(
+        return COMMISSION_MARKET_PROGRAM.CommissionSellerEarlyDeclineSol(
             tx_addr,
             buyer_wallet,
             buyer_account,
@@ -521,11 +521,11 @@ export function CommissionFunctionalities(){
         let buyer_tx_log_addr = userAccount.data.buyerCommissionTransactions;
         let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
 
-        let tx_addr = COMMISSION_PROGRAM.GenCommissionTransactionAddress(vendor_log_address, sellerIndex);
+        let tx_addr = COMMISSION_MARKET_PROGRAM.GenCommissionTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = userAccount.address;
 
         await OpenChat(vendor_account.address.toString(), tx_addr);
-        return COMMISSION_PROGRAM.CommissionOpenTransactionSpl(
+        return COMMISSION_MARKET_PROGRAM.CommissionOpenTransactionSpl(
             tx_addr,
             next_open_seller_index,
             seller_tx_log_addr,
@@ -547,7 +547,7 @@ export function CommissionFunctionalities(){
     const CloseTransactionSpl = async(
         tx_addr
     )=>{
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let seller_tx_log_struct = (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(tx_struct.seller)).data;
         let seller_wallet = seller_tx_log_struct.sellerWallet;
         let buyer_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
@@ -559,7 +559,7 @@ export function CommissionFunctionalities(){
         if(buyer_acc_struct.used_reflink){
             reflink_chain = ACCOUNTS_PROGRAM.ReflinkSplChain(buyer_acc_struct.used_reflink, tx_struct.metadata.currency);
         };
-        return COMMISSION_PROGRAM.CommissionCloseTransactionSpl(
+        return COMMISSION_MARKET_PROGRAM.CommissionCloseTransactionSpl(
             tx_addr,
 
             buyer_wallet,
@@ -574,19 +574,19 @@ export function CommissionFunctionalities(){
         tx_addr,
         payer_wallet
     )=>{
-        return COMMISSION_PROGRAM.CommissionFundEscrowSpl(tx_addr, payer_wallet)
+        return COMMISSION_MARKET_PROGRAM.CommissionFundEscrowSpl(tx_addr, payer_wallet)
     }
 
     const SellerEarlyDeclineSpl = async(
         tx_addr,
         payer_wallet
     )=>{
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let buyer_tx_log = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_wallet = buyer_tx_log.buyer_wallet;
         let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_wallet);
 
-        return COMMISSION_PROGRAM.CommissionSellerEarlyDeclineSpl(
+        return COMMISSION_MARKET_PROGRAM.CommissionSellerEarlyDeclineSpl(
             tx_addr,
 
             buyer_wallet,
@@ -604,24 +604,24 @@ export function CommissionFunctionalities(){
         tx_addr,
         payer_wallet
     ) => {
-        return COMMISSION_PROGRAM.CommissionConfirmDelivered(tx_addr, payer_wallet)
+        return COMMISSION_MARKET_PROGRAM.CommissionConfirmDelivered(tx_addr, payer_wallet)
     };
 
     const ConfirmAccept = async(
         tx_addr,
         payer_wallet
     ) => {
-        return COMMISSION_PROGRAM.CommissionConfirmAccept(tx_addr, payer_wallet)
+        return COMMISSION_MARKET_PROGRAM.CommissionConfirmAccept(tx_addr, payer_wallet)
     };
     const DenyAccept = async(
         tx_addr,
         payer_wallet
     ) => {
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let buyer_tx_log_struct = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data;
         let buyer_account = ACCOUNTS_PROGRAM.GenAccountAddress(buyer_tx_log_struct.buyer_wallet);
         
-        return COMMISSION_PROGRAM.CommissionDenyAccept(
+        return COMMISSION_MARKET_PROGRAM.CommissionDenyAccept(
             tx_addr,
             buyer_account,
             payer_wallet
@@ -639,12 +639,12 @@ export function CommissionFunctionalities(){
         return [
             funding_ix,
             data_item,
-            await COMMISSION_PROGRAM.CommissionCommitInitKeys(
+            await COMMISSION_MARKET_PROGRAM.CommissionCommitInitKeys(
                 tx_addr,
                 kps.map(k => k.publicKey),
                 payer_wallet
             ),
-            await COMMISSION_PROGRAM.CommissionCommitLink(
+            await COMMISSION_MARKET_PROGRAM.CommissionCommitLink(
                 tx_addr,
                 ar_addr,
                 payer_wallet
@@ -655,7 +655,7 @@ export function CommissionFunctionalities(){
     const UpdateStatusToShipping = async(tx_addr,
         payer_wallet)=>{
 
-        return COMMISSION_PROGRAM.CommissionUpdateStatusToShipping(
+        return COMMISSION_MARKET_PROGRAM.CommissionUpdateStatusToShipping(
             tx_addr,
             market_acc,
             market_auth,
@@ -666,14 +666,14 @@ export function CommissionFunctionalities(){
     const CommitSubkeys = async (tx_addr, indexes,
         payer_wallet)=>{
 
-        let link = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.dataAddress;
+        let link = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.dataAddress;
         let kps = bundlrClient.GetTransactionsKp(link);
         let kp_dict = {};
         
         indexes.forEach((ind)=>{
             kp_dict[ind] = kps[ind]
         });
-        return COMMISSION_PROGRAM.CommissionCommitSubkeys(
+        return COMMISSION_MARKET_PROGRAM.CommissionCommitSubkeys(
             kp_dict,
             tx_addr,
             market_acc,
@@ -690,7 +690,7 @@ export function CommissionFunctionalities(){
         tx_addr,
         payer_wallet
     ) =>{
-        return COMMISSION_PROGRAM.CommissionSellerAcceptTransaction(tx_addr,
+        return COMMISSION_MARKET_PROGRAM.CommissionSellerAcceptTransaction(tx_addr,
             payer_wallet)
     }
 
@@ -701,8 +701,8 @@ export function CommissionFunctionalities(){
         tx_addr,
         payer_wallet
     ) =>{
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
-        let other_party = (await COMMISSION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let other_party = (await COMMISSION_MARKET_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
 
         if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey).toString() == other_party.toString()){
             other_party = tx_struct.seller;
@@ -710,7 +710,7 @@ export function CommissionFunctionalities(){
 
         let market_account = ACCOUNTS_PROGRAM.GenAccountAddress(payer_wallet.publicKey);
 
-        return COMMISSION_PROGRAM.CommissionLeaveReview(
+        return COMMISSION_MARKET_PROGRAM.CommissionLeaveReview(
             tx_addr,
             other_party,
             market_account,
@@ -723,7 +723,7 @@ export function CommissionFunctionalities(){
         tx_addr,
         payer_wallet
     ) =>{
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let buyer_tx_log_addr = tx_struct.buyer;
         let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(buyer_tx_log_addr);
         let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
@@ -731,7 +731,7 @@ export function CommissionFunctionalities(){
             tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("commission", payer_wallet.publicKey)
         }
 
-        return COMMISSION_PROGRAM.CommissionCloseTransactionAccount(
+        return COMMISSION_MARKET_PROGRAM.CommissionCloseTransactionAccount(
             tx_addr,
             tx_log,
             buyer_tx_log_struct.data.buyer_wallet
@@ -752,7 +752,7 @@ export function CommissionFunctionalities(){
         }
         let ar_addr = await bundlrClient.UploadBufferInstruction(preview_file_dataurl);
 
-        return COMMISSION_PROGRAM.CommissionCommitPreview(
+        return COMMISSION_MARKET_PROGRAM.CommissionCommitPreview(
             tx_addr,
             ar_addr,
             payer_wallet
@@ -764,12 +764,12 @@ export function CommissionFunctionalities(){
         new_rate,
         payer_wallet
     ) =>{
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data;
         let tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
         if(tx_log_addr.toString() != tx_struct.buyer){
             tx_log_addr = tx_struct.seller;
         }
-        return COMMISSION_PROGRAM.CommissionProposeRate(
+        return COMMISSION_MARKET_PROGRAM.CommissionProposeRate(
             tx_addr,
             tx_log_addr,
             new_rate,
@@ -780,12 +780,12 @@ export function CommissionFunctionalities(){
         tx_addr,
         payer_wallet
     ) =>{
-        let tx_struct = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data;
+        let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data;
         let tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
         if(tx_log_addr.toString() != tx_struct.buyer){
             tx_log_addr = tx_struct.seller;
         }
-        return COMMISSION_PROGRAM.CommissionAcceptRate(
+        return COMMISSION_MARKET_PROGRAM.CommissionAcceptRate(
             tx_addr,
             tx_log_addr,
             payer_wallet
@@ -801,14 +801,14 @@ export function CommissionFunctionalities(){
 
     const DecryptImage = async(tx_addr) =>{
 
-        let raw_blocks = await arweaveClient.FetchData((await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
+        let raw_blocks = await arweaveClient.FetchData((await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).metadata.dataAddress ).split(">UwU<");
 
         return file_client.AssembleImage(
             raw_blocks[0],
             raw_blocks[1],
             raw_blocks[2],
             raw_blocks[3],
-            await enc_common.DecryptStrings(await COMMISSION_PROGRAM.CommissionGetCommittedKeys(), raw_blocks.slice(4))
+            await enc_common.DecryptStrings(await COMMISSION_MARKET_PROGRAM.CommissionGetCommittedKeys(), raw_blocks.slice(4))
         )
     }
 
@@ -820,7 +820,7 @@ export function CommissionFunctionalities(){
      * @returns {Blob} for now. add proper decoding later
      */
     const SeePreview = async(tx_addr) =>{
-        let ar_addr = (await COMMISSION_PROGRAM.GetCommissionTransaction(tx_addr)).data.previewAddress;
+        let ar_addr = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.previewAddress;
 
         return arweaveClient.GetImageData(ar_addr);
     }

@@ -1,6 +1,6 @@
 import * as PHYSICAL_MARKET from "./clients/PhysicalMarketClient";
 import * as DIGITAL_MARKET from "./clients/DigitalMarketClient";
-import * as COMMISSIONS_MARKET from "./clients/CommissionMarketClient";
+import * as COMMISSION_MARKET from "./clients/CommissionMarketClient";
 import * as ACCOUNTS_PROGRAM from "./clients/MarketAccountsClient";
 import * as DISPUTE_PROGRAM from "./clients/DisputeClient";
 import * as PRODUCT_PROGRAM from "./clients/OrbitProductClient";
@@ -12,7 +12,7 @@ import * as SEARCH_PROGRAM from "./clients/SearchProgramClient";
 export {
     PHYSICAL_MARKET,
     DIGITAL_MARKET,
-    COMMISSIONS_MARKET,
+    COMMISSION_MARKET,
     ACCOUNTS_PROGRAM,
     DISPUTE_PROGRAM,
     PRODUCT_PROGRAM,

@@ -3,8 +3,8 @@ import {PublicKey} from "@solana/web3.js";
 
 const idl = require("../idls/orbit_transaction");
 
-export const TRANSACTION_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const TRANSACTION_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
+export var TRANSACTION_PROGRAM_ID = new PublicKey(idl.metadata.address);
+export var TRANSACTION_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 export async function CreateBuyerTransactionsLog (
     market_type,

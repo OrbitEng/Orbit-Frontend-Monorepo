@@ -3,8 +3,8 @@ import {PublicKey} from "@solana/web3.js";
 
 const idl = require("../idls/orbit_product");
 
-export const PRODUCT_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const PRODUCT_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
+export var PRODUCT_PROGRAM_ID = new PublicKey(idl.metadata.address);
+export var PRODUCT_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 ////////////////////////////////////
 /// ADMIN INITIALIZE

@@ -9,8 +9,8 @@ import { MULTISIG_WALLET_ADDRESS} from "./MultisigClient";
 
 import idl from "../idls/orbit_physical_market.json";
 
-export const PHYSICAL_MARKET_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const PHYSICAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
+export var PHYSICAL_MARKET_PROGRAM_ID = new PublicKey(idl.metadata.address);
+export var PHYSICAL_MARKET_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /// TRANSACTION GENERAL

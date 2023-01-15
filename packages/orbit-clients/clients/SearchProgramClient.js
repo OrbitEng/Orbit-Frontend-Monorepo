@@ -5,8 +5,8 @@ import { GenListingsAddress, GenProductAddress } from './OrbitProductClient';
 
 const idl = require("../idls/orbit_search");
 
-export const SEARCH_PROGRAM_ID = new PublicKey(idl.metadata.address);
-export const SEARCH_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
+export var SEARCH_PROGRAM_ID = new PublicKey(idl.metadata.address);
+export var SEARCH_PROGRAM = new anchor.Program(idl, idl.metadata.address, {});
 
 ///////////////////////////////////////////////////////////////
 /// PRODUCT QUEUES
