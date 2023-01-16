@@ -21,7 +21,7 @@ export async function InitRecentListings (payer_wallet){
         commissionRecentListings:  this.GenRecentListings("commission"),
         payer: payer_wallet.publicKey
     })
-    .instruction()
+    .instruction();
 }
 
 ///////////////////////////////////////////////////////
@@ -749,15 +749,12 @@ export async function GetRecentMarketListings (address){
     if(typeof address == "string"){
         address = new PublicKey(address)
     }
-    try{
-        return {
-            address: address.toString(),
-            data: await PRODUCT_PROGRAM.account.recentMarketListings.fetch(address),
-            type: "RecentMarketListings"
-        }
-    }catch(e){
-        return undefined
-    };
+
+    return {
+        address: address.toString(),
+        data: await PRODUCT_PROGRAM.account.recentMarketListings.fetch(address),
+        type: "RecentMarketListings"
+    }
 }
 
 ///////////////////////////////////////

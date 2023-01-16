@@ -9,10 +9,12 @@ import useOnScreen from '@hooks/useOnScreen'
 
 import HomeNewsCarousel from '@includes/components/HomeNewsCarousel';
 import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
+import { useConnection } from '@solana/wallet-adapter-react';
 
 
 export function Home(props) {
 	const ref = useRef();
+	const {connection} = useConnection();
 	const searchBarVisible = useOnScreen(ref);
 
 	const [recentCommissions, setRecentCommissions] = useState([]);
@@ -20,9 +22,9 @@ export function Home(props) {
 	const [recentPhysicals, setRecentPhysicals] = useState([]);
 
 	// todo: split this up
-	
-	useEffect(async ()=>{
 
+	useEffect(async ()=>{
+		if (!PRODUCT_PROGRAM.PRODUCT_PROGRAM.provider.connection) return;
 		let digital_catalog = await PRODUCT_PROGRAM.GetRecentMarketListings(
 			PRODUCT_PROGRAM.GenRecentListings("digital")
 		);
@@ -44,7 +46,7 @@ export function Home(props) {
 		setRecentDigitals(digital_catalog.data.pubkeys);
 		setRecentPhysicals(physical_catalog.data.pubkeys);
 
-	}, []);
+	}, [PRODUCT_PROGRAM.PRODUCT_PROGRAM.provider.connection]);
 
 	return(
 		<div className="w-full min-h-screen bg-transparent">

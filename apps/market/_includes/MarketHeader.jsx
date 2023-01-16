@@ -102,32 +102,36 @@ export function HomeHeader(props) {
 
 	useEffect(()=>{
 		if(!wallet.publicKey) return;
-		PRODUCT_PROGRAM && PRODUCT_PROGRAM.SetProgramWallet(wallet);
-		TRANSACTIONS_PROGRAM && TRANSACTIONS_PROGRAM.SetProgramWallet(wallet);
-		COMMISSION_MARKET && COMMISSION_MARKET.SetProgramWallet(wallet);
-		PHYSICAL_MARKET && PHYSICAL_MARKET.SetProgramWallet(wallet);
-		DIGITAL_MARKET && DIGITAL_MARKET.SetProgramWallet(wallet);
-		SEARCH_PROGRAM && SEARCH_PROGRAM.SetProgramWallet(wallet);
-		DISPUTE_PROGRAM && DISPUTE_PROGRAM.SetProgramWallet(wallet);
+		let provider = new anchor.AnchorProvider(
+			connection,
+			wallet
+		);
+		PRODUCT_PROGRAM && PRODUCT_PROGRAM.SetProgramWallet(provider);
+		TRANSACTIONS_PROGRAM && TRANSACTIONS_PROGRAM.SetProgramWallet(provider);
+		COMMISSION_MARKET && COMMISSION_MARKET.SetProgramWallet(provider);
+		PHYSICAL_MARKET && PHYSICAL_MARKET.SetProgramWallet(provider);
+		DIGITAL_MARKET && DIGITAL_MARKET.SetProgramWallet(provider);
+		SEARCH_PROGRAM && SEARCH_PROGRAM.SetProgramWallet(provider);
+		DISPUTE_PROGRAM && DISPUTE_PROGRAM.SetProgramWallet(provider);
 	}, [wallet.publicKey])
 
 	useEffect(async ()=>{
 		if (!(wallet && wallet.publicKey && arweaveClient)) return;
 		if((userAccount && userAccount.data.wallet) && (wallet.publicKey.toString() == userAccount.data.wallet.toString())) return;
 
-		try{
-			let account_address = (ACCOUNTS_PROGRAM.GenAccountAddress(wallet.publicKey));
-			let account = await ACCOUNTS_PROGRAM.GetAccount(account_address);
-			account.data.profilePic = await arweaveClient.GetPfp(account.data.profilePic);
-			account.data.metadata = await arweaveClient.GetMetadata(account.data.metadata);
+		// try{
+		// 	let account_address = (ACCOUNTS_PROGRAM.GenAccountAddress(wallet.publicKey));
+		// 	let account = await ACCOUNTS_PROGRAM.GetAccount(account_address);
+		// 	account.data.profilePic = await arweaveClient.GetPfp(account.data.profilePic);
+		// 	account.data.metadata = await arweaveClient.GetMetadata(account.data.metadata);
 			
-			// account.data.disputeDiscounts = 2;
-			setUserAccount(account)
-			console.log(account)
-		}catch(e){
-			console.log(e)
+		// 	// account.data.disputeDiscounts = 2;
+		// 	setUserAccount(account)
+		// 	console.log(account)
+		// }catch(e){
+		// 	console.log(e)
 			setUserAccount(undefined)
-		}
+		// }
 	},[wallet.publicKey, arweaveClient, userAccount])
 
 	useEffect( async ()=>{

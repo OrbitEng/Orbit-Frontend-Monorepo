@@ -12,26 +12,43 @@ export default function AdminLayout(){
 	const wallet = useWallet();
 	const { connection } = useConnection();
 
-	const [instructions, setInstructions] = useState({
-		listingsInitIx: undefined
-	})
+	const [instructions, setInstructions] = useState(undefined)
 
 	const AddInitListings = useCallback(async () =>{
-		setInstructions(async (currix) => {
-			currix.listingsInitIx = await PRODUCT_PROGRAM.InitRecentListings(wallet);
-			return currix
-		})
+		let ix = await PRODUCT_PROGRAM.InitRecentListings(wallet);
+		setInstructions(ix);
+		console.log("instruction set", ix)
 	}, [wallet, setInstructions])
 
 	// https://discord.com/channels/889577356681945098/889577399308656662/1022990506323615814
 	const ConfirmAdminTransaction = useCallback(async ()=>{
-		let tx = new Transaction();
-		if(instructions.listingsInitIx){
-			tx.add(instructions.listingsInitIx)
+		
+		let latest_blockhash = await connection.getLatestBlockhash();
+		let tx = new Transaction({
+			feePayer: wallet.publicKey,
+			... latest_blockhash
+		});
+		console.log(instructions)
+		try{
+
+			if(instructions){
+				console.log("has instruction")
+				tx.add(instructions);
+				console.log(tx)
+				await wallet.signTransaction(tx);
+				let sig = await wallet.sendTransaction(tx, connection);
+				console.log("signed tx: ", sig)
+				let confirmation  = await connection.confirmTransaction({
+					...latest_blockhash,
+					signature: sig,
+				});
+				console.log(confirmation);
+			}else{
+				throw "no ix"
+			}
+		}catch(e){
+			console.log(e)
 		}
-		await sendAndConfirmTransaction(
-			connection, tx, wallet
-		)
 
 	}, [connection, wallet, instructions])
 
@@ -39,7 +56,6 @@ export default function AdminLayout(){
 		<div className="bg-[#070513] w-full min-h-screen flex flex-col m-auto text-white">
             <HomeHeader/>
 			
-
 			<div className="m-10 flex flex-col">
 				<div>
 					Initialize Recent Listings
