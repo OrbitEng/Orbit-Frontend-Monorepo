@@ -185,9 +185,9 @@ export function ProductDisplayCardHome(props) {
 						<span className="text-xl text-white truncate w-full text-left px-2 mt-2">{prod?.data?.metadata?.info?.name ? (prod?.data?.metadata?.info?.name?.charAt(0).toUpperCase() + prod?.data?.metadata?.info?.name?.slice(1)) : "Icon Pack"}</span>
 						<div className="flex flex-row gap-x-2 w-full px-2 justify-start mt-2 mb-5">
 							{categoryTag}
-							{productTags?.map((tagName) => {
+							{productTags?.map((tagName, ki) => {
 								return(
-									<div className="flex flex-row py-1 px-2 bg-[#23212F] rounded-[4px]">
+									<div className="flex flex-row py-1 px-2 bg-[#23212F] rounded-[4px]" key={ki+"prod"}>
 										<span className="my-auto text-sm text-[#686868]">{tagName.charAt(0).toUpperCase() + tagName.slice(1)}</span>
 									</div>
 								)

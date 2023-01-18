@@ -113,26 +113,26 @@ export function HomeHeader(props) {
 		DIGITAL_MARKET && DIGITAL_MARKET.SetProgramWallet(provider);
 		SEARCH_PROGRAM && SEARCH_PROGRAM.SetProgramWallet(provider);
 		DISPUTE_PROGRAM && DISPUTE_PROGRAM.SetProgramWallet(provider);
-	}, [wallet.publicKey])
+	}, [wallet.publicKey, connection])
 
 	useEffect(async ()=>{
-		if (!(wallet && wallet.publicKey && arweaveClient)) return;
+		if (!(wallet && wallet.publicKey && arweaveClient && ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM.provider.connection)) return;
 		if((userAccount && userAccount.data.wallet) && (wallet.publicKey.toString() == userAccount.data.wallet.toString())) return;
 
-		// try{
-		// 	let account_address = (ACCOUNTS_PROGRAM.GenAccountAddress(wallet.publicKey));
-		// 	let account = await ACCOUNTS_PROGRAM.GetAccount(account_address);
-		// 	account.data.profilePic = await arweaveClient.GetPfp(account.data.profilePic);
-		// 	account.data.metadata = await arweaveClient.GetMetadata(account.data.metadata);
+		try{
+			let account_address = (ACCOUNTS_PROGRAM.GenAccountAddress(wallet.publicKey));
+			let account = await ACCOUNTS_PROGRAM.GetAccount(account_address);
+			account.data.profilePic = await arweaveClient.GetPfp(account.data.profilePic);
+			account.data.metadata = await arweaveClient.GetMetadata(account.data.metadata);
 			
-		// 	// account.data.disputeDiscounts = 2;
-		// 	setUserAccount(account)
-		// 	console.log(account)
-		// }catch(e){
-		// 	console.log(e)
+			// account.data.disputeDiscounts = 2;
+			setUserAccount(account)
+			console.log(account)
+		}catch(e){
+			console.log(e)
 			setUserAccount(undefined)
-		// }
-	},[wallet.publicKey, arweaveClient, userAccount])
+		}
+	}, [wallet.publicKey, arweaveClient, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM.provider.connection])
 
 	useEffect( async ()=>{
 		if(!(userAccount && arweaveClient)) return;
@@ -210,7 +210,7 @@ export function HomeHeader(props) {
 					<div className="inline-flex relative rounded-full bg-gradient-to-tr from-[#181424] via-buttontransparent2 to-buttontransparent border-t-[0.5px] border-[#474747] bg-transparent text-[#d9d9d9] align-middle my-auto p-[1px]" >
 						{
 							((!wallet.connected) && <WalletMultiButton />) || 
-							((!userAccount) && <CreateAccountModal connectedWallet={wallet}/>) || 
+							((!userAccount) && <CreateAccountModal/>) || 
 							(<ProfileButton selfAccount={userAccount} />)
 						}
 					</div>

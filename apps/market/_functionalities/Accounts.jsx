@@ -15,34 +15,50 @@ export function MarketAccountFunctionalities(props){
         if (reflink == ""){
             reflink = undefined
         }
-        let pfp_link = "";
+
+        let ixs = [];
+        let dataitems = [];
+
+        let pfp_link = undefined;
         if(pfp != ""){
-            pfp_link = await bundlrClient.UploadBufferInstruction(pfp);
+            let fund_pfp_ix = "";
+            [fund_pfp_ix, pfp_link] = await bundlrClient.UploadBufferInstruction(pfp);
+            ixs.push(fund_pfp_ix.tx);
+            dataitems.push(pfp_link);
         }
 
-        let metadata_addr = await bundlrClient.UploadBufferInstruction(
+        let [fund_metadata_ix, metadata_addr] = await bundlrClient.UploadBufferInstruction(
             JSON.stringify(user_metadata)
         );
-
-        return await ACCOUNTS_PROGRAM.CreateAccount(
-            metadata_addr,
-            pfp_link,
-            reflink,
-            payer_wallet
+        
+        ixs.push(fund_metadata_ix.tx);
+        ixs.push(
+            await ACCOUNTS_PROGRAM.CreateAccount(
+                metadata_addr.id,
+                pfp_link?.id,
+                reflink,
+                payer_wallet
+            )
         );
+        
+        dataitems.push(metadata_addr);
+
+        return [ixs,dataitems];
     }
 
     const SetPfp = async(file, payer_wallet)=>{
-        let ar_addr = await bundlrClient.UploadBufferInstruction(file, payer_wallet);
+        let [funding_ix, ar_addr] = await bundlrClient.UploadBufferInstruction(file, payer_wallet);
 
-        await ACCOUNTS_PROGRAM.UpdatePFP(ar_addr, payer_wallet);
+        let update_ix = await ACCOUNTS_PROGRAM.UpdatePFP(ar_addr.id, payer_wallet);
+        return [[funding_ix.tx, update_ix], [ar_addr]];
     }
 
     const UpdateMetadata = async(user_metadata, payer_wallet) =>{
-        let metadata_addr = await bundlrClient.UploadBufferInstruction(
+        let [funding_ix, metadata_addr] = await bundlrClient.UploadBufferInstruction(
             JSON.stringify(user_metadata)
         );
-        await ACCOUNTS_PROGRAM.UpdateMetadata(metadata_addr, payer_wallet)
+        let update_ix = await ACCOUNTS_PROGRAM.UpdateMetadata(metadata_addr.id, payer_wallet)
+        return [[funding_ix.tx, update_ix], [metadata_addr]];
     }
 
     const SetReflink = async(reflink, payer_wallet) => {
@@ -127,9 +143,6 @@ export function MarketAccountFunctionalities(props){
         UnsetReflink,
         CreateReflink,
         DeleteReflink,
-        AddVendorPhysicalListings,
-        AddVendorDigitalListings,
-        AddVendorCommissionListings,
         AddBuyerPhysicalTransactions,
         AddBuyerDigitalTransactions,
         AddBuyerCommissionTransactions,

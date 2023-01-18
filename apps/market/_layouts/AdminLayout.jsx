@@ -28,26 +28,18 @@ export default function AdminLayout(){
 			feePayer: wallet.publicKey,
 			... latest_blockhash
 		});
-		console.log(instructions)
-		try{
 
-			if(instructions){
-				console.log("has instruction")
-				tx.add(instructions);
-				console.log(tx)
-				await wallet.signTransaction(tx);
-				let sig = await wallet.sendTransaction(tx, connection);
-				console.log("signed tx: ", sig)
-				let confirmation  = await connection.confirmTransaction({
-					...latest_blockhash,
-					signature: sig,
-				});
-				console.log(confirmation);
-			}else{
-				throw "no ix"
-			}
-		}catch(e){
-			console.log(e)
+		if(instructions){
+			tx.add(instructions);
+			await wallet.signTransaction(tx);
+			let sig = await wallet.sendTransaction(tx, connection);
+			let confirmation  = await connection.confirmTransaction({
+				...latest_blockhash,
+				signature: sig,
+			});
+			console.log(confirmation);
+		}else{
+			throw "no ix"
 		}
 
 	}, [connection, wallet, instructions])

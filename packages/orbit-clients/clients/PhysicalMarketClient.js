@@ -305,7 +305,7 @@ export async function PhysicalFundEscrowSpl (
             tx_struct.metdata.currency,
             payer_wallet.publicKey        
         ),
-        buyerWallet: this.provider.wallet.publicKey,
+        buyerWallet: payer_wallet.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID
     })
     .instruction();
@@ -342,7 +342,7 @@ payer_wallet
             tx_struct.metdata.currency,
             payer_wallet.publicKey
         ),
-        sellerWallet: this.provider.wallet.publicKey,
+        sellerWallet: payer_wallet.publicKey,
         physicalAuth: this.GenPhysicalMarketAuth(),
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         physicalProgram: PHYSICAL_MARKET_PROGRAM_ID,

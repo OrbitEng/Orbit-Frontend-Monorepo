@@ -1,13 +1,20 @@
-import { PlusIcon, UserCircleIcon, PlusCircleIcon, PencilIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, UserCircleIcon, PlusCircleIcon, PencilIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
-import { useState, useCallback, useEffect, Fragment } from "react";
+import { useState, useCallback, useEffect, Fragment, useContext} from "react";
 import { Transition, Dialog } from '@headlessui/react';
 import { useDropzone } from "react-dropzone";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { Transaction } from "@solana/web3.js";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import Image from "next/image";
+import UserAccountCtx from "@contexts/UserAccountCtx";
+import BundlrCtx from "@contexts/BundlrCtx";
 
 export function EditProfileModal(props) {
-	let [isOpen, setIsOpen] = useState(false);
+	const {userAccount} = useContext(UserAccountCtx);
+	const { connection } = useConnection();
+	const wallet = useWallet();
+
+	const {bundlrClient} = useContext(BundlrCtx);
 
 	const closeModal = async () => {
 		setIsOpen(false)
@@ -19,17 +26,18 @@ export function EditProfileModal(props) {
 	const {UpdateMetadata, SetPfp} = MarketAccountFunctionalities();
 	const [name, setName] = useState();
 	const [bio, setBio] = useState();
-
 	const [uploadedPfp, setUploadedPfp] = useState();
 
+	let [isOpen, setIsOpen] = useState(false);
+
 	useEffect(()=>{
-		if(props.currentAccount && props.currentAccount.data.metadata){
-			setName(props.currentAccount.data.metadata.name)
+		if(userAccount && userAccount.data.metadata){
+			setName(userAccount.data.metadata.name)
 		}
-		if(props.currentAccount && props.currentAccount.data.metadata){
-			setBio(props.currentAccount.data.metadata.bio)
+		if(userAccount && userAccount.data.metadata){
+			setBio(userAccount.data.metadata.bio)
 		}
-	},[props.currentAccount])
+	},[userAccount])
 
 	const pfpFileCallback = useCallback((acceptedFiles) => {
 		const reader = new FileReader()
@@ -41,17 +49,52 @@ export function EditProfileModal(props) {
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop: pfpFileCallback});
 
 	const updateProfileCallback = useCallback(async ()=>{
+		let latest_blockhash = await connection.getLatestBlockhash();
+		let tx = new Transaction({
+			feePayer: wallet.publicKey,
+			... latest_blockhash
+		});
+
+		let ixs = [];
+		let dataitems = [];
+
 		if(uploadedPfp != undefined){
-			await SetPfp(uploadedPfp)
+			let temp = await SetPfp(
+				uploadedPfp,
+				wallet
+			);
+			ixs.push(...temp[0]);
+			dataitems.push(...temp[1]);
 		}
-		if(props.currentAccount && (bio || name)){
-			await UpdateMetadata({
-				name: name,
-				bio: bio
-			})
-			setIsOpen(false)
+		if(userAccount && (bio || name)){
+			let temp = await UpdateMetadata(
+				{
+					name: name,
+					bio: bio
+				},
+				wallet
+			);
+			ixs.push(...temp[0]);
+			dataitems.push(...temp[1]);
 		}
-	},[uploadedPfp, bio, name, props.currentAccount])
+
+		tx.add(...
+			ixs[0]
+		);
+		await wallet.signTransaction(tx);
+
+		await bundlrClient.SendTxItems(dataitems);
+
+		let sig = await wallet.sendTransaction(tx, connection);
+		let confirmation  = await connection.confirmTransaction({
+			...latest_blockhash,
+			signature: sig,
+		});
+		console.log(confirmation);
+
+		setIsOpen(false);
+
+	},[uploadedPfp, bio, name, userAccount, wallet, connection, bundlrClient])
 
 	return(
 		<div>

@@ -1,57 +1,86 @@
-import { PlusIcon, UserCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, UserCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { MarketAccountFunctionalities } from "@functionalities/Accounts";
-import Image from "next/image";
 import { useState, useCallback, useEffect, useContext } from "react";
 import { useDropzone } from "react-dropzone";
-import { XMarkIcon } from "@heroicons/react/24/solid";
-import UserAccountCtx from "@contexts/UserAccountCtx";
+import Image from "next/image";
 
+import UserAccountCtx from "@contexts/UserAccountCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
+
+import { ACCOUNTS_PROGRAM } from "orbit-clients";
+
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { Transaction } from "@solana/web3.js";
+import { GenAccountAddress } from "orbit-clients/clients/MarketAccountsClient";
+import BundlrCtx from "@contexts/BundlrCtx";
 
 export function SignupForm(props) {
+	const wallet = useWallet();
+	const {connection} = useConnection();
+
 	const [nickName, setName] = useState("");
 	const [biography, setBio] = useState("");
 	const [reflink, setReflink] = useState("");
 	const {CreateAccount} = MarketAccountFunctionalities();
 	const {setUserAccount} = useContext(UserAccountCtx);
-	const {matrixClient} = useContext(MatrixClientCtx)
+	const {matrixClient} = useContext(MatrixClientCtx);
 
 	const [pfp, setPfp] = useState("");
+	const {bundlrClient} = useContext(BundlrCtx);
 	
-	const [captchaVal, setCaptchaVal] = useState(undefined);
-	const [matrixCaptchaPubkey, setMatrixCaptchaPubkey] = useState(undefined);
-	const [matrixSession, setMatrixSession] = useState(undefined)
+	// const [matrixCaptchaPubkey, setMatrixCaptchaPubkey] = useState(undefined);
+	// const [captchaVal, setCaptchaVal] = useState(undefined);
+	// if(!captchaVal)return;
+	// await matrixClient.CreateAccountCaptcha(captchaVal, matrixSession);
+	// setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
 
 	useEffect(async ()=>{
 		if(!matrixClient || matrixClient.chatrooms)return;
 		try{
 			let res = await matrixClient.CreateAccountInit();
-			setMatrixCaptchaPubkey(res.data.params["m.login.recaptcha"].public_key);
-			setMatrixSession(res.data.session);
+			await matrixClient.CreateAccountFinish(res.data.session)
 		}catch(e){
+			console.log(e);
 			return;
 		}
 	},[matrixClient])
 
-	useEffect(async ()=>{
-		if(!captchaVal)return;
-		await matrixClient.CreateAccountCaptcha(captchaVal, matrixSession);
-		await matrixClient.CreateAccountFinish(matrixSession)
-	},[captchaVal])
-
 	const createAccountCallback = useCallback(async ()=>{
-		let acc = await CreateAccount(
+		let latest_blockhash = await connection.getLatestBlockhash();
+		let tx = new Transaction({
+			feePayer: wallet.publicKey,
+			... latest_blockhash
+		});
+
+		let create_acc_wrapped_ix = await CreateAccount(
 			{
 				name: nickName,
 				bio: biography
 			},
 			pfp,
-			reflink
+			reflink,
+			wallet
 		);
+		console.log(create_acc_wrapped_ix)
+
+		tx.add(...
+			create_acc_wrapped_ix[0]
+		);
+		await wallet.signTransaction(tx);
+
+		await bundlrClient.SendTxItems(create_acc_wrapped_ix[1]);
+
+		let sig = await wallet.sendTransaction(tx, connection);
+		let confirmation  = await connection.confirmTransaction({
+			...latest_blockhash,
+			signature: sig,
+		});
+		console.log(confirmation);
+
 		props.setOpen(false);
-		setUserAccount(acc);
-	},[pfp, reflink, nickName, biography])
+		setUserAccount( await ACCOUNTS_PROGRAM.GetAccount(GenAccountAddress(wallet.publicKey)));
+	},[pfp, reflink, nickName, biography, bundlrClient, wallet.publicKey, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM.provider.connection])
 
 	const pfpFileCallback = useCallback((acceptedFiles) => {
 		const reader = new FileReader()
@@ -124,12 +153,6 @@ export function SignupForm(props) {
 						onChange={(e) => {setBio(e.target.value)}}
 					/>
 				</div>
-				{
-					(matrixCaptchaPubkey && matrixSession) && <ReCAPTCHA 
-						sitekey = {matrixCaptchaPubkey}
-						onChange = {setCaptchaVal}
-					/>
-				}
 				<button
 					className="flex flex-row mt-6 w-full rounded-lg align-middle my-auto py-5 bg-white bg-opacity-10 hover:scale-105 transition duration-200"
 					onClick={createAccountCallback}

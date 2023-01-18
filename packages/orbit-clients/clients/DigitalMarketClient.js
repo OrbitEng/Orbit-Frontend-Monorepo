@@ -299,7 +299,7 @@ export async function DigitalFundEscrowSpl (
             tx_struct.metdata.currency,
             payer_wallet.publicKey        
         ),
-        buyerWallet: this.provider.wallet.publicKey,
+        buyerWallet: payer_wallet.publicKey,
         tokenProgram: TOKEN_PROGRAM_ID
     })
     .instruction();
@@ -336,7 +336,7 @@ payer_wallet
             tx_struct.metdata.currency,
             payer_wallet.publicKey
         ),
-        sellerWallet: this.provider.wallet.publicKey,
+        sellerWallet: payer_wallet.publicKey,
         digitalAuth: this.GenDigitalMarketAuth(),
         marketAccountProgram: MARKET_ACCOUNTS_PROGRAM_ID,
         digitalProgram: DIGITAL_MARKET_PROGRAM_ID,

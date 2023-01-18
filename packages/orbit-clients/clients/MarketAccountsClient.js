@@ -32,12 +32,12 @@ export async function CreateAccount (metadata_link, media_link, reflink,
 
     let voter_id_addr = this.GenVoterIdAddress();
     
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .createAccount(media_link, metadata_link)
     .accounts({
         marketAccount: this.GenAccountAddress(payer_wallet.publicKey),
         voterIdStruct: voter_id_addr,
-        wallet: this.provider.wallet.publicKey,
+        wallet: payer_wallet.publicKey,
     })
     .remainingAccounts(reflink_arr)
     .instruction();
@@ -79,7 +79,7 @@ payer_wallet
         reflink = new PublicKey(reflink);
     }
 
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .setReflink()
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -95,7 +95,7 @@ export async function RemoveReflink (
     const market_acc = this.GenAccountAddress();
     const reflink_addr = (await this.GetAccount(market_acc)).data.reflink;
 
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .removeReflink()
     .accounts({
         marketAccount: market_acc,
@@ -113,7 +113,7 @@ export async function AddBuyerPhysicalTransactions (
     transactions_log,
     payer_wallet
 ){
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .addBuyerPhysicalTransactions("physical")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -128,7 +128,7 @@ export async function AddBuyerDigitalTransactions (
     transactions_log,
 payer_wallet
 ){
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .addBuyerDigitalTransactions("digital")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -143,7 +143,7 @@ export async function AddBuyerCommissionTransactions (
     transactions_log,
 payer_wallet
 ){
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .addBuyerCommissionTransactions("commission")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -159,7 +159,7 @@ export async function AddSellerPhysicalTransactions (
     transactions_log,
 payer_wallet
 ){
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .addSellerPhysicalTransactions("physical")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -174,7 +174,7 @@ export async function AddSellerDigitalTransactions (
     transactions_log,
 payer_wallet
 ){
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .addSellerDigitalTransactions("digital")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -189,7 +189,7 @@ export async function AddSellerCommissionTransactions (
     transactions_log,
 payer_wallet
 ){
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .addSellerCommissionTransactions("commission")
     .accounts({
         marketAccount: this.GenAccountAddress(),
@@ -216,7 +216,7 @@ export async function InitiateTransfer (destination_wallet,
     let destination = this.GenAccountAddress(destination_wallet);
     let transfer_addr = this.GenTransferStruct(source, destination);
 
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .initiateTransfer()
     .accounts({
         transferStruct: transfer_addr,
@@ -240,7 +240,7 @@ export async function ConfirmTransfer (
     const source = transfer_struct.data.source;
     const source_wallet = (await this.GetAccount(source)).data.wallet;
 
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .confirmTransfer()
     .accounts({
         sourceMarketAccount: source,
@@ -265,7 +265,7 @@ export async function DeclineTransfer (
     const destination = transfer_struct.data.destination;
     const destination_wallet = (await this.GetAccount(destination)).data.wallet;
 
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .declineTransfer()
     .accounts({
         sourceMarketAccount: source,
@@ -286,12 +286,12 @@ export async function CreateReflink (
 ){
     let reflink_addr = this.GenReflinkAddress(payer_wallet.publicKey);
 
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .CreateReflink()
     .accounts({
         reflink: reflink_addr,
         marketAccount: this.GenAccountAddress(),
-        wallet: this.provider.wallet.publicKey
+        wallet: payer_wallet.publicKey
     })
     .instruction()
 }
@@ -312,7 +312,7 @@ export async function DeleteReflink (
         }
     });
 
-    await MARKET_ACCOUNTS_PROGRAM.methods
+    return MARKET_ACCOUNTS_PROGRAM.methods
     .deleteReflink()
     .accounts({
         reflink: reflink_addr,

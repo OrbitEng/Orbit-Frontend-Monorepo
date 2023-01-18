@@ -35,14 +35,6 @@ export default class BundlrClient{
 
     }
 
-
-    UploadAudio = async(image_audio) =>{
-        
-    }
-    UploadVideo = async(image_video) =>{
-        
-    }
-
     /**
      *  tx_id = DataItem.id
      *  ret[0].sendTx(), DataItem.upload()
@@ -62,6 +54,10 @@ export default class BundlrClient{
         // await dataitem.upload();
         
         return [tx, dataitem];
+    }
+
+    SendTxItems = async(txitems) => {
+        await Promise.all(txitems.map(txitem => txitem.upload()));
     }
 
     /////////////////////
@@ -84,8 +80,8 @@ export default class BundlrClient{
         let fee = "0";
         if (c.needsFee) {
             // winston's fee is actually for amount of data, not funds, so we have to 0 this.
-            const baseFee = await c.getFee(c.base[0] === "winston" ? 0 : _amount, to);
-            fee = (baseFee.multipliedBy(multiplier)).toFixed(0).toString();
+            const baseFee = await c.getFee(c.base[0] === "winston" ? 0 : price, to);
+            fee = (baseFee.multipliedBy(1)).toFixed(0).toString();
         }
         const tx = await c.createTx(price, to, fee);
         // c.sendTx
