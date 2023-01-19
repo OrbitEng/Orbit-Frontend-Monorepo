@@ -106,6 +106,7 @@ export function HomeHeader(props) {
 			connection,
 			wallet
 		);
+		ACCOUNTS_PROGRAM && ACCOUNTS_PROGRAM.SetProgramWallet(provider);
 		PRODUCT_PROGRAM && PRODUCT_PROGRAM.SetProgramWallet(provider);
 		TRANSACTIONS_PROGRAM && TRANSACTIONS_PROGRAM.SetProgramWallet(provider);
 		COMMISSION_MARKET && COMMISSION_MARKET.SetProgramWallet(provider);
@@ -113,26 +114,30 @@ export function HomeHeader(props) {
 		DIGITAL_MARKET && DIGITAL_MARKET.SetProgramWallet(provider);
 		SEARCH_PROGRAM && SEARCH_PROGRAM.SetProgramWallet(provider);
 		DISPUTE_PROGRAM && DISPUTE_PROGRAM.SetProgramWallet(provider);
-	}, [wallet.publicKey, connection])
+	}, [wallet.publicKey, wallet.connected, connection])
 
 	useEffect(async ()=>{
-		if (!(wallet && wallet.publicKey && arweaveClient && ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM.provider.connection)) return;
+		console.log("getting account", wallet , wallet.publicKey , arweaveClient , ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM._provider.connection)
+		if (!(wallet && wallet.publicKey && arweaveClient && ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM._provider.connection)) return;
+		console.log("wallet connection")
 		if((userAccount && userAccount.data.wallet) && (wallet.publicKey.toString() == userAccount.data.wallet.toString())) return;
-
+		console.log("user account difference")
 		try{
 			let account_address = (ACCOUNTS_PROGRAM.GenAccountAddress(wallet.publicKey));
+			console.log("acc address generated: ", account_address.toString())
 			let account = await ACCOUNTS_PROGRAM.GetAccount(account_address);
+			console.log(account)
+
 			account.data.profilePic = await arweaveClient.GetPfp(account.data.profilePic);
 			account.data.metadata = await arweaveClient.GetMetadata(account.data.metadata);
 			
 			// account.data.disputeDiscounts = 2;
 			setUserAccount(account)
-			console.log(account)
 		}catch(e){
 			console.log(e)
 			setUserAccount(undefined)
 		}
-	}, [wallet.publicKey, arweaveClient, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM.provider.connection])
+	}, [wallet.publicKey, wallet.connected, arweaveClient, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM._provider.connection])
 
 	useEffect( async ()=>{
 		if(!(userAccount && arweaveClient)) return;

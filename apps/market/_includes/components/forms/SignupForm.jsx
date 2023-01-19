@@ -69,18 +69,19 @@ export function SignupForm(props) {
 		);
 		await wallet.signTransaction(tx);
 
-		await bundlrClient.SendTxItems(create_acc_wrapped_ix[1]);
-
+		
 		let sig = await wallet.sendTransaction(tx, connection);
 		let confirmation  = await connection.confirmTransaction({
 			...latest_blockhash,
 			signature: sig,
 		});
 		console.log(confirmation);
+		
+		await bundlrClient.SendTxItems(create_acc_wrapped_ix[1]);
 
 		props.setOpen(false);
 		setUserAccount( await ACCOUNTS_PROGRAM.GetAccount(GenAccountAddress(wallet.publicKey)));
-	},[pfp, reflink, nickName, biography, bundlrClient, wallet.publicKey, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM.provider.connection])
+	},[pfp, reflink, nickName, biography, bundlrClient, wallet.publicKey, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM._provider.connection])
 
 	const pfpFileCallback = useCallback((acceptedFiles) => {
 		const reader = new FileReader()

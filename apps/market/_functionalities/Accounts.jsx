@@ -23,7 +23,7 @@ export function MarketAccountFunctionalities(props){
         if(pfp != ""){
             let fund_pfp_ix = "";
             [fund_pfp_ix, pfp_link] = await bundlrClient.UploadBufferInstruction(pfp);
-            ixs.push(fund_pfp_ix.tx);
+            ixs.push(fund_pfp_ix.tx.instructions[0]);
             dataitems.push(pfp_link);
         }
 
@@ -31,7 +31,7 @@ export function MarketAccountFunctionalities(props){
             JSON.stringify(user_metadata)
         );
         
-        ixs.push(fund_metadata_ix.tx);
+        ixs.push(fund_metadata_ix.tx.instructions[0]);
         ixs.push(
             await ACCOUNTS_PROGRAM.CreateAccount(
                 metadata_addr.id,
@@ -50,7 +50,7 @@ export function MarketAccountFunctionalities(props){
         let [funding_ix, ar_addr] = await bundlrClient.UploadBufferInstruction(file, payer_wallet);
 
         let update_ix = await ACCOUNTS_PROGRAM.UpdatePFP(ar_addr.id, payer_wallet);
-        return [[funding_ix.tx, update_ix], [ar_addr]];
+        return [[funding_ix.tx.instructions[0], update_ix], [ar_addr]];
     }
 
     const UpdateMetadata = async(user_metadata, payer_wallet) =>{
@@ -58,7 +58,7 @@ export function MarketAccountFunctionalities(props){
             JSON.stringify(user_metadata)
         );
         let update_ix = await ACCOUNTS_PROGRAM.UpdateMetadata(metadata_addr.id, payer_wallet)
-        return [[funding_ix.tx, update_ix], [metadata_addr]];
+        return [[funding_ix.tx.instructions[0], update_ix], [metadata_addr]];
     }
 
     const SetReflink = async(reflink, payer_wallet) => {

@@ -83,14 +83,14 @@ export function EditProfileModal(props) {
 		);
 		await wallet.signTransaction(tx);
 
-		await bundlrClient.SendTxItems(dataitems);
-
 		let sig = await wallet.sendTransaction(tx, connection);
 		let confirmation  = await connection.confirmTransaction({
 			...latest_blockhash,
 			signature: sig,
 		});
 		console.log(confirmation);
+
+		await bundlrClient.SendTxItems(dataitems);
 
 		setIsOpen(false);
 

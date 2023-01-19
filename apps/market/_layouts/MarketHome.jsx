@@ -25,7 +25,7 @@ export function Home(props) {
 	// todo: split this up
 
 	useEffect(async ()=>{
-		if (!PRODUCT_PROGRAM.PRODUCT_PROGRAM.provider.connection){
+		if (!PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection){
 			return;
 		}
 		let digital_catalog = await PRODUCT_PROGRAM.GetRecentMarketListings(
@@ -49,7 +49,7 @@ export function Home(props) {
 		setRecentDigitals(digital_catalog.data.pubkeys);
 		setRecentPhysicals(physical_catalog.data.pubkeys);
 
-	}, [wallet.connected, PRODUCT_PROGRAM.PRODUCT_PROGRAM.provider.connection]);
+	}, [wallet.connected, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection]);
 
 	return(
 		<div className="w-full min-h-screen bg-transparent">
