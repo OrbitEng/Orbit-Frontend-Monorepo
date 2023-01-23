@@ -9,7 +9,7 @@ import twitterIcon from "../public/Icons/twitterMarkWhite.svg";
 export function MainFooter(){
     return (
         <footer className="max-w-7xl bg-transparent text-[#B1B1B1] sm:mx-auto mx-4 relative border-t-[1px] border-white border-opacity-20 py-8">
-            <nav className="flex flex-row h-full align-center">
+            <nav className="flex flex-row align-center">
                 <div className='flex w-1/5 justify-start flex-col'>
                     <div className='relative h-10'>
                         <Image

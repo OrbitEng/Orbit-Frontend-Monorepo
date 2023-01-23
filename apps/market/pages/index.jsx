@@ -1,10 +1,11 @@
-import Head from 'next/head'
-import Image from 'next/image'
+import { GenericLayout } from "@layouts/HeaderFooterGenericLayout";
 
-import { Home } from '@layouts/MarketHome'
+import { Home } from '@layouts/PageLayouts/MarketHome'
 
 export default function AppPage() {
   return (
-    <Home/>
+    <GenericLayout>
+			<Home/>
+		</GenericLayout>
   )
 }

@@ -45,6 +45,8 @@ import CartCtx from '@contexts/CartCtx';
 import ShippingCtx from '@contexts/ShippingCtx';
 import ChatCtx from '@contexts/ChatCtx';
 
+import ModalCtx from '@contexts/ModalCtx';
+
 // TODO: init redux here too
 // App wrapper that has all these providers
 function MyApp({ Component, pageProps }) {
@@ -80,6 +82,8 @@ function MyApp({ Component, pageProps }) {
     state:""
   })
 
+  const [currentModal, setCurrentModal] = useState();
+
   ///////////////////////////////////////////////////////////////////////////////////////////////////  
   // Solana wallet
   const network = WalletAdapterNetwork.Devnet;
@@ -113,6 +117,7 @@ function MyApp({ Component, pageProps }) {
           <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
+                  <ModalCtx.Provider value={{currentModal, setCurrentModal}}>
                     <UserAccountCtx.Provider value={{userAccount, setUserAccount}}>
                       <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
                         <MatrixClientCtx.Provider value={{matrixClient, setMatrixClient}}>
@@ -134,6 +139,7 @@ function MyApp({ Component, pageProps }) {
                         </MatrixClientCtx.Provider>
                       </BundlrCtx.Provider>
                     </UserAccountCtx.Provider>
+                  </ModalCtx.Provider>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>

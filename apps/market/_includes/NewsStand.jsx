@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 // this is just a temp placeholder
 // we want to get the NewsCards here instead
-import { ProductDisplayCardHome } from "@includes/components/cards/ProductDisplayCards";
+import { ProductDisplayCardHome } from "@includes/components/product_display/ProductDisplayCards";
 
 import Carousel from "react-multi-carousel";
 import 'react-multi-carousel/lib/styles.css'

@@ -1,9 +1,10 @@
-import AdminLayout from "@layouts/AdminLayout"
+import { GenericLayout } from "@layouts/HeaderFooterGenericLayout"
+import AdminLayout from "@layouts/PageLayouts/AdminLayout"
 
 export default function adminits() {
 	return (
-		<div>
+		<GenericLayout>
 			<AdminLayout/>
-		</div>
+		</GenericLayout>
 	)
 }

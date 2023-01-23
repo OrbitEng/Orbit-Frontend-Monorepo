@@ -1,5 +1,5 @@
 import { useState, Fragment } from "react";
-import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "@includes/components/cards/ProductDisplayCards";
+import { EmptyProductDisplayCardHome, ProductDisplayCardHome } from "@includes/components/product_display/ProductDisplayCards";
 import { useEffect } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/24/solid";

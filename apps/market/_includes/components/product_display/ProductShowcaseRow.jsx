@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { 
 	ProductDisplayCardHome,
 	EmptyProductDisplayCardHome
-} from "@includes/components/cards/ProductDisplayCards";
+} from "@includes/components/product_display/ProductDisplayCards";
 
 import Link from "next/link";
 

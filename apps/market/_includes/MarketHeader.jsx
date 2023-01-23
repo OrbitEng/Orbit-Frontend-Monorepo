@@ -161,6 +161,7 @@ export function HomeHeader(props) {
 		}
 	}, [arweaveClient, userAccount, wallet.publicKey])
 
+	// it is of header type!
 	return(
 		<header className="mx-auto max-w-[100rem] h-28 sm:h-32 top-0 inset-x-0 fixed flex flex-col justify-between backdrop-filter backdrop-blur z-[100] overflow-visible w-full">
 			<div className="flex flex-row mt-5 justify-between sm:mr-3 mx-3">

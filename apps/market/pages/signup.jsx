@@ -4,9 +4,7 @@ import {SignupForm} from "@includes/components/forms/SignupForm";
 export default function Signup() {
 	return(
 		<GenericLayout>
-			<div className="mt-10 mb-20">
-				<SignupForm/>
-			</div>
+			<SignupForm/>
 		</GenericLayout>
 	)
 }
