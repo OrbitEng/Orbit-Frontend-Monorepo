@@ -46,6 +46,7 @@ import ShippingCtx from '@contexts/ShippingCtx';
 import ChatCtx from '@contexts/ChatCtx';
 
 import ModalCtx from '@contexts/ModalCtx';
+import IDBClientCtx from '@contexts/IDBClientCtx';
 
 // TODO: init redux here too
 // App wrapper that has all these providers
@@ -58,6 +59,7 @@ function MyApp({ Component, pageProps }) {
   const [userAccount, setUserAccount] = useState();
   const [pythClient, setPythClient] = useState();
   const [arweaveClient, setArweaveClient] = useState();
+  const [idbClient, setIdbClient] = useState();
 
   const [ productCache, setProductCache] = useState();
   const [ vendorCache, setVendorCache ] = useState();
@@ -117,29 +119,31 @@ function MyApp({ Component, pageProps }) {
           <ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
-                  <ModalCtx.Provider value={{currentModal, setCurrentModal}}>
-                    <UserAccountCtx.Provider value={{userAccount, setUserAccount}}>
-                      <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
-                        <MatrixClientCtx.Provider value={{matrixClient, setMatrixClient}}>
-                          <PythClientCtx.Provider value={{pythClient, setPythClient}}>
-                            <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
-                              <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
-                                <ShippingCtx.Provider value={{shipping, setShipping}}>
-                                  <ArweaveCtx.Provider value={{arweaveClient, setArweaveClient}}>
-                                    <CartCtx.Provider value={{cart, setCart}} >
-                                      <ChatCtx.Provider value={{chatState, setChatState}} >
-                                        <Component {...pageProps} />
-                                      </ChatCtx.Provider>
-                                    </CartCtx.Provider>
-                                  </ArweaveCtx.Provider>
-                                </ShippingCtx.Provider>
-                              </VendorCacheCtx.Provider>
-                            </ProductCacheCtx.Provider>
-                          </PythClientCtx.Provider>
-                        </MatrixClientCtx.Provider>
-                      </BundlrCtx.Provider>
-                    </UserAccountCtx.Provider>
-                  </ModalCtx.Provider>
+                  <IDBClientCtx.Provider value={{idbClient, setIdbClient}}>
+                    <ModalCtx.Provider value={{currentModal, setCurrentModal}}>
+                      <UserAccountCtx.Provider value={{userAccount, setUserAccount}}>
+                        <BundlrCtx.Provider value={{bundlrClient, setBundlrClient}}>
+                          <MatrixClientCtx.Provider value={{matrixClient, setMatrixClient}}>
+                            <PythClientCtx.Provider value={{pythClient, setPythClient}}>
+                              <ProductCacheCtx.Provider value = {{productCache, setProductCache}}>
+                                <VendorCacheCtx.Provider value={{vendorCache, setVendorCache}}>
+                                  <ShippingCtx.Provider value={{shipping, setShipping}}>
+                                    <ArweaveCtx.Provider value={{arweaveClient, setArweaveClient}}>
+                                      <CartCtx.Provider value={{cart, setCart}} >
+                                        <ChatCtx.Provider value={{chatState, setChatState}} >
+                                          <Component {...pageProps} />
+                                        </ChatCtx.Provider>
+                                      </CartCtx.Provider>
+                                    </ArweaveCtx.Provider>
+                                  </ShippingCtx.Provider>
+                                </VendorCacheCtx.Provider>
+                              </ProductCacheCtx.Provider>
+                            </PythClientCtx.Provider>
+                          </MatrixClientCtx.Provider>
+                        </BundlrCtx.Provider>
+                      </UserAccountCtx.Provider>
+                    </ModalCtx.Provider>
+                  </IDBClientCtx.Provider>
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>
