@@ -751,12 +751,18 @@ export function CommissionFunctionalities(){
             preview_file_dataurl = preview_file_dataurl.join(">UwU<")
         }
         let ar_addr = await bundlrClient.UploadBufferInstruction(preview_file_dataurl);
+        let funding_ix = (await bundlrClient.FundInstruction([ar_addr])).tx.instructions[0];
 
-        return COMMISSION_MARKET_PROGRAM.CommissionCommitPreview(
+        let update_ix = await COMMISSION_MARKET_PROGRAM.CommissionCommitPreview(
             tx_addr,
             ar_addr,
             payer_wallet
         );
+
+        return [
+            [funding_ix, update_ix],
+            [ar_addr]
+        ]
     }
 
     const ProposeRate = async(

@@ -35,7 +35,7 @@ export function DigitalProductFunctionalities(props){
                 description: description
             })
         );
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber);
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber());
 
         let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
             (await PRODUCT_PROGRAM.GetListingsStruct(
@@ -45,22 +45,28 @@ export function DigitalProductFunctionalities(props){
 
         let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
             next_index, listings_addr, "digital"
-        )
+        );
 
-        await PRODUCT_PROGRAM.ListDigitalProduct(
+        let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
+        let update_ix = await PRODUCT_PROGRAM.ListDigitalProduct(
             prod_addr,
             {
-                info: desc_url,
+                info: desc_url.id,
                 ownerCatalog: listings_addr,
                 index: next_index,
                     price: new BN(price),
                 deliveryEstimate: new BN(deliveryEstimate),
-                media: media_url
+                media: media_url.id
             },
             fileType,
             add_to_recent,
             payer_wallet
         );
+
+        return [
+            [funding_ix, update_ix],
+            [desc_url, media_url]
+        ];
     }
 
     // Text, Video, Audio, Image, Folder
@@ -87,7 +93,7 @@ export function DigitalProductFunctionalities(props){
         
         return PRODUCT_PROGRAM.UpdateProductPrice(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber()),
             new_price
         )
     }
@@ -97,26 +103,39 @@ export function DigitalProductFunctionalities(props){
         
         let buffers = files.join(">UwU<")
 
-        let tx_id = await bundlrClient.UploadBufferInstruction(buffers);
+        let media_item = await bundlrClient.UploadBufferInstruction(buffers);
 
-        PRODUCT_PROGRAM.SetMedia(
+        let update_ix = await PRODUCT_PROGRAM.SetMedia(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber),
-            tx_id
-        )
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber()),
+            media_item.id
+        );
+        let funding_ix = (await bundlrClient.FundInstruction([media_item])).tx.instructions[0];
+
+        return [
+            [funding_ix, update_ix],
+            [media_item]
+        ]
     }
 
     const SetInfo = async (market_acc, prod_addr, name = "prod name", desc = "prod desc") =>{
-        let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
-                name: name,
-                description: desc
-            }))
+        let info_item = await bundlrClient.UploadBufferInstruction(JSON.stringify({
+            name: name,
+            description: desc
+        }));
 
-        PRODUCT_PROGRAM.SetProdInfo(
+        let funding_ix = (await bundlrClient.FundInstruction([info_item])).tx.instructions[0];
+
+        let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber),
-            tx_url
-        )
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber()),
+            info_item.id
+        );
+
+        return [
+            [funding_ix, update_ix],
+            [info_item]
+        ]
     }
 
     ////////////////////////////////////////////////
@@ -191,20 +210,27 @@ export function PhysicalProductFunctionalities(props){
             next_index, listings_addr, "physical"
         )
 
-        await PRODUCT_PROGRAM.ListPhysicalProduct(
+        let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
+
+        let update_ix = await PRODUCT_PROGRAM.ListPhysicalProduct(
             prod_addr,
             {
-                info: desc_url,
+                info: desc_url.id,
                 ownerCatalog: listings_addr,
                 index: next_index,
                     price: new BN(price),
                 deliveryEstimate: deliveryEstimate,
-                media: media_url
+                media: media_url.id
             },
             quantity,
             add_to_recent,
             payer_wallet
         );
+
+        return [
+            [funding_ix, update_ix],
+            [desc_url, media_url]
+        ];
     }
 
     const ChangeAvailability = async(market_acc, prod_addr, vendor_wallet, available = false) =>{
@@ -235,28 +261,42 @@ export function PhysicalProductFunctionalities(props){
 
         let buffers = files.join(">UwU<")
 
-        let [funding_tx, data_item, kps] = await bundlrClient.UploadBufferInstruction(buffers);
+        let media_item = await bundlrClient.UploadBufferInstruction(buffers);
 
-        return PRODUCT_PROGRAM.SetMedia(
+        let update_ix = await PRODUCT_PROGRAM.SetMedia(
             prod_addr,
             PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id.toNumber()),
-            data_item.id
+            media_item.id
         )
+
+        let funding_ix = (await bundlrClient.FundInstruction([media_item])).tx.instructions[0];
+
+        return [
+            [funding_ix, update_ix],
+            [media_item]
+        ]
 
     }
 
     const SetInfo = async (market_acc, prod_addr, name = "prod name", desc = "prod desc") =>{
 
-        let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
-                name: name,
-                description: desc
-            }))
+        let info_item = await bundlrClient.UploadBufferInstruction(JSON.stringify({
+            name: name,
+            description: desc
+        }));
 
-        PRODUCT_PROGRAM.SetProdInfo(
+        let funding_ix = (await bundlrClient.FundInstruction([info_item])).tx.instructions[0];
+
+        let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
             PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id.toNumber()),
-            tx_url
-        )
+            info_item.id
+        );
+
+        return [
+            [funding_ix, update_ix],
+            [info_item]
+        ]
     }
 
     /////////////////////////////////////////////////
@@ -322,7 +362,7 @@ export function CommissionProductFunctionalities(props){
                 description: description
             }));
 
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber);
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber());
 
         let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
             (await PRODUCT_PROGRAM.GetListingsStruct(
@@ -334,19 +374,25 @@ export function CommissionProductFunctionalities(props){
             next_index, listings_addr, "commission"
         )
 
-        await PRODUCT_PROGRAM.ListCommissionProduct(
+        let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
+        let update_ix = await PRODUCT_PROGRAM.ListCommissionProduct(
             prod_addr,
             {
-                info: desc_url,
+                info: desc_url.id,
                 ownerCatalog: listings_addr,
                 index: next_index,
                     price: new BN(price),
                 deliveryEstimate: new BN(deliveryEstimate),
-                media: media_url
+                media: media_url.id
             },
             add_to_recent,
             payer_wallet
-        )
+        );
+
+        return [
+            [funding_ix, update_ix],
+            [desc_url, media_url]
+        ];
     }
 
     const ChangeAvailability = async(market_acc, prod_addr, vendor_wallet, available = false) =>{
@@ -361,7 +407,7 @@ export function CommissionProductFunctionalities(props){
 
         return PRODUCT_PROGRAM.UpdateProductPrice(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber()),
             new_price
         )
     }
@@ -370,28 +416,42 @@ export function CommissionProductFunctionalities(props){
 
         let buffers = files.join(">UwU<")
 
-        let tx_id = await bundlrClient.UploadBufferInstruction(buffers);
+        let media_item = await bundlrClient.UploadBufferInstruction(buffers);
 
-        return PRODUCT_PROGRAM.SetMedia(
+        let update_ix = await PRODUCT_PROGRAM.SetMedia(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber),
-            tx_id
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber()),
+            media_item.id
         )
+
+        let funding_ix = (await bundlrClient.FundInstruction([media_item])).tx.instructions[0];
+
+        return [
+            [funding_ix, update_ix],
+            [media_item]
+        ]
 
     }
 
     const SetInfo = async (market_acc, prod_addr, name = "prod name", desc = "prod desc") =>{
 
-        let tx_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({
-                name: name,
-                description: desc
-            }))
+        let info_item = await bundlrClient.UploadBufferInstruction(JSON.stringify({
+            name: name,
+            description: desc
+        }))
 
-        PRODUCT_PROGRAM.SetProdInfo(
+        let funding_ix = (await bundlrClient.FundInstruction([info_item])).tx.instructions[0];
+
+        let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber),
-            tx_url
-        )
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber()),
+            info_item.id
+        );
+
+        return [
+            [funding_ix, update_ix],
+            [info_item]
+        ]
     }
 
     /// BUYER UTILS

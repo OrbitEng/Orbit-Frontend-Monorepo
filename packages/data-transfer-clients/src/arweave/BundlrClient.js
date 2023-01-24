@@ -46,14 +46,10 @@ export default class BundlrClient{
 
         await dataitem.sign();
         
-        let price = await this.bundlr.getPrice(dataitem.size);
-
-        let tx = await this.FundInstruction(price);
-        
         // let txid = dataitem.id;
         // await dataitem.upload();
         
-        return [tx, dataitem];
+        return dataitem;
     }
 
     SendTxItems = async(txitems) => {
@@ -73,7 +69,11 @@ export default class BundlrClient{
     /////////////////////////
     /// SOL UTILS: custom funding func for async instruction creation and sending
 
-    FundInstruction = async(price) =>{
+    FundInstruction = async(data_items) =>{
+        let price = 0;
+        for(let item of data_items){
+            price += await this.bundlr.getPrice(item.size);
+        }
         
         const c = this.bundlr.utils.currencyConfig;
         const to = await this.bundlr.utils.getBundlerAddress(this.bundlr.utils.currency);

@@ -19,46 +19,45 @@ export function MarketAccountFunctionalities(props){
         let ixs = [];
         let dataitems = [];
 
-        let pfp_link = undefined;
+        let pfp_data_item = undefined;
         if(pfp != ""){
-            let fund_pfp_ix = "";
-            [fund_pfp_ix, pfp_link] = await bundlrClient.UploadBufferInstruction(pfp);
-            ixs.push(fund_pfp_ix.tx.instructions[0]);
-            dataitems.push(pfp_link);
+            pfp_data_item = await bundlrClient.UploadBufferInstruction(pfp);
+            dataitems.push(pfp_data_item);
         }
 
-        let [fund_metadata_ix, metadata_addr] = await bundlrClient.UploadBufferInstruction(
+        let metadata_item = await bundlrClient.UploadBufferInstruction(
             JSON.stringify(user_metadata)
         );
-        
-        ixs.push(fund_metadata_ix.tx.instructions[0]);
+        dataitems.push(metadata_item);
+
+        ixs.push((await bundlrClient.FundInstruction(dataitems)).tx.instructions[0]);
         ixs.push(
             await ACCOUNTS_PROGRAM.CreateAccount(
-                metadata_addr.id,
-                pfp_link?.id,
+                metadata_item.id,
+                pfp_data_item?.id,
                 reflink,
                 payer_wallet
             )
         );
-        
-        dataitems.push(metadata_addr);
 
         return [ixs,dataitems];
     }
 
     const SetPfp = async(file, payer_wallet)=>{
-        let [funding_ix, ar_addr] = await bundlrClient.UploadBufferInstruction(file, payer_wallet);
+        let pfp_data_item = await bundlrClient.UploadBufferInstruction(file, payer_wallet);
 
-        let update_ix = await ACCOUNTS_PROGRAM.UpdatePFP(ar_addr.id, payer_wallet);
-        return [[funding_ix.tx.instructions[0], update_ix], [ar_addr]];
+        let update_ix = await ACCOUNTS_PROGRAM.UpdatePFP(pfp_data_item.id, payer_wallet);
+        let funding_ix = (await bundlrClient.FundInstruction([pfp_data_item])).tx.instructions[0];
+        return [[funding_ix, update_ix], [pfp_data_item]];
     }
 
     const UpdateMetadata = async(user_metadata, payer_wallet) =>{
-        let [funding_ix, metadata_addr] = await bundlrClient.UploadBufferInstruction(
+        let metadata_item = await bundlrClient.UploadBufferInstruction(
             JSON.stringify(user_metadata)
         );
-        let update_ix = await ACCOUNTS_PROGRAM.UpdateMetadata(metadata_addr.id, payer_wallet)
-        return [[funding_ix.tx.instructions[0], update_ix], [metadata_addr]];
+        let update_ix = await ACCOUNTS_PROGRAM.UpdateMetadata(metadata_item.id, payer_wallet);
+        let funding_ix = (await bundlrClient.FundInstruction([metadata_item])).tx.instructions[0];
+        return [[funding_ix, update_ix], [metadata_item]];
     }
 
     const SetReflink = async(reflink, payer_wallet) => {
