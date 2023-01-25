@@ -7,6 +7,7 @@ import { MainFooter } from "@includes/Footer";
 import {DigitalProductLayout} from "@layouts/ProductLayouts/DigitalProductLayout";
 import {CommissionProductLayout} from "@layouts/ProductLayouts/CommissionProductLayout";
 import {PhysicalProductLayout} from "@layouts/ProductLayouts/PhysicalProductLayout";
+import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 import ProductCacheCtx from "@contexts/ProductCacheCtx";
 import VendorCacheCtx from "@contexts/VendorCacheCtx";
 

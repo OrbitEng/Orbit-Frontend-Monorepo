@@ -4,6 +4,7 @@ import sdk from "matrix-js-sdk";
 import { GetAccount, GenAccountAddress} from 'orbit-clients/clients/MarketAccountsClient';
 import { BN } from '@project-serum/anchor';
 const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
+import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 
 export default class ChatClient{
     constructor(auth_keypair, ar_client, userAccount){

@@ -7,6 +7,7 @@ import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
+import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 
 import {PhysicalProductFunctionalities} from "@functionalities/Products";
 import Link from "next/link";
