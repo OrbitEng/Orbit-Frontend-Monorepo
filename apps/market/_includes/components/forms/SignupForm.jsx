@@ -69,29 +69,16 @@ export function SignupForm(props) {
 
 		
 		let sig = await wallet.sendTransaction(tx, connection);
-		console.log("sign: ", sig);
+		
 		let confirmation  = await connection.confirmTransaction({
 			...latest_blockhash,
 			signature: sig,
 		});
-		// let price = 0;
-		// for(let item of data_items){
-		// 	console.log(item, item.size);
-		// 	price += await bundlrClient.bundlr.getPrice(item.size);
-		// }
-		// console.log(bundlrClient.bundlr.funder.fund)
-		// await bundlrClient.bundlr.funder.fund(price);
-		console.log(confirmation);
-
-		// console.log("txid", tx, tx.txId, sig);
-		let res = await bundlrClient.bundlr.utils.api.post(`/account/balance/${bundlrClient.bundlr.utils.currency}`, { tx_id: sig});
-		console.log(res);
+		
 
 		await bundlrClient.SendTxItems(data_items);
-
-
 		props.setOpen(false);
-		// setUserAccount( await ACCOUNTS_PROGRAM.GetAccount(GenAccountAddress(wallet.publicKey)));
+		setUserAccount( await ACCOUNTS_PROGRAM.GetAccount(GenAccountAddress(wallet.publicKey)));
 	},[pfp, reflink, nickName, biography, bundlrClient, wallet.publicKey, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM._provider.connection])
 
 	const pfpFileCallback = useCallback((acceptedFiles) => {

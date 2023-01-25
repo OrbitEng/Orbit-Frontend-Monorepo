@@ -52,7 +52,11 @@ export default class BundlrClient{
         return dataitem;
     }
 
-    SendTxItems = async(txitems) => {
+    SendTxItems = async(sig, txitems) => {
+        let res = await this.bundlr.utils.api.post(`/account/balance/${this.bundlr.utils.currency}`, { tx_id: sig});
+		if(res.status == 400){
+			throw(res.data)
+		}
         await Promise.all(txitems.map(txitem => txitem.upload()));
     }
 

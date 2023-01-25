@@ -11,7 +11,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import MatrixClientCtx from "@contexts/MatrixClientCtx";
 import ChatCtx from "@contexts/ChatCtx";
 import ArweaveCtx from "@contexts/ArweaveCtx";
-import SemiSpanLayoutTemplate from "@includes/templates/Layout/Spans/SemiLayoutSpanTemplate";
+import SemiSpanLayoutTemplate from "@includes/templates/Spans/SemiLayoutSpanTemplate";
 
 export function ProfileLayout(props) {
 	const { GetAllVendorPhysicalProducts } = PhysicalProductFunctionalities();
