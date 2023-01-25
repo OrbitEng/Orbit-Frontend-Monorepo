@@ -8,7 +8,7 @@ import { BuyerTxLogModal } from "@includes/components/modals/InitBuyerTxModals";
 import 'react-multi-carousel/lib/styles.css';
 import PosModal from "@includes/components/modals/PosModal";
 import UserAccountCtx from "@contexts/UserAccountCtx";
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
+import { TRANSACTION_PROGRAM } from "orbit-clients";
 
 const responsive = {
 	superLargeDesktop: {
@@ -41,7 +41,6 @@ export function PhysicalProductLayout(props) {
 	const [buyerTxLog, setBuyerTxLog] = useState();
 
 	const {userAccount} = useContext(UserAccountCtx);
-	const {transactionClient} = useContext(TransactionClientCtx)
 	const {AddItem} = CartFunctionalities();
 
 	const [isOwner, setIsOwner] = useState(false);
@@ -65,7 +64,7 @@ export function PhysicalProductLayout(props) {
 	useEffect(async ()=>{
 		try{
 			console.log(userAccount.data.buyerPhysicalTransactions.toString())
-			let txlog = await transactionClient.GetBuyerOpenTransactions(userAccount?.data?.buyerPhysicalTransactions);
+			let txlog = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(userAccount?.data?.buyerPhysicalTransactions);
 			if(txlog && txlog?.data){
 				setBuyerTxLog(txlog)
 			}else{

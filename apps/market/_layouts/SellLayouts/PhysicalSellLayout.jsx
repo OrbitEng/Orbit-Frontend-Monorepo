@@ -9,9 +9,6 @@ import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
 import {PhysicalProductFunctionalities} from "@functionalities/Products";
-import { CatalogWarnModal } from "@includes/components/modals/InitListingsModal";
-import ProductClientCtx from "@contexts/ProductClientCtx";
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import Link from "next/link";
 
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -22,8 +19,6 @@ export function PhysicalUploadForm(props) {
     const wallet = useWallet();
 
 	const {ListProduct} = PhysicalProductFunctionalities();
-	const {productClient} = useContext(ProductClientCtx);
-	const {transactionClient} = useContext(TransactionClientCtx);
 
 	const [price, setProdPrice] = useState();
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
@@ -42,9 +37,8 @@ export function PhysicalUploadForm(props) {
     
 
 	useEffect(async()=>{
-        if(!(productClient && productClient.wallet.publicKey && transactionClient && transactionClient.wallet.publicKey && wallet.connected))return;
 		try{
-			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("physical"));
+			let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("physical"));
 			if(vc && vc.data){
 				setVendorPhysicalListings(vc)
 			}else{
@@ -56,7 +50,7 @@ export function PhysicalUploadForm(props) {
             setVendorPhysicalListings()
 		}
         try{
-            let vtx = await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("physical"));
+            let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("physical"));
             if(vtx && vtx.data){
                 setVendorPhysicalTx(vtx)
             }else{
@@ -67,7 +61,7 @@ export function PhysicalUploadForm(props) {
             console.log("init logs render err: ", e)
             setVendorPhysicalTx()
 		}
-	},[productClient, transactionClient, wallet.connected]);
+	},[PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection, wallet.connected]);
 
 	const onDrop = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{

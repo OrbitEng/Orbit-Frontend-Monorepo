@@ -129,7 +129,7 @@ export default function ProductsPage(props) {
 			setVendor(vendor);
 		};
 		setProd(tp);
-	},[productType, productId, productCache, PRODUCT_PROGRAM, ACCOUNTS_PROGRAM, arweaveClient])
+	},[productType, productId, productCache, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM._provider.connection, arweaveClient])
 
 	// here I'm just using the digital layout because it's the same for pretty much everything...
 	// todo: add nfts later

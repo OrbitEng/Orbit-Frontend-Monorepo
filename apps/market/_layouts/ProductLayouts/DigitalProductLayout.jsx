@@ -10,7 +10,6 @@ import Image from 'next/image'
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import 'react-multi-carousel/lib/styles.css';
 import UserAccountCtx from "@contexts/UserAccountCtx";
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
 
 
 const responsive = {
@@ -39,7 +38,6 @@ export function DigitalProductLayout(props) {
 	const [buyerTxLog, setBuyerTxLog] = useState();
 
 	const {userAccount} = useContext(UserAccountCtx);
-	const {transactionClient} = useContext(TransactionClientCtx)
 	const {AddItem} = CartFunctionalities();
 
 	const [isOwner, setIsOwner] = useState(false);

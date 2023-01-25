@@ -1,17 +1,12 @@
 import { useEffect, useContext, useState, useCallback } from "react";
 import { HeaderSearchBar } from "@includes/components/SearchBar";
-import { HomeHeader } from "@includes/MarketHeader";
-import { MainFooter } from "@includes/Footer";
 import Head from "next/head";
 import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
-import { Listbox } from "@headlessui/react";
-import { CatalogWarnModal } from "@includes/components/modals/InitListingsModal";
 import {DigitalProductFunctionalities} from "@functionalities/Products";
-import ProductClientCtx from "@contexts/ProductClientCtx";
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { PRODUCT_PROGRAM } from 'orbit-clients';
 import Link from "next/link";
 
 
@@ -19,8 +14,6 @@ export function DigitalUploadForm(props) {
     const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
 
 	const {ListProduct, CreateDigitalListingsCatalog} = DigitalProductFunctionalities();
-	const {productClient} = useContext(ProductClientCtx);
-    const {transactionClient} = useContext(TransactionClientCtx);
     const wallet = useWallet();
 
 	const [prodName, setProdName] = useState("");
@@ -35,9 +28,8 @@ export function DigitalUploadForm(props) {
 	
 	
 	useEffect(async ()=>{
-        if(!(productClient && productClient.wallet.publicKey && transactionClient && transactionClient.wallet.publicKey && wallet.connected))return;
 		try{
-			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("digital"));
+			let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("digital"));
 			if(vc && vc.data){
 				setVendorDigitalCatalog(vc)
 			}else{
@@ -48,7 +40,7 @@ export function DigitalUploadForm(props) {
             setVendorDigitalCatalog();
 		}
         try{
-            let vtx = await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("digital"));
+            let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("digital"));
             if(vtx && vtx.data){
                 setVendorDigitalTx(vtx)
             }else{
@@ -58,7 +50,7 @@ export function DigitalUploadForm(props) {
             console.log("init logs render err: ", e);
             setVendorDigitalTx();
         }
-	}, [transactionClient, productClient, wallet.connected]);
+	}, [TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, wallet.connected]);
 
 
 	//////////////////////////////////////////////////
@@ -138,15 +130,7 @@ export function DigitalUploadForm(props) {
     }, [delFileFuncArgs, previewFiles, productFiles, deletePreviewFile, deleteProductFile])
 
 	return(
-        <div className="w-full min-h-screen h-full bg-transparent">
-            {((vendorDigitalCatalog == undefined) || (vendorDigitalTx == undefined)) && <CatalogWarnModal category={"digital"} setCatalog={vendorDigitalCatalog ? undefined : setVendorDigitalCatalog} setTxLog={vendorDigitalTx ? undefined : setVendorDigitalTx}/>}
-            <Head>
-				<title>Orbit</title>
-				<link rel="icon" href="orbit.png" />
-			</Head>
-            <main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
-            <HomeHeader headerMiddle={searchBar}/>
-            <div className="pt-14 lg:pt-32 sm:-mt-32 w-full align-center min-h-screen  place-items-center">
+        <div className="pt-14 lg:pt-32 sm:-mt-32 w-full align-center min-h-screen  place-items-center">
                 <div className="flex flex-col w-full mx-auto my-auto content-center min-h-screen place-items-center">
                     <h1 className="text-white font-bold text-4xl mt-10">Create New Digital Product</h1>
                     <Link href={"/sell"}>
@@ -323,9 +307,7 @@ export function DigitalUploadForm(props) {
                             </div>
                             </form>
                     </div>
-                </div>
-            </main>
-        </div>
+            </div>
 		
 	)
 }

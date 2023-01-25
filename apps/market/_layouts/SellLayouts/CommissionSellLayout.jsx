@@ -9,12 +9,9 @@ import { useDropzone } from "react-dropzone";
 import { Listbox } from "@headlessui/react";
 
 import {CommissionProductFunctionalities} from "@functionalities/Products";
-import { CatalogWarnModal } from "@includes/components/modals/InitListingsModal";
-import ProductClientCtx from "@contexts/ProductClientCtx";
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
-
+import { PRODUCT_PROGRAM } from 'orbit-clients';
 
 export function CommissionUploadForm(props) {
     const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
@@ -24,13 +21,10 @@ export function CommissionUploadForm(props) {
 	const [vendorCommissionCatalog, setVendorCommissionCatalog] = useState("");
 	const [vendorCommissionTx, setVendorCommissionTx] = useState("");
 
-	const {productClient} = useContext(ProductClientCtx);
-	const {transactionClient} = useContext(TransactionClientCtx);
 
 	useEffect(async()=>{
-        if(!(productClient && productClient.wallet.publicKey && transactionClient && transactionClient.wallet.publicKey && wallet.connected))return;
 		try{
-			let vc = await productClient.GetListingsStruct(productClient.GenListingsAddress("commission"));
+			let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("commission"));
 			if(vc && vc.data){
 				setVendorCommissionCatalog(vc);
 			}else{
@@ -41,7 +35,7 @@ export function CommissionUploadForm(props) {
 			setVendorCommissionCatalog()
 		}
 		try{
-			let vtx = await transactionClient.GetSellerOpenTransactions(transactionClient.GenSellerTransactionLog("commission"));
+			let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("commission"));
 			if(vtx && vtx.data){
 				setVendorCommissionTx(vtx);
 			}else{
@@ -51,7 +45,7 @@ export function CommissionUploadForm(props) {
 			console.log("init logs render err: ", e);
 			setVendorCommissionTx()
 		}
-	}, [transactionClient, productClient, wallet && wallet.connected])
+	}, [TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, wallet && wallet.connected])
 
 	return(
         <div className="w-full min-h-screen bg-transparent">

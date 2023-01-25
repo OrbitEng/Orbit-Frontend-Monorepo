@@ -2,15 +2,14 @@ import { Dialog, Transition, Listbox } from '@headlessui/react'
 import Image from "next/image";
 import { Fragment, useState, useContext, useCallback, useEffect} from 'react'
 import { DigitalProductFunctionalities, PhysicalProductFunctionalities, CommissionProductFunctionalities } from '@functionalities/Products';
-import ProductClientCtx from '@contexts/ProductClientCtx';
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
+import { PRODUCT_PROGRAM } from 'orbit-clients';
 
 
 export function EditPhysicalProductModal(props){
     const {ChangeQuantity, ChangeAvailability, ChangePrice, SetMedia, SetInfo} = PhysicalProductFunctionalities();
-    const {productClient} = useContext(ProductClientCtx);
 
     const [newQuantity, setNewQuantity] = useState(0);
     const [newAvailability, setNewAvailability] = useState(false);
@@ -61,12 +60,12 @@ export function EditPhysicalProductModal(props){
 	}
 
     const handleUnlistFunction = useCallback(async () => {
-        await productClient.UnlistProduct(
+        await PRODUCT_PROGRAM.UnlistProduct(
             props.selectedProduct.address,
             props.selectedProduct.data.metadata.ownerCatalog
         );
         closeModal()
-	}, [props.selectedProduct, productClient])
+	}, [props.selectedProduct, PRODUCT_PROGRAM])
 
 	const handleSubmitFunction = useCallback(async () => {
         if(!props.selectedProduct) return;
@@ -86,7 +85,7 @@ export function EditPhysicalProductModal(props){
             await SetInfo(props.selectedProduct.address, newName, newDescription)
         }
         closeModal()
-	}, [props.selectedProduct, productClient, newQuantity, newAvailability, newPrice, newMedia, newName, newDescription])
+	}, [props.selectedProduct, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, newQuantity, newAvailability, newPrice, newMedia, newName, newDescription])
 
     return (
         <div>

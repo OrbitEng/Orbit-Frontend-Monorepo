@@ -2,11 +2,6 @@ import olmWasmPath from '@matrix-org/olm/olm.wasm'
 import Olm from '@matrix-org/olm';
 import sdk from "matrix-js-sdk";
 import { GetAccount, GenAccountAddress} from 'orbit-clients/clients/MarketAccountsClient';
-import { GetBuyerOpenTransactions, GetSellerOpenTransactions, GetMultipleTxLogOwners } from 'orbit-clients/clients/OrbitTransactionClient';
-import { GenPhysicalTransactionAddress, GetMultiplePhysicalTransactions } from 'orbit-clients/clients/PhysicalMarketClient';
-import { GenDigitalTransactionAddress, GetMultipleDigitalTransactions } from 'orbit-clients/clients/DigitalMarketClient';
-import { GenCommissionTransactionAddress, GetMultipleCommissionTransactions } from 'orbit-clients/clients/CommissionMarketClient';
-import { GetMultipleCommissionProducts, GetMultiplePhysicalProducts, GetMultipleDigitalProducts, GenProductAddress, GenListingsAddress } from 'orbit-clients/clients/OrbitProductClient';
 import { BN } from '@project-serum/anchor';
 const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
 
@@ -122,38 +117,38 @@ export default class ChatClient{
                     digital: 0, physical: 0, commission: 0
                 };
                 if(this.userAccount.data.buyerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerDigitalTransactions)).data.openTransactions;
+                    let txs = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(this.userAccount.data.buyerDigitalTransactions)).data.openTransactions;
                     for(let i = 0; i < 32; i++){
                         let chunk = txs.slice(i*9, (i*9)+9);
                         if(chunk.reduce((partialSum, a) => partialSum + a, 0) == 0) continue;
-                        buyer_transactions.push(GenDigitalTransactionAddress(GenListingsAddress("digital", new BN(chunk.slice(0,8))), chunk[8]))
+                        buyer_transactions.push(DIGITAL_MARKET.GenDigitalTransactionAddress(PRODUCT_PROGRAM.GenListingsAddress("digital", new BN(chunk.slice(0,8))), chunk[8]))
                         buyerindlengths.digital += 1;
                     }
                 }
                 if(this.userAccount.data.buyerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerPhysicalTransactions)).data.openTransactions;
+                    let txs = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(this.userAccount.data.buyerPhysicalTransactions)).data.openTransactions;
                     for(let i = 0; i < 32; i++){
                         let chunk = txs.slice(i*9, (i*9)+9);
                         if(chunk.reduce((partialSum, a) => partialSum + a, 0) == 0) continue;
-                        buyer_transactions.push(GenPhysicalTransactionAddress(GenListingsAddress("physical", new BN(chunk.slice(0,8))), chunk[8]))
+                        buyer_transactions.push(PHYSICAL_MARKET.GenPhysicalTransactionAddress(PRODUCT_PROGRAM.GenListingsAddress("physical", new BN(chunk.slice(0,8))), chunk[8]))
                         buyerindlengths.physical += 1;
                     }
                 }
                 if(this.userAccount.data.buyerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetBuyerOpenTransactions(this.userAccount.data.buyerCommissionTransactions)).data.openTransactions;
+                    let txs = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(this.userAccount.data.buyerCommissionTransactions)).data.openTransactions;
                     for(let i = 0; i < 32; i++){
                         let chunk = txs.slice(i*9, (i*9)+9);
                         if(chunk.reduce((partialSum, a) => partialSum + a, 0) == 0) continue;
-                        buyer_transactions.push(GenCommissionTransactionAddress(GenListingsAddress("commission", new BN(chunk.slice(0,8))), chunk[8]))
+                        buyer_transactions.push(COMMISSION_MARKET.GenCommissionTransactionAddress(PRODUCT_PROGRAM.GenListingsAddress("commission", new BN(chunk.slice(0,8))), chunk[8]))
                         buyerindlengths.commission += 1;
                     }
                 }
 
-                let buyer_digital_transactions = await GetMultipleDigitalTransactions(buyer_transactions.slice(0,sellerindlengths.digital));
-                let buyer_physical_transactions = await GetMultiplePhysicalTransactions(buyer_transactions.slice(0,sellerindlengths.physical));
-                let buyer_commission_transactions = await GetMultipleCommissionTransactions(buyer_transactions.slice(0,sellerindlengths.commission));
+                let buyer_digital_transactions = await DIGITAL_MARKET.GetMultipleCommissionTransactions(buyer_transactions.slice(0,sellerindlengths.digital));
+                let buyer_physical_transactions = await PHYSICAL_MARKET.GenDigitalTransactionAddress(buyer_transactions.slice(0,sellerindlengths.physical));
+                let buyer_commission_transactions = await COMMISSION_MARKET.GetMultipleCommissionTransactions(buyer_transactions.slice(0,sellerindlengths.commission));
 
-                let buyer_digital_products = await GetMultipleDigitalProducts(
+                let buyer_digital_products = await PRODUCT_PROGRAM.GetMultipleDigitalProducts(
                     buyer_digital_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 buyer_digital_products.forEach(async (prod)=>{
@@ -161,7 +156,7 @@ export default class ChatClient{
                     prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
                 });
 
-                let buyer_physical_products = await GetMultiplePhysicalProducts(
+                let buyer_physical_products = await PRODUCT_PROGRAM.GetMultiplePhysicalProducts(
                     buyer_physical_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 buyer_physical_products.forEach(async (prod)=>{
@@ -169,7 +164,7 @@ export default class ChatClient{
                     prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
                 });
 
-                let buyer_commission_products = await GetMultipleCommissionProducts(
+                let buyer_commission_products = await PRODUCT_PROGRAM.GetMultipleCommissionProducts(
                     buyer_commission_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 buyer_commission_products.forEach(async (prod)=>{
@@ -178,7 +173,7 @@ export default class ChatClient{
                 });
 
                 let seller_tx_logs = [...buyer_digital_transactions, ...buyer_physical_transactions, ...buyer_commission_transactions].map(tx => tx.data.metadata.seller);
-                let seller_wallets = await GetMultipleTxLogOwners(seller_tx_logs);
+                let seller_wallets = await TRANSACTION_PROGRAM.GetMultipleTxLogOwners(seller_tx_logs);
                 
                 ////////////////////////////////////////////////////////////////
                 /// SELLER TX CHUNK
@@ -217,7 +212,7 @@ export default class ChatClient{
 
                 let sellerindlengths = {};
                 if(this.userAccount.data.sellerDigitalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetSellerOpenTransactions(this.userAccount.data.sellerDigitalTransactions)).data;
+                    let txs = (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(this.userAccount.data.sellerDigitalTransactions)).data;
                     let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -226,7 +221,7 @@ export default class ChatClient{
                     sellerindlengths.digital = indexes.length;
                 }
                 if(this.userAccount.data.sellerPhysicalTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetSellerOpenTransactions(this.userAccount.data.sellerPhysicalTransactions)).data;
+                    let txs = (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(this.userAccount.data.sellerPhysicalTransactions)).data;
                     let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -235,7 +230,7 @@ export default class ChatClient{
                     sellerindlengths.physical = indexes.length;
                 }
                 if(this.userAccount.data.sellerCommissionTransactions.toString() != "11111111111111111111111111111111"){
-                    let txs = (await GetSellerOpenTransactions(this.userAccount.data.sellerCommissionTransactions)).data;
+                    let txs = (await TRANSACTION_PROGRAM.GetSellerOpenTransactions(this.userAccount.data.sellerCommissionTransactions)).data;
                     let indexes = txs.openTransactions[0].toString(2).split("").reverse().join("") + txs.openTransactions[1].toString(2).split("").reverse().join("") + txs.openTransactions[2].toString(2).split("").reverse().join("") + txs.openTransactions[3].toString(2).toString(2).split("").reverse().join("")
                     for(let i = 0; i < indexes.length; i++){
                         if(indexes[i] == "0") continue;
@@ -244,11 +239,11 @@ export default class ChatClient{
                     sellerindlengths.commission = indexes.length;
                 }
 
-                let seller_digital_transactions = await GetMultipleDigitalTransactions(seller_transactions.slice(0,sellerindlengths.digital));
-                let seller_physical_transactions = await GetMultiplePhysicalTransactions(seller_transactions.slice(0,sellerindlengths.physical));
-                let seller_commission_transactions = await GetMultipleCommissionTransactions(seller_transactions.slice(0,sellerindlengths.commission));
+                let seller_digital_transactions = await DIGITAL_MARKET.GetMultipleCommissionTransactions(seller_transactions.slice(0,sellerindlengths.digital));
+                let seller_physical_transactions = await PHYSICAL_MARKET.GenDigitalTransactionAddress(seller_transactions.slice(0,sellerindlengths.physical));
+                let seller_commission_transactions = await COMMISSION_MARKET.GetMultipleCommissionTransactions(seller_transactions.slice(0,sellerindlengths.commission));
 
-                let seller_digital_products = await GetMultipleDigitalProducts(
+                let seller_digital_products = await PRODUCT_PROGRAM.GetMultipleDigitalProducts(
                     seller_digital_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 seller_digital_products.forEach(async (prod)=>{
@@ -256,7 +251,7 @@ export default class ChatClient{
                     prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
                 });
 
-                let seller_physical_products = await GetMultiplePhysicalProducts(
+                let seller_physical_products = await PRODUCT_PROGRAM.GetMultiplePhysicalProducts(
                     seller_physical_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 seller_physical_products.forEach(async (prod)=>{
@@ -264,7 +259,7 @@ export default class ChatClient{
                     prod.data.metadata.media = await this.arweaveClient.GetImageData(prod.data.metadata.media);
                 });
 
-                let seller_commission_products = await GetMultipleCommissionProducts(
+                let seller_commission_products = await PRODUCT_PROGRAM.GetMultipleCommissionProducts(
                     seller_commission_transactions.map(async (tx) => {tx.data.metadata.product})
                 )
                 seller_commission_products.forEach(async (prod)=>{
@@ -273,7 +268,7 @@ export default class ChatClient{
                 });
 
                 let buyer_tx_logs = [...seller_digital_transactions, ...seller_physical_transactions, ...seller_commission_transactions].map(tx => tx.data.metadata.buyer);
-                let buyer_wallets = await GetMultipleTxLogOwners(buyer_tx_logs);
+                let buyer_wallets = await TRANSACTION_PROGRAM.GetMultipleTxLogOwners(buyer_tx_logs);
 
                 for(let i = 0; i < sellerindlengths.digital; i++){
                     seller_digital_transactions[i].data.metadata.product =

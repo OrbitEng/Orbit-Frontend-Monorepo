@@ -1,7 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useState, useContext, useCallback } from 'react'
 import { MarketAccountFunctionalities } from '@functionalities/Accounts';
-import TransactionClientCtx from "@contexts/TransactionClientCtx";
 import { useWallet } from '@solana/wallet-adapter-react';
 
 export function BuyerTxLogModal(props){
@@ -10,7 +9,6 @@ export function BuyerTxLogModal(props){
         AddBuyerDigitalTransactions,
         AddBuyerCommissionTransactions,
 	} = MarketAccountFunctionalities();
-	const {transactionClient} = useContext(TransactionClientCtx);
 	const wallet = useWallet();
 
     const [isOpen, setIsOpen] = useState(false);
@@ -24,13 +22,12 @@ export function BuyerTxLogModal(props){
     }
 
 	const handleSubmitFunction = useCallback(async () => {
-		if(!(transactionClient && wallet.connected)) return;
 		switch(props.category) {
 			case "physical":
 				if(props.setTxLog){
 					await AddBuyerPhysicalTransactions();
 					await props.setTxLog(
-						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("physical", wallet.publicKey))
+						await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", wallet.publicKey))
 					)
 				}
 
@@ -39,7 +36,7 @@ export function BuyerTxLogModal(props){
 				if(props.setTxLog){
 					await AddBuyerDigitalTransactions();
 					await props.setTxLog(
-						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("digital", wallet.publicKey))
+						await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", wallet.publicKey))
 					)
 				}
 				break;
@@ -47,13 +44,13 @@ export function BuyerTxLogModal(props){
 				if(props.setTxLog){
 					await AddBuyerCommissionTransactions();
 					await props.setTxLog(
-						await transactionClient.GetBuyerOpenTransactions(transactionClient.GenBuyerTransactionLog("commission", wallet.publicKey))
+						await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", wallet.publicKey))
 					)
 				}
 				break;
 		}
         closeModal()
-	}, [props.setTxLog, props.category, transactionClient, wallet])
+	}, [props.setTxLog, props.category, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection, wallet])
 
     return (
         <div>
