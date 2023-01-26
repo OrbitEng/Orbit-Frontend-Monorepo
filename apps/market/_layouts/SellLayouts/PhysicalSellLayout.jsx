@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
@@ -30,6 +30,7 @@ export function PhysicalUploadForm(props) {
 
 	const [vendorPhysicalListings, setVendorPhysicalListings] = useState("");
 	const [vendorPhysicalTx, setVendorPhysicalTx] = useState("");
+    
     
 
 	useEffect(async()=>{
