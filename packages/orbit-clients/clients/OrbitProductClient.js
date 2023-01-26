@@ -78,7 +78,7 @@ export async function ListCommissionProduct (
             isWritable: true,
             isSigner: false 
         }] : [];
-    let vendor_listings = this.GenListingsAddress("commission");
+    let vendor_listings = this.GenListingsAddress("commission", payer_wallet.publicKey);
 
     await PRODUCT_PROGRAM.methods
     .listCommissionProduct(metadata)
@@ -107,7 +107,7 @@ export async function ListDigitalProduct (
             isWritable: true,
             isSigner: false 
         }] : [];
-    let vendor_listings = this.GenListingsAddress("digital");
+    let vendor_listings = this.GenListingsAddress("digital", payer_wallet.publicKey);
 
     await PRODUCT_PROGRAM.methods
     .listDigitalProduct(metadata, filetype)
@@ -136,7 +136,7 @@ export async function ListPhysicalProduct (
             isWritable: true,
             isSigner: false 
         }] : [];
-    let vendor_listings = this.GenListingsAddress("physical");
+    let vendor_listings = this.GenListingsAddress("physical", payer_wallet.publicKey);
 
 
     await PRODUCT_PROGRAM.methods
@@ -248,9 +248,9 @@ export async function TransferAllVendorListingsOwnership (
         new_wallet_addr = new PublicKey(new_wallet_addr)
     }
 
-    let commission_listings = this.GenListingsAddress("commission");
-    let digital_listings = this.GenListingsAddress("digital");
-    let physical_listings = this.GenListingsAddress("physical");
+    let commission_listings = this.GenListingsAddress("commission", payer_wallet.publicKey);
+    let digital_listings = this.GenListingsAddress("digital", payer_wallet.publicKey);
+    let physical_listings = this.GenListingsAddress("physical", payer_wallet.publicKey);
 
     await PRODUCT_PROGRAM.methods
     .transferAllVendorListingsOwnership()
