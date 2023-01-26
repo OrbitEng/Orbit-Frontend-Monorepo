@@ -1,17 +1,14 @@
 import { useEffect, useContext, useState, useCallback } from "react";
-import { HeaderSearchBar } from "@includes/components/SearchBar";
-import Head from "next/head";
 import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import {DigitalProductFunctionalities} from "@functionalities/Products";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { PRODUCT_PROGRAM } from 'orbit-clients';
+import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from 'orbit-clients';
 import Link from "next/link";
 
 
 export function DigitalUploadForm(props) {
-    const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
 
 	const {ListProduct, CreateDigitalListingsCatalog} = DigitalProductFunctionalities();
     const wallet = useWallet();

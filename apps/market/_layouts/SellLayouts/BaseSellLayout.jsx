@@ -1,14 +1,8 @@
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { useState, useCallback, Fragment } from "react";
-import { HeaderSearchBar } from "@includes/components/SearchBar";
-import { HomeHeader } from "@includes/MarketHeader";
-import { MainFooter } from "@includes/Footer";
 import { Transition } from "@headlessui/react";
-import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-
-import { ChatWidget } from "@includes/ChatWidget";
 
 const token_addresses = {
 	mainnet: {
@@ -22,18 +16,9 @@ const token_addresses = {
 }
 
 export function SellLayout(props){
-	const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
 
     return(
-		<div className="w-full min-h-screen bg-transparent">
-			<Head>
-				<title>Orbit</title>
-				<link rel="icon" href="orbit.png" />
-			</Head>
-			<main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
-				<HomeHeader headerMiddle={searchBar}/>
-				<div className="-mt-24 max-w-7xl align-center mx-auto min-h-[100vh]">
-				<div className="flex flex-row justify-around w-full mx-auto h-[100vh] gap-24 content-center my-auto">
+		<div className="flex flex-row justify-around max-w-6xl mx-auto h-[100vh] gap-24 content-center my-auto">
 					<Link href={"/sell/physical"}>
 						<Transition
 							as={Fragment}
@@ -139,11 +124,6 @@ export function SellLayout(props){
 							</div>
 						</Transition>
 					</Link>
-					</div>
-					<ChatWidget />
-					<MainFooter />
 				</div>
-			</main>
-		</div>
 	)
 }

@@ -1,5 +1,10 @@
+import { GenericLayout } from "@layouts/HeaderFooterGenericLayout";
 import { CommissionUploadForm } from "@layouts/SellLayouts/CommissionSellLayout";
 
 export default function sell() {
-	return(<CommissionUploadForm />)
+	return(
+		<GenericLayout chat>
+			<CommissionUploadForm />
+		</GenericLayout>
+	)
 }

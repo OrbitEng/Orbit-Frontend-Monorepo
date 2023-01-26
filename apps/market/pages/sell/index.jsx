@@ -3,7 +3,7 @@ import { SellLayout } from "@layouts/SellLayouts/BaseSellLayout";
 
 export default function sell() {
 	return(
-		<GenericLayout>
+		<GenericLayout chat>
 			<SellLayout />
 		</GenericLayout>
 	)

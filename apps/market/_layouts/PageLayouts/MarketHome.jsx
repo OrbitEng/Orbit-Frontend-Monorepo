@@ -1,14 +1,9 @@
-import { PageSearchBar, HeaderSearchBar } from '@includes/components/SearchBar'
-import { HomeHeader } from '@includes/MarketHeader'
 import {ProductShowcaseRow} from '@includes/components/product_display/ProductShowcaseRow'
-import Head from 'next/head'
-import { MainFooter } from '@includes/Footer';
 import { useState, useEffect, useRef, useContext } from 'react'
 import { PRODUCT_PROGRAM } from 'orbit-clients';
 import useOnScreen from '@hooks/useOnScreen'
 
 import HomeNewsCarousel from '@includes/components/HomeNewsCarousel';
-import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 
 

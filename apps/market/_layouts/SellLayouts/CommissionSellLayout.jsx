@@ -1,20 +1,11 @@
 import { useState, useEffect, useContext } from "react";
-import { HeaderSearchBar } from "@includes/components/SearchBar";
-import { HomeHeader } from "@includes/MarketHeader";
-import { MainFooter } from "@includes/Footer";
-import Head from "next/head";
-import Image from "next/image";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useDropzone } from "react-dropzone";
-import { Listbox } from "@headlessui/react";
 
 import {CommissionProductFunctionalities} from "@functionalities/Products";
 import { useWallet } from "@solana/wallet-adapter-react";
 import Link from "next/link";
-import { PRODUCT_PROGRAM } from 'orbit-clients';
+import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM} from 'orbit-clients';
 
 export function CommissionUploadForm(props) {
-    const [ searchBar, setSearchBar ] = useState(<HeaderSearchBar />);
 	const wallet = useWallet();
     
 	const {ListProduct} = CommissionProductFunctionalities();
@@ -49,17 +40,7 @@ export function CommissionUploadForm(props) {
 
 	return(
         <div className="w-full min-h-screen bg-transparent">
-			{((vendorCommissionCatalog == undefined) || (vendorCommissionTx == undefined)) && <CatalogWarnModal category={"commission"} setCatalog={vendorCommissionCatalog ? undefined : setVendorCommissionCatalog} setTxLog={vendorCommissionTx ? undefined : setVendorCommissionTx}/>}
-            <Head>
-				<title>Orbit</title>
-				<link rel="icon" href="orbit.png" />
-			</Head>
-            <main className="bg-[url('/oldbgWallpaper.png')] bg-cover min-h-screen">
-            <HomeHeader headerMiddle={searchBar}/>
-            <div className="w-full min-h-screen">
-                SHIT GOES HERE
-            </div>
-            </main>
+			SHIT GOES HERE
         </div>
     )
 }
