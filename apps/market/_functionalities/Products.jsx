@@ -190,7 +190,7 @@ export function PhysicalProductFunctionalities(props){
     ) => {
         if(files.length <= 0) return;
 
-        let buffers =files.join(">UwU<");
+        let buffers = files.join(">UwU<");
 
         let media_url = await bundlrClient.UploadBufferInstruction(buffers);
         let desc_url = await bundlrClient.UploadBufferInstruction(JSON.stringify({

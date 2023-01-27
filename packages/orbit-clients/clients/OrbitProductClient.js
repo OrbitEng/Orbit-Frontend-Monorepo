@@ -77,7 +77,9 @@ export async function ListCommissionProduct (
             pubkey: this.GenRecentListings("commission"),
             isWritable: true,
             isSigner: false 
-        }] : [];
+        }
+    ] : [];
+    
     let vendor_listings = this.GenListingsAddress("commission", payer_wallet.publicKey);
 
     await PRODUCT_PROGRAM.methods
@@ -135,7 +137,8 @@ export async function ListPhysicalProduct (
             pubkey: this.GenRecentListings("physical"),
             isWritable: true,
             isSigner: false 
-        }] : [];
+        }
+    ] : [];
     let vendor_listings = this.GenListingsAddress("physical", payer_wallet.publicKey);
 
 

@@ -3,58 +3,34 @@ import Image from "next/image";
 import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useDropzone } from "react-dropzone";
 import {DigitalProductFunctionalities} from "@functionalities/Products";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from 'orbit-clients';
 import Link from "next/link";
-
+import UserAccountCtx from "@contexts/UserAccountCtx";
+import BundlrCtx from "@contexts/BundlrCtx";
+import { Transaction } from "@solana/web3.js";
 
 export function DigitalUploadForm(props) {
 
-	const {ListProduct, CreateDigitalListingsCatalog} = DigitalProductFunctionalities();
+	const {ListProduct} = DigitalProductFunctionalities();
     const wallet = useWallet();
+    const {connection} = useConnection();
+    const {userAccount} = useContext(UserAccountCtx);
+    const {bundlrClient} = useContext(BundlrCtx);
 
 	const [prodName, setProdName] = useState("");
 	const [price, setProdPrice] = useState();
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
+    const [delivery, setDelivery] = useState(14);
 	const [description, setDescription] = useState();
+    const [listRecent, setListRecent] = useState(false);
 	const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
-
-	const [vendorDigitalCatalog, setVendorDigitalCatalog] = useState("");
-    const [vendorDigitalTx, setVendorDigitalTx] = useState("");
-
-	
-	
-	useEffect(async ()=>{
-		try{
-			let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("digital"));
-			if(vc && vc.data){
-				setVendorDigitalCatalog(vc)
-			}else{
-                setVendorDigitalCatalog()
-            }
-		}catch(e){
-            console.log("init listing render err: ", e);
-            setVendorDigitalCatalog();
-		}
-        try{
-            let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("digital"));
-            if(vtx && vtx.data){
-                setVendorDigitalTx(vtx)
-            }else{
-                setVendorDigitalTx()
-            }
-        }catch(e){
-            console.log("init logs render err: ", e);
-            setVendorDigitalTx();
-        }
-	}, [TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, wallet.connected]);
-
-
+    
 	//////////////////////////////////////////////////
 	// Functions for managing product preview images
-
+    
 	const [previewFiles, setPreviewFiles] = useState([]);
-
+    
     const deletePreviewFile = (filein) => {
         let index = previewFiles.indexOf(filein);
         if(index == -1){
@@ -62,7 +38,7 @@ export function DigitalUploadForm(props) {
         }
         setPreviewFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
     }
-
+    
 	const prevFilesCallback = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
             const afr = new FileReader()
@@ -71,32 +47,32 @@ export function DigitalUploadForm(props) {
             }
             afr.readAsDataURL(fin);
         });
-
+        
         const bfr = new FileReader()
 		bfr.onload = () => {
-			setBigPreviewSrc(bfr.result)
+            setBigPreviewSrc(bfr.result)
             setDelFileFuncArgs(["deletePreviewFile", bfr.result]);
 		}
 		bfr.readAsDataURL(acceptedFiles[0]);
-
-
+        
+        
 	}
-
+    
 	const {getRootProps: getPrevRootProps, getInputProps: getPrevInputProps, open: openPreview} = useDropzone({onDrop: prevFilesCallback});
 	
-
+    
 	//////////////////////////////////////////////////
 	// Functions for managing product images
 	const [productFiles, setProductFiles] = useState([]);
-
+    
 	const deleteProductFile = useCallback((filein) => {
-		let index = productFiles.indexOf(filein);
+        let index = productFiles.indexOf(filein);
 		if(index == -1){
-			return;
+            return;
 		}
 		setProductFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)])
 	}, [productFiles])
-
+    
     const prodFilesCallback = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
             const afr = new FileReader()
@@ -105,17 +81,17 @@ export function DigitalUploadForm(props) {
             }
             afr.readAsDataURL(fin);
         });
-
+        
         const bfr = new FileReader()
 		bfr.onload = () => {
-			setBigPreviewSrc(bfr.result)
+            setBigPreviewSrc(bfr.result)
             setDelFileFuncArgs(["deleteProductFile", bfr.result]);
 		}
 		bfr.readAsDataURL(acceptedFiles[0]);
 	}
-
+    
 	const {getRootProps: getProdRootProps, getInputProps: getProdInputProps, open: openProduct} = useDropzone({onDrop: prodFilesCallback})
-
+    
     //////////////////////////
     const [delFileFuncArgs, setDelFileFuncArgs] = useState([]);
     const delFileFunc = useCallback(()=>{
@@ -125,6 +101,58 @@ export function DigitalUploadForm(props) {
             deleteProductFile(delFileFuncArgs[1])
         }
     }, [delFileFuncArgs, previewFiles, productFiles, deletePreviewFile, deleteProductFile])
+    
+    const listProductWrapper = useCallback(async ()=>{
+        let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("digital"));
+        let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("digital"));
+
+        let latest_blockhash = await connection.getLatestBlockhash();
+        let tx = new Transaction({
+            feePayer: wallet.publicKey,
+            ... latest_blockhash
+        });
+
+        if(!(vc || vc.data)){
+            tx.add(
+                await PRODUCT_PROGRAM.InitPhysicalListings(wallet, userAccount.data.metadata.voter_id)
+            );
+        }
+        if(!(vtx || vtx.data)){
+            tx.add(
+                await TRANSACTION_PROGRAM.CreateSellerTransactionsLog(
+                    "physical",
+                    wallet
+                )
+            );
+        }
+
+        let [addixs, data_items] = await ListProduct(
+            userAccount,
+            price,
+            delivery,
+            prodName,
+            description,
+            previewFiles,
+            "Image",
+            listRecent,
+            wallet
+        );
+
+        tx.add(...addixs);
+
+        await wallet.signTransaction(tx);
+
+        let sig = await wallet.sendTransaction(tx, connection);
+        
+        let confirmation  = await connection.confirmTransaction({
+            ...latest_blockhash,
+            signature: sig,
+        });
+        
+        await bundlrClient.SendTxItems(data_items, sig);
+
+    },[userAccount?.address, listRecent, delivery, price, prodName, description, previewFiles, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
+
 
 	return(
         <div className="pt-14 lg:pt-32 sm:-mt-32 w-full align-center min-h-screen  place-items-center">
@@ -254,7 +282,7 @@ export function DigitalUploadForm(props) {
                         </div>
                     </div>
                     
-                        <form className="flex flex-col gap-y-6 w-1/3 mb-32" onSubmit={async ()=>{await ListProduct()}}>
+                        <form className="flex flex-col gap-y-6 w-1/3 mb-32" onSubmit={async ()=>{await listProductWrapper()}}>
                             <div className="flex flex-col">
                                 <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
                                 <input
@@ -298,6 +326,10 @@ export function DigitalUploadForm(props) {
                                     placeholder="What are you selling?"
                                     onChange={(e)=>{setDescription(e.target.value)}}
                                 />
+                            </div>
+                            <div className="w-full flex flex-row text-white justify-center" onClick={()=>{setListRecent(!listRecent)}}>
+                                <input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
+                                <span className="mx-8">have product displayed in "recent listings" on the front page</span>
                             </div>
                             <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
                                 <input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>

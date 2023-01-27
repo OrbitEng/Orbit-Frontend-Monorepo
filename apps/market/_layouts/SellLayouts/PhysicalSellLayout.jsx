@@ -8,13 +8,17 @@ import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 import {PhysicalProductFunctionalities} from "@functionalities/Products";
 import Link from "next/link";
 
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import UserAccountCtx from "@contexts/UserAccountCtx";
+import { Transaction } from "@solana/web3.js";
 
 
 export function PhysicalUploadForm(props) {
     const wallet = useWallet();
+    const {connection} = useConnection();
 
 	const {ListProduct} = PhysicalProductFunctionalities();
+    const {userAccount} = useContext(UserAccountCtx);
 
 	const [price, setProdPrice] = useState();
 	const [takeHomeMoney, setTakeHomeMoney] = useState();
@@ -27,38 +31,57 @@ export function PhysicalUploadForm(props) {
 	const [files, setFiles] = useState([]);
     const [fileName, setFileNames] = useState([]);
     const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
-
-	const [vendorPhysicalListings, setVendorPhysicalListings] = useState("");
-	const [vendorPhysicalTx, setVendorPhysicalTx] = useState("");
     
-    
+    const listProductWrapper = useCallback(async ()=>{
+        let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("physical"));
+        let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("physical"));
 
-	useEffect(async()=>{
-		try{
-			let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("physical"));
-			if(vc && vc.data){
-				setVendorPhysicalListings(vc)
-			}else{
-                setVendorPhysicalListings()
-            }
-            
-		}catch(e){
-            console.log("init listing render err: ", e)
-            setVendorPhysicalListings()
-		}
-        try{
-            let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("physical"));
-            if(vtx && vtx.data){
-                setVendorPhysicalTx(vtx)
-            }else{
-                setVendorPhysicalTx()
-            }
-            
-        }catch(e){
-            console.log("init logs render err: ", e)
-            setVendorPhysicalTx()
-		}
-	},[PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection, wallet.connected]);
+        let latest_blockhash = await connection.getLatestBlockhash();
+		let tx = new Transaction({
+			feePayer: wallet.publicKey,
+			... latest_blockhash
+		});
+
+        if(!(vc || vc.data)){
+            tx.add(
+                await PRODUCT_PROGRAM.InitPhysicalListings(wallet, userAccount.data.metadata.voter_id)
+            );
+        }
+        if(!(vtx || vtx.data)){
+            tx.add(
+                await TRANSACTION_PROGRAM.CreateSellerTransactionsLog(
+                    "physical",
+                    wallet
+                )
+            );
+        }
+
+        let [addixs, data_items] = await ListProduct(
+            userAccount,
+            price,
+            delivery,
+            prodName,
+            description,
+            quantity,
+            files,
+            listRecent,
+            wallet
+        );
+
+        tx.add(...addixs);
+
+        await wallet.signTransaction(tx);
+
+		let sig = await wallet.sendTransaction(tx, connection);
+		
+		let confirmation  = await connection.confirmTransaction({
+			...latest_blockhash,
+			signature: sig,
+		});
+		
+		await bundlrClient.SendTxItems(data_items, sig);
+
+    },[userAccount.address, price, delivery, prodName, description, quantity, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
 
 	const onDrop = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
@@ -167,7 +190,7 @@ export function PhysicalUploadForm(props) {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-y-6 mb-32">
+                    <form className="flex flex-col gap-y-6 mb-32" onSubmit={async()=>{await listProductWrapper()}}>
                         <div className="flex flex-col">
                             <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
                             <input
@@ -241,16 +264,10 @@ export function PhysicalUploadForm(props) {
                             <input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
                             <span className="mx-8">have product displayed in "recent listings" on the front page</span>
                         </div>
-                        <div className="bg-[#A637F0] bg-opacity-[15%] px-8 mt-4 rounded-full flex justify-center mx-auto hover:scale-105 transition duration-200 ease-in-out">
-                            <button className="text-transparent py-3 bg-clip-text font-bold bg-gradient-to-t from-[#A637F0] to-[#FAB6FD] mx-auto text-3xl rounded-full" onClick={async ()=>{
-                                await ListProduct(
-                                    price, delivery, prodName, description, quantity, files, listRecent
-                                );
-                            }}>
-                                List Item
-                            </button>
-                        </div>	
-                    </div>
+                        <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
+                                <input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="List Item"/>
+                        </div>
+                    </form>
                     </div>
                 </div>
             </div>

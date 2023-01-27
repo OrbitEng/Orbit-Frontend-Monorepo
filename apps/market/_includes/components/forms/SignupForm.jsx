@@ -67,7 +67,6 @@ export function SignupForm(props) {
 		tx.add(...instructions);
 		await wallet.signTransaction(tx);
 
-		
 		let sig = await wallet.sendTransaction(tx, connection);
 		
 		let confirmation  = await connection.confirmTransaction({
@@ -76,7 +75,7 @@ export function SignupForm(props) {
 		});
 		
 
-		await bundlrClient.SendTxItems(data_items);
+		await bundlrClient.SendTxItems(data_items, sig);
 		props.setOpen(false);
 		setUserAccount( await ACCOUNTS_PROGRAM.GetAccount(GenAccountAddress(wallet.publicKey)));
 	},[pfp, reflink, nickName, biography, bundlrClient, wallet.publicKey, ACCOUNTS_PROGRAM.MARKET_ACCOUNTS_PROGRAM._provider.connection])
