@@ -282,7 +282,7 @@ export function DigitalUploadForm(props) {
                         </div>
                     </div>
                     
-                        <form className="flex flex-col gap-y-6 w-1/3 mb-32" onSubmit={async ()=>{await listProductWrapper()}}>
+                        <div className="flex flex-col gap-y-6 w-1/3 mb-32">
                             <div className="flex flex-col">
                                 <label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
                                 <input
@@ -331,10 +331,15 @@ export function DigitalUploadForm(props) {
                                 <input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
                                 <span className="mx-8">have product displayed in "recent listings" on the front page</span>
                             </div>
-                            <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
-                                <input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
+                                <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
+                                <button className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" onClick={async ()=>{
+                                    await listProductWrapper()   
+                                }}>
+                                    List Item
+                                </button>
                             </div>
-                            </form>
+                            
+                            </div>
                     </div>
             </div>
 		

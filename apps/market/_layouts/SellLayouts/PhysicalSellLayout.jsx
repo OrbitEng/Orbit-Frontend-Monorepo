@@ -81,7 +81,7 @@ export function PhysicalUploadForm(props) {
 		
 		await bundlrClient.SendTxItems(data_items, sig);
 
-    },[userAccount.address, price, delivery, prodName, description, quantity, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
+    },[userAccount?.address, price, delivery, prodName, description, quantity, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
 
 	const onDrop = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
@@ -264,9 +264,13 @@ export function PhysicalUploadForm(props) {
                             <input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
                             <span className="mx-8">have product displayed in "recent listings" on the front page</span>
                         </div>
-                        <div className="bg-[#171717] px-6 rounded-full flex justify-center mx-auto border-t-[0.5px] border-[#474747] hover:scale-105 transition duration-200 ease-in-out">
-                                <input className="text-transparent py-2 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-2xl rounded-full" type="submit" value="Upload"/>
-                        </div>
+                        <div className="bg-[#A637F0] bg-opacity-[15%] px-8 mt-4 rounded-full flex justify-center mx-auto hover:scale-105 transition duration-200 ease-in-out">
+                            <button className="text-transparent py-3 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-3xl rounded-full" onClick={async ()=>{
+                                await listProductWrapper()   
+                            }}>
+                                List Item
+                            </button>
+                        </div>	
                     </div>
                     </div>
                 </div>
