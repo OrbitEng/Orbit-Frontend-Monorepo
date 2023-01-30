@@ -1,5 +1,6 @@
 import * as anchor from '@project-serum/anchor';
 import {PublicKey} from "@solana/web3.js";
+import { MARKET_ACCOUNTS_PROGRAM_ID } from './MarketAccountsClient';
 
 const idl = require("../idls/orbit_transaction");
 
@@ -9,39 +10,116 @@ export function SetProgramWallet(prov){
     TRANSACTION_PROGRAM = new anchor.Program(idl, idl.metadata.address, prov);
 }
 
-export async function CreateBuyerTransactionsLog (
-    market_type,
-payer_wallet
+/// INIT LOGS
+//// BUYER
+
+export async function CreateCommissionsBuyerTransactionsLog (
+    payer_wallet,
+    user_account
 ){
 
-    await TRANSACTION_PROGRAM.methods
-    .createBuyerTransactionsLog(market_type)
+    return TRANSACTION_PROGRAM.methods
+    .createBuyerCommissionsTransactions()
     .accounts({
-        transactionsLog: this.GenBuyerTransactionLog(market_type, payer_wallet.publicKey),
-        wallet: payer_wallet.publicKey
-    })
-    .instruction()
-}
-
-export async function CreateSellerTransactionsLog (market_type,
-    payer_wallet
-){
-
-    await TRANSACTION_PROGRAM.methods
-    .createSellerTransactionsLog(market_type)
-    .accounts({
-        transactionsLog: this.GenSellerTransactionLog(market_type, payer_wallet.publicKey),
+        transactionsLog: this.GenBuyerTransactionLog("commission", voter_id),
+        buyerAccount: user_account.address,
         wallet: payer_wallet.publicKey,
+        accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
     })
     .instruction()
 }
+
+export async function CreateDigitalBuyerTransactionsLog (
+    payer_wallet,
+    user_account
+){
+
+    return TRANSACTION_PROGRAM.methods
+    .createBuyerDigitalTransactions()
+    .accounts({
+        transactionsLog: this.GenBuyerTransactionLog("digital", voter_id),
+        buyerAccount: user_account.address,
+        wallet: payer_wallet.publicKey,
+        accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
+    })
+    .instruction()
+}
+
+export async function CreatePhysicalBuyerTransactionsLog (
+    payer_wallet,
+    user_account
+){
+
+    return TRANSACTION_PROGRAM.methods
+    .createBuyerPhysicalTransactions()
+    .accounts({
+        transactionsLog: this.GenBuyerTransactionLog("physical", voter_id),
+        buyerAccount: user_account.address,
+        wallet: payer_wallet.publicKey,
+        accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
+    })
+    .instruction()
+}
+
+//// SELLER
+
+export async function CreateCommissionsTransactionsLog (
+    payer_wallet,
+    user_account
+){
+
+    return TRANSACTION_PROGRAM.methods
+    .createSellerCommissionsTransactions()
+    .accounts({
+        transactionsLog: this.GenSellerTransactionLog("commission", user_account.data.voterId),
+        sellerAccount: user_account.address,
+        wallet: payer_wallet.publicKey,
+        accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
+    })
+    .instruction()
+}
+
+export async function CreateDigitalSellerTransactionsLog (
+    payer_wallet,
+    user_account
+){
+
+    return TRANSACTION_PROGRAM.methods
+    .createSellerDigitalTransactions()
+    .accounts({
+        transactionsLog: this.GenSellerTransactionLog("digital", user_account.data.voterId),
+        sellerAccount: user_account.address,
+        wallet: payer_wallet.publicKey,
+        accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
+    })
+    .instruction()
+}
+
+export async function CreatePhysicalSellerTransactionsLog (
+    payer_wallet,
+    user_account
+){
+
+    return TRANSACTION_PROGRAM.methods
+    .createSellerPhysicalTransactions()
+    .accounts({
+        transactionsLog: this.GenSellerTransactionLog("physical", user_account.data.voterId),
+        sellerAccount: user_account.address,
+        wallet: payer_wallet.publicKey,
+        accountsProgram: MARKET_ACCOUNTS_PROGRAM_ID
+    })
+    .instruction()
+}
+
+////////////////////////////////////////
+// TRANSFER
 
 export async function TransferTransactionsLog (
     tx_log,
     new_owner,
 payer_wallet
 ){
-    await TRANSACTION_PROGRAM.methods
+    return TRANSACTION_PROGRAM.methods
     .transferTransactionsLog()
     .accounts({
         transactionsLog: tx_log,
@@ -54,25 +132,26 @@ payer_wallet
 export async function TransferAllTransactionsLog (
     new_owner,
     buyer_or_seller,
-payer_wallet
+    payer_wallet,
+    voter_id
 ){
     let physicalLog;
     let digitalLog;
     let commissionsLog;
     switch(buyer_or_seller){
         case "buyer":
-            physicalLog = this.GenBuyerTransactionLog("physical", payer_wallet.publicKey)
-            digitalLog = this.GenBuyerTransactionLog("digital", payer_wallet.publicKey)
-            commissionsLog = this.GenBuyerTransactionLog("commission", payer_wallet.publicKey)
+            physicalLog = this.GenBuyerTransactionLog("physical", voter_id)
+            digitalLog = this.GenBuyerTransactionLog("digital", voter_id)
+            commissionsLog = this.GenBuyerTransactionLog("commission", voter_id)
             break;
         case "seller":
-            physicalLog = this.GenSellerTransactionLog("physical", payer_wallet.publicKey)
-            digitalLog = this.GenSellerTransactionLog("digital", payer_wallet.publicKey)
-            commissionsLog = this.GenSellerTransactionLog("commission", payer_wallet.publicKey)
+            physicalLog = this.GenSellerTransactionLog("physical", voter_id)
+            digitalLog = this.GenSellerTransactionLog("digital", voter_id)
+            commissionsLog = this.GenSellerTransactionLog("commission", voter_id)
             break;
     };
 
-    await TRANSACTION_PROGRAM.methods
+    return TRANSACTION_PROGRAM.methods
     .transferAllTransactionsLog()
     .accounts({
         physicalLog: physicalLog,
@@ -89,13 +168,13 @@ payer_wallet
 
 export function GenBuyerTransactionLog (
     market_type,
-    payer_wallet
+    voter_id
 ){
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("buyer_transactions"),
             Buffer.from(market_type),
-            (typeof payer_wallet == "string" ? new PublicKey(payer_wallet) : payer_wallet).toBuffer()
+            voter_id.toArray("le",8)
         ],
         TRANSACTION_PROGRAM_ID
     )[0];
@@ -103,14 +182,14 @@ export function GenBuyerTransactionLog (
 
 export function GenSellerTransactionLog (
     market_type,
-    payer_wallet
+    voter_id
 ){
         
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("seller_transactions"),
             Buffer.from(market_type),
-            (typeof payer_wallet == "string" ? new PublicKey(payer_wallet) : payer_wallet).toBuffer()
+            voter_id.toArray("le",8)
         ],
         TRANSACTION_PROGRAM_ID
     )[0];
@@ -140,7 +219,6 @@ export async function GetTransactionSeller (tx_addr){
         tx_addr = new PublicKey(tx_addr)
     }
     let tx = await this.connection.getAccountInfo(tx_addr);
-    console.log(tx)
     return new PublicKey(tx.data.slice(40,72))
 }
 

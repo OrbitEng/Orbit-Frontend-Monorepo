@@ -33,29 +33,47 @@ export function PhysicalUploadForm(props) {
     const [bigPreviewSrc, setBigPreviewSrc] = useState(null);
     
     const listProductWrapper = useCallback(async ()=>{
-        let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("physical"));
-        let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("physical"));
+        if(!(userAccount?.data?.voterId && wallet.publicKey && connection)) return;
 
         let latest_blockhash = await connection.getLatestBlockhash();
 		let tx = new Transaction({
 			feePayer: wallet.publicKey,
 			... latest_blockhash
 		});
-
-        if(!(vc || vc.data)){
-            tx.add(
-                await PRODUCT_PROGRAM.InitPhysicalListings(wallet, userAccount.data.metadata.voter_id)
-            );
-        }
-        if(!(vtx || vtx.data)){
-            tx.add(
-                await TRANSACTION_PROGRAM.CreateSellerTransactionsLog(
+        
+        try{
+            await PRODUCT_PROGRAM.GetListingsStruct(
+                PRODUCT_PROGRAM.GenListingsAddress(
                     "physical",
-                    wallet
+                    userAccount.data.voterId
                 )
             );
-        }
+        }catch(e){
+            tx.add(
+                await PRODUCT_PROGRAM.InitPhysicalListings(
+                    wallet,
+                    userAccount
+                )
+            );
+        };
+        
+        try{
+            await TRANSACTION_PROGRAM.GetSellerOpenTransactions(
+                TRANSACTION_PROGRAM.GenSellerTransactionLog(
+                    "physical",
+                    userAccount.data.voterId
+                )
+            );
+        }catch(e){
+            tx.add(
+                await TRANSACTION_PROGRAM.CreatePhysicalSellerTransactionsLog(
+                    wallet,
+                    userAccount
+                )
+            );
+        };
 
+        console.log("making")
         let [addixs, data_items] = await ListProduct(
             userAccount,
             price,
@@ -72,6 +90,7 @@ export function PhysicalUploadForm(props) {
 
         await wallet.signTransaction(tx);
 
+        console.log("sending")
 		let sig = await wallet.sendTransaction(tx, connection);
 		
 		let confirmation  = await connection.confirmTransaction({
@@ -81,7 +100,7 @@ export function PhysicalUploadForm(props) {
 		
 		await bundlrClient.SendTxItems(data_items, sig);
 
-    },[userAccount?.address, price, delivery, prodName, description, quantity, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
+    },[userAccount?.data, price, delivery, prodName, description, quantity, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
 
 	const onDrop = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{

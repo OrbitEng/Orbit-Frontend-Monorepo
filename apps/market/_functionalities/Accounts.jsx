@@ -83,39 +83,39 @@ export function MarketAccountFunctionalities(props){
     /// INIT TX LOGS
 
     /// :BUYER
-    const AddBuyerPhysicalTransactions = async(payer_wallet) => {
+    const AddBuyerPhysicalTransactions = async(payer_wallet, voter_id) => {
         return ACCOUNTS_PROGRAM.AddBuyerPhysicalTransactions(
-            TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", payer_wallet.publicKey),
+            TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", voter_id),
             payer_wallet
         );
     }
-    const AddBuyerDigitalTransactions = async(payer_wallet) => {
+    const AddBuyerDigitalTransactions = async(payer_wallet, voter_id) => {
         return ACCOUNTS_PROGRAM.AddBuyerDigitalTransactions(
-            TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey),
+            TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", voter_id),
             payer_wallet
         );
     }
-    const AddBuyerCommissionTransactions = async(payer_wallet) => {
+    const AddBuyerCommissionTransactions = async(payer_wallet, voter_id) => {
         return ACCOUNTS_PROGRAM.AddBuyerCommissionTransactions(
-            TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey),
+            TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", voter_id),
             payer_wallet
         );
     }
 
     /// :SELLER
-    const AddSellerPhysicalTransactions = async() => {
+    const AddSellerPhysicalTransactions = async(voter_id) => {
         return ACCOUNTS_PROGRAM.AddSellerPhysicalTransactions(
-            TRANSACTION_PROGRAM.GenSellerTransactionLog("physical")
+            TRANSACTION_PROGRAM.GenSellerTransactionLog("physical", voter_id)
         );
     }
-    const AddSellerDigitalTransactions = async() => {
+    const AddSellerDigitalTransactions = async(voter_id) => {
         return ACCOUNTS_PROGRAM.AddSellerDigitalTransactions(
-            TRANSACTION_PROGRAM.GenSellerTransactionLog("digital")
+            TRANSACTION_PROGRAM.GenSellerTransactionLog("digital", voter_id)
         );
     }
-    const AddSellerCommissionTransactions = async() => {
+    const AddSellerCommissionTransactions = async(voter_id) => {
         return ACCOUNTS_PROGRAM.AddSellerCommissionTransactions(
-            TRANSACTION_PROGRAM.GenSellerTransactionLog("commission")
+            TRANSACTION_PROGRAM.GenSellerTransactionLog("commission", voter_id)
         );
     }
 

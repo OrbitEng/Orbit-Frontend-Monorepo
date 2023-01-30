@@ -15,7 +15,7 @@ export function CommissionUploadForm(props) {
 
 	useEffect(async()=>{
 		try{
-			let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("commission"));
+			let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("commission", userAccount.data.voterId));
 			if(vc && vc.data){
 				setVendorCommissionCatalog(vc);
 			}else{
@@ -26,7 +26,7 @@ export function CommissionUploadForm(props) {
 			setVendorCommissionCatalog()
 		}
 		try{
-			let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("commission"));
+			let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("commission", userAccount.data.voterId));
 			if(vtx && vtx.data){
 				setVendorCommissionTx(vtx);
 			}else{

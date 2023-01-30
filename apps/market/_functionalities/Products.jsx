@@ -10,7 +10,7 @@ export function DigitalProductFunctionalities(props){
     
 
     const CreateDigitalListingsCatalog = async(market_acc, wallet)=>{
-        await PRODUCT_PROGRAM.InitDigitalListings(wallet, market_acc.data.metadata.voter_id);
+        await PRODUCT_PROGRAM.InitDigitalListings(wallet, market_acc);
     }
 
     const ListProduct = async(
@@ -35,13 +35,20 @@ export function DigitalProductFunctionalities(props){
                 description: description
             })
         );
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber());
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.voterId);
 
-        let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
-            (await PRODUCT_PROGRAM.GetListingsStruct(
-                listings_addr
-            )).data
-        );
+        let next_index;
+        try{
+            next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
+                (
+                    await PRODUCT_PROGRAM.GetListingsStruct(
+                        listings_addr
+                    )                    
+                ).data
+            );
+        }catch(e){
+            next_index = 0;
+        }
 
         let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
             next_index, listings_addr, "digital"
@@ -52,14 +59,17 @@ export function DigitalProductFunctionalities(props){
             prod_addr,
             {
                 info: desc_url.id,
-                ownerCatalog: listings_addr,
+                ownerCatalog: market_acc.data.voterId,
                 index: next_index,
-                    price: new BN(price),
+                price: new BN(price),
                 deliveryEstimate: new BN(deliveryEstimate),
-                media: media_url.id
+                media: media_url.id,
+                timesSold: new BN(0),
+                searchIndexed: false
             },
             fileType,
             add_to_recent,
+            market_acc,
             payer_wallet
         );
 
@@ -93,7 +103,7 @@ export function DigitalProductFunctionalities(props){
         
         return PRODUCT_PROGRAM.UpdateProductPrice(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.voterId),
             new_price
         )
     }
@@ -107,7 +117,7 @@ export function DigitalProductFunctionalities(props){
 
         let update_ix = await PRODUCT_PROGRAM.SetMedia(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.voterId),
             media_item.id
         );
         let funding_ix = (await bundlrClient.FundInstruction([media_item])).tx.instructions[0];
@@ -128,7 +138,7 @@ export function DigitalProductFunctionalities(props){
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.voterId),
             info_item.id
         );
 
@@ -174,7 +184,7 @@ export function PhysicalProductFunctionalities(props){
 
     /// SELLER UTILS
     const CreatePhysicalListingsCatalog = async(market_acc, wallet)=>{
-        await PRODUCT_PROGRAM.InitPhysicalListings(wallet, market_acc.data.metadata.voter_id)
+        await PRODUCT_PROGRAM.InitPhysicalListings(wallet, market_acc)
     }
 
     const ListProduct = async(
@@ -198,13 +208,20 @@ export function PhysicalProductFunctionalities(props){
             description: description
         }));
 
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id);
-
-        let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
-            (await PRODUCT_PROGRAM.GetListingsStruct(
-                listings_addr
-            )).data
-        );
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.voterId);
+        
+        let next_index;
+        try{
+            next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
+                (
+                    await PRODUCT_PROGRAM.GetListingsStruct(
+                        listings_addr
+                    )                    
+                ).data
+            );
+        }catch(e){
+            next_index = 0;
+        }
 
         let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
             next_index, listings_addr, "physical"
@@ -216,14 +233,17 @@ export function PhysicalProductFunctionalities(props){
             prod_addr,
             {
                 info: desc_url.id,
-                ownerCatalog: listings_addr,
+                ownerCatalog: market_acc.data.voterId,
                 index: next_index,
-                    price: new BN(price),
+                price: new BN(price),
                 deliveryEstimate: deliveryEstimate,
-                media: media_url.id
+                media: media_url.id,
+                timesSold: new BN,
+                searchIndexed: false,
             },
             quantity,
             add_to_recent,
+            market_acc,
             payer_wallet
         );
 
@@ -245,7 +265,7 @@ export function PhysicalProductFunctionalities(props){
 
         return PRODUCT_PROGRAM.UpdateProductPrice(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.voterId),
             new_price
         )
     }
@@ -265,7 +285,7 @@ export function PhysicalProductFunctionalities(props){
 
         let update_ix = await PRODUCT_PROGRAM.SetMedia(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.voterId),
             media_item.id
         )
 
@@ -289,7 +309,7 @@ export function PhysicalProductFunctionalities(props){
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.voterId),
             info_item.id
         );
 
@@ -339,7 +359,7 @@ export function CommissionProductFunctionalities(props){
 
     /// SELLER UTILS
     const CreateCommissionsListingsCatalog = async(market_acc, wallet)=>{
-        await PRODUCT_PROGRAM.InitCommissionsListings(wallet, market_acc.data.metadata.voter_id);
+        await PRODUCT_PROGRAM.InitCommissionsListings(wallet, market_acc);
     }
 
     const ListProduct = async(
@@ -362,13 +382,20 @@ export function CommissionProductFunctionalities(props){
                 description: description
             }));
 
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber());
+        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.voterId);
 
-        let next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
-            (await PRODUCT_PROGRAM.GetListingsStruct(
-                listings_addr
-            )).data
-        );
+        let next_index;
+        try{
+            next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
+                (
+                    await PRODUCT_PROGRAM.GetListingsStruct(
+                        listings_addr
+                    )                    
+                ).data
+            );
+        }catch(e){
+            next_index = 0;
+        }
 
         let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
             next_index, listings_addr, "commission"
@@ -379,13 +406,16 @@ export function CommissionProductFunctionalities(props){
             prod_addr,
             {
                 info: desc_url.id,
-                ownerCatalog: listings_addr,
+                ownerCatalog: market_acc.data.voterId,
                 index: next_index,
-                    price: new BN(price),
+                price: new BN(price),
                 deliveryEstimate: new BN(deliveryEstimate),
-                media: media_url.id
+                media: media_url.id,
+                timesSold: new BN(0),
+                searchIndexed: false,
             },
             add_to_recent,
+            market_acc,
             payer_wallet
         );
 
@@ -407,7 +437,7 @@ export function CommissionProductFunctionalities(props){
 
         return PRODUCT_PROGRAM.UpdateProductPrice(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.voterId),
             new_price
         )
     }
@@ -420,7 +450,7 @@ export function CommissionProductFunctionalities(props){
 
         let update_ix = await PRODUCT_PROGRAM.SetMedia(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.voterId),
             media_item.id
         )
 
@@ -444,7 +474,7 @@ export function CommissionProductFunctionalities(props){
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
-            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.metadata.voter_id.toNumber()),
+            PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.voterId),
             info_item.id
         );
 

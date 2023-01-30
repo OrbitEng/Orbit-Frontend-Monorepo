@@ -103,8 +103,7 @@ export function DigitalUploadForm(props) {
     }, [delFileFuncArgs, previewFiles, productFiles, deletePreviewFile, deleteProductFile])
     
     const listProductWrapper = useCallback(async ()=>{
-        let vc = await PRODUCT_PROGRAM.GetListingsStruct(PRODUCT_PROGRAM.GenListingsAddress("digital"));
-        let vtx = await TRANSACTION_PROGRAM.GetSellerOpenTransactions(TRANSACTION_PROGRAM.GenSellerTransactionLog("digital"));
+        if(!(userAccount?.data?.voterId?.toNumber && wallet.publicKey)) return;
 
         let latest_blockhash = await connection.getLatestBlockhash();
         let tx = new Transaction({
@@ -112,19 +111,37 @@ export function DigitalUploadForm(props) {
             ... latest_blockhash
         });
 
-        if(!(vc || vc.data)){
-            tx.add(
-                await PRODUCT_PROGRAM.InitPhysicalListings(wallet, userAccount.data.metadata.voter_id)
-            );
-        }
-        if(!(vtx || vtx.data)){
-            tx.add(
-                await TRANSACTION_PROGRAM.CreateSellerTransactionsLog(
-                    "physical",
-                    wallet
+        try{
+            await PRODUCT_PROGRAM.GetListingsStruct(
+                PRODUCT_PROGRAM.GenListingsAddress(
+                    "digital",
+                    userAccount.data.voterId
                 )
             );
-        }
+        }catch(e){
+            tx.add(
+                await PRODUCT_PROGRAM.InitPhysicalListings(
+                    wallet,
+                    userAccount
+                )
+            );
+        };
+        
+        try{
+            await TRANSACTION_PROGRAM.GetSellerOpenTransactions(
+                TRANSACTION_PROGRAM.GenSellerTransactionLog(
+                    "digital",
+                    userAccount.data.voterId
+                )
+            );
+        }catch(e){
+            tx.add(
+                await TRANSACTION_PROGRAM.CreateDigitalSellerTransactionsLog(
+                    wallet,
+                    userAccount
+                )
+            );
+        };
 
         let [addixs, data_items] = await ListProduct(
             userAccount,

@@ -285,12 +285,13 @@ export function DigitalFunctionalities(){
     /// BOTH PARTIES GENERAL UTILS
     const LeaveReview = async(
         tx_addr,
-        payer_wallet
+        payer_wallet,
+        voter_id
     ) =>{
         let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
         let other_party = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
 
-        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey).toString() == other_party.toString()){
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", voter_id).toString() == other_party.toString()){
             other_party = tx_struct.seller;
         }
 
@@ -306,14 +307,15 @@ export function DigitalFunctionalities(){
 
     const CloseTransactionAccount = async(
         tx_addr,
-        payer_wallet
+        payer_wallet,
+        voter_id
     ) =>{
         let tx_struct = (await DIGITAL_PROGRAM.GetDigitalTransaction(tx_addr)).data.metadata;
         let buyer_tx_log_addr = tx_struct.buyer;
         let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(buyer_tx_log_addr);
-        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey);
-        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey).toString() != buyer_tx_log_addr.toString()){
-            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("digital", payer_wallet.publicKey)
+        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", voter_id);
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", voter_id).toString() != buyer_tx_log_addr.toString()){
+            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("digital", voter_id)
         }
 
         return DIGITAL_PROGRAM.DigitalCloseTransactionAccount(
@@ -699,12 +701,13 @@ export function CommissionFunctionalities(){
 
     const LeaveReview = async(
         tx_addr,
-        payer_wallet
+        payer_wallet,
+        voter_id
     ) =>{
         let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let other_party = (await COMMISSION_MARKET_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
 
-        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey).toString() == other_party.toString()){
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", voter_id).toString() == other_party.toString()){
             other_party = tx_struct.seller;
         }
 
@@ -721,20 +724,22 @@ export function CommissionFunctionalities(){
 
     const CloseTransactionAccount = async(
         tx_addr,
-        payer_wallet
+        payer_wallet,
+        voter_id
     ) =>{
         let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data.metadata;
         let buyer_tx_log_addr = tx_struct.buyer;
         let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(buyer_tx_log_addr);
-        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
+        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", voter_id);
         if(tx_log.toString() != buyer_tx_log_addr.toString()){
-            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("commission", payer_wallet.publicKey)
+            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("commission", voter_id)
         }
 
         return COMMISSION_MARKET_PROGRAM.CommissionCloseTransactionAccount(
             tx_addr,
             tx_log,
-            buyer_tx_log_struct.data.buyer_wallet
+            buyer_tx_log_struct.data.buyer_wallet,
+            payer_wallet
         )
     }
 
@@ -768,10 +773,11 @@ export function CommissionFunctionalities(){
     const ProposeRate = async(
         tx_addr,
         new_rate,
-        payer_wallet
+        payer_wallet,
+        voter_id
     ) =>{
         let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data;
-        let tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
+        let tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", voter_id);
         if(tx_log_addr.toString() != tx_struct.buyer){
             tx_log_addr = tx_struct.seller;
         }
@@ -784,10 +790,11 @@ export function CommissionFunctionalities(){
     }
     const AcceptRate = async(
         tx_addr,
-        payer_wallet
+        payer_wallet,
+        voter_id
     ) =>{
         let tx_struct = (await COMMISSION_MARKET_PROGRAM.GetCommissionTransaction(tx_addr)).data;
-        let tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", payer_wallet.publicKey);
+        let tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("commission", voter_id);
         if(tx_log_addr.toString() != tx_struct.buyer){
             tx_log_addr = tx_struct.seller;
         }
@@ -967,7 +974,8 @@ export function PhysicalFunctionalities(){
         product,
         use_discount,
         currency,
-        payer_wallet
+        payer_wallet,
+        voter_id
     )=>{
         let product_addr = product.address;
         let listings_addr = product.data.metadata.ownerCatalog;
@@ -977,7 +985,7 @@ export function PhysicalFunctionalities(){
 
         let next_open_seller_index = await TRANSACTION_PROGRAM.FindNextOpenSellerTransaction(seller_tx_log_addr);
 
-        let buyer_tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", payer_wallet.publicKey);
+        let buyer_tx_log_addr = TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", voter_id);
         let next_open_buyer_index = await TRANSACTION_PROGRAM.FindNextOpenBuyerTransaction(buyer_tx_log_addr);
         let tx_addr = PHYSICAL_PROGRAM.GenPhysicalTransactionAddress(vendor_log_address, sellerIndex);
         let buyer_account_addr = ACCOUNTS_PROGRAM.GenAccountAddress(payer_wallet.publicKey);
@@ -1062,12 +1070,13 @@ export function PhysicalFunctionalities(){
     /// BOTH PARTIES GENERAL UTILS
     const LeaveReview = async(
         tx_addr,
-        payer_wallet
+        payer_wallet,
+        voter_id
     ) =>{
         let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
         let other_party = (await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(tx_struct.buyer)).data.buyer_wallet;
 
-        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", payer_wallet.publicKey).toString() == other_party.toString()){
+        if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("digital", voter_id).toString() == other_party.toString()){
             other_party = tx_struct.seller;
         }
 
@@ -1084,14 +1093,15 @@ export function PhysicalFunctionalities(){
 
     const CloseTransactionAccount = async(
         tx_addr,
-        payer_wallet
+        payer_wallet,
+        voter_id
     ) =>{
         let tx_struct = (await PHYSICAL_PROGRAM.GetPhysicalTransaction(tx_addr)).data.metadata;
         let buyer_tx_log_addr = tx_struct.buyer;
         let buyer_tx_log_struct = await TRANSACTION_PROGRAM.GetBuyerOpenTransactions(buyer_tx_log_addr);
-        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", payer_wallet.publicKey);
+        let tx_log = TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", voter_id);
         if(TRANSACTION_PROGRAM.GenBuyerTransactionLog("physical", payer_wallet.publicKey).toString() != buyer_tx_log_addr.toString()){
-            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("physical", payer_wallet.publicKey)
+            tx_log = TRANSACTION_PROGRAM.GenSellerTransactionLog("physical", voter_id)
         }
 
         return PHYSICAL_PROGRAM.PhysicalCloseTransactionAccount(

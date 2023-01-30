@@ -71,15 +71,15 @@ export function ProfileLayout(props) {
 
 		setMarketAccount(market_account);
 		if(market_account.data.physicalListings){
-			let listings = await GetAllVendorPhysicalProducts(market_account.data.voterId.toNumber());
+			let listings = await GetAllVendorPhysicalProducts(market_account.data.voterId);
 			setPhysicalListings(listings);
 		}
 		if(market_account.data.digitalListings){
-			let listings = await GetAllVendorDigitalProducts(market_account.data.voterId.toNumber());
+			let listings = await GetAllVendorDigitalProducts(market_account.data.voterId);
 			setDigitalListings(listings);
 		}
 		if(market_account.data.commissionListings){
-			let listings = await GetAllVendorCommissionProducts(market_account.data.voterId.toNumber());
+			let listings = await GetAllVendorCommissionProducts(market_account.data.voterId);
 			setCommissionListings(listings);
 		}
 
