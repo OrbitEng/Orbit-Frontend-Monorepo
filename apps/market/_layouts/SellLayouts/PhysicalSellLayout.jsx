@@ -41,37 +41,24 @@ export function PhysicalUploadForm(props) {
 			... latest_blockhash
 		});
         
-        try{
-            await PRODUCT_PROGRAM.GetListingsStruct(
-                PRODUCT_PROGRAM.GenListingsAddress(
-                    "physical",
-                    userAccount.data.voterId
-                )
-            );
-        }catch(e){
+        if(!userAccount.data.physicalListings){
             tx.add(
                 await PRODUCT_PROGRAM.InitPhysicalListings(
                     wallet,
                     userAccount
                 )
             );
-        };
+        }
         
-        try{
-            await TRANSACTION_PROGRAM.GetSellerOpenTransactions(
-                TRANSACTION_PROGRAM.GenSellerTransactionLog(
-                    "physical",
-                    userAccount.data.voterId
-                )
-            );
-        }catch(e){
+        
+        if(!userAccount.data.sellerPhysicalTransactions){
             tx.add(
                 await TRANSACTION_PROGRAM.CreatePhysicalSellerTransactionsLog(
                     wallet,
                     userAccount
                 )
             );
-        };
+        }
 
         console.log("making")
         let [addixs, data_items] = await ListProduct(

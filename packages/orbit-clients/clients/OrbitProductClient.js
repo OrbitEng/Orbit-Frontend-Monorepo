@@ -634,10 +634,11 @@ export async function SetFileType (
 /// GENERATION UTILTIES
 
 export function GenListingsAddress (product_type, voter_id){
+    console.log(voter_id.toArray("le",8));
     return PublicKey.findProgramAddressSync(
         [
             Buffer.from("vendor_listings"),
-            [["commission","digital","physical"].indexOf(product_type)],
+            Buffer.from(product_type),
             voter_id.toArray("le",8)
         ],
         PRODUCT_PROGRAM_ID
@@ -652,7 +653,7 @@ export function GenProductAddress (product_index, vendor_listings, product_type)
         [
             Buffer.from(product_type+"_product"),
             vendor_listings.toBuffer(),
-            Buffer.from([product_index])
+            [product_index]
         ],
         PRODUCT_PROGRAM_ID
     )[0]
