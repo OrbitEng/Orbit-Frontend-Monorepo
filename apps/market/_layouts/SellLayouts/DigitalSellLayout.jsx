@@ -111,37 +111,24 @@ export function DigitalUploadForm(props) {
             ... latest_blockhash
         });
 
-        try{
-            await PRODUCT_PROGRAM.GetListingsStruct(
-                PRODUCT_PROGRAM.GenListingsAddress(
-                    "digital",
-                    userAccount.data.voterId
-                )
-            );
-        }catch(e){
+        if(!userAccount.data.physicalListings){
             tx.add(
-                await PRODUCT_PROGRAM.InitPhysicalListings(
+                await PRODUCT_PROGRAM.InitDigitalListings(
                     wallet,
                     userAccount
                 )
             );
-        };
+        }
         
-        try{
-            await TRANSACTION_PROGRAM.GetSellerOpenTransactions(
-                TRANSACTION_PROGRAM.GenSellerTransactionLog(
-                    "digital",
-                    userAccount.data.voterId
-                )
-            );
-        }catch(e){
+        
+        if(!userAccount.data.sellerDigitalTransactions){
             tx.add(
                 await TRANSACTION_PROGRAM.CreateDigitalSellerTransactionsLog(
                     wallet,
                     userAccount
                 )
             );
-        };
+        }
 
         let [addixs, data_items] = await ListProduct(
             userAccount,

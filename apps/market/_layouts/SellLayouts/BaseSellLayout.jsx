@@ -2,6 +2,7 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { useState, useCallback, Fragment } from "react";
 import { Transition } from "@headlessui/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import Link from "next/link";
 
 const token_addresses = {
@@ -16,6 +17,7 @@ const token_addresses = {
 }
 
 export function SellLayout(props){
+	const router = useRouter();
 
     return(
 		<div className="flex flex-row justify-around max-w-6xl mx-auto h-[100vh] gap-24 content-center my-auto">
