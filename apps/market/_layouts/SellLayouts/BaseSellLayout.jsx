@@ -212,11 +212,11 @@ export function SellLayout(props){
 				</div>
 				<div className="flex flex-col gap-y-6 w-full">
 					<div className="text-white font-semibold text-xl">Listing Images</div>
-					<div {...getRootProps()} className="grid-rows-6 overflow-x-scroll w-full">
+					<div {...getRootProps()} className="grid grid-cols-6 gap-x-2 overflow-x-scroll w-full h-52">
 						<input {...getInputProps()}/>
 						{
 							files && files.map((fileDataUrl)=>(
-								<div className="relative flex flex-col items-center h-52 w-52 px-4 py-4 rounded-2xl">
+								<div className="relative flex flex-col items-center overflow-hidden rounded-2xl">
 									<Image
 										src={fileDataUrl}
 										layout="fill"
@@ -225,11 +225,11 @@ export function SellLayout(props){
 								</div>
 							))
 						}
-						<div className="relative flex flex-col items-center border-4 border-dashed border-[#5e5e5e] h-52 w-52 px-4 py-4 rounded-2xl">
-							<div className="w-1/2">
+						<div className="relative flex flex-col items-center justify-center border-4 border-dashed border-[#5e5e5e] rounded-2xl">
+							<div className="w-1/2 h-1/2">
 								<CameraIcon className="text-[#5e5e5e]"/>
 							</div>
-							<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-[#5e5e5e]">Upload Media</span>
+							<span className="align-middle text-center text-sm font-bold text-[#5e5e5e]">Upload Media</span>
 						</div>
 					</div>
 				</div>
