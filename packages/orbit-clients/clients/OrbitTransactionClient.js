@@ -63,7 +63,7 @@ export async function CreatePhysicalBuyerTransactionsLog (
 
 //// SELLER
 
-export async function CreateCommissionsTransactionsLog (
+export async function CreateCommissionSellerTransactionsLog (
     payer_wallet,
     user_account
 ){

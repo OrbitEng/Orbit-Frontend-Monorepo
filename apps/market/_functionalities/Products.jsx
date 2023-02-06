@@ -13,7 +13,7 @@ export function DigitalProductFunctionalities(props){
         await PRODUCT_PROGRAM.InitDigitalListings(wallet, market_acc);
     }
 
-    const ListProduct = async(
+    const ListDigitalProduct = async(
         market_acc,
         price,
         deliveryEstimate = 14,
@@ -167,7 +167,7 @@ export function DigitalProductFunctionalities(props){
 
     return {
         CreateDigitalListingsCatalog,
-        ListProduct,
+        ListDigitalProduct,
         SetFileType,
         ChangeAvailability,
         ChangePrice,
@@ -187,7 +187,7 @@ export function PhysicalProductFunctionalities(props){
         await PRODUCT_PROGRAM.InitPhysicalListings(wallet, market_acc)
     }
 
-    const ListProduct = async(
+    const ListPhysicalProduct = async(
         market_acc,
         price,
         deliveryEstimate = 14,
@@ -341,7 +341,7 @@ export function PhysicalProductFunctionalities(props){
 
     return {
         CreatePhysicalListingsCatalog,
-        ListProduct,
+        ListPhysicalProduct,
         ChangePrice,
         ChangeAvailability,
         ChangeQuantity,
@@ -362,7 +362,7 @@ export function CommissionProductFunctionalities(props){
         await PRODUCT_PROGRAM.InitCommissionsListings(wallet, market_acc);
     }
 
-    const ListProduct = async(
+    const ListCommissionProduct = async(
         market_acc,
         price,
         deliveryEstimate = 14,
@@ -506,7 +506,7 @@ export function CommissionProductFunctionalities(props){
 
     return {
         CreateCommissionsListingsCatalog,
-        ListProduct,
+        ListCommissionProduct,
         ChangePrice,
         ChangeAvailability,
         SetMedia,

@@ -1,8 +1,15 @@
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import { useState, useCallback, Fragment } from "react";
-import { Transition } from "@headlessui/react";
-import Image from "next/image";
+import { useRouter } from "next/router";
+import { useState, useContext, useEffect, useCallback, Fragment } from "react";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon, CheckIcon, CameraIcon} from "@heroicons/react/24/outline";
+import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
+import { CommissionProductFunctionalities, DigitalProductFunctionalities, PhysicalProductFunctionalities } from "@functionalities/Products";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { Transaction } from "@solana/web3.js";
+import { Transition, Listbox } from "@headlessui/react";
+import { useDropzone } from "react-dropzone";
+import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
+import Image from "next/image";
 
 const token_addresses = {
 	mainnet: {
@@ -16,114 +23,355 @@ const token_addresses = {
 }
 
 export function SellLayout(props){
+	const router = useRouter();
+	const wallet = useWallet();
+    const {connection} = useConnection();
+
+	const {ListPhysicalProduct} = PhysicalProductFunctionalities();
+	const {ListDigitalProduct} = DigitalProductFunctionalities();
+	const {ListCommissionProduct} = CommissionProductFunctionalities();
+    const {userAccount} = useContext(UserAccountCtx);
+
+	const [price, setProdPrice] = useState();
+	const [prodName, setProdName] = useState("");
+    const [delivery, setDelivery] = useState(14);
+	const [description, setDescription] = useState("");
+    const [listRecent, setListRecent] = useState(false);
+	
+	const [files, setFiles] = useState([]);
+    const [fileName, setFileNames] = useState([]);
+    
+    const [listingType, setListingType] = useState("physical");
+
+	const [quantity, setQuantity] = useState(0);
+
+    const listProductWrapper = useCallback(async ()=>{
+        if(!(userAccount?.data?.voterId && wallet.publicKey && connection)) return;
+
+        let latest_blockhash = await connection.getLatestBlockhash();
+		let tx = new Transaction({
+			feePayer: wallet.publicKey,
+			... latest_blockhash
+		});
+        
+
+		switch(listingType){
+			case "physical":
+				if(!userAccount.data.physicalListings){
+					tx.add(
+						await PRODUCT_PROGRAM.InitPhysicalListings(
+							wallet,
+							userAccount
+						)
+					);
+				}
+				if(!userAccount.data.sellerPhysicalTransactions){
+					tx.add(
+						await TRANSACTION_PROGRAM.CreatePhysicalSellerTransactionsLog(
+							wallet,
+							userAccount
+						)
+					);
+				}
+				break;
+			case "digital":
+				if(!userAccount.data.digitalListings){
+					tx.add(
+						await PRODUCT_PROGRAM.InitDigitalListings(
+							wallet,
+							userAccount
+						)
+					);
+				}
+				if(!userAccount.data.sellerDigitalTransactions){
+					tx.add(
+						await TRANSACTION_PROGRAM.CreateDigitalSellerTransactionsLog(
+							wallet,
+							userAccount
+						)
+					);
+				}
+				break;
+			case "commission":
+				if(!userAccount.data.commissionListings){
+					tx.add(
+						await PRODUCT_PROGRAM.InitCommissionListings(
+							wallet,
+							userAccount
+						)
+					);
+				}
+				if(!userAccount.data.sellerCommissionTransactions){
+					tx.add(
+						await TRANSACTION_PROGRAM.CreateCommissionSellerTransactionsLog(
+							wallet,
+							userAccount
+						)
+					);
+				}
+				break;
+		}
+
+        let [addixs, data_items] = await (async ()=>{
+			switch(listingType){
+				case "physical":
+					return ListPhysicalProduct(
+						userAccount,
+						price,
+						delivery,
+						prodName,
+						description,
+						quantity,
+						files,
+						listRecent,
+						wallet
+					)
+				case "digital":
+					return ListDigitalProduct(
+						userAccount,
+						price,
+						delivery,
+						prodName,
+						description,
+						files,
+						"Image",
+						listRecent,
+						wallet
+					)
+				case "commission":
+					return ListCommissionProduct(
+						userAccount,
+						price,
+						delivery,
+						prodName,
+						description,
+						files,
+						listRecent,
+						wallet
+					)
+			}
+		}
+		)();
+
+        tx.add(...addixs);
+
+        await wallet.signTransaction(tx);
+
+        console.log("sending")
+		let sig = await wallet.sendTransaction(tx, connection);
+		
+		let confirmation  = await connection.confirmTransaction({
+			...latest_blockhash,
+			signature: sig,
+		});
+		
+		await bundlrClient.SendTxItems(data_items, sig);
+
+    },[userAccount?.data, listingType, price, delivery, prodName, description, quantity, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
+
+	const addFile = (acceptedFiles) => {
+        acceptedFiles.forEach((fin)=>{
+            const afr = new FileReader()
+            afr.onload = () => {
+                setFiles(cf => [...cf, afr.result]);
+            }
+            afr.readAsDataURL(fin);
+
+            setFileNames(fn => [...fn, fin.name+fin.type]);
+        });
+	}
+
+	const deleteFile = (filein)=>{
+		let index = files.indexOf(filein);
+		if(index == -1){
+			return;
+		}
+		setFiles(cf => [...cf.slice(0,index), ...cf.slice(index+1)]);
+        setFileNames(fn => [...fn.slice(0,index), ...fn.slice(index+1)]);
+	}
+
+	const {getRootProps, getInputProps, open} = useDropzone({onDrop: addFile});
+
 
     return(
-		<div className="flex flex-row justify-around max-w-6xl mx-auto h-[100vh] gap-24 content-center my-auto">
-					<Link href={"/sell/physical"}>
-						<Transition
-							as={Fragment}
-							appear={true}
-							show={true}
-							enter="transition transform transition-opacity transition-transform transition-all duration-1000 ease-in-out"
-							enterFrom="opacity-0 -translate-y-10 "
-							enterTo="opacity-100 -translate-y-0"
-							leave="transform duration-200 transition ease-in-out"
-							leaveFrom="opacity-100 rotate-0 scale-100 "
-							leaveTo="opacity-0 scale-95 "
-						>
-							<div
-								className="flex group relative rounded-3xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
-							>
-								<div className="bg-[#26308F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 transition duration-700" />
-								<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-3xl">
-									<div className="relative flex w-1/2 h-1/2 mx-auto">
-										<Image
-											src="/Emojis/GlobeEmojiImage.png"
-											layout="fill"
-											objectFit="contain"
-										/>
-									</div>
-									<h1 className="text-3xl font-bold text-white mx-auto text-center">Physical</h1>
-									<p className="text-xl text-[#6A6A6A] mx-auto justify-center mt-4 leading-tight text-center h-20">
-										Sell shoes, clothes, tech, and much more with just a few clicks!
-									</p>
-									<div className="rounded-full p-2 my-auto h-14 w-14 bg-gradient-to-tr from-[#0E0C15] to-[#18171D] via-[#161320] mx-auto content-center align-middle shadow-md shadow-black">
-										<ArrowRightIcon className="h-10 w-10 text-[#3F46FF] m-auto stroke-2" />
-									</div>
-								</div>
-							</div>
-						</Transition>
-					</Link>
-					<Link href={"/sell/commission"}>
-						<Transition
-								as={Fragment}
-								appear={true}
-								show={true}
-								enter="transition transform transition-opacity transition-transform transition-all duration-1000 ease-in-out delay-200"
-								enterFrom="opacity-0 -translate-y-10 "
-								enterTo="opacity-100 -translate-y-0"
-								leave="transform duration-200 transition ease-in-out"
-								leaveFrom="opacity-100 rotate-0 scale-100 "
-								leaveTo="opacity-0 scale-95 "
-							>
-							<div
-								className="flex group relative rounded-3xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
-							>
-								<div className="bg-[#4E268F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 transition duration-700" />
-								<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-3xl">
-									<div className="relative flex w-1/2 h-1/2 mx-auto">
-										<Image
-											src="/Emojis/FilesEmojiImage.png"
-											layout="fill"
-											objectFit="contain"
-										/>
-									</div>
-									<h1 className="text-3xl font-bold text-white mx-auto text-center">Commissions</h1>
-									<p className="text-xl text-[#6A6A6A] mx-auto justify-center mt-4 leading-tight text-center h-20">
-										Freelance and take commissions, your buisness has never been easier!
-									</p>
-									<div className="rounded-full p-2 my-auto h-14 w-14 bg-gradient-to-tr from-[#0E0C15] to-[#18171D] via-[#161320] mx-auto content-center align-middle shadow-md shadow-black">
-										<ArrowRightIcon className="h-10 w-10 text-[#4E268F] m-auto stroke-2" />
-									</div>
-								</div>
-							</div>
-						</Transition>
-					</Link>
-					<Link href={"/sell/digital"}>
-						<Transition
-							as={Fragment}
-							appear={true}
-							show={true}
-							enter="transition transform transition-opacity transition-transform transition-all duration-1000 ease-in-out delay-[400ms]"
-							enterFrom="opacity-0 -translate-y-10 "
-							enterTo="opacity-100 -translate-y-0"
-							leave="transform duration-200 transition ease-in-out"
-							leaveFrom="opacity-100 rotate-0 scale-100 "
-							leaveTo="opacity-0 scale-95 "
-						>
-							<div
-								className="flex group relative rounded-3xl my-auto h-1/2 w-1/3 hover:scale-[103%] transition duration-700"
-							>
-								<div className="bg-[#81268F] absolute -inset-0 bg-opacity-70 rounded-lg blur-xl group-hover:bg-opacity-100 duration-700 transition" />
-								<div className="flex flex-col py-4 px-8 relative bg-gradient-to-tr from-[#2c2c2cc0] to-[#4a4a4ac0] w-full h-full rounded-3xl">
-									<div className="relative flex w-1/2 h-1/2 mx-auto">
-										<Image
-											src="/Emojis/WrenchEmojiImage.png"
-											layout="fill"
-											objectFit="contain"
-										/>
-									</div>
-									<h1 className="text-3xl font-bold text-white mx-auto text-center">Digital</h1>
-									<p className="text-xl text-[#6A6A6A] mx-auto justify-center mt-4 leading-tight text-center h-20">
-										Get paid for your digital art, designs, beats, private content and more!
-									</p>
-									<div className="rounded-full p-2 my-auto h-14 w-14 bg-gradient-to-tr from-[#0E0C15] to-[#18171D] via-[#161320] mx-auto content-center align-middle shadow-md shadow-black">
-										<ArrowRightIcon className="h-10 w-10 text-[#FB3FFF] m-auto stroke-2" />
-									</div>
-								</div>
-							</div>
-						</Transition>
-					</Link>
+		<div className="flex flex-col justify-around max-w-6xl w-full h-full content-center gap-y-6 align-center my-auto  mx-auto min-h-view">
+			<h1 className="text-white font-bold text-4xl mt-10">Create Listing</h1>
+			<button onClick={() => router.back()} className="flex flex-row space-x-1 mb-10 align-middle">
+				<ArrowLeftIcon className="h-5 w-5 text-[#767676] my-auto" />
+			</button>
+				<div className="flex flex-col gap-y-6 ">
+					<label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
+					<input
+						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+						placeholder="Enter Title"
+						type="text"
+						id="title"
+						name="title"
+						onChange={(e)=>{setProdName(e.target.value)}}
+					/>
 				</div>
+				<div className="flex flex-col gap-y-6 w-full">
+					<div className="text-white font-semibold text-xl">Listing Images</div>
+					<div {...getRootProps()} className="grid-rows-6 overflow-x-scroll w-full">
+						<input {...getInputProps()}/>
+						{
+							files && files.map((fileDataUrl)=>(
+								<div className="relative flex flex-col items-center h-52 w-52 px-4 py-4 rounded-2xl">
+									<Image
+										src={fileDataUrl}
+										layout="fill"
+										objectFit="cover"
+									/>
+								</div>
+							))
+						}
+						<div className="relative flex flex-col items-center border-4 border-dashed border-[#5e5e5e] h-52 w-52 px-4 py-4 rounded-2xl">
+							<div className="w-1/2">
+								<CameraIcon className="text-[#5e5e5e]"/>
+							</div>
+							<span className="align-middle text-center my-auto mx-auto text-2xl font-bold text-[#5e5e5e]">Upload Media</span>
+						</div>
+					</div>
+				</div>
+				<div className="flex flex-col gap-y-6 ">
+					<label htmlFor="title" className="text-white font-semibold text-xl">Category</label>
+					<Listbox value={listingType} onChange={setListingType}>
+						<Listbox.Button className="text-[#878787] border-l-[1px] border-[#424242] px-4 h-6 align-middle my-auto">
+							{listingType}
+						</Listbox.Button>
+						<Transition
+							as={Fragment}
+							leave="transition ease-in duration-100"
+							leaveFrom="opacity-100"
+							leaveTo="opacity-0"
+						>
+							<Listbox.Options className="absolute right-0 mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
+								<Listbox.Option
+									value={"physical"}
+									className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
+										active ? 'bg-[#504561]' : 'bg-transparent'
+									}`}
+								>
+									{({ active, selected }) => (
+										<>
+											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"physical"}</span>
+											{selected ? (
+												<span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
+													<CheckIcon className="h-4 w-4" />
+												</span>
+											) 
+											: null}
+										</>
+									)}
+								</Listbox.Option>
+								<Listbox.Option
+									value={"digital"}
+									className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
+										active ? 'bg-[#504561]' : 'bg-transparent'
+									}`}
+								>
+									{({ active, selected }) => (
+										<>
+											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"digital"}</span>
+											{selected ? (
+												<span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
+													<CheckIcon className="h-4 w-4" />
+												</span>
+											) 
+											: null}
+										</>
+									)}
+								</Listbox.Option>
+								<Listbox.Option
+									value={"commission"}
+									className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
+										active ? 'bg-[#504561]' : 'bg-transparent'
+									}`}
+								>
+									{({ active, selected }) => (
+										<>
+											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"commission"}</span>
+											{selected ? (
+												<span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
+													<CheckIcon className="h-4 w-4" />
+												</span>
+											) 
+											: null}
+										</>
+									)}
+								</Listbox.Option>
+							</Listbox.Options>
+						</Transition>
+					</Listbox>
+				</div>
+				<div className="flex flex-col h-full">
+					<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
+					<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
+						<div className="p-3 flex flex-col focus:outline-0 grow">
+							<input
+								className="px-3 pt-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg grow"
+								placeholder="0.00"
+								type="number"
+								min="0"
+								id="price"
+								name="price"
+								onChange={(e)=>{
+									setProdPrice(e.target.value)
+								}}
+							/>
+							<div className="px-3 text-[#8E8E8E] align-middle my-auto">{((price * 0.95) || "0.00")}</div>
+						</div>
+					</div>
+					<div className="flex flex-row gap-x-1 align-middle mt-1">
+						<InformationCircleIcon className="h-5 w-5 text-yellow-400 my-auto" />
+						<span className="font-semibold text-[#767676] align-middle my-auto">Sale Fee: 5%</span>
+					</div>
+				</div>
+				<div className="flex flex-col">
+					<label htmlFor="description" className="text-white font-semibold text-xl">Stock</label>
+					<input
+						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+						placeholder="Quantity"
+						type="number"
+						min="1"
+						id="qty"
+						name="qty"
+						onChange={(e)=>{setQuantity(e.target.value)}}
+					/>
+				</div>
+				<div className="flex flex-col">
+					<label htmlFor="description" className="text-white font-semibold text-xl">Delivery</label>
+					<input
+						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+						placeholder="Delivery ETA"
+						type="number"
+						min="1"
+						id="delivery"
+						name="delivery"
+						onChange={(e)=>{setDelivery(e.target.value)}}
+					/>
+				</div>
+				<div className="flex flex-col">
+					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
+					<textarea
+						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
+						id="description"
+						name="description"
+						placeholder="What are you selling?"
+						onChange={(e)=>{setDescription(e.target.value)}}
+					/>
+				</div>
+				<div className="w-full flex flex-row text-white justify-center" onClick={()=>{setListRecent(!listRecent)}}>
+					<input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
+					<span className="mx-8">have product displayed in "recent listings" on the front page</span>
+				</div>
+				<div className="bg-[#A637F0] bg-opacity-[15%] px-8 mt-4 rounded-full flex justify-center mx-auto hover:scale-105 transition duration-200 ease-in-out">
+					<button className="text-transparent py-3 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-3xl rounded-full" onClick={async ()=>{
+						await listProductWrapper()   
+					}}>
+						List Item
+					</button>
+				</div>
+		</div>
 	)
 }

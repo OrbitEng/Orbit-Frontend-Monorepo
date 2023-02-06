@@ -219,11 +219,11 @@ export function EditPhysicalProductModal(props){
                                             })
                                         }
                                         <button
-                                            className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#3D3D3D] h-[138px] w-[138px] transition duration-200 hover:border-[#8E8E8E]"
+                                            className="group flex flex-col bg-transparent border-4 rounded-2xl border-dashed border-[#5e5e5e] h-[138px] w-[138px] transition duration-200 hover:border-[#8E8E8E]"
                                             onClick={open}
                                         >
-                                                <PlusIcon className="stroke-[#3D3D3D] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
-                                            <span className="text-[#3D3D3D] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
+                                                <PlusIcon className="stroke-[#5e5e5e] h-8 w-8 stroke-[3px] mt-auto mx-auto align-middle group-hover:stroke-[#8E8E8E] transition duration-200" />
+                                            <span className="text-[#5e5e5e] font-semibold group-hover:text-[#8E8E8E] align-middle mb-auto mx-auto transition duration-200">Add More</span>
                                         </button>
                                     </div>
                                     <div className='flex flex-row w-full justify-evenly pt-6 pb-2 text-white'>
