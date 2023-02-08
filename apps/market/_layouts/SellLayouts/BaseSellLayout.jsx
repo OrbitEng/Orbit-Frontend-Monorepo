@@ -202,7 +202,7 @@ export function SellLayout(props){
 				<div className="flex flex-col gap-y-6 ">
 					<label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
 					<input
-						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
 						placeholder="Enter Title"
 						type="text"
 						id="title"
@@ -212,7 +212,7 @@ export function SellLayout(props){
 				</div>
 				<div className="flex flex-col gap-y-6 w-full">
 					<div className="text-white font-semibold text-xl">Listing Images</div>
-					<div {...getRootProps()} className="grid grid-cols-6 gap-x-2 overflow-x-scroll w-full h-52">
+					<div {...getRootProps()} className="grid grid-cols-6 gap-x-2 overflow-x-scroll w-full h-52 p-6 bg-[#100e13] rounded-lg ring-2 ring-inset ring-[#1b1a1a]">
 						<input {...getInputProps()}/>
 						{
 							files && files.map((fileDataUrl)=>(
@@ -233,101 +233,76 @@ export function SellLayout(props){
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-col gap-y-6 ">
+				<div className="flex flex-col gap-y-6 w-full">
 					<label htmlFor="title" className="text-white font-semibold text-xl">Category</label>
 					<Listbox value={listingType} onChange={setListingType}>
-						<Listbox.Button className="text-[#878787] border-l-[1px] border-[#424242] px-4 h-6 align-middle my-auto">
-							{listingType}
-						</Listbox.Button>
-						<Transition
-							as={Fragment}
-							leave="transition ease-in duration-100"
-							leaveFrom="opacity-100"
-							leaveTo="opacity-0"
-						>
-							<Listbox.Options className="absolute right-0 mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
-								<Listbox.Option
-									value={"physical"}
-									className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
-										active ? 'bg-[#504561]' : 'bg-transparent'
-									}`}
-								>
-									{({ active, selected }) => (
-										<>
+						<div className="flex flex-col bg-[#100e13] text-lg rounded-lg overflow-hidden">
+							<Listbox.Button className="flex flex-row text-[#D9D9D9] px-4 py-2">
+								<div className="grow text-left">
+									{listingType}
+								</div>
+								<ChevronDownIcon className="h-8"/>
+							</Listbox.Button>
+							<Transition
+								as={Fragment}
+								leave="transition ease-in duration-100"
+								leaveFrom="opacity-100"
+								leaveTo="opacity-0"
+							>
+								<Listbox.Options className="overflow-auto py-1 max-h-96 bg-[#181424] backdrop-blur backdrop-filter rounded-lg">
+									<Listbox.Option
+										value={"physical"}
+										className="relative cursor-default select-none py-2 pl-10 pr-4"
+									>
+										{({ active, selected }) => (
 											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"physical"}</span>
-											{selected ? (
-												<span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
-													<CheckIcon className="h-4 w-4" />
-												</span>
-											) 
-											: null}
-										</>
-									)}
-								</Listbox.Option>
-								<Listbox.Option
-									value={"digital"}
-									className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
-										active ? 'bg-[#504561]' : 'bg-transparent'
-									}`}
-								>
-									{({ active, selected }) => (
-										<>
+										)}
+									</Listbox.Option>
+									<Listbox.Option
+										value={"digital"}
+										className="relative cursor-default select-none py-2 pl-10 pr-4"
+									>
+										{({ active, selected }) => (
 											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"digital"}</span>
-											{selected ? (
-												<span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
-													<CheckIcon className="h-4 w-4" />
-												</span>
-											) 
-											: null}
-										</>
-									)}
-								</Listbox.Option>
-								<Listbox.Option
-									value={"commission"}
-									className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
-										active ? 'bg-[#504561]' : 'bg-transparent'
-									}`}
-								>
-									{({ active, selected }) => (
-										<>
+										)}
+									</Listbox.Option>
+									<Listbox.Option
+										value={"commission"}
+										className="relative cursor-default select-none py-2 pl-10 pr-4"
+									>
+										{({ active, selected }) => (
 											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"commission"}</span>
-											{selected ? (
-												<span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
-													<CheckIcon className="h-4 w-4" />
-												</span>
-											) 
-											: null}
-										</>
-									)}
-								</Listbox.Option>
-							</Listbox.Options>
-						</Transition>
+										)}
+									</Listbox.Option>
+								</Listbox.Options>
+							</Transition>
+						</div>
 					</Listbox>
 				</div>
 				<div className="flex flex-col h-full">
 					<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
-					<div className="flex flex-row gap-x-5 bg-[#171717] text-white place-items-center h-full rounded-lg">
-						<div className="p-3 flex flex-col focus:outline-0 grow">
-							<input
-								className="px-3 pt-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg grow"
-								placeholder="0.00"
-								type="number"
-								min="0"
-								id="price"
-								name="price"
-								onChange={(e)=>{
-									setProdPrice(e.target.value)
-								}}
-							/>
-							<div className="px-3 text-[#8E8E8E] align-middle my-auto">{((price * 0.95) || "0.00")}</div>
-						</div>
+					<input
+						className="rounded-lg p-3 text-lg text-right focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+						placeholder="0.00"
+						type="number"
+						min="0"
+						id="price"
+						name="price"
+						onChange={(e)=>{
+							setProdPrice(e.target.value)
+						}}
+					/>
+					<div className="flex flex-row pt-2 my-auto text-[#777777] ">
+						<span className="text-sm pr-1">Selling Fee</span>
+						<InformationCircleIcon className="h-5 w-5 text-yellow-400 pt-1" />
+						<span className="grow text-right pr-3">{((price * 0.05) || "0.00")}</span>
 					</div>
-					<div className="flex flex-row gap-x-1 align-middle mt-1">
-						<InformationCircleIcon className="h-5 w-5 text-yellow-400 my-auto" />
-						<span className="font-semibold text-[#767676] align-middle my-auto">Sale Fee: 5%</span>
+					<div className="flex flex-row align-middle mt-1 text-[#8E8E8E] ">
+						<span className="text-sm pr-1">You Earn</span>
+						<span className="grow text-right pr-3">{((price * 0.95) || "0.00")}</span>
 					</div>
 				</div>
-				<div className="flex flex-col">
+				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Stock</label>
 					<input
 						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
@@ -351,7 +326,7 @@ export function SellLayout(props){
 						onChange={(e)=>{setDelivery(e.target.value)}}
 					/>
 				</div>
-				<div className="flex flex-col">
+				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
 					<textarea
 						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
