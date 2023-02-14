@@ -7,6 +7,7 @@ import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Transaction } from "@solana/web3.js";
 import { Transition, Listbox } from "@headlessui/react";
 import { useDropzone } from "react-dropzone";
+import { PhysicalProductForm, DigitalProductForm, CommissionProductForm } from "@includes/components/forms/SellTypesForm";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
@@ -43,9 +44,18 @@ export function SellLayout(props){
     
     const [listingType, setListingType] = useState("physical");
 
-	const [quantity, setQuantity] = useState(0);
+	const [subtypeObject, setSubtypeObject] = useState({});
+	const [tags, setTags] = useState([]);
+	const [additionalInfo, setAdditionalInfo] = useState([]);
 
-    const listProductWrapper = useCallback(async ()=>{
+	const changeTypeHandler = useCallback((newType)=>{
+		setListingType(newType);
+		setTags([]);
+		setAdditionalInfo([]);
+		
+	},[])
+
+    const listProductHandler = useCallback(async ()=>{
         if(!(userAccount?.data?.voterId && wallet.publicKey && connection)) return;
 
         let latest_blockhash = await connection.getLatestBlockhash();
@@ -167,7 +177,7 @@ export function SellLayout(props){
 		
 		await bundlrClient.SendTxItems(data_items, sig);
 
-    },[userAccount?.data, listingType, price, delivery, prodName, description, quantity, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
+    },[userAccount?.data, listingType, price, delivery, prodName, description, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
 
 	const addFile = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
@@ -302,32 +312,29 @@ export function SellLayout(props){
 						<span className="grow text-right pr-3">{((price * 0.95) || "0.00")}</span>
 					</div>
 				</div>
-				<div className="flex flex-col gap-y-6">
-					<label htmlFor="description" className="text-white font-semibold text-xl">Stock</label>
-					<input
-						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
-						placeholder="Quantity"
-						type="number"
-						min="1"
-						id="qty"
-						name="qty"
-						onChange={(e)=>{setQuantity(e.target.value)}}
-					/>
-				</div>
-				<div className="flex flex-col">
-					<label htmlFor="description" className="text-white font-semibold text-xl">Delivery</label>
-					<input
-						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
-						placeholder="Delivery ETA"
-						type="number"
-						min="1"
-						id="delivery"
-						name="delivery"
-						onChange={(e)=>{setDelivery(e.target.value)}}
-					/>
-				</div>
+				
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
+					<textarea
+						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
+						id="description"
+						name="description"
+						placeholder="What are you selling?"
+						onChange={(e)=>{setDescription(e.target.value)}}
+					/>
+				</div>
+				<div className="flex flex-col gap-y-6">
+					<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
+					<textarea
+						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
+						id="description"
+						name="description"
+						placeholder="What are you selling?"
+						onChange={(e)=>{setDescription(e.target.value)}}
+					/>
+				</div>
+				<div className="flex flex-col gap-y-6">
+					<label htmlFor="description" className="text-white font-semibold text-xl">Other Properties</label>
 					<textarea
 						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
 						id="description"
@@ -342,7 +349,7 @@ export function SellLayout(props){
 				</div>
 				<div className="bg-[#A637F0] bg-opacity-[15%] px-8 mt-4 rounded-full flex justify-center mx-auto hover:scale-105 transition duration-200 ease-in-out">
 					<button className="text-transparent py-3 bg-clip-text font-bold bg-gradient-to-tr from-[#8BBAFF] to-[#D55CFF] mx-auto text-3xl rounded-full" onClick={async ()=>{
-						await listProductWrapper()   
+						await listProductHandler()   
 					}}>
 						List Item
 					</button>
