@@ -245,7 +245,7 @@ export function SellLayout(props){
 				</div>
 				<div className="flex flex-col gap-y-6 w-full">
 					<label htmlFor="title" className="text-white font-semibold text-xl">Category</label>
-					<Listbox value={listingType} onChange={setListingType}>
+					<Listbox value={listingType} onChange={changeTypeHandler}>
 						<div className="flex flex-col bg-[#100e13] text-lg rounded-lg overflow-hidden">
 							<Listbox.Button className="flex flex-row text-[#D9D9D9] px-4 py-2">
 								<div className="grow text-left">
