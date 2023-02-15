@@ -50,13 +50,35 @@ export function SellLayout(props){
 	const [additionalInfo, setAdditionalInfo] = useState([]);
 
 	const [tagInput, setTagInput] = useState(false);
+	const [newTagValue, setNewTagValue] = useState("");
+
+	const [extraInfo, setExtraInfo] = useState([]);
+	const [extraInfoText, setExtraInfoText] = useState("");
 
 	const onInputDeselect = useRef();
-	onClickOutside(onInputDeselect, ()=>setTagInput(false));
+	const tagDeselectHandler = useCallback(()=>{
+		if(newTagValue.length > 0){
+			setTags(cts => [...cts, newTagValue]);
+		}
+		setTagInput(false);
+		setNewTagValue("");
+	},[tags, newTagValue])
+
+	const onExtraneousDeselect = useRef();
+	const extraneousDeselectHandler = useCallback(()=>{
+		if(extraInfoText.length > 0){
+			setExtraInfo(exinf => [...exinf, extraInfoText])
+		};
+		setExtraInfoText("");
+	},[extraInfoText, extraInfo]);
+
+	onClickOutside(onInputDeselect, tagDeselectHandler);
+	onClickOutside(onExtraneousDeselect, extraneousDeselectHandler);
 
 	const changeTypeHandler = useCallback((newType)=>{
 		setListingType(newType);
 		setTags([]);
+		setExtraInfo([]);
 		setAdditionalInfo([]);
 	},[])
 
@@ -332,9 +354,7 @@ export function SellLayout(props){
 					<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
 					<div className="flex flex-row">
 						{
-							tagInput ? <input ref={onInputDeselect} type="text" className="w-10">
-
-							</input> : <></>
+							tagInput ? <input ref={onInputDeselect} onChange={(e)=>{setNewTagValue(e.target.value)}} type="text" className="w-10" /> : <></>
 						}
 						{
 							tags.map((tag)=>{
@@ -350,13 +370,7 @@ export function SellLayout(props){
 				</div>
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Other Properties</label>
-					<textarea
-						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
-						id="description"
-						name="description"
-						placeholder="What are you selling?"
-						onChange={(e)=>{setDescription(e.target.value)}}
-					/>
+					
 				</div>
 				<div className="w-full flex flex-row text-white justify-center" onClick={()=>{setListRecent(!listRecent)}}>
 					<input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
