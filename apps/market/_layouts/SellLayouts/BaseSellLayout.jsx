@@ -332,7 +332,9 @@ export function SellLayout(props){
 					<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
 					<div className="flex flex-row">
 						{
-							tagInput ? <input></input> : <></>
+							tagInput ? <input ref={onInputDeselect} type="text" className="w-10">
+
+							</input> : <></>
 						}
 						{
 							tags.map((tag)=>{
