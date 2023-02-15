@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import { useState, useContext, useEffect, useCallback, Fragment } from "react";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon, CheckIcon, CameraIcon} from "@heroicons/react/24/outline";
+import { useState, useContext, useEffect, useRef, useCallback, Fragment } from "react";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon, CheckIcon, CameraIcon, PlusCircleIcon} from "@heroicons/react/24/outline";
 import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 import { CommissionProductFunctionalities, DigitalProductFunctionalities, PhysicalProductFunctionalities } from "@functionalities/Products";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -8,6 +8,7 @@ import { Transaction } from "@solana/web3.js";
 import { Transition, Listbox } from "@headlessui/react";
 import { useDropzone } from "react-dropzone";
 import { PhysicalProductForm, DigitalProductForm, CommissionProductForm } from "@includes/components/forms/SellTypesForm";
+import onClickOutside from "@hooks/onClickOutside";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
@@ -48,11 +49,15 @@ export function SellLayout(props){
 	const [tags, setTags] = useState([]);
 	const [additionalInfo, setAdditionalInfo] = useState([]);
 
+	const [tagInput, setTagInput] = useState(false);
+
+	const onInputDeselect = useRef();
+	onClickOutside(onInputDeselect, ()=>setTagInput(false));
+
 	const changeTypeHandler = useCallback((newType)=>{
 		setListingType(newType);
 		setTags([]);
 		setAdditionalInfo([]);
-		
 	},[])
 
     const listProductHandler = useCallback(async ()=>{
@@ -325,13 +330,21 @@ export function SellLayout(props){
 				</div>
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
-					<textarea
-						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
-						id="description"
-						name="description"
-						placeholder="What are you selling?"
-						onChange={(e)=>{setDescription(e.target.value)}}
-					/>
+					<div className="flex flex-row">
+						{
+							tagInput ? <input></input> : <></>
+						}
+						{
+							tags.map((tag)=>{
+							return <div className="w-6">
+								{tag}
+								</div>
+							})
+						}
+						<div className="w-6" onClick={()=>{setTagInput(true)}}>
+							<PlusIcon className="text-white w-6 h-6"/>
+						</div>
+					</div>
 				</div>
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Other Properties</label>
