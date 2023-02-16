@@ -55,9 +55,14 @@ export function SellLayout(props){
 	const [extraInfo, setExtraInfo] = useState([]);
 	const [extraInfoText, setExtraInfoText] = useState("");
 
+	const popTag = useCallback((tagin)=>{
+		let ind  = tags.indexOf(tagin);
+		setTags( ct => ct.slice(0, ind).concat(ct.slice(ind+1)));
+	},[tags])
+
 	const onInputDeselect = useRef();
 	const tagDeselectHandler = useCallback(()=>{
-		if(newTagValue.length > 0){
+		if((newTagValue.length > 0) && (tags.indexOf(newTagValue) == -1)){
 			setTags(cts => [...cts, newTagValue]);
 		}
 		setTagInput(false);
@@ -66,7 +71,7 @@ export function SellLayout(props){
 
 	const onExtraneousDeselect = useRef();
 	const extraneousDeselectHandler = useCallback(()=>{
-		if(extraInfoText.length > 0){
+		if(extraInfoText.length > 0 && (extraInfo.indexOf(extraInfoText) == -1)){
 			setExtraInfo(exinf => [...exinf, extraInfoText])
 		};
 		setExtraInfoText("");
@@ -352,25 +357,37 @@ export function SellLayout(props){
 				</div>
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
-					<div className="flex flex-row">
+					<div className="flex flex-row gap-x-2 text-white">
 						{
-							tagInput ? <input ref={onInputDeselect} onChange={(e)=>{setNewTagValue(e.target.value)}} type="text" className="w-10" /> : <></>
+							tagInput ? <input ref={onInputDeselect}
+							onChange={(e)=>{setNewTagValue(e.target.value)}}
+							onKeyDown={(e)=>{
+								if(e.key == "Enter"){
+									tagDeselectHandler()
+								}
+							}}
+							type="text" 
+							className="rounded-lg px-2 focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]" /> : <></>
 						}
 						{
-							tags.map((tag)=>{
-							return <div className="w-6">
-								{tag}
-								</div>
+							tags?.map((tag, tagind)=>{
+							return <div
+									className="p-3 text-lg rounded-3xl outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]"
+									key={"tag"+tagind}
+									onClick={()=>{popTag(tag)}}
+									>
+									{tag}
+									</div>
 							})
 						}
-						<div className="w-6" onClick={()=>{setTagInput(true)}}>
-							<PlusIcon className="text-white w-6 h-6"/>
+						<div className="h-10 w-10 grid-cols-1 rounded-3xl overflow-hidden bg-[#1b1630]" onClick={()=>{setTagInput(true)}}>
+							<PlusIcon className="text-[#836ae8] w-6 h-6 m-2"/>
 						</div>
 					</div>
 				</div>
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Other Properties</label>
-					
+					<input className="rounded-lg outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]"/>
 				</div>
 				<div className="w-full flex flex-row text-white justify-center" onClick={()=>{setListRecent(!listRecent)}}>
 					<input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
