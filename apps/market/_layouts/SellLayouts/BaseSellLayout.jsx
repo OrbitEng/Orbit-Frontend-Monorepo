@@ -55,11 +55,6 @@ export function SellLayout(props){
 	const [extraInfo, setExtraInfo] = useState([]);
 	const [extraInfoText, setExtraInfoText] = useState("");
 
-	const popTag = useCallback((tagin)=>{
-		let ind  = tags.indexOf(tagin);
-		setTags( ct => ct.slice(0, ind).concat(ct.slice(ind+1)));
-	},[tags])
-
 	const onInputDeselect = useRef();
 	const tagDeselectHandler = useCallback(()=>{
 		if((newTagValue.length > 0) && (tags.indexOf(newTagValue) == -1)){
@@ -254,7 +249,7 @@ export function SellLayout(props){
 				</div>
 				<div className="flex flex-col gap-y-6 w-full">
 					<div className="text-white font-semibold text-xl">Listing Images</div>
-					<div {...getRootProps()} className="grid grid-cols-6 gap-x-2 overflow-x-scroll w-full h-52 p-6 bg-[#100e13] rounded-lg ring-2 ring-inset ring-[#1b1a1a]">
+					<div {...getRootProps()} className="grid grid-cols-6 gap-x-2 overflow-x-auto w-full h-52 p-6 bg-[#100e13] rounded-lg ring-2 ring-inset ring-[#1b1a1a]">
 						<input {...getInputProps()}/>
 						{
 							files && files.map((fileDataUrl)=>(
@@ -321,6 +316,11 @@ export function SellLayout(props){
 						</div>
 					</Listbox>
 				</div>
+				{
+					((listingType == "physical") && <PhysicalProductForm setMetaInf={setSubtypeObject}/>) ||
+					((listingType == "digital") && <DigitalProductForm setMetaInf={setSubtypeObject}/>) ||
+					((listingType == "commission") && <CommissionProductForm setMetaInf={setSubtypeObject}/>)
+				}
 				<div className="flex flex-col h-full">
 					<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
 					<input
@@ -357,7 +357,7 @@ export function SellLayout(props){
 				</div>
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
-					<div className="flex flex-row gap-x-2 text-white">
+					<div className="flex flex-row gap-x-2 text-white align-center">
 						{
 							tagInput ? <input ref={onInputDeselect}
 							onChange={(e)=>{setNewTagValue(e.target.value)}}
@@ -367,27 +367,68 @@ export function SellLayout(props){
 								}
 							}}
 							type="text" 
-							className="rounded-lg px-2 focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]" /> : <></>
+							className="rounded-lg px-2 focus:outline-0 ring-2 ring-inset bg-[#100e13] ring-[#1b1a1a] text-[#8E8E8E]" /> : <></>
 						}
 						{
 							tags?.map((tag, tagind)=>{
 							return <div
-									className="p-3 text-lg rounded-3xl outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]"
+									className="py-2 px-3 text-lg rounded-3xl outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]"
 									key={"tag"+tagind}
-									onClick={()=>{popTag(tag)}}
+									onClick={()=>{
+										let ind  = tags.indexOf(tag);
+										setTags( ct => ct.slice(0, ind).concat(ct.slice(ind+1)));
+									}}
 									>
 									{tag}
 									</div>
 							})
 						}
-						<div className="h-10 w-10 grid-cols-1 rounded-3xl overflow-hidden bg-[#1b1630]" onClick={()=>{setTagInput(true)}}>
-							<PlusIcon className="text-[#836ae8] w-6 h-6 m-2"/>
+						<div className="h-8 w-8 my-auto grid-cols-1 rounded-3xl overflow-hidden bg-[#1b1630]" onClick={()=>{setTagInput(true)}}>
+							<PlusIcon className="text-[#836ae8] w-6 h-6 m-1"/>
 						</div>
 					</div>
 				</div>
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Other Properties</label>
-					<input className="rounded-lg outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]"/>
+					<div className="flex flex-row gap-x-2">
+						{
+							extraInfo && 
+							extraInfo.map((extrainf, extraind)=>(
+								<div
+									className="flex flex-row bg-[#171717] text-[#575059] rounded-md ring-2 ring-inset ring-[#1b1a1a] py-1 px-2 align-center"
+									key={extraind+"extraneous"}
+									onClick={()=>{
+										let ind  = extraInfo.indexOf(extrainf);
+										setExtraInfo( ct => ct.slice(0, ind).concat(ct.slice(ind+1)));
+									}}
+								>
+								{extrainf}
+								</div>
+							))
+						}
+
+						<div
+							className="w-28 flex flex-row bg-[#171717] text-[#575059] rounded-md ring-2 ring-inset ring-[#1b1a1a] py-1 px-2 align-center"
+						>
+							<input
+								onChange={(e)=>{
+									setExtraInfoText(e.target.value)
+								}}
+								ref = {onExtraneousDeselect}
+								onKeyDown={(e)=>{
+									if(e.key == "Enter"){
+										extraneousDeselectHandler()
+									}
+								}}
+								value={extraInfoText}
+								className="bg-[#171717] placeholder:text-[#2b282f] outline-0 w-20"
+								placeholder="extra info"
+							/>
+							<div className="rounded-3xl bg-[#100e13] text-[#8E8E8E] my-1">
+								<PlusIcon className="text-[#8E8E8E] w-4 h-4"/>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div className="w-full flex flex-row text-white justify-center" onClick={()=>{setListRecent(!listRecent)}}>
 					<input type={"checkbox"} checked={listRecent}  onChange={()=>{setListRecent(!listRecent)}} className=""/>
