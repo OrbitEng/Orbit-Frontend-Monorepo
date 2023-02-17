@@ -1,7 +1,6 @@
 import { useDropzone } from "react-dropzone";
 
 export function PhysicalProductForm(props){
-    const [quantity, setQuantity] = useState(0);
     
     return (
         <div >
