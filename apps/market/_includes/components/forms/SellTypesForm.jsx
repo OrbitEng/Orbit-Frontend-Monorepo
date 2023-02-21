@@ -1,4 +1,7 @@
 import { useDropzone } from "react-dropzone";
+import { useState, useCallback } from "react";
+import Image from "next/image";
+
 
 export function PhysicalProductForm(props){
     
@@ -34,7 +37,7 @@ export function PhysicalProductForm(props){
 
 export function DigitalProductForm(props){
 	const [files, setFiles] = useState([]);
-    const [fileName, setFileNames] = useState([]);
+    const [fileNames, setFileNames] = useState([]);
 
 	const addFile = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
@@ -44,7 +47,7 @@ export function DigitalProductForm(props){
             }
             afr.readAsDataURL(fin);
 
-            setFileNames(fn => [...fn, fin.name+fin.type]);
+            setFileNames(fn => [...fn, [fin.name.split(".")[0],fin.type, fin.size] ]);
         });
 	}
 
@@ -63,8 +66,51 @@ export function DigitalProductForm(props){
         <div>
 			<div className="flex flex-col gap-y-6">
 				<label htmlFor="description" className="text-white font-semibold text-xl">Content Files</label>
-				<div {...getRootProps()} className="overflow-x-auto w-full h-52 p-6 bg-[#100e13] rounded-lg border border-dashed">
-					<input {...getInputProps()}/>
+				<div className="w-full bg-[#100e14] rounded-lg">
+					
+                    <div className="w-4/5 h-4/5 flex flex-col justify-center items-center border-dashed border rounded-sm border-[#9783d0] mx-auto my-6 py-6" {...getRootProps()}>
+                        <input {...getInputProps()}/>
+
+                        <div className="relative h-12 w-12 rounded-3xl flex flex-col bg-[#2c1c3c] justify-center place-items-center align-center">
+                            <Image
+                                src="/foldericon.svg"
+                                layout="fixed"
+                                width={30}
+                                height={30}
+                            />
+                        </div>
+
+                        <div className="flex flex-col text-white text-2xl">
+                            <span className="align-middle text-center my-auto mx-auto font-bold">Drag & Drop
+                                <span className="text-[#9944EE]"> files</span>,
+                                <span className="text-[#9944EE]"> images</span>,
+                                <span className="text-[#9944EE]"> audio</span>,
+                            </span>
+                            <span className="align-middle text-center my-auto mx-auto font-bold">
+                                and more</span>
+                            <span className="align-middle mx-auto font-bold text-lg">Or <span className="text-[#9944EE] underline">browse for files</span> on your computer</span>
+                        </div>
+                    </div>
+                        {
+                    
+                            files?.length > 0 && 
+                            <div className="text-white h-52">
+                                {
+                                    files.map((file, fileind)=>(
+                                        <div className="flex flex-row w-full h-1/3">
+                                            <div className="relative h-12 w-12">
+                                                <Image
+                                                    src = {file}
+                                                    layout="fill"
+                                                    objectFit="contain"
+                                                />
+                                            </div>
+                                            <span>{fileNames[fileind][0]}</span>
+                                        </div>
+                                    ),[])
+                                }
+                            </div>
+                        }
 				</div>
 			</div>
         </div>
