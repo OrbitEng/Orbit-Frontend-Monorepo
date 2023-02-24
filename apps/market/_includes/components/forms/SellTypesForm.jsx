@@ -1,5 +1,5 @@
 import { useDropzone } from "react-dropzone";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
@@ -48,8 +48,9 @@ export function DigitalProductForm(props){
             }
             afr.readAsDataURL(fin);
 
-			let filesize = fin > 1000000 ? Math.floor(fin/1000000) + " MB" : Math.floor(fin/1000) + " KB"
-            setFileNames(fn => [...fn, [fin.name.split(".")[0],fin.type, ] ]);
+			let filesize = (fin > 1000000) ? (Math.floor(fin/1000000) + " MB") : (Math.floor(fin/1000) + " KB");
+			console.log(filesize);
+            setFileNames(fn => [...fn, [fin.name.split(".")[0],fin.type, filesize] ]);
         });
 	}
 
@@ -63,6 +64,10 @@ export function DigitalProductForm(props){
 	}
 
 	const {getRootProps, getInputProps, open} = useDropzone({onDrop: addFile});
+
+	useEffect(()=>{
+		props.setMetaInf({files: files, fileNames: fileNames})
+	},[files, fileNames])
 
     return (
         <div>
@@ -117,7 +122,7 @@ export function DigitalProductForm(props){
                                                 <span className="w-2 h-2 rounded-lg bg-[#ababaa] "/>
 												{fileNames[fileind][2]}
                                             </div>
-                                            <div className="w-5 h-5 my-auto">
+                                            <div className="w-5 h-5 my-auto" onClick={()=>{deleteFile(file)}}>
                                                 <XMarkIcon className="text-[#b74747]"/>
                                             </div>
                                         </div>

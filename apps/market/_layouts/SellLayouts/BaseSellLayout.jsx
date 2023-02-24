@@ -186,8 +186,8 @@ export function SellLayout(props){
 						listRecent,
 						wallet
 					)
+				}
 			}
-		}
 		)();
 
         tx.add(...addixs);
@@ -253,7 +253,7 @@ export function SellLayout(props){
 						<input {...getInputProps()}/>
 						{
 							files && files.map((fileDataUrl)=>(
-								<div className="relative flex flex-col items-center overflow-hidden rounded-2xl">
+								<div className="relative flex flex-col items-center overflow-hidden rounded-2xl" onClick={()=>{deleteFile(fileDataUrl)}}>
 									<Image
 										src={fileDataUrl}
 										layout="fill"
