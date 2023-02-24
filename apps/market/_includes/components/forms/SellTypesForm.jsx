@@ -48,7 +48,8 @@ export function DigitalProductForm(props){
             }
             afr.readAsDataURL(fin);
 
-            setFileNames(fn => [...fn, [fin.name.split(".")[0],fin.type, fin.size] ]);
+			let filesize = fin > 1000000 ? Math.floor(fin/1000000) + " MB" : Math.floor(fin/1000) + " KB"
+            setFileNames(fn => [...fn, [fin.name.split(".")[0],fin.type, ] ]);
         });
 	}
 
@@ -98,24 +99,25 @@ export function DigitalProductForm(props){
                             <div className="text-white h-52">
                                 {
                                     files.map((file, fileind)=>(
-                                        <div className="flex flex-row w-full h-1/3 justify-center">
-                                            <div className="relative h-12 w-12">
+                                        <div className="flex flex-row w-full h-1/3 justify-evenly font-bold">
+                                            <div className="relative h-16 w-16 my-auto">
                                                 <Image
                                                     src = {file}
                                                     layout="fill"
-                                                    objectFit="contain"
+                                                    objectFit="cover"
                                                 />
                                             </div>
-                                            <div className="">
+                                            <div className="my-auto items-center">
                                                 {fileNames[fileind][0]}
                                             </div>
-                                            <div className="">
+                                            <div className="flex flex-row gap-x-2 text-[#ababaa] my-auto items-center">
                                                 {fileNames[fileind][1].split("/")[0]}
-                                                <span className="w-2 h-2 rounded-lg"/>
+                                                <span className="w-2 h-2 rounded-lg bg-[#ababaa] "/>
                                                 {fileNames[fileind][1].split("/")[1]}
-                                                <span className="w-2 h-2 rounded-lg"/>
+                                                <span className="w-2 h-2 rounded-lg bg-[#ababaa] "/>
+												{fileNames[fileind][2]}
                                             </div>
-                                            <div className="w-5 h-5">
+                                            <div className="w-5 h-5 my-auto">
                                                 <XMarkIcon className="text-[#b74747]"/>
                                             </div>
                                         </div>
