@@ -1,6 +1,7 @@
 import { useDropzone } from "react-dropzone";
 import { useState, useCallback } from "react";
 import Image from "next/image";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 
 export function PhysicalProductForm(props){
@@ -97,7 +98,7 @@ export function DigitalProductForm(props){
                             <div className="text-white h-52">
                                 {
                                     files.map((file, fileind)=>(
-                                        <div className="flex flex-row w-full h-1/3">
+                                        <div className="flex flex-row w-full h-1/3 justify-center">
                                             <div className="relative h-12 w-12">
                                                 <Image
                                                     src = {file}
@@ -105,7 +106,18 @@ export function DigitalProductForm(props){
                                                     objectFit="contain"
                                                 />
                                             </div>
-                                            <span>{fileNames[fileind][0]}</span>
+                                            <div className="">
+                                                {fileNames[fileind][0]}
+                                            </div>
+                                            <div className="">
+                                                {fileNames[fileind][1].split("/")[0]}
+                                                <span className="w-2 h-2 rounded-lg"/>
+                                                {fileNames[fileind][1].split("/")[1]}
+                                                <span className="w-2 h-2 rounded-lg"/>
+                                            </div>
+                                            <div className="w-5 h-5">
+                                                <XMarkIcon className="text-[#b74747]"/>
+                                            </div>
                                         </div>
                                     ),[])
                                 }
