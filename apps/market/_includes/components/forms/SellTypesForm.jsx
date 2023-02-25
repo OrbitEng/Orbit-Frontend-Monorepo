@@ -20,18 +20,6 @@ export function PhysicalProductForm(props){
 						onChange={(e)=>{props.setMetaInf(metainf => {metainf.quantity = e.target.value; return metainf})}}
 					/>
 				</div>
-				<div className="flex flex-col gap-y-6">
-					<label htmlFor="description" className="text-white font-semibold text-xl">Delivery</label>
-					<input
-						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
-						placeholder="Delivery ETA"
-						type="number"
-						min="1"
-						id="delivery"
-						name="delivery"
-						onChange={(e)=>{props.setMetaInf(metainf => {metainf.delivery = e.target.value; return metainf})}}
-					/>
-				</div>
         </div>
     )
 }

@@ -12,6 +12,7 @@ import onClickOutside from "@hooks/onClickOutside";
 import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
+import BundlrCtx from "@contexts/BundlrCtx";
 
 const token_addresses = {
 	mainnet: {
@@ -33,6 +34,7 @@ export function SellLayout(props){
 	const {ListDigitalProduct} = DigitalProductFunctionalities();
 	const {ListCommissionProduct} = CommissionProductFunctionalities();
     const {userAccount} = useContext(UserAccountCtx);
+	const {bundlrClient} = useContext(BundlrCtx);
 
 	const [price, setProdPrice] = useState();
 	const [prodName, setProdName] = useState("");
@@ -45,8 +47,8 @@ export function SellLayout(props){
     
     const [listingType, setListingType] = useState("physical");
 
-	const [subtypeObject, setSubtypeObject] = useState({});
 	const [tags, setTags] = useState([]);
+	const [subtypeObject, setSubtypeObject] = useState({});
 	const [additionalInfo, setAdditionalInfo] = useState([]);
 
 	const [tagInput, setTagInput] = useState(false);
@@ -158,7 +160,7 @@ export function SellLayout(props){
 						delivery,
 						prodName,
 						description,
-						quantity,
+						subtypeObject.quantity,
 						files,
 						listRecent,
 						wallet
@@ -204,7 +206,7 @@ export function SellLayout(props){
 		
 		await bundlrClient.SendTxItems(data_items, sig);
 
-    },[userAccount?.data, listingType, price, delivery, prodName, description, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
+    },[userAccount?.data, extraInfo, listingType, price, delivery, prodName, description, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
 
 	const addFile = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{
@@ -345,6 +347,18 @@ export function SellLayout(props){
 					</div>
 				</div>
 				
+				<div className="flex flex-col gap-y-6">
+					<label htmlFor="description" className="text-white font-semibold text-xl">Delivery</label>
+					<input
+						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+						placeholder="Delivery ETA"
+						type="number"
+						min="1"
+						id="delivery"
+						name="delivery"
+						onChange={(e)=>{setDelivery(e.target.value)}}
+					/>
+				</div>
 				<div className="flex flex-col gap-y-6">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
 					<textarea
