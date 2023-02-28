@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useContext, useEffect, useRef, useCallback, Fragment } from "react";
-import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon, CheckIcon, CameraIcon, PlusCircleIcon} from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ArrowRightIcon, ChevronDownIcon, InformationCircleIcon, PlusIcon, TrashIcon, CheckIcon, CameraIcon, PlusCircleIcon, QuestionMarkCircleIcon} from "@heroicons/react/24/outline";
 import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 import { CommissionProductFunctionalities, DigitalProductFunctionalities, PhysicalProductFunctionalities } from "@functionalities/Products";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
@@ -370,7 +370,10 @@ export function SellLayout(props){
 					/>
 				</div>
 				<div className="flex flex-col gap-y-6">
-					<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
+					<div className="flex flex-row">
+						<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
+						<QuestionMarkCircleIcon className="h-5 w-5 text-yellow-400 pt-1 my-auto"/>
+					</div>
 					<div className="flex flex-row gap-x-2 text-white align-center">
 						{
 							tagInput ? <input ref={onInputDeselect}
@@ -397,7 +400,7 @@ export function SellLayout(props){
 									</div>
 							})
 						}
-						<div className="h-8 w-8 my-auto grid-cols-1 rounded-3xl overflow-hidden bg-[#1b1630]" onClick={()=>{setTagInput(true)}}>
+						<div className="h-8 w-8 my-auto rounded-3xl overflow-hidden bg-[#1b1630]" onClick={()=>{setTagInput(true)}}>
 							<PlusIcon className="text-[#836ae8] w-6 h-6 m-1"/>
 						</div>
 					</div>
