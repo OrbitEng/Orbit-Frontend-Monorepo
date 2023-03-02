@@ -1036,7 +1036,6 @@ export async function FetchKwdsTreeCache (address){
 export async function FetchKwdsTreeIndex (address){
     address = typeof address == "string" ? PublicKey(address) : address;
     return SEARCH_PROGRAM.account.kwdsTreeIndex.fetch(address);
-    anchor.BorshCoder
 }
 
 export async function FetchKwdsTreeNode (address){
@@ -1052,4 +1051,30 @@ export async function FetchBucketCacheRoot (address){
 export async function FetchBucketDrainVec (address){
     address = typeof address == "string" ? PublicKey(address) : address;
     return SEARCH_PROGRAM.account.bucketDrainVec.getAccountInfo(address);
+}
+
+////////////////////////////////////////////////////////////////////////
+/// OBJECT PARSERS
+
+export async function DeserBucketCache(rb, base_word, nw){
+
+}
+export async function DeserBucketVec(rb, base_word, nw){
+    
+}
+export async function DeserKwdsCache(rb, base_word, nw){
+    let entry_byte_len = (nw*16)+4;
+    rb = rb.slice(8);
+    let entries = [];
+    for(let i = 0; i < 15; i++){
+        let entry_words = [];
+        for(let j = 0; j < num_words; j++){
+            entry_words.push(String.fromCharCode(...rb.slice((entry_byte_len*i)+4, (entry_byte_len*i)+entry_byte_len)));
+        };
+        entries.push(entry_words);
+    }
+    return entries
+}
+export async function DeserKwdsNode(rb, base_word, nw){
+
 }

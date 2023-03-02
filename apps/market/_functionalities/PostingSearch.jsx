@@ -4,6 +4,7 @@ export  async function InitPhysicalTags(tags){
     let bucket_size = tags.length;
     for(let word of tags){
         let address = GenKwdTreeCacheAddress(word, bucket_size, "physical");
+        
     }
 }
 
