@@ -194,6 +194,13 @@ export function SellLayout(props){
 
         tx.add(...addixs);
 
+		let search_init_ixs = await (async ()=>{
+			let tag_lens = tags.length;
+			for(let tag of tags){
+				
+			}
+		})();
+
         await wallet.signTransaction(tx);
 
         console.log("sending")
@@ -377,7 +384,12 @@ export function SellLayout(props){
 					<div className="flex flex-row gap-x-2 text-white align-center">
 						{
 							tagInput ? <input ref={onInputDeselect}
-							onChange={(e)=>{setNewTagValue(e.target.value)}}
+							onChange={(e)=>{
+								if(e.target.value == " "){
+									return
+								}
+								setNewTagValue(e.target.value)
+							}}
 							onKeyDown={(e)=>{
 								if(e.key == "Enter"){
 									tagDeselectHandler()
