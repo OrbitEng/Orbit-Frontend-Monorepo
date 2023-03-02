@@ -1036,6 +1036,7 @@ export async function FetchKwdsTreeCache (address){
 export async function FetchKwdsTreeIndex (address){
     address = typeof address == "string" ? PublicKey(address) : address;
     return SEARCH_PROGRAM.account.kwdsTreeIndex.fetch(address);
+    anchor.BorshCoder
 }
 
 export async function FetchKwdsTreeNode (address){
