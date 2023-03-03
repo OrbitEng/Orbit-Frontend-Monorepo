@@ -616,8 +616,9 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
     let encoding_head_len = bucket_size/2;
     let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
     let min_data_size = 5*min_entry_len;
+    // iter to find the right tree node
     while(curr_node_data.length < min_data_size){
-        let base = 8;
+        let base = 12;
         let left_head = 0;
         for(let i = 0; i < encoding_head_len; i++){
             left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
@@ -629,8 +630,8 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
             left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
         let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail));
-        base += right_head;
-        let left_index = new anchor.BN(curr_node_data.slice(base,base+2));
+        base += left_tail;
+        let left_index = new anchor.BN(curr_node_data.slice(8,10));
 
 
         let right_head = 0;
@@ -645,7 +646,7 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
         };
         let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail));
         base += right_head;
-        let right_index = new anchor.BN(curr_node_data.slice(base,base+2));
+        let right_index = new anchor.BN(curr_node_data.slice(10,12));
 
         if(joined_kwds > left_head_word && joined_kwds < right_head_word){
             current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "digital");
@@ -664,17 +665,14 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
     let middle = 0;
     let end = 0;
 
+    // do actual computation to node
     let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
     if(to_append){
         middle = tail_offset-1;
         start = middle-1;
-        // let end = 0;
         while(curr_node_data[start] != 0){
             start--;
         }
-        // while(curr_node_data[end] != 0){
-        //     end++;
-        // }
 
     }else{
         start = 10;
