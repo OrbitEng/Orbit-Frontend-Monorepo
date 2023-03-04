@@ -1025,7 +1025,12 @@ export function GenProductQueueAddress (kwds, market_type){
 
 export async function FetchKwdsTreeCache (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    return SEARCH_PROGRAM.account.kwdsTreeCache.getAccountInfo(address);
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator("kwdsTreeCache");
+    let accinfo = SEARCH_PROGRAM.account.kwdsTreeCache.getAccountInfo(address);
+    if(accinfo.data.slice(0,8) != disc){
+        return "invalid discriminator"
+    }
+    return accinfo
 }
 
 /**
@@ -1038,17 +1043,32 @@ export async function FetchKwdsTreeIndex (address){
 
 export async function FetchKwdsTreeNode (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    return SEARCH_PROGRAM.account.kwdsTreeNode.getAccountInfo(address);
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator("KwdsTreeNode");
+    let accinfo = SEARCH_PROGRAM.account.kwdsTreeNode.getAccountInfo(address);
+    if(accinfo.data.slice(0,8) != disc){
+        return "invalid discriminator"
+    }
+    return accinfo
 }
 
 export async function FetchBucketCacheRoot (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    return SEARCH_PROGRAM.account.bucketCacheRoot.getAccountInfo(address);
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator("BucketCacheRoot");
+    let accinfo = SEARCH_PROGRAM.account.bucketCacheRoot.getAccountInfo(address);
+    if(accinfo.data.slice(0,8) != disc){
+        return "invalid discriminator"
+    }
+    return accinfo
 }
 
 export async function FetchBucketDrainVec (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    return SEARCH_PROGRAM.account.bucketDrainVec.getAccountInfo(address);
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator("BucketDrainVec");
+    let accinfo = SEARCH_PROGRAM.account.bucketDrainVec.getAccountInfo(address);
+    if(accinfo.data.slice(0,8) != disc){
+        return "invalid discriminator"
+    }
+    return accinfo
 }
 
 ////////////////////////////////////////////////////////////////////////
