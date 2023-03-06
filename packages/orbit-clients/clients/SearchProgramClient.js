@@ -341,7 +341,7 @@ export async function SyncPhysicalKwdsCache (word){
     for(let i = 0; i < 15; i++){
         let words = [word];
         for(let j = 0; j < num_words; j++){
-            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len)));
+            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
         GenProductCacheAddress(words, "physical");
@@ -400,35 +400,35 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
     let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
     let min_data_size = 5*min_entry_len;
     while(curr_node_data.length < min_data_size){
-        let base = 8;
+        let base = 12;
         let left_head = 0;
         for(let i = 0; i < encoding_head_len; i++){
             left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head));
+        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head)).replaceAll("\x00","")
         base += left_head;
         let left_tail = 0;
         for(let i = 0; i < encoding_head_len; i++){
             left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail));
+        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail)).replaceAll("\x00","")
         base += right_head;
-        let left_index = new anchor.BN(curr_node_data.slice(base,base+2));
+        let left_index = new anchor.BN(curr_node_data.slice(8,10));
 
 
         let right_head = 0;
         for(let i = 0; i < encoding_head_len; i++){
             right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head));
+        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head)).replaceAll("\x00","")
         base += right_head;
         let right_tail = 0;
         for(let i = 0; i < encoding_head_len; i++){
             right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail));
+        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail)).replaceAll("\x00","")
         base += right_head;
-        let right_index = new anchor.BN(curr_node_data.slice(base,base+2));
+        let right_index = new anchor.BN(curr_node_data.slice(10,12));
 
         if(joined_kwds > left_head_word && joined_kwds < right_head_word){
             current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "physical");
@@ -467,7 +467,7 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
                 middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
             };
             middle += 1;
-            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle));
+            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
 
             // if our word is greater than the word we just traversed: insert here // break case
             if(joined_kwds > prev_word){
@@ -558,7 +558,7 @@ export async function SyncDigitalKwdsCache (word, payer_wallet){
     for(let i = 0; i < 15; i++){
         let words = [word];
         for(let j = 0; j < num_words; j++){
-            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len)));
+            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
         GenProductCacheAddress(words, "digital");
@@ -623,13 +623,13 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
         for(let i = 0; i < encoding_head_len; i++){
             left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head));
+        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head)).replaceAll("\x00","")
         base += left_head;
         let left_tail = 0;
         for(let i = 0; i < encoding_head_len; i++){
             left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail));
+        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail)).replaceAll("\x00","")
         base += left_tail;
         let left_index = new anchor.BN(curr_node_data.slice(8,10));
 
@@ -638,13 +638,13 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
         for(let i = 0; i < encoding_head_len; i++){
             right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head));
+        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head)).replaceAll("\x00","")
         base += right_head;
         let right_tail = 0;
         for(let i = 0; i < encoding_head_len; i++){
             right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail));
+        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail)).replaceAll("\x00","")
         base += right_head;
         let right_index = new anchor.BN(curr_node_data.slice(10,12));
 
@@ -682,7 +682,7 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
                 middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
             };
             middle += 1;
-            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle));
+            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
 
             // if our word is greater than the word we just traversed: insert here // break case
             if(joined_kwds > prev_word){
@@ -773,7 +773,7 @@ export async function SyncCommissionKwdsCache (word, payer_wallet){
     for(let i = 0; i < 15; i++){
         let words = [word];
         for(let j = 0; j < num_words; j++){
-            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len)));
+            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
         GenProductCacheAddress(words, "commission");
@@ -832,35 +832,35 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
     let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
     let min_data_size = 5*min_entry_len;
     while(curr_node_data.length < min_data_size){
-        let base = 8;
+        let base = 12;
         let left_head = 0;
         for(let i = 0; i < encoding_head_len; i++){
             left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head));
+        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head)).replaceAll("\x00","")
         base += left_head;
         let left_tail = 0;
         for(let i = 0; i < encoding_head_len; i++){
             left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail));
+        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail)).replaceAll("\x00","")
         base += right_head;
-        let left_index = new anchor.BN(curr_node_data.slice(base,base+2));
+        let left_index = new anchor.BN(curr_node_data.slice(8,10));
 
 
         let right_head = 0;
         for(let i = 0; i < encoding_head_len; i++){
             right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head));
+        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head)).replaceAll("\x00","")
         base += right_head;
         let right_tail = 0;
         for(let i = 0; i < encoding_head_len; i++){
             right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
         };
-        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail));
+        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail)).replaceAll("\x00","")
         base += right_head;
-        let right_index = new anchor.BN(curr_node_data.slice(base,base+2));
+        let right_index = new anchor.BN(curr_node_data.slice(10,12));
 
         if(joined_kwds > left_head_word && joined_kwds < right_head_word){
             current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "commission");
@@ -883,13 +883,9 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
     if(to_append){
         middle = tail_offset-1;
         start = middle-1;
-        // let end = 0;
         while(curr_node_data[start] != 0){
             start--;
         }
-        // while(curr_node_data[end] != 0){
-        //     end++;
-        // }
 
     }else{
         start = 10;
@@ -899,7 +895,7 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
                 middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
             };
             middle += 1;
-            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle));
+            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
 
             // if our word is greater than the word we just traversed: insert here // break case
             if(joined_kwds > prev_word){
@@ -1080,19 +1076,82 @@ export async function DeserBucketCache(rb, base_word, nw){
 export async function DeserBucketVec(rb, base_word, nw){
     
 }
+
+/** 
+ * 
+*/
 export async function DeserKwdsCache(rb, base_word, nw){
     let entry_byte_len = (nw*16)+4;
     rb = rb.slice(8);
     let entries = [];
     for(let i = 0; i < 15; i++){
-        let entry_words = [];
-        for(let j = 0; j < num_words; j++){
-            entry_words.push(String.fromCharCode(...rb.slice((entry_byte_len*i)+4, (entry_byte_len*i)+entry_byte_len)));
+        let entry_words = [base_word];
+        for(let j = 0; j < nw; j++){
+            entry_words.push(String.fromCharCode(...rb.slice((entry_byte_len*i)+4, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
+        entry_words.sort();
         entries.push(entry_words);
     }
     return entries
 }
-export async function DeserKwdsNode(rb, base_word, nw){
 
+export async function DeserKwdsNode(rb, base_word, coupled_words){
+    let words = [base_word, ...coupled_words];
+    words.sort();
+    for(let bucket_size = 3; bucket_size < 8; bucket_size++){
+        let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "commission");
+        let curr_index = 0;
+        let curr_node_data = FetchKwdsTreeNode(current_node).data;
+        let encoding_head_len = bucket_size/2;
+        let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
+        let min_data_size = 5*min_entry_len;
+        while(curr_node_data.length < min_data_size){
+            let base = 12;
+            let left_head = 0;
+            let twords = [];
+            let tlengths = [];
+            for(let i = 0; i < encoding_head_len; i++){
+                left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+            };
+            for(let i = 0; i < bucket_size; i++){
+
+            }
+            let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head)).replaceAll("\x00","");
+            base += left_head;
+            let left_tail = 0;
+            for(let i = 0; i < encoding_head_len; i++){
+                left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+            };
+            let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail)).replaceAll("\x00","");
+            base += right_head;
+            let left_index = new anchor.BN(curr_node_data.slice(8,10));
+    
+    
+            let right_head = 0;
+            for(let i = 0; i < encoding_head_len; i++){
+                right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+            };
+            let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head)).replaceAll("\x00","");
+            base += right_head;
+            let right_tail = 0;
+            for(let i = 0; i < encoding_head_len; i++){
+                right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
+            };
+            let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail)).replaceAll("\x00","");
+            base += right_head;
+            let right_index = new anchor.BN(curr_node_data.slice(10,12));
+    
+            if(joined_kwds > left_head_word && joined_kwds < right_head_word){
+                current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "commission");
+                curr_index = left_index;
+            }else{
+                current_node = GenKwdTreeNodeAddress(word, bucket_size, right_index, "commission");
+                curr_index = right_index;
+            }
+    
+            curr_node_data = await FetchKwdsTreeNode(current_node).data;
+        }
+
+
+    }
 }
