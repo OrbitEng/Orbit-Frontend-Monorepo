@@ -2,6 +2,8 @@ import * as anchor from '@project-serum/anchor';
 import {PublicKey} from "@solana/web3.js";
 import {PRODUCT_PROGRAM_ID} from "./OrbitProductClient";
 import { GenListingsAddress, GenProductAddress } from './OrbitProductClient';
+import { GetMultipleDigitalProducts } from './OrbitProductClient';
+import { GetMultipleCommissionProducts } from './OrbitProductClient';
 
 const idl = require("../idls/orbit_search");
 
@@ -1070,11 +1072,44 @@ export async function FetchBucketDrainVec (address){
 ////////////////////////////////////////////////////////////////////////
 /// OBJECT PARSERS
 
-export async function DeserBucketCache(rb, base_word, nw){
-
+export async function DeserBucketCache(rb, prod_type){
+    let page = new anchor.BN(rb.slice(8,10));
+    let ar_link = String.fromCharCode(...rb.slice(10, 53));
+    let base = 53;
+    let prod_addrs = [];
+    for(let i = 0; i < 25; i++){
+        let timessold = rb.slice(base, base+=4);
+        let voterid = rb.slice(base, base+=8);
+        let catalog_index_pos = rb.slice(base, base+=1);
+        prod_addrs.push(
+            GenProductAddress(catalog_index_pos, GenListingsAddress(prod_type, voterid), prod_type)
+        )
+    }
+    let prods = [];
+    switch(prod_type){
+        case "physical":
+            prods = await GetMultipleDigitalProducts(prods)
+            break
+        case "digital":
+            prods = await GetMultipleDigitalProducts(prods);
+            break
+        case "commission":
+            prods = await GetMultipleCommissionProducts(prods)
+            break
+    }
+    return {
+        page: page,
+        arweave_url: ar_link,
+        products: prods
+    }
 }
 export async function DeserBucketVec(rb, base_word, nw){
-    
+    let curr_ind = rb[8];
+    let base = 9;
+    for(let i = 0; i < curr_ind; i++){
+        let voter_id = rb.slice(base, base += 8);
+        let catalog_index = rb.slice(base+=1);
+    }
 }
 
 /** 
@@ -1096,15 +1131,39 @@ export async function DeserKwdsCache(rb, base_word, nw){
 }
 
 export async function DeserKwdsNode(rb, base_word, coupled_words){
+    
+}
+
+/// helper util funcs
+
+async function FindByKeywords(rb, base_word, nw, product_type){
     let words = [base_word, ...coupled_words];
     words.sort();
+
+    let direct_node = await FetchBucketCacheRoot(
+        GenProductQueueAddress(words, product_type)
+    );
+    
     for(let bucket_size = 3; bucket_size < 8; bucket_size++){
-        let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "commission");
+        let current_node = GenKwdTreeNodeAddress(base_word, bucket_size, curr_index, "commission");
         let curr_index = 0;
         let curr_node_data = FetchKwdsTreeNode(current_node).data;
         let encoding_head_len = bucket_size/2;
         let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
         let min_data_size = 5*min_entry_len;
+        // 3 cases
+        // assume bucket size 5
+        if(words.length > bucket_size){
+            // 3 .. bucket size [5]
+            for(let wl = 3; wl < bucket_size; wl++){
+                
+            }
+        }else if(words.length == bucket_size){
+
+        }else{
+
+        }
+
         while(curr_node_data.length < min_data_size){
             let base = 12;
             let left_head = 0;
@@ -1153,5 +1212,18 @@ export async function DeserKwdsNode(rb, base_word, coupled_words){
         }
 
 
+    }
+}
+
+function GenerateCombination(array_in, append_in, target_length){
+    switch(target_length){
+        case 0:
+            return array_in
+        case 1:
+            return array_in.map(elem => [...append_in, elem])
+        default:
+            return [...Array((array_in.length - target_length)+1).keys()]
+            .map( i => GenerateCombination(array_in.slice(i+1), [...append_in, array_in[i]], target_length-1))
+            .flat()
     }
 }
