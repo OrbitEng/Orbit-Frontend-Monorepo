@@ -1088,13 +1088,13 @@ export async function DeserBucketCache(rb, prod_type){
     let prods = [];
     switch(prod_type){
         case "physical":
-            prods = await GetMultipleDigitalProducts(prods)
+            prods = await GetMultipleDigitalProducts(prods_addrs)
             break
         case "digital":
-            prods = await GetMultipleDigitalProducts(prods);
+            prods = await GetMultipleDigitalProducts(prods_addrs);
             break
         case "commission":
-            prods = await GetMultipleCommissionProducts(prods)
+            prods = await GetMultipleCommissionProducts(prods_addrs)
             break
     }
     return {
@@ -1103,17 +1103,33 @@ export async function DeserBucketCache(rb, prod_type){
         products: prods
     }
 }
-export async function DeserBucketVec(rb, base_word, nw){
+/**
+ * 
+ * @param {[]bytes} rb
+ * @param {String} product_type 
+ * @returns {[]PhysicalProduct | DigitalProduct | CommissionProduct}
+ */
+export async function DeserBucketVec(rb, product_type){
     let curr_ind = rb[8];
     let base = 9;
+    let prods_addrs = [];
     for(let i = 0; i < curr_ind; i++){
         let voter_id = rb.slice(base, base += 8);
         let catalog_index = rb.slice(base+=1);
+        prods_addrs.push(GenProductAddress(catalog_index, GenListingsAddress(product_type, voter_id), product_type));
+    }
+    switch(product_type){
+        case "physical":
+            return await GetMultipleDigitalProducts(prods_addrs);
+        case "digital":
+            return await GetMultipleDigitalProducts(prods_addrs);
+        case "commission":
+            return await GetMultipleCommissionProducts(prods_addrs);
     }
 }
 
 /** 
- * 
+ * @returns {[][]String}
 */
 export async function DeserKwdsCache(rb, base_word, nw){
     let entry_byte_len = (nw*16)+4;
@@ -1129,9 +1145,33 @@ export async function DeserKwdsCache(rb, base_word, nw){
     }
     return entries
 }
-
+/**
+ * 
+ * @param {[]byte} rb 
+ * @param {String} base_word 
+ * @param {[]String} coupled_words 
+ * @returns {[][]String} entries
+ */
 export async function DeserKwdsNode(rb, base_word, coupled_words){
-    
+    let len_info = (coupled_words.len_info+1) >> 1;
+    let end_byte = rb.length - (new anchor.BN(rb.slice(8,10))).toNumber();
+    let base = 10;
+    let entries = []
+    while(base < end_byte){
+        let lengths = [];
+        let entry = [base_word]
+        for(let i = 0; i < len_info; i++){
+            lengths.push(rb[base+i] >> 4, rb[base+i] & 15);
+        }
+        base += len_info;
+        for(let word_lengths in lengths){
+            entry.push(String.fromCharCode(rb.slice(base, base += word_lengths)));
+        }
+        entry.sort()
+        entries.push(entry);
+        base += 1;
+    }
+    return entries;
 }
 
 /// helper util funcs
