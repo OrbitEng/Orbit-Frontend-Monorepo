@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 import OrbitLogoFull from "../public/OrbitLogos/OrbitFullLogo.png"
 
-import * as anchor from "@project-serum/anchor";
+import * as anchor from "@coral-xyz/anchor";
 
 import { Bars3CenterLeftIcon, MagnifyingGlassIcon, PlusCircleIcon, ShoppingCartIcon } from '@heroicons/react/24/outline'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'

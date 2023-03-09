@@ -1,4 +1,4 @@
-import * as anchor from '@project-serum/anchor';
+import * as anchor from '@coral-xyz/anchor';
 import {PublicKey} from "@solana/web3.js";
 import { MARKET_ACCOUNTS_PROGRAM_ID } from './MarketAccountsClient';
 

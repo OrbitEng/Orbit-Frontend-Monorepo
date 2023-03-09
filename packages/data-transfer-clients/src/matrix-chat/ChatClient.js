@@ -2,7 +2,7 @@ import olmWasmPath from '@matrix-org/olm/olm.wasm'
 import Olm from '@matrix-org/olm';
 import sdk from "matrix-js-sdk";
 import { GetAccount, GenAccountAddress} from 'orbit-clients/clients/MarketAccountsClient';
-import { BN } from '@project-serum/anchor';
+import { BN } from '@coral-xyz/anchor';
 const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
 import { PRODUCT_PROGRAM, TRANSACTION_PROGRAM } from "orbit-clients";
 

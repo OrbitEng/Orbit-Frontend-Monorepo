@@ -1,7 +1,7 @@
 import 'styles/globals.css'
 import { useEffect, useMemo, useState } from 'react';
 
-import * as anchor from "@project-serum/anchor";
+import * as anchor from "@coral-xyz/anchor";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {

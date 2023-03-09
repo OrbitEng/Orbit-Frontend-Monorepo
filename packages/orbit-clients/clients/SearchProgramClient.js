@@ -1,9 +1,10 @@
-import * as anchor from '@project-serum/anchor';
+import * as anchor from '@coral-xyz/anchor';
 import {PublicKey} from "@solana/web3.js";
 import {PRODUCT_PROGRAM_ID} from "./OrbitProductClient";
 import { GenListingsAddress, GenProductAddress } from './OrbitProductClient';
 import { GetMultipleDigitalProducts } from './OrbitProductClient';
 import { GetMultipleCommissionProducts } from './OrbitProductClient';
+import { rpc } from '@coral-xyz/anchor/dist/cjs/utils';
 
 const idl = require("../idls/orbit_search");
 
@@ -1023,12 +1024,25 @@ export function GenProductQueueAddress (kwds, market_type){
 
 export async function FetchKwdsTreeCache (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator("kwdsTreeCache");
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.kwdsTreeCache.idlAccount().name);
     let accinfo = SEARCH_PROGRAM.account.kwdsTreeCache.getAccountInfo(address);
     if(accinfo.data.slice(0,8) != disc){
         return "invalid discriminator"
     }
     return accinfo
+}
+
+export async function FetchMultipleKwdsTreeCache(addresses){
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.kwdsTreeCache.idlAccount().name);
+    return await rpc.getMultipleAccounts(
+        SEARCH_PROGRAM.provider.connection,
+        addresses
+    ).filter(accinfo => {
+        if(accinfo.data.slice(0,8) != disc){
+            return "invalid discriminator"
+        }
+        return accinfo
+    })
 }
 
 /**
@@ -1041,7 +1055,7 @@ export async function FetchKwdsTreeIndex (address){
 
 export async function FetchKwdsTreeNode (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator("KwdsTreeNode");
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.kwdsTreeNode.idlAccount().name);
     let accinfo = SEARCH_PROGRAM.account.kwdsTreeNode.getAccountInfo(address);
     if(accinfo.data.slice(0,8) != disc){
         return "invalid discriminator"
@@ -1051,7 +1065,7 @@ export async function FetchKwdsTreeNode (address){
 
 export async function FetchBucketCacheRoot (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator("BucketCacheRoot");
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.bucketCacheRoot.idlAccount().name);
     let accinfo = SEARCH_PROGRAM.account.bucketCacheRoot.getAccountInfo(address);
     if(accinfo.data.slice(0,8) != disc){
         return "invalid discriminator"
@@ -1061,7 +1075,7 @@ export async function FetchBucketCacheRoot (address){
 
 export async function FetchBucketDrainVec (address){
     address = typeof address == "string" ? PublicKey(address) : address;
-    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator("BucketDrainVec");
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.bucketDrainVec.idlAccount().name);
     let accinfo = SEARCH_PROGRAM.account.bucketDrainVec.getAccountInfo(address);
     if(accinfo.data.slice(0,8) != disc){
         return "invalid discriminator"
@@ -1176,13 +1190,23 @@ export async function DeserKwdsNode(rb, base_word, coupled_words){
 
 /// helper util funcs
 
-async function FindByKeywords(rb, base_word, nw, product_type){
-    let words = [base_word, ...coupled_words];
-    words.sort();
+async function FindByKeywords(keywords, product_type){
+    keywords.sort();
 
+    // try fetching direct node
     let direct_node = await FetchBucketCacheRoot(
-        GenProductQueueAddress(words, product_type)
+        GenProductQueueAddress(keywords, product_type)
     );
+    if(direct_node.data.length != 0){
+        return direct_node
+    }
+
+    if(keywords.length > 3){
+        for(let i = 3; i < keywords.length; i++){
+            let combos = GenerateCombination(keywords, [], i);
+            let cache_addrs = combos.map( combo => GenProductQueueAddress(combo, product_type));
+        }
+    }
     
     for(let bucket_size = 3; bucket_size < 8; bucket_size++){
         let current_node = GenKwdTreeNodeAddress(base_word, bucket_size, curr_index, "commission");

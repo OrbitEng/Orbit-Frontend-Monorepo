@@ -1,6 +1,6 @@
 import { useContext, useState, useCallback } from "react";
 import {PublicKey} from "@solana/web3.js";
-import { BN } from "@project-serum/anchor";
+import { BN } from "@coral-xyz/anchor";
 import BundlrCtx from "@contexts/BundlrCtx";
 
 import { PRODUCT_PROGRAM } from "orbit-clients";

@@ -1,4 +1,4 @@
-import * as anchor from '@project-serum/anchor';
+import * as anchor from '@coral-xyz/anchor';
 import {PublicKey} from "@solana/web3.js";
 import {TOKEN_PROGRAM_ID, getAssociatedTokenAddress} from "@solana/spl-token";
 import {TRANSACTION_PROGRAM_ID} from "./OrbitTransactionClient";
