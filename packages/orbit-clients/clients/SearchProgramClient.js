@@ -1038,7 +1038,7 @@ export async function FetchMultipleKwdsTreeCache(addresses){
         SEARCH_PROGRAM.provider.connection,
         addresses
     ).filter(accinfo => {
-        if(accinfo.data.slice(0,8) != disc){
+        if((accinfo.data.length <= 0) || (accinfo.data.slice(0,8) != disc)){
             return "invalid discriminator"
         }
         return accinfo
@@ -1193,22 +1193,25 @@ export async function DeserKwdsNode(rb, base_word, coupled_words){
 async function FindByKeywords(keywords, product_type){
     keywords.sort();
 
+    let matches = [];
+
     // try fetching direct node
     let direct_node = await FetchBucketCacheRoot(
         GenProductQueueAddress(keywords, product_type)
     );
     if(direct_node.data.length != 0){
-        return direct_node
+        matches.push(direct_node)
     }
 
     if(keywords.length > 3){
         for(let i = 3; i < keywords.length; i++){
             let combos = GenerateCombination(keywords, [], i);
-            let cache_addrs = combos.map( combo => GenProductQueueAddress(combo, product_type));
+            matches.push(...FetchMultipleKwdsTreeCache(combos.map(combo => GenProductCacheAddress(combo, product_type))));
+            
         }
     }
     
-    for(let bucket_size = 3; bucket_size < 8; bucket_size++){
+    for(let bucket_size = keywords.length+1; bucket_size < 8; bucket_size++){
         let current_node = GenKwdTreeNodeAddress(base_word, bucket_size, curr_index, "commission");
         let curr_index = 0;
         let curr_node_data = FetchKwdsTreeNode(current_node).data;
@@ -1278,6 +1281,8 @@ async function FindByKeywords(keywords, product_type){
 
     }
 }
+
+async function FindMoreProductsByKeywords(){}
 
 function GenerateCombination(array_in, append_in, target_length){
     switch(target_length){
