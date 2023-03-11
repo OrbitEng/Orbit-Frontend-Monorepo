@@ -1220,53 +1220,52 @@ async function FindByKeywords(keywords, product_type){
         let min_data_size = 5*min_entry_len;
         // 3 cases
         // assume bucket size 5
-        if(words.length > bucket_size){
-            // 3 .. bucket size [5]
-            for(let wl = 3; wl < bucket_size; wl++){
-                
-            }
-        }else if(words.length == bucket_size){
-
-        }else{
-
-        }
 
         while(curr_node_data.length < min_data_size){
-            let base = 12;
-            let left_head = 0;
-            let twords = [];
-            let tlengths = [];
-            for(let i = 0; i < encoding_head_len; i++){
-                left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
-            };
-            for(let i = 0; i < bucket_size; i++){
-
-            }
-            let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head)).replaceAll("\x00","");
-            base += left_head;
-            let left_tail = 0;
-            for(let i = 0; i < encoding_head_len; i++){
-                left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
-            };
-            let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail)).replaceAll("\x00","");
-            base += right_head;
             let left_index = new anchor.BN(curr_node_data.slice(8,10));
-    
-    
-            let right_head = 0;
-            for(let i = 0; i < encoding_head_len; i++){
-                right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
-            };
-            let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head)).replaceAll("\x00","");
-            base += right_head;
-            let right_tail = 0;
-            for(let i = 0; i < encoding_head_len; i++){
-                right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
-            };
-            let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail)).replaceAll("\x00","");
-            base += right_head;
             let right_index = new anchor.BN(curr_node_data.slice(10,12));
+            let left_head = [];
+            let left_tail = [];
+            let right_head = [];
+            let right_tail = [];
+
+            let sign_word_data = cn.slice(12);
+            let segments = sign_word_data.split(0);
+
+            // left head
+            for(let i = 0; i < encoding_head_len; i++){
+                left_head.push(String.fromCharCode(segments[0].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
+                if ((segments[0][i] & 15) != 0){
+                    left_head.push(String.fromCharCode(segments[0].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
+                }
+            }
+            left_head.sort()
+            // left tail
+            for(let i = 0; i < encoding_head_len; i++){
+                left_tail.push(String.fromCharCode(segments[1].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
+                if ((segments[0][i] & 15) != 0){
+                    left_tail.push(String.fromCharCode(segments[1].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
+                }
+            }
+            left_tail.sort()
+            // right head
+            for(let i = 0; i < encoding_head_len; i++){
+                right_head.push(String.fromCharCode(segments[2].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
+                if ((segments[0][i] & 15) != 0){
+                    right_head.push(String.fromCharCode(segments[2].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
+                }
+            }
+            right_head.sort()
+            // right tail
+            for(let i = 0; i < encoding_head_len; i++){
+                right_tail.push(String.fromCharCode(segments[3].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
+                if ((segments[0][i] & 15) != 0){
+                    right_tail.push(String.fromCharCode(segments[3].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
+                }
+            }
+            right_tail.sort()
     
+            // todo: actual iter logic
             if(joined_kwds > left_head_word && joined_kwds < right_head_word){
                 current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "commission");
                 curr_index = left_index;
