@@ -1214,81 +1214,93 @@ async function FindByKeywords(keywords, product_type){
     
     for(let bucket_size = keywords.length+1; bucket_size < 8; bucket_size++){
         for(let word_ind = 0; word_ind < keywords.length; word_ind++){
-            let base_word = (remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
-
-            let current_node = GenKwdTreeNodeAddress(base_word, bucket_size, curr_index, "commission");
-            let curr_index = 0;
-            let curr_node_data = FetchKwdsTreeNode(current_node).data;
-            let encoding_head_len = bucket_size/2;
-            let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
-            let min_data_size = 5*min_entry_len;
-            // 3 cases
-            // assume bucket size 5
-    
-            while(curr_node_data.length < min_data_size){
-                let left_index = new anchor.BN(curr_node_data.slice(8,10));
-                let right_index = new anchor.BN(curr_node_data.slice(10,12));
-                let left_head = [];
-                let left_tail = [];
-                let right_head = [];
-                let right_tail = [];
-    
-                let sign_word_data = cn.slice(12);
-                let segments = sign_word_data.split(0);
-    
-                // left head
-                for(let i = 0; i < encoding_head_len; i++){
-                    left_head.push(String.fromCharCode(segments[0].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
-                    if ((segments[0][i] & 15) != 0){
-                        left_head.push(String.fromCharCode(segments[0].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
-                    }
-                }
-                left_head.sort()
-                // left tail
-                for(let i = 0; i < encoding_head_len; i++){
-                    left_tail.push(String.fromCharCode(segments[1].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
-                    if ((segments[0][i] & 15) != 0){
-                        left_tail.push(String.fromCharCode(segments[1].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
-                    }
-                }
-                left_tail.sort()
-                // right head
-                for(let i = 0; i < encoding_head_len; i++){
-                    right_head.push(String.fromCharCode(segments[2].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
-                    if ((segments[0][i] & 15) != 0){
-                        right_head.push(String.fromCharCode(segments[2].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
-                    }
-                }
-                right_head.sort()
-                // right tail
-                for(let i = 0; i < encoding_head_len; i++){
-                    right_tail.push(String.fromCharCode(segments[3].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
-                    if ((segments[0][i] & 15) != 0){
-                        right_tail.push(String.fromCharCode(segments[3].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
-                    }
-                }
-                right_tail.sort();
-                
-                for(let rw of remaining_kwds){
-                    
-                }
-
-                // todo: actual iter logic
-                if(joined_kwds > left_head_word && joined_kwds < right_head_word){
-                    current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "commission");
-                    curr_index = left_index;
-                }else{
-                    current_node = GenKwdTreeNodeAddress(word, bucket_size, right_index, "commission");
-                    curr_index = right_index;
-                }
-        
-                curr_node_data = await FetchKwdsTreeNode(current_node).data;
-            }
+            
         }
     }
 }
 
-async function FindMoreProductsByKeywords(){}
+//////////////////////////////////////////////////////
+/// PURE UTILS
+
+function FetchNode(keywords, product_type){
+    let base_word = (remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
+
+    let current_node = GenKwdTreeNodeAddress(base_word, bucket_size, curr_index, "commission");
+    let curr_index = 0;
+    let curr_node_data = FetchKwdsTreeNode(current_node).data;
+    let encoding_head_len = bucket_size/2;
+    let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
+    let min_data_size = 5*min_entry_len;
+    // 3 cases
+    // assume bucket size 5
+
+    while(curr_node_data.length < min_data_size){
+        ReadKeywordFork(curr_node_data)
+        
+        for(let rw of remaining_kwds){
+            
+        }
+
+        // todo: actual iter logic
+        if(joined_kwds > left_head_word && joined_kwds < right_head_word){
+            current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "commission");
+            curr_index = left_index;
+        }else{
+            current_node = GenKwdTreeNodeAddress(word, bucket_size, right_index, "commission");
+            curr_index = right_index;
+        }
+
+        curr_node_data = await FetchKwdsTreeNode(current_node).data;
+    }
+}
+
+function ReadKeywordFork(rb){
+    let ret_obj = {
+        left_index: new anchor.BN(rb.slice(8,10)),
+        right_index: new anchor.BN(rb.slice(10,12)),
+        left_head: [],
+        left_tail: [],
+        right_head: [],
+        right_tail: [],
+    };
+
+    let sign_word_data = rb.slice(12);
+    let segments = sign_word_data.split(0);
+
+    // left head
+    for(let i = 0; i < encoding_head_len; i++){
+        ret_obj.left_head.push(String.fromCharCode(segments[0].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
+        if ((segments[0][i] & 15) != 0){
+            ret_obj.left_head.push(String.fromCharCode(segments[0].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
+        }
+    }
+    ret_obj.left_head.sort()
+    // left tail
+    for(let i = 0; i < encoding_head_len; i++){
+        ret_obj.left_tail.push(String.fromCharCode(segments[1].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
+        if ((segments[0][i] & 15) != 0){
+            ret_obj.left_tail.push(String.fromCharCode(segments[1].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
+        }
+    }
+    ret_obj.left_tail.sort()
+    // right head
+    for(let i = 0; i < encoding_head_len; i++){
+        ret_obj.right_head.push(String.fromCharCode(segments[2].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
+        if ((segments[0][i] & 15) != 0){
+            ret_obj.right_head.push(String.fromCharCode(segments[2].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
+        }
+    }
+    ret_obj.right_head.sort()
+    // right tail
+    for(let i = 0; i < encoding_head_len; i++){
+        ret_obj.right_tail.push(String.fromCharCode(segments[3].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
+        if ((segments[0][i] & 15) != 0){
+            ret_obj.right_tail.push(String.fromCharCode(segments[3].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
+        }
+    }
+    ret_obj.right_tail.sort();
+    return ret_obj
+}
 
 function GenerateCombination(array_in, append_in, target_length){
     switch(target_length){
