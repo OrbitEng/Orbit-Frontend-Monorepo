@@ -1215,9 +1215,7 @@ async function FindByKeywords(keywords, product_type){
     for(let bucket_size = keywords.length+1; bucket_size < 8; bucket_size++){
         for(let word_ind = 0; word_ind < keywords.length; word_ind++){
             let base_word = (remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
-
-            let curr_index = 0;
-            await FetchNode(base_word, bucket_size, keywords, product_type)
+            await FetchNode(base_word, bucket_size, keywords, product_type, 0)
         }
     }
 }
@@ -1225,7 +1223,7 @@ async function FindByKeywords(keywords, product_type){
 //////////////////////////////////////////////////////
 /// PURE UTILS
 
-async function FetchNode(base_word, bucket_size, remaining_kwds, product_type){
+async function FetchNode(base_word, bucket_size, remaining_kwds, product_type, curr_index){
     // while the node data is < data size
     let current_node = GenKwdTreeNodeAddress(base_word, bucket_size, curr_index, product_type);
     let curr_node_data = FetchKwdsTreeNode(current_node).data;
@@ -1233,23 +1231,44 @@ async function FetchNode(base_word, bucket_size, remaining_kwds, product_type){
     let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
     let min_data_size = 5*min_entry_len;
 
-    while(curr_node_data.length < min_data_size){
+    if(curr_node_data.length < min_data_size){
         let entry_obj = ReadKeywordFork(curr_node_data);
         
-        for(let rw of remaining_kwds){
-            
-        }
-
-        // todo: actual iter logic
-        if(joined_kwds > left_head_word && joined_kwds < right_head_word){
-            current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "commission");
-            curr_index = left_index;
+        if(remaining_kwds[0] > entry_obj.entry[bucket_size-1]){
+            return await FetchNode(base_word, bucket_size, remaining_kwds, product_type, entry_obj.right_index);
+        }else
+        if(remaining_kwds.join("") < entry_obj.entry.join("")){
+            let right_node = await FetchNode(base_word, bucket_size, remaining_kwds, product_type, entry_obj.right_index);
+            let left_node = await FetchNode(base_word, bucket_size, remaining_kwds, product_type, entry_obj.left_index);
+            if(left_node.max > right_node.max){
+                return left_node
+            }else if(left_node.max == right_node.max){
+                left_node.entries.push(...right_node.entries)
+                return left_node
+            }else{
+                return right_node
+            }
         }else{
-            current_node = GenKwdTreeNodeAddress(word, bucket_size, right_index, "commission");
-            curr_index = right_index;
+            return await FetchNode(base_word, bucket_size, remaining_kwds, product_type, entry_obj.left_index)
         }
-
-        curr_node_data = await FetchKwdsTreeNode(current_node).data;
+    }else{
+        let entries = DeserKwdsNode(curr_node_data);
+        let ret = {max:0, entries: []};
+        for(let entry of entries){
+            let max = 0;
+            for(let word of remaining_kwds){
+                if(entry.includes(word)){
+                    max += 1;
+                }
+            };
+            if(max > ret.max){
+                ret.max = max;
+                ret.entries = [entry];
+            }else if(max == ret.max){
+                ret.entries.push(entry);
+            }
+        }
+        return ret;
     }
 }
 
