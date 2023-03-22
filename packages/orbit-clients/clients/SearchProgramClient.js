@@ -1188,36 +1188,43 @@ export async function DeserKwdsNode(rb, base_word, coupled_words){
     return entries;
 }
 
-/// helper util funcs
+//////////////////////////////////////////////////////////////////
+/// SEARCH UTILS
 
 async function FindByKeywords(keywords, product_type){
     keywords.sort();
 
-    let sub_matches = [];
-    let exact_matches = [];
-    let sup_matches = []
+    let matches = {
+        sub:[],
+        exact: undefined,
+        sup: {},
+    }
 
     // try fetching direct node
     let direct_node = await FetchBucketCacheRoot(
         GenProductQueueAddress(keywords, product_type)
     );
     if(direct_node.data.length != 0){
-        exact_matches = [direct_node];
+        matches.exact = direct_node;
     }
 
     if(keywords.length > 3){
         for(let i = 3; i < keywords.length; i++){
             let combos = GenerateCombination(keywords, [], i);
-            sub_matches.push(...FetchMultipleKwdsTreeCache(combos.map(combo => GenProductCacheAddress(combo, product_type))));
+            matches.sub.push(...FetchMultipleKwdsTreeCache(combos.map(combo => GenProductCacheAddress(combo, product_type))));
         }
     }
     
     for(let bucket_size = keywords.length+1; bucket_size < 8; bucket_size++){
         for(let word_ind = 0; word_ind < keywords.length; word_ind++){
             let base_word = (remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
-            await FetchNode(base_word, bucket_size, keywords, product_type, 0)
+            let retnode = await FetchNode(base_word, bucket_size, keywords, product_type, 0);
+            if(retnode.max > 0){
+                matches.sup[bucket_size] = retnode.entries
+            }
         }
     }
+    return matches
 }
 
 //////////////////////////////////////////////////////
