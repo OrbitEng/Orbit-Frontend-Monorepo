@@ -17,7 +17,7 @@ export function GenericLayout(props){
 				<title>Orbit</title>
 				<link rel="icon" href="/orbit.png" />
 			</Head>
-			<main className="w-full h-full relative bg-[url('/bgWallpaper.png')] overflow-hidden">
+			<main className="w-full h-full relative bg-[url('/bgWallpaper.png')] bg-cover overflow-hidden">
 				<HomeHeader />
 				<div className="relative sm:mt-32 mt-[7.5rem]">
 					{props.children}

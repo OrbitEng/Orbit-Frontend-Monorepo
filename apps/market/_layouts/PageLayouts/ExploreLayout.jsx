@@ -4,7 +4,7 @@ import { HomeHeader } from "@includes/MarketHeader";
 import { MainFooter } from "@includes/Footer";
 import { useState, useEffect, Fragment } from "react";
 
-import OrbitFullLogo from "../public/OrbitLogos/OrbitFullLogo.png";
+import OrbitFullLogo from "../../public/OrbitLogos/OrbitFullLogo.png";
 import { PageSearchBar } from "@includes/components/SearchBar";
 import { LargeProductExplorer } from "@includes/components/product_display/LargeProductExplorer";
 import { Transition } from "@headlessui/react";
@@ -54,7 +54,7 @@ export default function ExploreLayout(props) {
 							leaveTo="opacity-0 scale-95"
 						>	
 							<div className="flex relative max-w-[200px] sm:max-w-sm w-full h-1/2 mt-auto mx-auto"> 
-								<div className="relative max-w-[180px] max-h-[90px] sm:max-w-sm sm:max-h-[182px] w-full h-full mt-auto lg:mb-10 mx-auto">
+								<div className="relative max-w-[180px] max-h-[90px] sm:max-w-sm sm:max-h-[182px] w-full h-full mt-auto mx-auto">
 									<Image 
 										layout="fill"
 										objectFit="contain"
