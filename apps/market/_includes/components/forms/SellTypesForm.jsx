@@ -8,10 +8,10 @@ export function PhysicalProductForm(props){
     
     return (
         <div >
-            <div className="flex flex-col gap-y-6">
-					<label htmlFor="description" className="text-white font-semibold text-xl">Stock</label>
+            <div className="flex flex-col gap-y-2">
+					<label htmlFor="description" className="text-white font-semibold text-xl">Quantity/Stock</label>
 					<input
-						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+                        className="flex flex-col p-3 rounded-lg text-lg overflow-hidden focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
 						placeholder="Quantity"
 						type="number"
 						min="1"
@@ -59,11 +59,11 @@ export function DigitalProductForm(props){
 
     return (
         <div>
-			<div className="flex flex-col gap-y-6">
+			<div className="flex flex-col gap-y-2">
 				<label htmlFor="description" className="text-white font-semibold text-xl">Content Files</label>
-				<div className="w-full bg-[#100e14] rounded-lg">
+				<div className="w-full bg-[#100e14] rounded-lg ring-2 ring-inset ring-[#1b1a1a]">
 					
-                    <div className="w-4/5 h-4/5 flex flex-col justify-center items-center border-dashed border rounded-sm border-[#9783d0] mx-auto my-6 py-6" {...getRootProps()}>
+                    <div className="flex flex-col justify-center items-center border-dashed border rounded-lg border-[#9783d0] my-6 mx-6 py-6" {...getRootProps()}>
                         <input {...getInputProps()}/>
 
                         <div className="relative h-12 w-12 rounded-3xl flex flex-col bg-[#2c1c3c] justify-center place-items-center align-center">

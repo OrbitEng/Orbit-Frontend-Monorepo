@@ -45,7 +45,7 @@ export function SellLayout(props){
 	const [files, setFiles] = useState([]);
     const [fileName, setFileNames] = useState([]);
     
-    const [listingType, setListingType] = useState("physical");
+    const [listingType, setListingType] = useState("Physical");
 
 	const [tags, setTags] = useState([]);
 	const [subtypeObject, setSubtypeObject] = useState({});
@@ -95,7 +95,7 @@ export function SellLayout(props){
         
 
 		switch(listingType){
-			case "physical":
+			case "Physical":
 				if(!userAccount.data.physicalListings){
 					tx.add(
 						await PRODUCT_PROGRAM.InitPhysicalListings(
@@ -113,7 +113,7 @@ export function SellLayout(props){
 					);
 				}
 				break;
-			case "digital":
+			case "Digital":
 				if(!userAccount.data.digitalListings){
 					tx.add(
 						await PRODUCT_PROGRAM.InitDigitalListings(
@@ -131,7 +131,7 @@ export function SellLayout(props){
 					);
 				}
 				break;
-			case "commission":
+			case "Commission":
 				if(!userAccount.data.commissionListings){
 					tx.add(
 						await PRODUCT_PROGRAM.InitCommissionListings(
@@ -153,7 +153,7 @@ export function SellLayout(props){
 
         let [addixs, data_items] = await (async ()=>{
 			switch(listingType){
-				case "physical":
+				case "Physical":
 					return ListPhysicalProduct(
 						userAccount,
 						price,
@@ -165,7 +165,7 @@ export function SellLayout(props){
 						listRecent,
 						wallet
 					)
-				case "digital":
+				case "Digital":
 					return ListDigitalProduct(
 						userAccount,
 						price,
@@ -177,7 +177,7 @@ export function SellLayout(props){
 						listRecent,
 						wallet
 					)
-				case "commission":
+				case "Commission":
 					return ListCommissionProduct(
 						userAccount,
 						price,
@@ -240,12 +240,13 @@ export function SellLayout(props){
 
 
     return(
-		<div className="flex flex-col justify-around max-w-6xl w-full h-full content-center gap-y-6 align-center my-auto  mx-auto min-h-view">
-			<h1 className="text-white font-bold text-4xl mt-10">Create Listing</h1>
-			<button onClick={() => router.back()} className="flex flex-row space-x-1 mb-10 align-middle">
-				<ArrowLeftIcon className="h-5 w-5 text-[#767676] my-auto" />
+		<div className="flex flex-col justify-around max-w-6xl w-full h-full content-center gap-y-6 align-center my-auto mx-auto min-h-view mb-16">
+			<button onClick={() => router.back()} className="flex flex-row space-x-1 mb-1 mt-8 align-middle">
+				<ArrowLeftIcon className="h-7 w-7 text-white my-auto stroke-2" />
 			</button>
-				<div className="flex flex-col gap-y-6 ">
+			<h1 className="text-white font-bold text-4xl">Create Listing</h1>
+                <h2 className="text-[#3c3c3c] text-lg -mt-5">Create a product listing in one of the many product categories on Orbit supports!</h2>
+				<div className="flex flex-col gap-y-2 ">
 					<label htmlFor="title" className="text-white font-semibold text-xl">Listing Title</label>
 					<input
 						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
@@ -256,7 +257,8 @@ export function SellLayout(props){
 						onChange={(e)=>{setProdName(e.target.value)}}
 					/>
 				</div>
-				<div className="flex flex-col gap-y-6 w-full">
+                
+				<div className="flex flex-col gap-y-2 w-full">
 					<div className="text-white font-semibold text-xl">Listing Images</div>
 					<div {...getRootProps()} className="grid grid-cols-6 gap-x-2 overflow-x-auto w-full h-52 p-6 bg-[#100e13] rounded-lg ring-2 ring-inset ring-[#1b1a1a]">
 						<input {...getInputProps()}/>
@@ -271,23 +273,23 @@ export function SellLayout(props){
 								</div>
 							))
 						}
-						<div className="relative flex flex-col items-center justify-center border-4 border-dashed border-[#5e5e5e] rounded-2xl">
-							<div className="w-1/2 h-1/2">
+						<div className="relative flex flex-col items-center justify-center border-2 border-dashed border-[#5e5e5e] rounded-2xl">
+							<div className="w-1/3 h-1/3">
 								<CameraIcon className="text-[#5e5e5e]"/>
 							</div>
-							<span className="align-middle text-center text-sm font-bold text-[#5e5e5e]">Upload Media</span>
+							<span className="align-middle text-center text-sm text-[#5e5e5e] mt-2">Upload Media</span>
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-col gap-y-6 w-full">
-					<label htmlFor="title" className="text-white font-semibold text-xl">Category</label>
+				<div className="flex flex-col gap-y-2 w-full">
+					<label htmlFor="title" className="text-white font-semibold text-xl">Listing Category</label>
 					<Listbox value={listingType} onChange={changeTypeHandler}>
-						<div className="flex flex-col bg-[#100e13] text-lg rounded-lg overflow-hidden">
-							<Listbox.Button className="flex flex-row text-[#D9D9D9] px-4 py-2">
+						<div className="flex flex-col py-1 rounded-lg text-lg overflow-hidden focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]" >
+							<Listbox.Button className="flex flex-row text-[#4E4E4E] px-4 py-2">
 								<div className="grow text-left">
 									{listingType}
 								</div>
-								<ChevronDownIcon className="h-8"/>
+								<ChevronDownIcon className="h-5 my-auto"/>
 							</Listbox.Button>
 							<Transition
 								as={Fragment}
@@ -297,27 +299,27 @@ export function SellLayout(props){
 							>
 								<Listbox.Options className="overflow-auto py-1 max-h-96 bg-[#181424] backdrop-blur backdrop-filter rounded-lg">
 									<Listbox.Option
-										value={"physical"}
+										value={"Physical"}
 										className="relative cursor-default select-none py-2 pl-10 pr-4"
 									>
 										{({ active, selected }) => (
-											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"physical"}</span>
+											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"Physical"}</span>
 										)}
 									</Listbox.Option>
 									<Listbox.Option
-										value={"digital"}
+										value={"Digital"}
 										className="relative cursor-default select-none py-2 pl-10 pr-4"
 									>
 										{({ active, selected }) => (
-											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"digital"}</span>
+											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"Digital"}</span>
 										)}
 									</Listbox.Option>
 									<Listbox.Option
-										value={"commission"}
+										value={"Commission"}
 										className="relative cursor-default select-none py-2 pl-10 pr-4"
 									>
 										{({ active, selected }) => (
-											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"commission"}</span>
+											<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{"Commission"}</span>
 										)}
 									</Listbox.Option>
 								</Listbox.Options>
@@ -326,14 +328,14 @@ export function SellLayout(props){
 					</Listbox>
 				</div>
 				{
-					((listingType == "physical") && <PhysicalProductForm setMetaInf={setSubtypeObject}/>) ||
-					((listingType == "digital") && <DigitalProductForm setMetaInf={setSubtypeObject}/>) ||
-					((listingType == "commission") && <CommissionProductForm setMetaInf={setSubtypeObject}/>)
+					((listingType == "Physical") && <PhysicalProductForm setMetaInf={setSubtypeObject}/>) ||
+					((listingType == "Digital") && <DigitalProductForm setMetaInf={setSubtypeObject}/>) ||
+					((listingType == "Commission") && <CommissionProductForm setMetaInf={setSubtypeObject}/>)
 				}
-				<div className="flex flex-col h-full">
+				<div className="flex flex-col h-full gap-y-2">
 					<label htmlFor="price" className="text-white font-semibold text-xl">Price</label>
 					<input
-						className="rounded-lg p-3 text-lg text-right focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+                        className="flex flex-col text-right p-3 rounded-lg text-lg overflow-hidden focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
 						placeholder="0.00"
 						type="number"
 						min="0"
@@ -343,21 +345,20 @@ export function SellLayout(props){
 							setProdPrice(e.target.value)
 						}}
 					/>
-					<div className="flex flex-row pt-2 my-auto text-[#777777] ">
+					<div className="flex flex-row my-auto text-[#777777]">
 						<span className="text-sm pr-1">Selling Fee</span>
 						<InformationCircleIcon className="h-5 w-5 text-yellow-400 pt-1" />
 						<span className="grow text-right pr-3">{((price * 0.05) || "0.00")}</span>
 					</div>
-					<div className="flex flex-row align-middle mt-1 text-[#8E8E8E] ">
+					<div className="flex flex-row align-middle text-[#8E8E8E] -mt-2">
 						<span className="text-sm pr-1">You Earn</span>
 						<span className="grow text-right pr-3">{((price * 0.95) || "0.00")}</span>
 					</div>
 				</div>
-				
-				<div className="flex flex-col gap-y-6">
+				<div className="flex flex-col gap-y-2">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Delivery</label>
 					<input
-						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
+						className="rounded-lg p-3 text-lg focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
 						placeholder="Delivery ETA"
 						type="number"
 						min="1"
@@ -366,17 +367,17 @@ export function SellLayout(props){
 						onChange={(e)=>{setDelivery(e.target.value)}}
 					/>
 				</div>
-				<div className="flex flex-col gap-y-6">
+				<div className="flex flex-col gap-y-2">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Description</label>
 					<textarea
-						className="p-3 h-96 text-lg focus:outline-0 bg-[#171717] text-[#8E8E8E] placeholder:text-[#4E4E4E] rounded-lg"
+						className="rounded-lg h-96 p-3 text-lg focus:outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E] placeholder:text-[#4E4E4E]"
 						id="description"
 						name="description"
 						placeholder="What are you selling?"
 						onChange={(e)=>{setDescription(e.target.value)}}
 					/>
 				</div>
-				<div className="flex flex-col gap-y-6">
+                <div className="flex flex-col gap-y-2">
 					<div className="flex flex-row">
 						<label htmlFor="description" className="text-white font-semibold text-xl">Tags</label>
 						<QuestionMarkCircleIcon className="h-5 w-5 text-yellow-400 pt-1 my-auto"/>
@@ -401,7 +402,7 @@ export function SellLayout(props){
 						{
 							tags?.map((tag, tagind)=>{
 							return <div
-									className="py-2 px-3 text-lg rounded-3xl outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]"
+									className="py-1 px-4 rounded-3xl outline-0 bg-[#100e13] ring-2 ring-inset ring-[#1b1a1a] text-[#8E8E8E]"
 									key={"tag"+tagind}
 									onClick={()=>{
 										let ind  = tags.indexOf(tag);
@@ -416,8 +417,8 @@ export function SellLayout(props){
 							<PlusIcon className="text-[#836ae8] w-6 h-6 m-1"/>
 						</div>
 					</div>
-				</div>
-				<div className="flex flex-col gap-y-6">
+				</div>			
+				<div className="flex flex-col gap-y-2">
 					<label htmlFor="description" className="text-white font-semibold text-xl">Other Properties</label>
 					<div className="flex flex-row gap-x-2">
 						{
@@ -435,7 +436,6 @@ export function SellLayout(props){
 								</div>
 							))
 						}
-
 						<div
 							className="w-28 flex flex-row bg-[#171717] text-[#575059] rounded-md ring-2 ring-inset ring-[#1b1a1a] py-1 px-2 align-center"
 						>
