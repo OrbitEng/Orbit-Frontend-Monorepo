@@ -90,40 +90,42 @@ export function LargeProductExplorer(props) {
 				<div className="hidden sm:flex flex-row gap-x-8 sm:w-72 md:w-96 flex-nowrap overflow-visible ml-8">
 					<DoubleRangeInput values={[rangePrice, setRangePrice]}/>	
 					<Listbox value={sortMethod} onChange={setSortMethod}>
-						<Listbox.Button className="flex flex-row text-white text-sm bg-[rgba(50,50,50,0.54)] rounded-lg px-5 py-3 align-middle my-auto gap-x-2 mx-auto">
-							<span className="my-auto truncate">{sortMethod.name}</span>
-							<ChevronDownIcon className="h-4 w-4 my-auto" />
-						</Listbox.Button>
-						<Transition
-							as={Fragment}
-							leave="transition ease-in duration-100"
-							leaveFrom="opacity-100"
-							leaveTo="opacity-0"
-						>
-							<Listbox.Options className="absolute right-0 inset-y mt-10 overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
-								{sortMethods.map((method) => (
-									<Listbox.Option
-										key={method.key}
-										value={method}
-										className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
-											active ? 'bg-[#504561]' : 'bg-transparent'
-										}`}
-									>
-										{({ active, selected }) => (
-											<>
-												<span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{method.name}</span>
-												{(selected || (method == sortMethod)) ? (
-													<span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
-														<CheckIcon className="h-4 w-4" />
-													</span>
-												) 
-												: null}
-											</>
-										)}
-									</Listbox.Option>
-								))}
-							</Listbox.Options>
-						</Transition>
+                        <div className="relative mt-1">
+                            <Listbox.Button className="flex flex-row text-white text-sm bg-[rgba(50,50,50,0.54)] rounded-lg px-5 py-3 align-middle my-auto gap-x-2 mx-auto">
+                                <span className="my-auto truncate">{sortMethod.name}</span>
+                                <ChevronDownIcon className="h-4 w-4 my-auto" />
+                            </Listbox.Button>
+                            <Transition
+                                as={Fragment}
+                                leave="transition ease-in duration-100"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                            >
+                                <Listbox.Options className="absolute right-0 inset-y overflow-auto py-1 max-h-96 w-fit bg-[#161326BD] backdrop-blur backdrop-filter rounded-lg">
+                                    {sortMethods.map((method) => (
+                                        <Listbox.Option
+                                            key={method.key}
+                                            value={method}
+                                            className={({ active }) => `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                                active ? 'bg-[#504561]' : 'bg-transparent'
+                                            }`}
+                                        >
+                                            {({ active, selected }) => (
+                                                <>
+                                                    <span className={`block truncate ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>{method.name}</span>
+                                                    {(selected || (method == sortMethod)) ? (
+                                                        <span className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active ? 'text-[#D9D9D9]' : 'text-[#878787]'}`}>
+                                                            <CheckIcon className="h-4 w-4" />
+                                                        </span>
+                                                    ) 
+                                                    : null}
+                                                </>
+                                            )}
+                                        </Listbox.Option>
+                                    ))}
+                                </Listbox.Options>
+                            </Transition>
+                        </div>
 					</Listbox>
 				</div>
 			</div>
@@ -131,11 +133,11 @@ export function LargeProductExplorer(props) {
 				(props?.items == undefined || props?.items?.length == 0) ? 
 				(
 					<div className="flex flex-col my-28 md:my-56 mx-auto text-center">
-						<h2 className="text-center text-5xl font-semibold text-white my-4 mx-auto">No Listings</h2>
-						<span className="text-[#5B5B5B] font-semibold text-lg mx-auto w-full mb-2">No items to display.<br/>Create some listings or browse others!</span>
+						<h2 className="text-center text-4xl md:text-5xl font-semibold text-white mt-4 mb-1 mx-auto">No Listings</h2>
+						<span className="text-[#5B5B5B] text-md md:text-lg mx-auto w-full mb-3 leading-tight">No listings to display here<br/>Create some listings or browse others!</span>
 						<div className="flex flex-row gap-x-3 content-center mx-auto">
-							<button className="text-white font-bold bg-[#13171D] border-[1px] border-[#515151] rounded-lg px-3 py-2">Create</button>
-							<button className="text-white font-bold bg-[#13171D] border-[1px] border-[#515151] rounded-lg px-3 py-2">Explore</button>
+							<button className="text-white font-bold bg-[#13171D] border-[1px] border-[#515151] rounded-lg px-3 py-1">Create</button>
+							<button className="text-white font-bold bg-[#13171D] border-[1px] border-[#515151] rounded-lg px-3 py-1">Explore</button>
 						</div>
 					</div>
 				):(

@@ -5,8 +5,8 @@ import { CheckIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 const searchCategories = [
 	{ key: 1, name: "All", value: "all"},
 	{ key: 2, name: "Local", value: "local"},
-	{ key: 3, name: "Shipped", value: "shipped"},
-	{ key: 4, name: "Digital", value: "digital"}
+	{ key: 3, name: "Physical", value: "physical"},
+	{ key: 4, name: "Commission", value: "commission"}
 ]
 
 export function HeaderSearchBar(props) {
