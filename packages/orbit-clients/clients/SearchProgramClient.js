@@ -49,11 +49,11 @@ export async function SyncPhysicalProductCache (kwds){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
     let cache_addr = GenProductCacheAddress(kwds, "physical");
-    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(53);
+    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(54);
     let remaining_accs = [];
     for(let i = 0; i < 25; i++ ){
-        let vendor_listings_addr = GenListingsAddress("physical", new anchor.BN(cache_node.slice((13*i)+4,(13*i)+12)));
-        remaining_accs.push(GenProductAddress(new anchor.BN(cache_node.slice(0,4)), vendor_listings_addr, "physical"));
+        let vendor_listings_addr = GenListingsAddress("physical", new anchor.BN(cache_node.slice((14*i)+4,(14*i)+12)));
+        remaining_accs.push(GenProductAddress(new anchor.BN(cache_node[(14*i)+12], vendor_listings_addr, "physical")));
     }
     return SEARCH_PROGRAM.methods.syncPhysicalBucketCache()
     .accounts({
@@ -143,11 +143,11 @@ export async function SyncDigitalProductCache (kwds){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
     let cache_addr = GenProductCacheAddress(kwds, "digital");
-    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(53);
+    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(54);
     let remaining_accs = [];
     for(let i = 0; i < 25; i++ ){
-        let vendor_listings_addr = GenListingsAddress("digital", new anchor.BN(cache_node.slice((13*i)+4,(13*i)+12)));
-        remaining_accs.push(GenProductAddress(new anchor.BN(cache_node.slice(0,4)), vendor_listings_addr, "digital"));
+        let vendor_listings_addr = GenListingsAddress("digital", new anchor.BN(cache_node.slice((14*i)+4,(14*i)+12)));
+        remaining_accs.push(GenProductAddress(new anchor.BN(cache_node[(14*i)+12], vendor_listings_addr, "digital")));
     }
     return SEARCH_PROGRAM.methods.syncDigitalBucketCache()
     .accounts({
@@ -237,11 +237,11 @@ export async function SyncCommissionProductCache (kwds){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
     let cache_addr = GenProductCacheAddress(kwds, "commission");
-    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(53);
+    let cache_node = (await FetchBucketCacheRoot(cache_addr)).data.slice(54);
     let remaining_accs = [];
     for(let i = 0; i < 25; i++ ){
-        let vendor_listings_addr = GenListingsAddress("commission", new anchor.BN(cache_node.slice((13*i)+4,(13*i)+12)));
-        remaining_accs.push(GenProductAddress(new anchor.BN(cache_node.slice(0,4)), vendor_listings_addr, "commission"));
+        let vendor_listings_addr = GenListingsAddress("commission", new anchor.BN(cache_node.slice((14*i)+4,(14*i)+12)));
+        remaining_accs.push(GenProductAddress(new anchor.BN(cache_node[(14*i)+12], vendor_listings_addr, "commission")));
     }
     return SEARCH_PROGRAM.methods.syncCommissionBucketCache()
     .accounts({
@@ -334,11 +334,11 @@ export async function SyncPhysicalKwdsCache (word){
     let num_words = remaining_kwds.length+1
     let cache_addr = GenKwdTreeCacheAddress(word, num_words, "physical");
     let tree_cache = (await FetchKwdsTreeCache(cache_addr)).data.slice(8);
-    let entry_byte_len = (num_words*16)+4;
+    let entry_byte_len = (num_words*16)+2;
     for(let i = 0; i < 15; i++){
         let words = [word];
         for(let j = 0; j < num_words; j++){
-            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
+            words.push(String.fromCharCode(...tree_cache.slice((entry_byte_len*i)+2, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
         GenProductCacheAddress(words, "physical");
@@ -551,11 +551,11 @@ export async function SyncDigitalKwdsCache (word, payer_wallet){
     let num_words = remaining_kwds.length+1
     let cache_addr = GenKwdTreeCacheAddress(word, num_words, "digital");
     let tree_cache = (await FetchKwdsTreeCache(cache_addr)).data.slice(8);
-    let entry_byte_len = (num_words*16)+4;
+    let entry_byte_len = (num_words*16)+2;
     for(let i = 0; i < 15; i++){
         let words = [word];
         for(let j = 0; j < num_words; j++){
-            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
+            words.push(String.fromCharCode(...tree_cache.slice((entry_byte_len*i)+2, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
         GenProductCacheAddress(words, "digital");
@@ -760,17 +760,17 @@ export async function PopulateCommissionKwdsToCache (word, remaining_kwds, payer
     })
     .instruction()
 }
-export async function SyncCommissionKwdsCache (word, payer_wallet){
+export async function SyncCommissionKwdsCache (word){
     word = word.toLowerCase();
     
     let num_words = remaining_kwds.length+1
     let cache_addr = GenKwdTreeCacheAddress(word, num_words, "commission");
     let tree_cache = (await FetchKwdsTreeCache(cache_addr)).data.slice(8);
-    let entry_byte_len = (num_words*16)+4;
+    let entry_byte_len = (num_words*16)+2;
     for(let i = 0; i < 15; i++){
         let words = [word];
         for(let j = 0; j < num_words; j++){
-            words.push(String.fromCharCode(...tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
+            words.push(String.fromCharCode(...tree_cache.slice((entry_byte_len*i)+2, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
         GenProductCacheAddress(words, "commission");
@@ -1095,7 +1095,7 @@ export async function DeserBucketCache(rb, prod_type){
             break
         }
         timessold.push(sold_amt)
-        let catalog_index_pos = rb.slice(base, base+=2);
+        let catalog_index_pos = rb.slice(base, base+=2)[0];
         prod_addrs.push(
             GenProductAddress(catalog_index_pos, GenListingsAddress(prod_type, voterid), prod_type)
         )
