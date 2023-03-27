@@ -13,7 +13,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
 import BundlrCtx from "@contexts/BundlrCtx";
-import { DeserBucketCache, FetchBucketCacheRoot, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
+import { DeserBucketCache, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
 import { FindNextAvailableListingsAddress, GenListingsAddress, GenProductAddress } from "orbit-clients/clients/OrbitProductClient";
 
 const token_addresses = {
@@ -253,6 +253,7 @@ export function SellLayout(props){
 			)
 		);
 
+		// if theres no product cache for these
 		if(cache_root == "invalid discriminant"){
 			switch(listingType){
 				case "Physical":
@@ -265,20 +266,25 @@ export function SellLayout(props){
 					await InitCommissionProductCache(tags, prod_addr, userAccount.address, wallet);
 					break;
 			}
+		// if there is a cache, check if its full. if it is, init the queues
+		// if queue exists, add to queue (if queue is full, drain to arweave & init?)
 		}else{
 			let bucket_cache = DeserBucketCache(cache_root.data, lowercase_listings);
-			if(bucket_cache.length == 25 && bucket_cache.page == 0){
-				switch(listingType){
-					case "Physical":
-						await InitPhysicalBucketQueue(tags, prod_addr, userAccount.address, wallet);
-						break;
-					case "Digital":
-						await InitDigitalBucketQueue(tags, prod_addr, userAccount.address, wallet);
-						break;
-					case "Commission":
-						await InitCommissionBucketQueue(tags, prod_addr, userAccount.address, wallet);
-						break;
-				}
+			let product_queue = await FetchBucketDrainVec(GenProductQueueAddress(tags, lowercase_listings));
+			if(typeof product_queue == "string" && product_queue == "invalid discriminant"){
+				if(bucket_cache.length == 25 && bucket_cache.page == 0){
+					switch(listingType){
+						case "Physical":
+							await InitPhysicalBucketQueue(tags, prod_addr, userAccount.address, wallet);
+							break;
+						case "Digital":
+							await InitDigitalBucketQueue(tags, prod_addr, userAccount.address, wallet);
+							break;
+						case "Commission":
+							await InitCommissionBucketQueue(tags, prod_addr, userAccount.address, wallet);
+							break;
+					}
+				}	
 			}
 		};
 
