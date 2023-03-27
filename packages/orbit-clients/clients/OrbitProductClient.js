@@ -77,6 +77,7 @@ export async function ListCommissionProduct (
     metadata,
     add_to_recent,
     user_account,
+    vendor_listings,
     payer_wallet
 ){
     if(typeof product == "string"){
@@ -90,8 +91,6 @@ export async function ListCommissionProduct (
             isSigner: false 
         }
     ] : [];
-
-    let vendor_listings = this.GenListingsAddress("commission", user_account.data.voterId);
 
     return PRODUCT_PROGRAM.methods
     .listCommissionProduct(metadata)
@@ -110,6 +109,7 @@ export async function ListDigitalProduct (
     filetype,
     add_to_recent,
     user_account,
+    vendor_listings,
     payer_wallet
 ){
     if(typeof product == "string"){
@@ -122,7 +122,6 @@ export async function ListDigitalProduct (
             isWritable: true,
             isSigner: false 
         }] : [];
-    let vendor_listings = this.GenListingsAddress("digital", user_account.data.voterId);
 
     return PRODUCT_PROGRAM.methods
     .listDigitalProduct(metadata, filetype)
@@ -141,6 +140,7 @@ export async function ListPhysicalProduct (
     quantity,
     add_to_recent,
     user_account,
+    vendor_listings,
     payer_wallet
 ){
     if(typeof product == "string"){
@@ -154,7 +154,6 @@ export async function ListPhysicalProduct (
             isSigner: false 
         }
     ] : [];
-    let vendor_listings = this.GenListingsAddress("physical", user_account.data.voterId);
 
 
     return PRODUCT_PROGRAM.methods

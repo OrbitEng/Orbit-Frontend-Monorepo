@@ -13,6 +13,8 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
 import BundlrCtx from "@contexts/BundlrCtx";
+import { DeserBucketCache, FetchBucketCacheRoot, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
+import { FindNextAvailableListingsAddress, GenListingsAddress, GenProductAddress } from "orbit-clients/clients/OrbitProductClient";
 
 const token_addresses = {
 	mainnet: {
@@ -94,16 +96,32 @@ export function SellLayout(props){
 		});
         
 
+		let listings_addr;
+		let next_index;
+		let prod_addr;
+
+		let lowercase_listings = listingType.toLowerCase();
+		listings_addr = GenListingsAddress(lowercase_listings, userAccount.data.voterId);
+
 		switch(listingType){
 			case "Physical":
 				if(!userAccount.data.physicalListings){
+					next_index = 0;
 					tx.add(
-						await PRODUCT_PROGRAM.InitPhysicalListings(
+						await InitPhysicalListings(
 							wallet,
 							userAccount
 						)
 					);
-				}
+				}else{
+					next_index = FindNextAvailableListingsAddress(
+						(
+							await GetListingsStruct(
+								listings_addr
+							)                    
+						).data
+					);
+				};
 				if(!userAccount.data.sellerPhysicalTransactions){
 					tx.add(
 						await TRANSACTION_PROGRAM.CreatePhysicalSellerTransactionsLog(
@@ -111,17 +129,26 @@ export function SellLayout(props){
 							userAccount
 						)
 					);
-				}
+				};
 				break;
 			case "Digital":
 				if(!userAccount.data.digitalListings){
+					next_index = 0;
 					tx.add(
-						await PRODUCT_PROGRAM.InitDigitalListings(
+						await InitDigitalListings(
 							wallet,
 							userAccount
 						)
 					);
-				}
+				}else{
+					next_index = FindNextAvailableListingsAddress(
+						(
+							await GetListingsStruct(
+								listings_addr
+							)                    
+						).data
+					);
+				};
 				if(!userAccount.data.sellerDigitalTransactions){
 					tx.add(
 						await TRANSACTION_PROGRAM.CreateDigitalSellerTransactionsLog(
@@ -129,17 +156,26 @@ export function SellLayout(props){
 							userAccount
 						)
 					);
-				}
+				};
 				break;
 			case "Commission":
 				if(!userAccount.data.commissionListings){
+					next_index = 0;
 					tx.add(
-						await PRODUCT_PROGRAM.InitCommissionListings(
+						await InitCommissionListings(
 							wallet,
 							userAccount
 						)
 					);
-				}
+				}else{
+					next_index = FindNextAvailableListingsAddress(
+						(
+							await GetListingsStruct(
+								listings_addr
+							)                    
+						).data
+					);
+				};
 				if(!userAccount.data.sellerCommissionTransactions){
 					tx.add(
 						await TRANSACTION_PROGRAM.CreateCommissionSellerTransactionsLog(
@@ -147,15 +183,22 @@ export function SellLayout(props){
 							userAccount
 						)
 					);
-				}
+				};
 				break;
-		}
+		};
+
+		prod_addr = GenProductAddress(
+			next_index, listings_addr, lowercase_listings
+		);
 
         let [addixs, data_items] = await (async ()=>{
 			switch(listingType){
 				case "Physical":
 					return ListPhysicalProduct(
 						userAccount,
+						next_index,
+						prod_addr,
+						listings_addr,
 						price,
 						delivery,
 						prodName,
@@ -168,6 +211,9 @@ export function SellLayout(props){
 				case "Digital":
 					return ListDigitalProduct(
 						userAccount,
+						next_index,
+						prod_addr,
+						listings_addr,
 						price,
 						delivery,
 						prodName,
@@ -180,6 +226,9 @@ export function SellLayout(props){
 				case "Commission":
 					return ListCommissionProduct(
 						userAccount,
+						next_index,
+						prod_addr,
+						listings_addr,
 						price,
 						delivery,
 						prodName,
@@ -194,12 +243,71 @@ export function SellLayout(props){
 
         tx.add(...addixs);
 
-		let search_init_ixs = await (async ()=>{
-			let tag_lens = tags.length;
-			for(let tag of tags){
-				
+		tags = tags.map((w)=>w.toLowerCase());
+    	tags.sort();
+
+		let cache_root = await FetchBucketCacheRoot(
+			GenProductCacheAddress(
+				tags,
+				listingType.toLowerCase()
+			)
+		);
+
+		if(cache_root == "invalid discriminant"){
+			switch(listingType){
+				case "Physical":
+					await InitPhysicalProductCache(tags, prod_addr, userAccount.address, wallet);
+					break;
+				case "Digital":
+					await InitDigitalProductCache(tags, prod_addr, userAccount.address, wallet);
+					break;
+				case "Commission":
+					await InitCommissionProductCache(tags, prod_addr, userAccount.address, wallet);
+					break;
+			}
+		}else{
+			let bucket_cache = DeserBucketCache(cache_root.data, lowercase_listings);
+			if(bucket_cache.length == 25 && bucket_cache.page == 0){
+				switch(listingType){
+					case "Physical":
+						await InitPhysicalBucketQueue(tags, prod_addr, userAccount.address, wallet);
+						break;
+					case "Digital":
+						await InitDigitalBucketQueue(tags, prod_addr, userAccount.address, wallet);
+						break;
+					case "Commission":
+						await InitCommissionBucketQueue(tags, prod_addr, userAccount.address, wallet);
+						break;
+				}
+			}
+		};
+
+		let init_kwds_node = (()=>{
+			switch(listingType){
+				case "Physical":
+					return InitPhysicalKwdsTreeCache
+				case "Digital":
+					return InitDigitalKwdsTreeCache
+				case "Commission":
+					return InitCommissionKwdsTreeCache
 			}
 		})();
+
+		let search_init_ixs = await (()=>{
+			let tag_lens = tags.length;
+			return Promise.all(
+				tags.map((tag, word_ind)=>{
+					let node_addr = GenKwdTreeCacheAddress(tag, tag_lens, lowercase_listings);
+					let node = FetchKwdsTreeCache(node_addr);
+					if(typeof node == "string" && node == "invalid discriminator"){
+						(remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
+						return init_kwds_node(tag, remaining_kwds, wallet)
+					}
+				})
+			)
+		})();
+
+		//// add tree node init (find index. if prior didnt exist, add it to node. IS CONDITIONAL)
 
         await wallet.signTransaction(tx);
 
@@ -213,7 +321,7 @@ export function SellLayout(props){
 		
 		await bundlrClient.SendTxItems(data_items, sig);
 
-    },[userAccount?.data, extraInfo, listingType, price, delivery, prodName, description, files, listRecent, wallet, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
+    },[userAccount?.data, extraInfo, listingType, price, delivery, prodName, description, files, listRecent, wallet, _provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
 
 	const addFile = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{

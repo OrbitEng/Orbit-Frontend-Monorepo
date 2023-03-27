@@ -15,6 +15,9 @@ export function DigitalProductFunctionalities(props){
 
     const ListDigitalProduct = async(
         market_acc,
+        next_index,
+        prod_addr,
+        listings_addr,
         price,
         deliveryEstimate = 14,
         name,
@@ -35,24 +38,7 @@ export function DigitalProductFunctionalities(props){
                 description: description
             })
         );
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.voterId);
-
-        let next_index;
-        try{
-            next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
-                (
-                    await PRODUCT_PROGRAM.GetListingsStruct(
-                        listings_addr
-                    )                    
-                ).data
-            );
-        }catch(e){
-            next_index = 0;
-        }
-
-        let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
-            next_index, listings_addr, "digital"
-        );
+        
 
         let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
         let update_ix = await PRODUCT_PROGRAM.ListDigitalProduct(
@@ -70,6 +56,7 @@ export function DigitalProductFunctionalities(props){
             fileType,
             add_to_recent,
             market_acc,
+            listings_addr,
             payer_wallet
         );
 
@@ -189,6 +176,9 @@ export function PhysicalProductFunctionalities(props){
 
     const ListPhysicalProduct = async(
         market_acc,
+        next_index,
+        prod_addr,
+        listings_addr,
         price,
         deliveryEstimate = 14,
         name,
@@ -208,25 +198,6 @@ export function PhysicalProductFunctionalities(props){
             description: description
         }));
 
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("physical", market_acc.data.voterId);
-        
-        let next_index;
-        try{
-            next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
-                (
-                    await PRODUCT_PROGRAM.GetListingsStruct(
-                        listings_addr
-                    )                    
-                ).data
-            );
-        }catch(e){
-            next_index = 0;
-        }
-
-        let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
-            next_index, listings_addr, "physical"
-        )
-
         let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
 
         let update_ix = await PRODUCT_PROGRAM.ListPhysicalProduct(
@@ -244,6 +215,7 @@ export function PhysicalProductFunctionalities(props){
             quantity,
             add_to_recent,
             market_acc,
+            listings_addr,
             payer_wallet
         );
 
@@ -364,6 +336,9 @@ export function CommissionProductFunctionalities(props){
 
     const ListCommissionProduct = async(
         market_acc,
+        next_index,
+        prod_addr,
+        listings_addr,
         price,
         deliveryEstimate = 14,
         name,
@@ -382,25 +357,6 @@ export function CommissionProductFunctionalities(props){
                 description: description
             }));
 
-        let listings_addr = PRODUCT_PROGRAM.GenListingsAddress("commission", market_acc.data.voterId);
-
-        let next_index;
-        try{
-            next_index = PRODUCT_PROGRAM.FindNextAvailableListingsAddress(
-                (
-                    await PRODUCT_PROGRAM.GetListingsStruct(
-                        listings_addr
-                    )                    
-                ).data
-            );
-        }catch(e){
-            next_index = 0;
-        }
-
-        let prod_addr = PRODUCT_PROGRAM.GenProductAddress(
-            next_index, listings_addr, "commission"
-        )
-
         let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
         let update_ix = await PRODUCT_PROGRAM.ListCommissionProduct(
             prod_addr,
@@ -416,6 +372,7 @@ export function CommissionProductFunctionalities(props){
             },
             add_to_recent,
             market_acc,
+            listings_addr,
             payer_wallet
         );
 

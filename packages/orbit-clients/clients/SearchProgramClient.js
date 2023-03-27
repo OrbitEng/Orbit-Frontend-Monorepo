@@ -72,7 +72,6 @@ export async function UpdatePhysicalProductCache (kwds, product_addr){
     })
     .instruction()
 }
-
 export async function InitPhysicalBucketQueue (kwds, product_addr, market_account, payer_wallet){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
@@ -99,7 +98,6 @@ export async function AddPhysicalProductQueue (kwds, product_addr, market_accoun
     })
     .instruction()
 }
-
 export async function DrainPhysicalQueue (kwds, arweave_url){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
@@ -168,7 +166,6 @@ export async function UpdateDigitalProductCache (kwds, product_addr){
     })
     .instruction()
 }
-
 export async function InitDigitalBucketQueue (kwds, product_addr, market_account, payer_wallet){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
@@ -195,7 +192,6 @@ export async function AddDigitalProductQueue (kwds, product_addr, market_account
     })
     .instruction()
 }
-
 export async function DrainDigitalQueue (kwds, arweave_url){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
@@ -264,7 +260,6 @@ export async function UpdateCommissionProductCache (kwds, product_addr){
     })
     .instruction()
 }
-
 export async function InitCommissionBucketQueue (kwds, product_addr, market_account, payer_wallet){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
@@ -291,7 +286,6 @@ export async function AddCommissionProductQueue (kwds, product_addr, market_acco
     })
     .instruction()
 }
-
 export async function DrainCommissionQueue (kwds, arweave_url){
     kwds = kwds.map((w)=>w.toLowerCase());
     kwds.sort();
@@ -1088,29 +1082,40 @@ export async function FetchBucketDrainVec (address){
 
 export async function DeserBucketCache(rb, prod_type){
     let page = new anchor.BN(rb.slice(8,10));
-    let ar_link = String.fromCharCode(...rb.slice(10, 53));
+    let ar_link = String.fromCharCode(...rb.slice(10, 54));
     let base = 53;
+    let timessold = [];
     let prod_addrs = [];
+    
     for(let i = 0; i < 25; i++){
-        let timessold = rb.slice(base, base+=4);
+        let sold_amt = rb.slice(base, base+=4);
+        
         let voterid = rb.slice(base, base+=8);
-        let catalog_index_pos = rb.slice(base, base+=1);
+        if(voterid == 0){
+            break
+        }
+        timessold.push(sold_amt)
+        let catalog_index_pos = rb.slice(base, base+=2);
         prod_addrs.push(
             GenProductAddress(catalog_index_pos, GenListingsAddress(prod_type, voterid), prod_type)
         )
-    }
+    };
+
     let prods = [];
     switch(prod_type){
         case "physical":
-            prods = await GetMultipleDigitalProducts(prods_addrs)
+            prods = await GetMultipleDigitalProducts(prod_addrs)
             break
         case "digital":
-            prods = await GetMultipleDigitalProducts(prods_addrs);
+            prods = await GetMultipleDigitalProducts(prod_addrs);
             break
         case "commission":
-            prods = await GetMultipleCommissionProducts(prods_addrs)
+            prods = await GetMultipleCommissionProducts(prod_addrs)
             break
     }
+
+    prods.forEach((prod, i) => prod.times_sold = timessold[i]);
+
     return {
         page: page,
         arweave_url: ar_link,
