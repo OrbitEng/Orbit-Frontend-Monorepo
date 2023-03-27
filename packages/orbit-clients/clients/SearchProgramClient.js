@@ -335,19 +335,28 @@ export async function SyncPhysicalKwdsCache (word){
     let cache_addr = GenKwdTreeCacheAddress(word, num_words, "physical");
     let tree_cache = (await FetchKwdsTreeCache(cache_addr)).data.slice(8);
     let entry_byte_len = (num_words*16)+2;
+    let prod_caches = [];
     for(let i = 0; i < 15; i++){
         let words = [word];
+        if((new anchor.BN(tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+2))).toNumber() == 0){
+            break;
+        }
         for(let j = 0; j < num_words; j++){
             words.push(String.fromCharCode(...tree_cache.slice((entry_byte_len*i)+2, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
-        GenProductCacheAddress(words, "physical");
+        prod_caches.push({
+            pubkey: GenProductCacheAddress(words, "physical"),
+            isWritable: false,
+            isSigner: false,
+        });
     }
 
     return SEARCH_PROGRAM.methods.syncPhysicalKwdsCache(word, new anchor.BN(num_words))
     .account({
         kwdsCache: cache_addr
     })
+    .remainingAccounts(prod_caches)
     .instruction()
 }
 export async function UpdatePhysicalKwdsCache (word, remaining_kwds, payer_wallet){
@@ -552,19 +561,28 @@ export async function SyncDigitalKwdsCache (word, payer_wallet){
     let cache_addr = GenKwdTreeCacheAddress(word, num_words, "digital");
     let tree_cache = (await FetchKwdsTreeCache(cache_addr)).data.slice(8);
     let entry_byte_len = (num_words*16)+2;
+    let prod_caches = [];
     for(let i = 0; i < 15; i++){
         let words = [word];
+        if((new anchor.BN(tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+2))).toNumber() == 0){
+            break;
+        }
         for(let j = 0; j < num_words; j++){
             words.push(String.fromCharCode(...tree_cache.slice((entry_byte_len*i)+2, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
-        GenProductCacheAddress(words, "digital");
+        prod_caches.push({
+            pubkey: GenProductCacheAddress(words, "digital"),
+            isWritable: false,
+            isSigner: false,
+        });
     }
 
     return SEARCH_PROGRAM.methods.syncDigitalKwdsCache(word, new anchor.BN(num_words))
     .account({
         kwdsCache: cache_addr
     })
+    .remainingAccounts(prod_caches)
     .instruction()
 }
 export async function UpdateDigitalKwdsCache (word, remaining_kwds, payer_wallet){
@@ -767,19 +785,28 @@ export async function SyncCommissionKwdsCache (word){
     let cache_addr = GenKwdTreeCacheAddress(word, num_words, "commission");
     let tree_cache = (await FetchKwdsTreeCache(cache_addr)).data.slice(8);
     let entry_byte_len = (num_words*16)+2;
+    let prod_caches = [];
     for(let i = 0; i < 15; i++){
         let words = [word];
+        if((new anchor.BN(tree_cache.slice(entry_byte_len*i, (entry_byte_len*i)+2))).toNumber() == 0){
+            break;
+        }
         for(let j = 0; j < num_words; j++){
             words.push(String.fromCharCode(...tree_cache.slice((entry_byte_len*i)+2, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
         };
         words.sort();
-        GenProductCacheAddress(words, "commission");
+        prod_caches.push({
+            pubkey: GenProductCacheAddress(words, "commission"),
+            isWritable: false,
+            isSigner: false,
+        });
     }
 
     return SEARCH_PROGRAM.methods.syncCommissionKwdsCache(word, new anchor.BN(num_words))
     .account({
         kwdsCache: cache_addr
     })
+    .remainingAccounts(prod_caches)
     .instruction()
 }
 export async function UpdateCommissionKwdsCache (word, remaining_kwds, payer_wallet){
