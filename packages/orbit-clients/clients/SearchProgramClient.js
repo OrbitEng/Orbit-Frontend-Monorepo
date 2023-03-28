@@ -856,44 +856,14 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
     let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
     let min_data_size = 5*min_entry_len;
     while(curr_node_data.length < min_data_size){
-        let base = 12;
-        let left_head = 0;
-        for(let i = 0; i < encoding_head_len; i++){
-            left_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
-        };
-        let left_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_head)).replaceAll("\x00","")
-        base += left_head;
-        let left_tail = 0;
-        for(let i = 0; i < encoding_head_len; i++){
-            left_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
-        };
-        let left_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+left_tail)).replaceAll("\x00","")
-        base += right_head;
-        let left_index = new anchor.BN(curr_node_data.slice(8,10));
+        let fork_obj = ReadKeywordFork(curr_node_data);
 
-
-        let right_head = 0;
-        for(let i = 0; i < encoding_head_len; i++){
-            right_head += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
-        };
-        let right_head_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_head)).replaceAll("\x00","")
-        base += right_head;
-        let right_tail = 0;
-        for(let i = 0; i < encoding_head_len; i++){
-            right_tail += new anchor.BN(curr_node_data[base + i] >> 4) + new anchor.BN(curr_node_data[base + i] & 15)
-        };
-        let right_tail_word = String.fromCharCode(...curr_node_data.slice(base+encoding_head_len, base+encoding_head_len+right_tail)).replaceAll("\x00","")
-        base += right_head;
-        let right_index = new anchor.BN(curr_node_data.slice(10,12));
-
-        if(joined_kwds > left_head_word && joined_kwds < right_head_word){
-            current_node = GenKwdTreeNodeAddress(word, bucket_size, left_index, "commission");
-            if(left_tail_word < joined_kwds) to_append = true;
-            curr_index = left_index;
+        if(joined_kwds > fork_obj.entry.join()){
+            current_node = GenKwdTreeNodeAddress(word, bucket_size, fork_obj.left_index, "commission");
+            curr_index = fork_obj.left_index;
         }else{
-            current_node = GenKwdTreeNodeAddress(word, bucket_size, right_index, "commission");
-            if(right_tail_word < joined_kwds) to_append = true;
-            curr_index = right_index;
+            current_node = GenKwdTreeNodeAddress(word, bucket_size, fork_obj.right_index, "commission");
+            curr_index = fork_obj.right_index;
         }
 
         curr_node_data = await FetchKwdsTreeNode(current_node).data;
