@@ -359,7 +359,7 @@ export async function SyncPhysicalKwdsCache (word){
     .remainingAccounts(prod_caches)
     .instruction()
 }
-export async function UpdatePhysicalKwdsCache (word, remaining_kwds, payer_wallet){
+export async function UpdatePhysicalKwdsCache (word, remaining_kwds){
     word = word.toLowerCase();
     remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
     remaining_kwds.push(word);
@@ -554,7 +554,7 @@ export async function PopulateDigitalKwdsToCache (word, remaining_kwds, payer_wa
     })
     .instruction()
 }
-export async function SyncDigitalKwdsCache (word, payer_wallet){
+export async function SyncDigitalKwdsCache(word){
     word = word.toLowerCase();
     
     let num_words = remaining_kwds.length+1
@@ -585,7 +585,7 @@ export async function SyncDigitalKwdsCache (word, payer_wallet){
     .remainingAccounts(prod_caches)
     .instruction()
 }
-export async function UpdateDigitalKwdsCache (word, remaining_kwds, payer_wallet){
+export async function UpdateDigitalKwdsCache (word, remaining_kwds){
     word = word.toLowerCase();
     remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
     remaining_kwds.push(word);
@@ -809,7 +809,7 @@ export async function SyncCommissionKwdsCache (word){
     .remainingAccounts(prod_caches)
     .instruction()
 }
-export async function UpdateCommissionKwdsCache (word, remaining_kwds, payer_wallet){
+export async function UpdateCommissionKwdsCache (word, remaining_kwds){
     word = word.toLowerCase();
     remaining_kwds = remaining_kwds.map((w)=>w.toLowerCase());
     remaining_kwds.push(word);
