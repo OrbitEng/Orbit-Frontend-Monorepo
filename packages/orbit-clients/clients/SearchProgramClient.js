@@ -406,7 +406,7 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
     let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
     let min_data_size = 5*min_entry_len;
     while(curr_node_data.length < min_data_size){
-        let fork_obj = ReadKeywordFork(curr_node_data);
+        let fork_obj = ReadKeywordFork(curr_node_data, bucket_size);
 
         if(joined_kwds > fork_obj.entry.join()){
             current_node = GenKwdTreeNodeAddress(word, bucket_size, fork_obj.left_index, "physical");
@@ -603,7 +603,7 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
     let min_data_size = 5*min_entry_len;
     // iter to find the right tree node
     while(curr_node_data.length < min_data_size){
-        let fork_obj = ReadKeywordFork(curr_node_data);
+        let fork_obj = ReadKeywordFork(curr_node_data, bucket_size);
 
         if(joined_kwds > fork_obj.entry.join()){
             current_node = GenKwdTreeNodeAddress(word, bucket_size, fork_obj.left_index, "digital");
@@ -796,7 +796,7 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
     let min_entry_len = ((bucket_size*16)+encoding_head_len+1);
     let min_data_size = 5*min_entry_len;
     while(curr_node_data.length < min_data_size){
-        let fork_obj = ReadKeywordFork(curr_node_data);
+        let fork_obj = ReadKeywordFork(curr_node_data, bucket_size);
 
         if(joined_kwds > fork_obj.entry.join()){
             current_node = GenKwdTreeNodeAddress(word, bucket_size, fork_obj.left_index, "commission");
@@ -1108,24 +1108,19 @@ export async function DeserKwdsCache(rb, base_word, nw){
  * @param {[]String} coupled_words 
  * @returns {[][]String} entries
  */
-export async function DeserKwdsNode(rb, base_word, coupled_words){
-    let len_info = (coupled_words.len_info+1) >> 1;
+export async function DeserKwdsNode(rb, base_word, bucket_size){
+    let len_info = (bucket_size) >> 1;
     let end_byte = rb.length - (new anchor.BN(rb.slice(8,10))).toNumber();
-    let base = 10;
     let entries = []
+    let base = 10;
     while(base < end_byte){
-        let lengths = [];
-        let entry = [base_word]
-        for(let i = 0; i < len_info; i++){
-            lengths.push(rb[base+i] >> 4, rb[base+i] & 15);
+        let nb = base;
+        while(rb[nb] != 0){
+            nb += 1
         }
-        base += len_info;
-        for(let word_lengths in lengths){
-            entry.push(String.fromCharCode(rb.slice(base, base += word_lengths)));
-        }
-        entry.sort()
-        entries.push(entry);
-        base += 1;
+        entries.push(ReadKwdsEntry(rb.slice(base, nb), len_info, base_word));
+
+        base = nb+1;
     }
     return entries;
 }
@@ -1134,6 +1129,7 @@ export async function DeserKwdsNode(rb, base_word, coupled_words){
 /// SEARCH UTILS
 
 async function FindByKeywords(keywords, product_type){
+    keywords = keywords.map(kw => kw.toLowerCase());
     keywords.sort();
 
     let matches = {
@@ -1157,12 +1153,14 @@ async function FindByKeywords(keywords, product_type){
         }
     }
     
-    for(let bucket_size = keywords.length+1; bucket_size < 8; bucket_size++){
-        for(let word_ind = 0; word_ind < keywords.length; word_ind++){
-            let base_word = (remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
-            let retnode = await FetchNode(base_word, bucket_size, keywords, product_type, 0);
-            if(retnode.max > 0){
-                matches.sup[bucket_size] = retnode.entries
+    if(keywords.length < 7){
+        for(let bucket_size = keywords.length; bucket_size < 8; bucket_size++){
+            for(let word_ind = 0; word_ind < keywords.length; word_ind++){
+                let base_word = (remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
+                let retnode = await FetchNode(base_word, bucket_size, keywords, product_type, 0);
+                if(retnode.max > 0){
+                    matches.sup[bucket_size] = retnode.entries
+                }
             }
         }
     }
@@ -1181,7 +1179,7 @@ async function FetchNode(base_word, bucket_size, remaining_kwds, product_type, c
     let min_data_size = 5*min_entry_len;
 
     if(curr_node_data.length < min_data_size){
-        let entry_obj = ReadKeywordFork(curr_node_data);
+        let entry_obj = ReadKeywordFork(curr_node_data, bucket_size);
         
         if(remaining_kwds[0] > entry_obj.entry[bucket_size-1]){
             return await FetchNode(base_word, bucket_size, remaining_kwds, product_type, entry_obj.right_index);
@@ -1201,7 +1199,7 @@ async function FetchNode(base_word, bucket_size, remaining_kwds, product_type, c
             return await FetchNode(base_word, bucket_size, remaining_kwds, product_type, entry_obj.left_index)
         }
     }else{
-        let entries = DeserKwdsNode(curr_node_data);
+        let entries = DeserKwdsNode(curr_node_data, base_word, bucket_size);
         let ret = {max:0, entries: []};
         for(let entry of entries){
             let max = 0;
@@ -1221,24 +1219,12 @@ async function FetchNode(base_word, bucket_size, remaining_kwds, product_type, c
     }
 }
 
-function ReadKeywordFork(rb){
+function ReadKeywordFork(rb, bucket_size){
     let ret_obj = {
         left_index: new anchor.BN(rb.slice(8,10)),
         right_index: new anchor.BN(rb.slice(10,12)),
-        entry: []
+        entry: ReadKwdsEntry(rb.slice(12), bucket_size>>1)
     };
-
-    let sign_word_data = rb.slice(12);
-    let segments = sign_word_data.split(0);
-
-    // left head
-    for(let i = 0; i < encoding_head_len; i++){
-        ret_obj.left_head.push(String.fromCharCode(segments[0].slice(encoding_head_len, encoding_head_len + (segments[0][i] >> 4))));
-        if ((segments[0][i] & 15) != 0){
-            ret_obj.left_head.push(String.fromCharCode(segments[0].slice(encoding_head_len, encoding_head_len + (segments[0][i] & 15))));
-        }
-    }
-    ret_obj.left_head.sort()
     return ret_obj
 }
 
@@ -1253,4 +1239,20 @@ function GenerateCombination(array_in, append_in, target_length){
             .map( i => GenerateCombination(array_in.slice(i+1), [...append_in, array_in[i]], target_length-1))
             .flat()
     }
+}
+
+function ReadKwdsEntry(rb, len_info, base_word){
+    let lengths = [];
+    let entry = base_word ? [base_word] : [];
+    let base = 0;
+    for(let i = 0; i < len_info; i++){
+        lengths.push(rb[base+i] >> 4, rb[base+i] & 15);
+    }
+    base += len_info;
+    for(let word_lengths in lengths){
+        entry.push(String.fromCharCode(rb.slice(base, base += word_lengths)));
+    }
+    entry.sort()
+    return entry
+    
 }
