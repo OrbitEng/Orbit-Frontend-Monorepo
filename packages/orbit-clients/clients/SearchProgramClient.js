@@ -786,27 +786,37 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
     let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
     let filled_data_len = curr_node_data.length - tail_offset.toNumber();
     // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
-    while((start < filled_data_len) && (middle <= encoding_head_len) && (end != 0)){
-        for(let i = 0; i < encoding_head_len; i++){
-            middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
-        };
-        middle += 1;
-        let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
+    let last_entry = "";
 
-        // if our word is greater than the word we just traversed: insert here // break case
-        // TODO: fix this logic (eg, when kwds < prev word AND > next word, insert. else, continue)
-        if(joined_kwds < prev_word){
-            end = encoding_head_len;
-            for(let i = 0; i < encoding_head_len; i++){
-                end += new anchor.BN(curr_node_data[middle + i] >> 4) + new anchor.BN(curr_node_data[middle + i] & 15)
-            };
-            end += 1;
-            break;
-        }
+    // scan first word
+    let next_zero = 10;
+    while(curr_node_data[next_zero] != 0){
+        next_zero += 1;
+    }
+    next_zero += 1;
 
+    for(let i = 0; i < encoding_head_len; i++){
+        middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+    };
+    middle += 1;
+    let next_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
+
+    // while word is > than next word
+    while((start < filled_data_len) && joined_kwds>next_word){
+        
         start += middle+1;
         middle = encoding_head_len;
         end = 0;
+    }
+
+    // if our word is greater than the word we just traversed: insert here // break case
+    // TODO: fix this logic (eg, when kwds < prev word AND > next word, insert. else, continue)
+    if(joined_kwds < prev_word){
+        end = encoding_head_len;
+        for(let i = 0; i < encoding_head_len; i++){
+            end += new anchor.BN(curr_node_data[middle + i] >> 4) + new anchor.BN(curr_node_data[middle + i] & 15)
+        };
+        end += 1;
     }
 
     
