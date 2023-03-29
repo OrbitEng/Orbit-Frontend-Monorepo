@@ -396,8 +396,6 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
     let joined_kwds = remaining_kwds.join("");
 
     let bucket_size = remaining_kwds.length + 1;
-
-    let to_append = false;
     
     let curr_index = 0;
     let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "physical");
@@ -419,46 +417,32 @@ export async function AddPhysicalKwdsNode (word, remaining_kwds, payer_wallet){
         curr_node_data = await FetchKwdsTreeNode(current_node).data;
     }
 
-    let start = 0;
+    let start = 10;
     let middle = 0;
     let end = 0;
 
     let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
-    if(to_append){
-        middle = tail_offset-1;
-        start = middle-1;
-        // let end = 0;
-        while(curr_node_data[start] != 0){
-            start--;
-        }
-        // while(curr_node_data[end] != 0){
-        //     end++;
-        // }
+    // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
+    while((start < curr_node_data.length) && (middle <= encoding_head_len) && (end != 0)){
+        for(let i = 0; i < encoding_head_len; i++){
+            middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+        };
+        middle += 1;
+        let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
 
-    }else{
-        start = 10;
-        // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
-        while((start < curr_node_data.length) && (middle <= encoding_head_len) && (end != 0)){
+        // if our word is greater than the word we just traversed: insert here // break case
+        if(joined_kwds > prev_word){
+            end = encoding_head_len;
             for(let i = 0; i < encoding_head_len; i++){
-                middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+                end += new anchor.BN(curr_node_data[mid_base + i] >> 4) + new anchor.BN(curr_node_data[mid_base + i] & 15)
             };
-            middle += 1;
-            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
-
-            // if our word is greater than the word we just traversed: insert here // break case
-            if(joined_kwds > prev_word){
-                end = encoding_head_len;
-                for(let i = 0; i < encoding_head_len; i++){
-                    end += new anchor.BN(curr_node_data[mid_base + i] >> 4) + new anchor.BN(curr_node_data[mid_base + i] & 15)
-                };
-                end += 1;
-                break;
-            }
-
-            start += middle+1;
-            middle = encoding_head_len;
-            end = 0;
+            end += 1;
+            break;
         }
+
+        start += middle+1;
+        middle = encoding_head_len;
+        end = 0;
     }
 
     
@@ -592,8 +576,6 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
     let joined_kwds = remaining_kwds.join("");
 
     let bucket_size = remaining_kwds.length + 1;
-
-    let to_append = false;
     
     let curr_index = 0;
     let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "digital");
@@ -616,43 +598,33 @@ export async function AddDigitalKwdsNode (word, remaining_kwds, payer_wallet){
         curr_node_data = await FetchKwdsTreeNode(current_node).data;
     }
 
-    let start = 0;
+    let start = 10;
     let middle = 0;
     let end = 0;
 
     // do actual computation to node
     let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
-    if(to_append){
-        middle = tail_offset-1;
-        start = middle-1;
-        while(curr_node_data[start] != 0){
-            start--;
-        }
+    // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
+    while((start < curr_node_data.length) && (middle <= encoding_head_len) && (end != 0)){
+        for(let i = 0; i < encoding_head_len; i++){
+            middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+        };
+        middle += 1;
+        let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
 
-    }else{
-        start = 10;
-        // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
-        while((start < curr_node_data.length) && (middle <= encoding_head_len) && (end != 0)){
+        // if our word is greater than the word we just traversed: insert here // break case
+        if(joined_kwds > prev_word){
+            end = encoding_head_len;
             for(let i = 0; i < encoding_head_len; i++){
-                middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+                end += new anchor.BN(curr_node_data[mid_base + i] >> 4) + new anchor.BN(curr_node_data[mid_base + i] & 15)
             };
-            middle += 1;
-            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
-
-            // if our word is greater than the word we just traversed: insert here // break case
-            if(joined_kwds > prev_word){
-                end = encoding_head_len;
-                for(let i = 0; i < encoding_head_len; i++){
-                    end += new anchor.BN(curr_node_data[mid_base + i] >> 4) + new anchor.BN(curr_node_data[mid_base + i] & 15)
-                };
-                end += 1;
-                break;
-            }
-
-            start += middle+1;
-            middle = encoding_head_len;
-            end = 0;
+            end += 1;
+            break;
         }
+
+        start += middle+1;
+        middle = encoding_head_len;
+        end = 0;
     }
 
     
@@ -786,8 +758,6 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
     let joined_kwds = remaining_kwds.join("");
 
     let bucket_size = remaining_kwds.length + 1;
-
-    let to_append = false;
     
     let curr_index = 0;
     let current_node = GenKwdTreeNodeAddress(word, bucket_size, curr_index, "commission");
@@ -809,43 +779,34 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
         curr_node_data = await FetchKwdsTreeNode(current_node).data;
     }
 
-    let start = 0;
+    let start = 10;
     let middle = 0;
     let end = 0;
 
     let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
     let filled_data_len = curr_node_data.length - tail_offset.toNumber();
-    if(to_append){
-        middle = tail_offset-1;
-        start = middle-1;
-        while(curr_node_data[start] != 0){
-            start--;
-        }
+    // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
+    while((start < filled_data_len) && (middle <= encoding_head_len) && (end != 0)){
+        for(let i = 0; i < encoding_head_len; i++){
+            middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+        };
+        middle += 1;
+        let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
 
-    }else{
-        start = 10;
-        // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
-        while((start < filled_data_len) && (middle <= encoding_head_len) && (end != 0)){
+        // if our word is greater than the word we just traversed: insert here // break case
+        // TODO: fix this logic (eg, when kwds < prev word AND > next word, insert. else, continue)
+        if(joined_kwds < prev_word){
+            end = encoding_head_len;
             for(let i = 0; i < encoding_head_len; i++){
-                middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
+                end += new anchor.BN(curr_node_data[middle + i] >> 4) + new anchor.BN(curr_node_data[middle + i] & 15)
             };
-            middle += 1;
-            let prev_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
-
-            // if our word is greater than the word we just traversed: insert here // break case
-            if(joined_kwds < prev_word){
-                end = encoding_head_len;
-                for(let i = 0; i < encoding_head_len; i++){
-                    end += new anchor.BN(curr_node_data[middle + i] >> 4) + new anchor.BN(curr_node_data[middle + i] & 15)
-                };
-                end += 1;
-                break;
-            }
-
-            start += middle+1;
-            middle = encoding_head_len;
-            end = 0;
+            end += 1;
+            break;
         }
+
+        start += middle+1;
+        middle = encoding_head_len;
+        end = 0;
     }
 
     
