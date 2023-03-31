@@ -13,7 +13,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
 import BundlrCtx from "@contexts/BundlrCtx";
-import { DeserBucketCache, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
+import { DeserBucketCache, DeserBucketVec, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
 import { FindNextAvailableListingsAddress, GenListingsAddress, GenProductAddress } from "orbit-clients/clients/OrbitProductClient";
 
 const token_addresses = {
@@ -267,7 +267,7 @@ export function SellLayout(props){
 					break;
 			}
 		// if there is a cache, check if its full. if it is, init the queues
-		// if queue exists, add to queue (if queue is full, drain to arweave & init?)
+		// todo: if queue exists, add to queue (if queue is full-1, drain to arweave)
 		}else{
 			let bucket_cache = DeserBucketCache(cache_root.data, lowercase_listings);
 			let product_queue = await FetchBucketDrainVec(GenProductQueueAddress(tags, lowercase_listings));
@@ -287,7 +287,8 @@ export function SellLayout(props){
 				}	
 			}else
 			{
-
+				let queue_data = DeserBucketVec(product_queue, lowercase_listings);
+				let copy_data = product_queue.slice(9);
 			}
 		};
 

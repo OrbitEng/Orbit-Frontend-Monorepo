@@ -1001,9 +1001,9 @@ export async function DeserBucketCache(rb, prod_type){
 }
 /**
  * 
- * @param {[]bytes} rb
+ * @param {[bytes]} rb
  * @param {String} product_type 
- * @returns {[]PhysicalProduct | DigitalProduct | CommissionProduct}
+ * @returns {[PhysicalProduct | DigitalProduct | CommissionProduct]}
  */
 export async function DeserBucketVec(rb, product_type){
     let curr_ind = rb[8];
