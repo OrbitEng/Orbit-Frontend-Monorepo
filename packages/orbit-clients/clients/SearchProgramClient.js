@@ -786,28 +786,46 @@ export async function AddCommissionKwdsNode (word, remaining_kwds, payer_wallet)
     let tail_offset = new anchor.BN(curr_node_data.slice(8,10));
     let filled_data_len = curr_node_data.length - tail_offset.toNumber();
     // start: first byte of [lengths, str bytes], middle: 2nd 0 offset from start, end: last 0 offset from middle
-    let last_entry = "";
 
     // scan first word
-    let next_zero = 10;
-    while(curr_node_data[next_zero] != 0){
-        next_zero += 1;
+    while(curr_node_data[start+middle+end] != 0){
+        end += 1;
     }
-    next_zero += 1;
+    
+    while( (String.fromCharCode(...curr_node_data.slice(start+middle+encoding_head_len, start+middle+end)) < joined_kwds) && end!=0){
+        start += middle;
+        middle = end+1;
+        end = 0;
+        while(curr_node_data[start+middle+end] != 0){
+            end += 1;
+        }
+    }
+    if((start == 10) && (middle == 0)){
 
-    for(let i = 0; i < encoding_head_len; i++){
-        middle += new anchor.BN(curr_node_data[start + i] >> 4) + new anchor.BN(curr_node_data[start + i] & 15)
-    };
-    middle += 1;
-    let next_word = String.fromCharCode(...curr_node_data.slice(start+encoding_head_len, start+middle)).replaceAll("\x00","")
+    }else
+    if(end == 0){
+        
+    }
 
     // while word is > than next word
     while((start < filled_data_len) && joined_kwds>next_word){
+        start += middle;
+        middle = next_head;
+
+        let next_head = 0;
+        while(curr_node_data[middle+next_head] != 0){
+            next_head += 1;
+        }
+        next_word = String.fromCharCode(...curr_node_data.slice(middle+encoding_head_len, middle+next_head))
+        next_head += 1;
         
-        start += middle+1;
-        middle = encoding_head_len;
-        end = 0;
     }
+    // s:x m:0 e:n>0 {append to start}
+    // s:x m:n>0 e:0 {append to end}
+    if(middle > 0){
+        middle -= 1;
+    }
+    end = next_head-1;
 
     // if our word is greater than the word we just traversed: insert here // break case
     // TODO: fix this logic (eg, when kwds < prev word AND > next word, insert. else, continue)
