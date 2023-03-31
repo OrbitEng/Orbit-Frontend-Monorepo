@@ -285,6 +285,9 @@ export function SellLayout(props){
 							break;
 					}
 				}	
+			}else
+			{
+
 			}
 		};
 
