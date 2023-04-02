@@ -30,7 +30,7 @@ export function MarketAccountFunctionalities(props){
         );
         dataitems.push(metadata_item);
 
-        ixs.push((await bundlrClient.FundInstruction(dataitems)).tx.instructions[0]);
+        ixs.push((await bundlrClient.FundInstructionFiles(dataitems)).tx.instructions[0]);
         ixs.push(
             await ACCOUNTS_PROGRAM.CreateAccount(
                 metadata_item.id,
@@ -47,7 +47,7 @@ export function MarketAccountFunctionalities(props){
         let pfp_data_item = await bundlrClient.UploadBufferInstruction(file, payer_wallet);
 
         let update_ix = await ACCOUNTS_PROGRAM.UpdatePFP(pfp_data_item.id, payer_wallet);
-        let funding_ix = (await bundlrClient.FundInstruction([pfp_data_item])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([pfp_data_item])).tx.instructions[0];
         return [[funding_ix, update_ix], [pfp_data_item]];
     }
 
@@ -56,7 +56,7 @@ export function MarketAccountFunctionalities(props){
             JSON.stringify(user_metadata)
         );
         let update_ix = await ACCOUNTS_PROGRAM.UpdateMetadata(metadata_item.id, payer_wallet);
-        let funding_ix = (await bundlrClient.FundInstruction([metadata_item])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([metadata_item])).tx.instructions[0];
         return [[funding_ix, update_ix], [metadata_item]];
     }
 

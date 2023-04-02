@@ -13,7 +13,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
 import BundlrCtx from "@contexts/BundlrCtx";
-import { DeserBucketCache, DeserBucketVec, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
+import { AddCommissionProductQueue, AddDigitalProductQueue, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
 import { FindNextAvailableListingsAddress, GenListingsAddress, GenProductAddress } from "orbit-clients/clients/OrbitProductClient";
 
 const token_addresses = {
@@ -257,13 +257,13 @@ export function SellLayout(props){
 		if(cache_root == "invalid discriminant"){
 			switch(listingType){
 				case "Physical":
-					await InitPhysicalProductCache(tags, prod_addr, userAccount.address, wallet);
+					tx.add(await InitPhysicalProductCache(tags, prod_addr, userAccount.address, wallet))
 					break;
 				case "Digital":
-					await InitDigitalProductCache(tags, prod_addr, userAccount.address, wallet);
+					tx.add(await InitDigitalProductCache(tags, prod_addr, userAccount.address, wallet))
 					break;
 				case "Commission":
-					await InitCommissionProductCache(tags, prod_addr, userAccount.address, wallet);
+					tx.add(await InitCommissionProductCache(tags, prod_addr, userAccount.address, wallet))
 					break;
 			}
 		// if there is a cache, check if its full. if it is, init the queues
@@ -275,20 +275,37 @@ export function SellLayout(props){
 				if(bucket_cache.length == 25 && bucket_cache.page == 0){
 					switch(listingType){
 						case "Physical":
-							await InitPhysicalBucketQueue(tags, prod_addr, userAccount.address, wallet);
+							tx.add(await InitPhysicalBucketQueue(tags, prod_addr, userAccount.address, wallet))
 							break;
 						case "Digital":
-							await InitDigitalBucketQueue(tags, prod_addr, userAccount.address, wallet);
+							tx.add(await InitDigitalBucketQueue(tags, prod_addr, userAccount.address, wallet))
 							break;
 						case "Commission":
-							await InitCommissionBucketQueue(tags, prod_addr, userAccount.address, wallet);
+							tx.add(await InitCommissionBucketQueue(tags, prod_addr, userAccount.address, wallet))
 							break;
 					}
 				}	
 			}else
 			{
-				let queue_data = DeserBucketVec(product_queue, lowercase_listings);
-				let copy_data = product_queue.slice(9);
+				// let queue_data = DeserBucketVec(product_queue, lowercase_listings);
+				if(product_queue.lastIndexOf(0) == 368){
+					let copy_data = product_queue.slice(9);
+					let fund_data_ix = bundlrClient.FundInstructionBuffers(copy_data.length+8);
+					data_items.push(await bundlrClient.UploadBufferInstruction([...copy_data, ...userAccount.data.metadata.voterId.toBuffer(), next_index]))
+				}else{
+					// check data items
+					switch(listingType){
+						case "Physical":
+							tx.add(AddPhysicalProductQueue(tags, prod_addr, userAccount.address, wallet))
+							break;
+						case "Digital":
+							tx.add(AddDigitalProductQueue(tags, prod_addr, userAccount.address, wallet))
+							break;
+						case "Commission":
+							tx.add(AddCommissionProductQueue(tags, prod_addr, userAccount.address, wallet))
+							break;
+					}
+				}	
 			}
 		};
 
@@ -331,7 +348,7 @@ export function SellLayout(props){
 		
 		await bundlrClient.SendTxItems(data_items, sig);
 
-    },[userAccount?.data, extraInfo, listingType, price, delivery, prodName, description, files, listRecent, wallet, _provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
+    },[userAccount?.data, extraInfo, listingType, price, delivery, prodName, description, files, listRecent, wallet, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection, TRANSACTION_PROGRAM.TRANSACTION_PROGRAM._provider.connection]);
 
 	const addFile = (acceptedFiles) => {
         acceptedFiles.forEach((fin)=>{

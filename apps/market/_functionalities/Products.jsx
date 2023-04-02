@@ -40,7 +40,7 @@ export function DigitalProductFunctionalities(props){
         );
         
 
-        let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([media_url, desc_url])).tx.instructions[0];
         let update_ix = await PRODUCT_PROGRAM.ListDigitalProduct(
             prod_addr,
             {
@@ -107,7 +107,7 @@ export function DigitalProductFunctionalities(props){
             PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.voterId),
             media_item.id
         );
-        let funding_ix = (await bundlrClient.FundInstruction([media_item])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([media_item])).tx.instructions[0];
 
         return [
             [funding_ix, update_ix],
@@ -121,7 +121,7 @@ export function DigitalProductFunctionalities(props){
             description: desc
         }));
 
-        let funding_ix = (await bundlrClient.FundInstruction([info_item])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([info_item])).tx.instructions[0];
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
@@ -198,7 +198,7 @@ export function PhysicalProductFunctionalities(props){
             description: description
         }));
 
-        let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([media_url, desc_url])).tx.instructions[0];
 
         let update_ix = await PRODUCT_PROGRAM.ListPhysicalProduct(
             prod_addr,
@@ -261,7 +261,7 @@ export function PhysicalProductFunctionalities(props){
             media_item.id
         )
 
-        let funding_ix = (await bundlrClient.FundInstruction([media_item])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([media_item])).tx.instructions[0];
 
         return [
             [funding_ix, update_ix],
@@ -277,7 +277,7 @@ export function PhysicalProductFunctionalities(props){
             description: desc
         }));
 
-        let funding_ix = (await bundlrClient.FundInstruction([info_item])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([info_item])).tx.instructions[0];
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
@@ -357,7 +357,7 @@ export function CommissionProductFunctionalities(props){
                 description: description
             }));
 
-        let funding_ix = (await bundlrClient.FundInstruction([media_url, desc_url])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([media_url, desc_url])).tx.instructions[0];
         let update_ix = await PRODUCT_PROGRAM.ListCommissionProduct(
             prod_addr,
             {
@@ -411,7 +411,7 @@ export function CommissionProductFunctionalities(props){
             media_item.id
         )
 
-        let funding_ix = (await bundlrClient.FundInstruction([media_item])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([media_item])).tx.instructions[0];
 
         return [
             [funding_ix, update_ix],
@@ -427,7 +427,7 @@ export function CommissionProductFunctionalities(props){
             description: desc
         }))
 
-        let funding_ix = (await bundlrClient.FundInstruction([info_item])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionFiles([info_item])).tx.instructions[0];
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
