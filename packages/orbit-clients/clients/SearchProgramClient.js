@@ -960,7 +960,7 @@ export async function FetchBucketDrainVec (address){
 export async function DeserBucketCache(rb, prod_type){
     let page = new anchor.BN(rb.slice(8,10));
     let ar_link = String.fromCharCode(...rb.slice(10, 54));
-    let base = 53;
+    let base = 54;
     let timessold = [];
     let prod_addrs = [];
     

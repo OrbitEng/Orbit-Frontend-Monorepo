@@ -13,7 +13,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
 import BundlrCtx from "@contexts/BundlrCtx";
-import { AddCommissionProductQueue, AddDigitalProductQueue, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
+import { AddCommissionProductQueue, AddDigitalProductQueue, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, DrainCommissionQueue, DrainDigitalQueue, DrainPhysicalQueue, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
 import { FindNextAvailableListingsAddress, GenListingsAddress, GenProductAddress } from "orbit-clients/clients/OrbitProductClient";
 
 const token_addresses = {
@@ -270,7 +270,7 @@ export function SellLayout(props){
 		// todo: if queue exists, add to queue (if queue is full-1, drain to arweave)
 		}else{
 			let bucket_cache = DeserBucketCache(cache_root.data, lowercase_listings);
-			let product_queue = await FetchBucketDrainVec(GenProductQueueAddress(tags, lowercase_listings));
+			let product_queue = (await FetchBucketDrainVec(GenProductQueueAddress(tags, lowercase_listings))).data;
 			if(typeof product_queue == "string" && product_queue == "invalid discriminant"){
 				if(bucket_cache.length == 25 && bucket_cache.page == 0){
 					switch(listingType){
@@ -288,21 +288,38 @@ export function SellLayout(props){
 			}else
 			{
 				// let queue_data = DeserBucketVec(product_queue, lowercase_listings);
-				if(product_queue.lastIndexOf(0) == 368){
-					let copy_data = product_queue.slice(9);
-					let fund_data_ix = bundlrClient.FundInstructionBuffers(copy_data.length+8);
-					data_items.push(await bundlrClient.UploadBufferInstruction([...copy_data, ...userAccount.data.metadata.voterId.toBuffer(), next_index]))
+				if((product_queue.length == 2260) && (product_queue[2259] != 0)){
+					let copy_data = product_queue.slice(10); // 370th byte [369] is 0
+					copy_data.push(...userAccount.data.voterId.toArray("le",4), next_index);
+					let upload = {
+						"previous":bucket_cache.arweave_url,
+						"data":copy_data
+					};
+					let upload_buffer = JSON.stringify(upload);
+					let fund_data_ix = (await bundlrClient.FundInstructionBuffers(upload_buffer.length)).tx.instructions[0];
+					data_items.push(await bundlrClient.UploadBufferInstruction(upload_buffer));
+						switch(listingType){
+							case "Physical":
+								tx.add(await DrainPhysicalQueue(tags, prod_addr, userAccount.address, wallet));
+								break;
+							case "Digital":
+								tx.add(await DrainDigitalQueue(tags, prod_addr, userAccount.address, wallet));
+								break;
+							case "Commission":
+								tx.add(await DrainCommissionQueue(tags, prod_addr, userAccount.address, wallet));
+								break;
+						}
 				}else{
 					// check data items
 					switch(listingType){
 						case "Physical":
-							tx.add(AddPhysicalProductQueue(tags, prod_addr, userAccount.address, wallet))
+							tx.add(await AddPhysicalProductQueue(tags, prod_addr, userAccount.address, wallet));
 							break;
 						case "Digital":
-							tx.add(AddDigitalProductQueue(tags, prod_addr, userAccount.address, wallet))
+							tx.add(await AddDigitalProductQueue(tags, prod_addr, userAccount.address, wallet));
 							break;
 						case "Commission":
-							tx.add(AddCommissionProductQueue(tags, prod_addr, userAccount.address, wallet))
+							tx.add(await AddCommissionProductQueue(tags, prod_addr, userAccount.address, wallet));
 							break;
 					}
 				}	
@@ -330,7 +347,7 @@ export function SellLayout(props){
 						(remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
 						return init_kwds_node(tag, remaining_kwds, wallet)
 					}
-				})
+				}).filter(n => n != undefined)
 			)
 		})();
 
