@@ -73,10 +73,10 @@ export default class BundlrClient{
     /////////////////////////
     /// SOL UTILS: custom funding func for async instruction creation and sending
 
-    FundInstructionFiles = async(data_items) =>{
+    FundInstructionSizes = async(buffer_sizes) =>{
         let price = 0;
-        for(let item of data_items){
-            price += await this.bundlr.getPrice(item.size);
+        for(let item_size of buffer_sizes){
+            price += await this.bundlr.getPrice(item_size);
         }
         
         const c = this.bundlr.utils.currencyConfig;
@@ -89,22 +89,6 @@ export default class BundlrClient{
         }
         const tx = await c.createTx(price, to, fee);
         // c.sendTx
-        return tx
-    }
-
-    FundInstructionBufferSize = async(buffer_size) =>{
-        let price = await this.bundlr.getPrice(buffer_size);
-        
-        const c = this.bundlr.utils.currencyConfig;
-        const to = await this.bundlr.utils.getBundlerAddress(this.bundlr.utils.currency);
-        let fee = "0";
-        if (c.needsFee) {
-            // winston's fee is actually for amount of data, not funds, so we have to 0 this.
-            const baseFee = await c.getFee(c.base[0] === "winston" ? 0 : price, to);
-            fee = (baseFee.multipliedBy(1)).toFixed(0).toString();
-        }
-        const tx = await c.createTx(price, to, fee);
-        // c.sendTx
-        return tx
+        return tx.tx.instructions[0]
     }
 }

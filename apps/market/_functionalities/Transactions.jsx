@@ -756,7 +756,7 @@ export function CommissionFunctionalities(){
             preview_file_dataurl = preview_file_dataurl.join(">UwU<")
         }
         let ar_addr = await bundlrClient.UploadBufferInstruction(preview_file_dataurl);
-        let funding_ix = (await bundlrClient.FundInstructionFiles([ar_addr])).tx.instructions[0];
+        let funding_ix = (await bundlrClient.FundInstructionSizes([ar_addr.size]));
 
         let update_ix = await COMMISSION_MARKET_PROGRAM.CommissionCommitPreview(
             tx_addr,

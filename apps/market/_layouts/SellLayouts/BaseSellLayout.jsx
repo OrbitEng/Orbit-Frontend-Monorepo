@@ -13,7 +13,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
 import BundlrCtx from "@contexts/BundlrCtx";
-import { AddCommissionProductQueue, AddDigitalProductQueue, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, DrainCommissionQueue, DrainDigitalQueue, DrainPhysicalQueue, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
+import { AddCommissionProductQueue, AddDigitalProductQueue, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, DeserKwdsCache, DrainCommissionQueue, DrainDigitalQueue, DrainPhysicalQueue, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
 import { FindNextAvailableListingsAddress, GenListingsAddress, GenProductAddress } from "orbit-clients/clients/OrbitProductClient";
 
 const token_addresses = {
@@ -241,8 +241,6 @@ export function SellLayout(props){
 			}
 		)();
 
-        tx.add(...addixs);
-
 		tags = tags.map((w)=>w.toLowerCase());
     	tags.sort();
 
@@ -252,6 +250,8 @@ export function SellLayout(props){
 				listingType.toLowerCase()
 			)
 		);
+		
+		tx.add(...addixs);
 
 		// if theres no product cache for these
 		if(cache_root == "invalid discriminant"){
@@ -296,19 +296,19 @@ export function SellLayout(props){
 						"data":copy_data
 					};
 					let upload_buffer = JSON.stringify(upload);
-					let fund_data_ix = (await bundlrClient.FundInstructionBuffers(upload_buffer.length)).tx.instructions[0];
+					tx.add(await bundlrClient.FundInstructionSizes([upload_buffer.length]));
 					data_items.push(await bundlrClient.UploadBufferInstruction(upload_buffer));
-						switch(listingType){
-							case "Physical":
-								tx.add(await DrainPhysicalQueue(tags, prod_addr, userAccount.address, wallet));
-								break;
-							case "Digital":
-								tx.add(await DrainDigitalQueue(tags, prod_addr, userAccount.address, wallet));
-								break;
-							case "Commission":
-								tx.add(await DrainCommissionQueue(tags, prod_addr, userAccount.address, wallet));
-								break;
-						}
+					switch(listingType){
+						case "Physical":
+							tx.add(await DrainPhysicalQueue(tags, prod_addr, userAccount.address, wallet));
+							break;
+						case "Digital":
+							tx.add(await DrainDigitalQueue(tags, prod_addr, userAccount.address, wallet));
+							break;
+						case "Commission":
+							tx.add(await DrainCommissionQueue(tags, prod_addr, userAccount.address, wallet));
+							break;
+					}
 				}else{
 					// check data items
 					switch(listingType){
@@ -326,32 +326,29 @@ export function SellLayout(props){
 			}
 		};
 
-		let init_kwds_node = (()=>{
-			switch(listingType){
-				case "Physical":
-					return InitPhysicalKwdsTreeCache
-				case "Digital":
-					return InitDigitalKwdsTreeCache
-				case "Commission":
-					return InitCommissionKwdsTreeCache
+		for(let word_ind = 0; word_ind < tags.length; word_ind++){
+			let tag = tags[word_ind];
+			let node_addr = GenKwdTreeCacheAddress(tag, tags.length, lowercase_listings);
+			let node = FetchKwdsTreeCache(node_addr);
+			// if kwds tree cache DNE for this tag/word
+			if(typeof node == "string" && node == "invalid discriminator"){
+				(remaining_kwds = tags.slice()) && remaining_kwds.splice(word_ind, 1);
+				switch(listingType){
+					case "Physical":
+						return InitPhysicalKwdsTreeCache(tag, remaining_kwds, wallet)
+					case "Digital":
+						return InitDigitalKwdsTreeCache(tag, remaining_kwds, wallet)
+					case "Commission":
+						return InitCommissionKwdsTreeCache(tag, remaining_kwds, wallet)
+				}
 			}
-		})();
+			// if cache exists
+			else{
+				DeserKwdsCache()
+			}
+		}
 
-		let search_init_ixs = await (()=>{
-			let tag_lens = tags.length;
-			return Promise.all(
-				tags.map((tag, word_ind)=>{
-					let node_addr = GenKwdTreeCacheAddress(tag, tag_lens, lowercase_listings);
-					let node = FetchKwdsTreeCache(node_addr);
-					if(typeof node == "string" && node == "invalid discriminator"){
-						(remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
-						return init_kwds_node(tag, remaining_kwds, wallet)
-					}
-				}).filter(n => n != undefined)
-			)
-		})();
-
-		//// add tree node init (find index. if prior didnt exist, add it to node. IS CONDITIONAL)
+		// add tree node init (find index. if prior didnt exist, add it to node. IS CONDITIONAL)
 
         await wallet.signTransaction(tx);
 
