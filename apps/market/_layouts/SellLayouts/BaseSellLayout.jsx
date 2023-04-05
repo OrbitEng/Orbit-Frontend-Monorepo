@@ -13,7 +13,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
 import BundlrCtx from "@contexts/BundlrCtx";
-import { AddCommissionProductQueue, AddDigitalProductQueue, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, DeserKwdsCache, DrainCommissionQueue, DrainDigitalQueue, DrainPhysicalQueue, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache } from "orbit-clients/clients/SearchProgramClient";
+import { AddCommissionKwdsNode, AddCommissionProductQueue, AddDigitalKwdsNode, AddDigitalProductQueue, AddPhysicalKwdsNode, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, DeserKwdsCache, DrainCommissionQueue, DrainDigitalQueue, DrainPhysicalQueue, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache, PopulateCommissionKwdsToCache, PopulateDigitalKwdsToCache, PopulatePhysicalKwdsToCache } from "orbit-clients/clients/SearchProgramClient";
 import { FindNextAvailableListingsAddress, GenListingsAddress, GenProductAddress } from "orbit-clients/clients/OrbitProductClient";
 
 const token_addresses = {
@@ -191,7 +191,7 @@ export function SellLayout(props){
 			next_index, listings_addr, lowercase_listings
 		);
 
-        let [addixs, data_items] = await (async ()=>{
+        let [[funding_ix, listing_ix], data_items] = await (async ()=>{
 			switch(listingType){
 				case "Physical":
 					return ListPhysicalProduct(
@@ -251,9 +251,9 @@ export function SellLayout(props){
 			)
 		);
 		
-		tx.add(...addixs);
+		tx.add(listing_ix);
 
-		// if theres no product cache for these
+		// NO CACHE
 		if(cache_root == "invalid discriminant"){
 			switch(listingType){
 				case "Physical":
@@ -266,13 +266,13 @@ export function SellLayout(props){
 					tx.add(await InitCommissionProductCache(tags, prod_addr, userAccount.address, wallet))
 					break;
 			}
-		// if there is a cache, check if its full. if it is, init the queues
-		// todo: if queue exists, add to queue (if queue is full-1, drain to arweave)
+		// HAS CACHE
 		}else{
 			let bucket_cache = DeserBucketCache(cache_root.data, lowercase_listings);
-			let product_queue = (await FetchBucketDrainVec(GenProductQueueAddress(tags, lowercase_listings))).data;
-			if(typeof product_queue == "string" && product_queue == "invalid discriminant"){
-				if(bucket_cache.length == 25 && bucket_cache.page == 0){
+			// CACHE FULL
+			if(bucket_cache.length == 25){
+				let product_queue = (await FetchBucketDrainVec(GenProductQueueAddress(tags, lowercase_listings))).data;
+				if(typeof product_queue == "string" && product_queue == "invalid discriminant"){
 					switch(listingType){
 						case "Physical":
 							tx.add(await InitPhysicalBucketQueue(tags, prod_addr, userAccount.address, wallet))
@@ -284,11 +284,9 @@ export function SellLayout(props){
 							tx.add(await InitCommissionBucketQueue(tags, prod_addr, userAccount.address, wallet))
 							break;
 					}
-				}	
-			}else
-			{
+				}else
 				// let queue_data = DeserBucketVec(product_queue, lowercase_listings);
-				if((product_queue.length == 2260) && (product_queue[2259] != 0)){
+				if((product_queue.length == 2260) && (product_queue.slice(2252).some( e => e!= 0))){
 					let copy_data = product_queue.slice(10); // 370th byte [369] is 0
 					copy_data.push(...userAccount.data.voterId.toArray("le",4), next_index);
 					let upload = {
@@ -296,7 +294,7 @@ export function SellLayout(props){
 						"data":copy_data
 					};
 					let upload_buffer = JSON.stringify(upload);
-					tx.add(await bundlrClient.FundInstructionSizes([upload_buffer.length]));
+					funding_ix = await bundlrClient.FundInstructionSizes([upload_buffer.length, ...data_items.map(di => di.size)])
 					data_items.push(await bundlrClient.UploadBufferInstruction(upload_buffer));
 					switch(listingType){
 						case "Physical":
@@ -322,10 +320,29 @@ export function SellLayout(props){
 							tx.add(await AddCommissionProductQueue(tags, prod_addr, userAccount.address, wallet));
 							break;
 					}
-				}	
+				}
+			}else
+			// CACHE NOT FULL
+			{
+				switch(listingType){
+					case "Physical":
+						tx.add(await InitPhysicalBucketQueue(tags, prod_addr, userAccount.address, wallet))
+						break;
+					case "Digital":
+						tx.add(await InitDigitalBucketQueue(tags, prod_addr, userAccount.address, wallet))
+						break;
+					case "Commission":
+						tx.add(await InitCommissionBucketQueue(tags, prod_addr, userAccount.address, wallet))
+						break;
+				}
 			}
 		};
 
+		tx.add(funding_ix)
+
+		// if we have to init cache
+		// if we have to add to cache
+		// if we have to add to tree
 		for(let word_ind = 0; word_ind < tags.length; word_ind++){
 			let tag = tags[word_ind];
 			let node_addr = GenKwdTreeCacheAddress(tag, tags.length, lowercase_listings);
@@ -344,7 +361,27 @@ export function SellLayout(props){
 			}
 			// if cache exists
 			else{
-				DeserKwdsCache()
+				let kwd_cache = DeserKwdsCache(node);
+				// if cache is full
+				if(kwd_cache.length == 15){
+					switch(listingType){
+						case "Physical":
+							return AddPhysicalKwdsNode(tag, remaining_kwds, wallet)
+						case "Digital":
+							return AddDigitalKwdsNode(tag, remaining_kwds, wallet)
+						case "Commission":
+							return AddCommissionKwdsNode(tag, remaining_kwds, wallet)
+					}
+				}else{
+					switch(listingType){
+						case "Physical":
+							return PopulatePhysicalKwdsToCache(tag, remaining_kwds, wallet)
+						case "Digital":
+							return PopulateDigitalKwdsToCache(tag, remaining_kwds, wallet)
+						case "Commission":
+							return PopulateCommissionKwdsToCache(tag, remaining_kwds, wallet)
+					}
+				}
 			}
 		}
 

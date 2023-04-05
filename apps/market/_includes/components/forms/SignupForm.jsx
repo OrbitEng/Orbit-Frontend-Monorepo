@@ -54,7 +54,7 @@ export function SignupForm(props) {
 			... latest_blockhash
 		});
 
-		let [instructions, data_items] = await CreateAccount(
+		let [update_ix, data_items] = await CreateAccount(
 			{
 				name: nickName,
 				bio: biography
@@ -64,7 +64,10 @@ export function SignupForm(props) {
 			wallet
 		);
 
-		tx.add(...instructions);
+		let funding_ix = bundlrClient.FundInstructionSizes(data_items.map(di => di.size))
+
+		tx.add(update_ix);
+		tx.add(funding_ix);
 		await wallet.signTransaction(tx);
 
 		let sig = await wallet.sendTransaction(tx, connection);

@@ -40,7 +40,7 @@ export function DigitalProductFunctionalities(props){
         );
         
 
-        let funding_ix = (await bundlrClient.FundInstructionSizes([media_url.size, desc_url.size]));
+        
         let update_ix = await PRODUCT_PROGRAM.ListDigitalProduct(
             prod_addr,
             {
@@ -61,7 +61,7 @@ export function DigitalProductFunctionalities(props){
         );
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [desc_url, media_url]
         ];
     }
@@ -107,10 +107,10 @@ export function DigitalProductFunctionalities(props){
             PRODUCT_PROGRAM.GenListingsAddress("digital", market_acc.data.voterId),
             media_item.id
         );
-        let funding_ix = (await bundlrClient.FundInstructionSizes([media_item.size]));
+        
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [media_item]
         ]
     }
@@ -121,7 +121,7 @@ export function DigitalProductFunctionalities(props){
             description: desc
         }));
 
-        let funding_ix = (await bundlrClient.FundInstructionSizes([info_item.size]));
+        
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
@@ -130,7 +130,7 @@ export function DigitalProductFunctionalities(props){
         );
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [info_item]
         ]
     }
@@ -198,7 +198,7 @@ export function PhysicalProductFunctionalities(props){
             description: description
         }));
 
-        let funding_ix = (await bundlrClient.FundInstructionSizes([media_url.size, desc_url.size]));
+        
 
         let update_ix = await PRODUCT_PROGRAM.ListPhysicalProduct(
             prod_addr,
@@ -220,7 +220,7 @@ export function PhysicalProductFunctionalities(props){
         );
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [desc_url, media_url]
         ];
     }
@@ -261,10 +261,10 @@ export function PhysicalProductFunctionalities(props){
             media_item.id
         )
 
-        let funding_ix = (await bundlrClient.FundInstructionSizes([media_item.size]));
+        
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [media_item]
         ]
 
@@ -277,7 +277,7 @@ export function PhysicalProductFunctionalities(props){
             description: desc
         }));
 
-        let funding_ix = (await bundlrClient.FundInstructionSizes([info_item.size]));
+        
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
@@ -286,7 +286,7 @@ export function PhysicalProductFunctionalities(props){
         );
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [info_item]
         ]
     }
@@ -357,7 +357,7 @@ export function CommissionProductFunctionalities(props){
                 description: description
             }));
 
-        let funding_ix = (await bundlrClient.FundInstructionSizes([media_url.size, desc_url.size]));
+        
         let update_ix = await PRODUCT_PROGRAM.ListCommissionProduct(
             prod_addr,
             {
@@ -377,7 +377,7 @@ export function CommissionProductFunctionalities(props){
         );
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [desc_url, media_url]
         ];
     }
@@ -411,10 +411,10 @@ export function CommissionProductFunctionalities(props){
             media_item.id
         )
 
-        let funding_ix = (await bundlrClient.FundInstructionSizes([media_item.size]));
+        
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [media_item]
         ]
 
@@ -427,7 +427,7 @@ export function CommissionProductFunctionalities(props){
             description: desc
         }))
 
-        let funding_ix = (await bundlrClient.FundInstructionSizes([info_item.size]));
+        
 
         let update_ix = await PRODUCT_PROGRAM.SetProdInfo(
             prod_addr,
@@ -436,7 +436,7 @@ export function CommissionProductFunctionalities(props){
         );
 
         return [
-            [funding_ix, update_ix],
+            [update_ix],
             [info_item]
         ]
     }

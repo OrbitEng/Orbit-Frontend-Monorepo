@@ -1028,13 +1028,17 @@ export async function DeserBucketVec(rb, product_type){
  * @returns {[][]String}
 */
 export async function DeserKwdsCache(rb, base_word, nw){
-    let entry_byte_len = (nw*16)+4;
+    let entry_byte_len = (nw*16)+2;
     rb = rb.slice(8);
     let entries = [];
     for(let i = 0; i < 15; i++){
         let entry_words = [base_word];
         for(let j = 0; j < nw; j++){
-            entry_words.push(String.fromCharCode(...rb.slice((entry_byte_len*i)+4, (entry_byte_len*i)+entry_byte_len))).replaceAll("\x00","")
+            let entry = String.fromCharCode(...(rb.slice((entry_byte_len*i)+2, (entry_byte_len*i)+entry_byte_len).replaceAll("\x00","")));
+            if(entry.length == 0){
+                break;
+            }
+            entry_words.push()
         };
         entry_words.sort();
         entries.push(entry_words);

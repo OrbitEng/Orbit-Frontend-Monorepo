@@ -30,7 +30,6 @@ export function MarketAccountFunctionalities(props){
         );
         dataitems.push(metadata_item);
 
-        ixs.push((await bundlrClient.FundInstructionSizes(dataitems)));
         ixs.push(
             await ACCOUNTS_PROGRAM.CreateAccount(
                 metadata_item.id,
@@ -47,8 +46,7 @@ export function MarketAccountFunctionalities(props){
         let pfp_data_item = await bundlrClient.UploadBufferInstruction(file, payer_wallet);
 
         let update_ix = await ACCOUNTS_PROGRAM.UpdatePFP(pfp_data_item.id, payer_wallet);
-        let funding_ix = (await bundlrClient.FundInstructionSizes([pfp_data_item.size]));
-        return [[funding_ix, update_ix], [pfp_data_item]];
+        return [update_ix, [pfp_data_item]];
     }
 
     const UpdateMetadata = async(user_metadata, payer_wallet) =>{
@@ -56,8 +54,7 @@ export function MarketAccountFunctionalities(props){
             JSON.stringify(user_metadata)
         );
         let update_ix = await ACCOUNTS_PROGRAM.UpdateMetadata(metadata_item.id, payer_wallet);
-        let funding_ix = (await bundlrClient.FundInstructionSizes([metadata_item.size]));
-        return [[funding_ix, update_ix], [metadata_item]];
+        return [[update_ix], [metadata_item]];
     }
 
     const SetReflink = async(reflink, payer_wallet) => {
