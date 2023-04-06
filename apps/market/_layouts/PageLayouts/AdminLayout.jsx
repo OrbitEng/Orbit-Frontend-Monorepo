@@ -12,11 +12,11 @@ export default function AdminLayout(){
 	const wallet = useWallet();
 	const { connection } = useConnection();
 
-	const [instructions, setInstructions] = useState(undefined)
+	const [instructions, setInstructions] = useState([])
 
 	const AddInitListings = useCallback(async () =>{
 		let ix = await PRODUCT_PROGRAM.InitRecentListings(wallet);
-		setInstructions(ix);
+		setInstructions(curr_ixs => curr_ixs.push(ix) && curr_ixs);
 		console.log("instruction set", ix)
 	}, [wallet, setInstructions])
 
@@ -26,11 +26,11 @@ export default function AdminLayout(){
 		let latest_blockhash = await connection.getLatestBlockhash();
 		let tx = new Transaction({
 			feePayer: wallet.publicKey,
-			... latest_blockhash
+			...latest_blockhash
 		});
 
 		if(instructions){
-			tx.add(instructions);
+			tx.add(...instructions);
 			await wallet.signTransaction(tx);
 			let sig = await wallet.sendTransaction(tx, connection);
 			let confirmation  = await connection.confirmTransaction({

@@ -13,7 +13,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import Link from "next/link";
 import Image from "next/image";
 import BundlrCtx from "@contexts/BundlrCtx";
-import { AddCommissionKwdsNode, AddCommissionProductQueue, AddDigitalKwdsNode, AddDigitalProductQueue, AddPhysicalKwdsNode, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, DeserKwdsCache, DrainCommissionQueue, DrainDigitalQueue, DrainPhysicalQueue, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, GenKwdTreeCacheAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsTreeCache, InitPhysicalProductCache, PopulateCommissionKwdsToCache, PopulateDigitalKwdsToCache, PopulatePhysicalKwdsToCache } from "orbit-clients/clients/SearchProgramClient";
+import { AddCommissionKwdsNode, AddCommissionProductQueue, AddDigitalKwdsNode, AddDigitalProductQueue, AddPhysicalKwdsNode, AddPhysicalProductQueue, DeserBucketCache, DeserBucketVec, DeserKwdsCache, DrainCommissionQueue, DrainDigitalQueue, DrainPhysicalQueue, FetchBucketCacheRoot, FetchBucketDrainVec, FetchKwdsTreeCache, FetchKwdsTreeNode, GenKwdTreeCacheAddress, GenKwdTreeNodeAddress, GenProductCacheAddress, GenProductQueueAddress, InitCommissionBucketQueue, InitCommissionKwdsNode, InitCommissionKwdsTreeCache, InitCommissionProductCache, InitDigitalBucketQueue, InitDigitalKwdsNode, InitDigitalKwdsTreeCache, InitDigitalProductCache, InitPhysicalBucketQueue, InitPhysicalKwdsNode, InitPhysicalKwdsTreeCache, InitPhysicalProductCache, PopulateCommissionKwdsToCache, PopulateDigitalKwdsToCache, PopulatePhysicalKwdsToCache } from "orbit-clients/clients/SearchProgramClient";
 import { FindNextAvailableListingsAddress, GenListingsAddress, GenProductAddress } from "orbit-clients/clients/OrbitProductClient";
 
 const token_addresses = {
@@ -191,7 +191,7 @@ export function SellLayout(props){
 			next_index, listings_addr, lowercase_listings
 		);
 
-        let [[funding_ix, listing_ix], data_items] = await (async ()=>{
+        let [listing_ix, data_items] = await (async ()=>{
 			switch(listingType){
 				case "Physical":
 					return ListPhysicalProduct(
@@ -254,7 +254,7 @@ export function SellLayout(props){
 		tx.add(listing_ix);
 
 		// NO CACHE
-		if(cache_root == "invalid discriminant"){
+		if(cache_root == "invalid discriminator"){
 			switch(listingType){
 				case "Physical":
 					tx.add(await InitPhysicalProductCache(tags, prod_addr, userAccount.address, wallet))
@@ -272,7 +272,7 @@ export function SellLayout(props){
 			// CACHE FULL
 			if(bucket_cache.length == 25){
 				let product_queue = (await FetchBucketDrainVec(GenProductQueueAddress(tags, lowercase_listings))).data;
-				if(typeof product_queue == "string" && product_queue == "invalid discriminant"){
+				if(typeof product_queue == "string" && product_queue == "invalid discriminator"){
 					switch(listingType){
 						case "Physical":
 							tx.add(await InitPhysicalBucketQueue(tags, prod_addr, userAccount.address, wallet))
@@ -294,7 +294,6 @@ export function SellLayout(props){
 						"data":copy_data
 					};
 					let upload_buffer = JSON.stringify(upload);
-					funding_ix = await bundlrClient.FundInstructionSizes([upload_buffer.length, ...data_items.map(di => di.size)])
 					data_items.push(await bundlrClient.UploadBufferInstruction(upload_buffer));
 					switch(listingType){
 						case "Physical":
@@ -338,7 +337,7 @@ export function SellLayout(props){
 			}
 		};
 
-		tx.add(funding_ix)
+		tx.add(await bundlrClient.FundInstructionSizes(data_items.map(di => di.size)))
 
 		// if we have to init cache
 		// if we have to add to cache
@@ -352,11 +351,11 @@ export function SellLayout(props){
 				(remaining_kwds = tags.slice()) && remaining_kwds.splice(word_ind, 1);
 				switch(listingType){
 					case "Physical":
-						return InitPhysicalKwdsTreeCache(tag, remaining_kwds, wallet)
+						tx.add(await InitPhysicalKwdsTreeCache(tag, remaining_kwds, wallet))
 					case "Digital":
-						return InitDigitalKwdsTreeCache(tag, remaining_kwds, wallet)
+						tx.add(await InitDigitalKwdsTreeCache(tag, remaining_kwds, wallet))
 					case "Commission":
-						return InitCommissionKwdsTreeCache(tag, remaining_kwds, wallet)
+						tx.add(await InitCommissionKwdsTreeCache(tag, remaining_kwds, wallet))
 				}
 			}
 			// if cache exists
@@ -364,22 +363,34 @@ export function SellLayout(props){
 				let kwd_cache = DeserKwdsCache(node);
 				// if cache is full
 				if(kwd_cache.length == 15){
-					switch(listingType){
-						case "Physical":
-							return AddPhysicalKwdsNode(tag, remaining_kwds, wallet)
-						case "Digital":
-							return AddDigitalKwdsNode(tag, remaining_kwds, wallet)
-						case "Commission":
-							return AddCommissionKwdsNode(tag, remaining_kwds, wallet)
+					let kwds_init_node = FetchKwdsTreeNode(GenKwdTreeNodeAddress(tag, tags.length, 0, lowercase_listings))
+					if((typeof kwds_init_node == "string") && (kwds_init_node == "invalid discriminator")){
+						switch(listingType){
+							case "Physical":
+								tx.add(await InitPhysicalKwdsNode(tag, remaining_kwds, wallet))
+							case "Digital":
+								tx.add(await InitDigitalKwdsNode(tag, remaining_kwds, wallet))
+							case "Commission":
+								tx.add(await InitCommissionKwdsNode(tag, remaining_kwds, wallet))
+						}
+					}else{
+						switch(listingType){
+							case "Physical":
+								tx.add(await AddPhysicalKwdsNode(tag, remaining_kwds, wallet))
+							case "Digital":
+								tx.add(await AddDigitalKwdsNode(tag, remaining_kwds, wallet))
+							case "Commission":
+								tx.add(await AddCommissionKwdsNode(tag, remaining_kwds, wallet))
+						}
 					}
 				}else{
 					switch(listingType){
 						case "Physical":
-							return PopulatePhysicalKwdsToCache(tag, remaining_kwds, wallet)
+							tx.add(await PopulatePhysicalKwdsToCache(tag, remaining_kwds, wallet))
 						case "Digital":
-							return PopulateDigitalKwdsToCache(tag, remaining_kwds, wallet)
+							tx.add(await PopulateDigitalKwdsToCache(tag, remaining_kwds, wallet))
 						case "Commission":
-							return PopulateCommissionKwdsToCache(tag, remaining_kwds, wallet)
+							tx.add(await PopulateCommissionKwdsToCache(tag, remaining_kwds, wallet))
 					}
 				}
 			}
@@ -396,6 +407,8 @@ export function SellLayout(props){
 			...latest_blockhash,
 			signature: sig,
 		});
+
+		console.log(sig, confirmation)
 		
 		await bundlrClient.SendTxItems(data_items, sig);
 

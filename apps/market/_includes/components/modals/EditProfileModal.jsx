@@ -55,7 +55,6 @@ export function EditProfileModal(props) {
 			... latest_blockhash
 		});
 
-		let ixs = [];
 		let dataitems = [];
 
 		if(uploadedPfp != undefined){
@@ -63,7 +62,7 @@ export function EditProfileModal(props) {
 				uploadedPfp,
 				wallet
 			);
-			ixs.push(temp[0]);
+			tx.add(temp[0]);
 			dataitems.push(...temp[1]);
 		}
 		if(userAccount && (bio || name)){
@@ -74,15 +73,12 @@ export function EditProfileModal(props) {
 				},
 				wallet
 			);
-			ixs.push(temp[0]);
+			tx.add(temp[0]);
 			dataitems.push(...temp[1]);
 		}
 
-		tx.add(bundlrClient.FundInstructionSizes)
+		tx.add(await bundlrClient.FundInstructionSizes(dataitems.map(di => di.size)))
 
-		tx.add(...
-			ixs[0]
-		);
 		await wallet.signTransaction(tx);
 
 		let sig = await wallet.sendTransaction(tx, connection);

@@ -64,10 +64,8 @@ export function SignupForm(props) {
 			wallet
 		);
 
-		let funding_ix = bundlrClient.FundInstructionSizes(data_items.map(di => di.size))
-
 		tx.add(update_ix);
-		tx.add(funding_ix);
+		tx.add(bundlrClient.FundInstructionSizes(data_items.map(di => di.size)));
 		await wallet.signTransaction(tx);
 
 		let sig = await wallet.sendTransaction(tx, connection);
