@@ -63,7 +63,7 @@ export function EditProfileModal(props) {
 				uploadedPfp,
 				wallet
 			);
-			ixs.push(...temp[0]);
+			ixs.push(temp[0]);
 			dataitems.push(...temp[1]);
 		}
 		if(userAccount && (bio || name)){
@@ -74,9 +74,11 @@ export function EditProfileModal(props) {
 				},
 				wallet
 			);
-			ixs.push(...temp[0]);
+			ixs.push(temp[0]);
 			dataitems.push(...temp[1]);
 		}
+
+		tx.add(bundlrClient.FundInstructionSizes)
 
 		tx.add(...
 			ixs[0]
