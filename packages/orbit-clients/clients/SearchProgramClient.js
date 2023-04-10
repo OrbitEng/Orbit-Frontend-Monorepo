@@ -903,6 +903,7 @@ export async function FetchKwdsTreeCache (address){
     return accinfo
 }
 
+// todo: append baseword to this
 export async function FetchMultipleKwdsTreeCache(addresses){
     let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.kwdsTreeCache.idlAccount().name);
     return await rpc.getMultipleAccounts(
@@ -912,7 +913,7 @@ export async function FetchMultipleKwdsTreeCache(addresses){
         if((accinfo.data.length <= 0) || (accinfo.data.slice(0,8) != disc)){
             return "invalid discriminator"
         }
-        return accinfo
+        return DeserKwdsCache(accinfo.data)
     })
 }
 
@@ -1025,7 +1026,7 @@ export async function DeserBucketVec(rb, product_type){
 }
 
 /** 
- * @returns {[][]String}
+ * @returns {[][]string}
 */
 export async function DeserKwdsCache(rb, base_word, nw){
     let entry_byte_len = (nw*16)+2;
@@ -1072,7 +1073,7 @@ export async function DeserKwdsNode(rb, base_word, bucket_size){
 //////////////////////////////////////////////////////////////////
 /// SEARCH UTILS
 
-async function FindByKeywords(keywords, product_type){
+export async function FindByKeywords(keywords, product_type){
     keywords = keywords.map(kw => kw.toLowerCase());
     keywords.sort();
 
@@ -1093,7 +1094,7 @@ async function FindByKeywords(keywords, product_type){
     if(keywords.length > 3){
         for(let i = 3; i < keywords.length; i++){
             let combos = GenerateCombination(keywords, [], i);
-            matches.sub.push(...FetchMultipleKwdsTreeCache(combos.map(combo => GenProductCacheAddress(combo, product_type))));
+            matches.sub.push(...await FetchMultipleKwdsTreeCache(combos.map(combo => GenProductCacheAddress(combo, product_type))));
         }
     }
     
@@ -1114,7 +1115,7 @@ async function FindByKeywords(keywords, product_type){
 //////////////////////////////////////////////////////
 /// PURE UTILS
 
-async function FetchNode(base_word, bucket_size, remaining_kwds, product_type, curr_index){
+export async function FetchNode(base_word, bucket_size, remaining_kwds, product_type, curr_index){
     // while the node data is < data size
     let current_node = GenKwdTreeNodeAddress(base_word, bucket_size, curr_index, product_type);
     let curr_node_data = FetchKwdsTreeNode(current_node).data;
@@ -1163,7 +1164,7 @@ async function FetchNode(base_word, bucket_size, remaining_kwds, product_type, c
     }
 }
 
-function ReadKeywordFork(rb, bucket_size){
+export function ReadKeywordFork(rb, bucket_size){
     let ret_obj = {
         left_index: new anchor.BN(rb.slice(8,10)),
         right_index: new anchor.BN(rb.slice(10,12)),
@@ -1172,7 +1173,7 @@ function ReadKeywordFork(rb, bucket_size){
     return ret_obj
 }
 
-function GenerateCombination(array_in, append_in, target_length){
+export function GenerateCombination(array_in, append_in, target_length){
     switch(target_length){
         case 0:
             return array_in
@@ -1185,7 +1186,7 @@ function GenerateCombination(array_in, append_in, target_length){
     }
 }
 
-function ReadKwdsEntry(rb, len_info, base_word){
+export function ReadKwdsEntry(rb, len_info, base_word){
     let lengths = [];
     let entry = base_word ? [base_word] : [];
     let base = 0;
