@@ -1,6 +1,7 @@
 import React, { useState, Fragment, useCallback } from 'react';
 import { Combobox, Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/router';
 
 const searchCategories = [
 	{ key: 1, name: "All", value: "all"},
@@ -10,8 +11,15 @@ const searchCategories = [
 ];
 
 export function HeaderSearchBar(props) {
+	const router = useRouter();
+
+
 	const [ query, setQuery ] = useState();
 	const [ selectedProductSearchCat, setSelectedProductSearchCat ] = useState(searchCategories[0]);
+
+	const sendQuery = useCallback(()=>{
+		router.push(`/search/general/${selectedProductSearchCat.value}/?`)
+	},[query, router, selectedProductSearchCat])
 
 	return(
 		<div className="flex flex-col my-auto align-middle justify-center overflow-visible w-full z-[100]">
@@ -31,7 +39,13 @@ export function HeaderSearchBar(props) {
 							<Combobox.Input
 								className="flex w-full bg-transparent text-[#777777] placeholder:text-[#393939] sm:text-lg text-md font-normal focus:outline-none"
 								placeholder="Find everything on Orbit"
-								onChange={(e) => setQuery(e.target.value)}
+								onChange={async (e) => {
+									if(e.key == "Enter"){
+										await sendQuery()
+									}else{
+										setQuery(e.target.value)
+									}
+								}}
 							/>
 						</Combobox>
 						<Listbox value={selectedProductSearchCat} onChange={setSelectedProductSearchCat}>

@@ -38,9 +38,8 @@ export default function ExploreLayout(props) {
 				<link rel="icon" href="orbit.png" />
 			</Head>
 			<main className="bg-[url('/ExploreBg/Explore.svg')] bg-auto sm:bg-cover overflow-hidden min-h-screen">
-				<HomeHeader />
 				{/* Hero Section */}
-				<div className="w-full flex h-[28rem] sm:mt-56 mt-[7.5rem]"> 
+				<div className="w-full flex h-[28rem] mt-[6.5rem]"> 
 					<div className="flex flex-col sm:my-auto mx-auto w-full h-full justify-between">
 						<Transition
 							appear={true}

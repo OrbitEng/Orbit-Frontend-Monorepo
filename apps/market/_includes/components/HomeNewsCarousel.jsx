@@ -16,7 +16,7 @@ export default function HomeNewsCarousel(props) {
 					<div className="flex flex-col mx-auto my-auto bg-transparent z-40">
 						<span className="font-bold mb-2 sm:text-5xl text-3xl text-white whitespace-nowrap truncate">Explore Now</span>
 						<span className="font-medium sm:text-lg text-md text-[#4A4A4A] max-w-sm leading-tight mb-3">Explore all Orbit listings  Local, Shipping, Jobs, and Digital Products</span>
-						<Link href="/Explore">
+						<Link href="/explore">
 							<button className="bg-[#24222B] rounded-lg px-4 py-2 mx-auto text-white font-bold sm:text-xl text-sm">Explore All</button>
 						</Link>
 					</div>
