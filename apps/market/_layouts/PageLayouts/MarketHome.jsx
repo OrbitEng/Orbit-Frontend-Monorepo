@@ -12,12 +12,13 @@ import HoloGrayButton from '@includes/components/buttons/HoloGrayButton';
 
 import { PRODUCT_PROGRAM } from 'orbit-clients';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { GenericLayout } from '@layouts/HeaderFooterGenericLayout';
 
 export function Home(props) {
     const ref = useRef();
 	const wallet = useWallet();
-	const {connection} = useConnection();
-	const searchBarVisible = useOnScreen(ref);
+	// const {connection} = useConnection();
+	// const searchBarVisible = useOnScreen(ref);
 
 	const [recentCommissions, setRecentCommissions] = useState([]);
 	const [recentDigitals, setRecentDigitals] = useState([]);
@@ -53,22 +54,14 @@ export function Home(props) {
 	}, [wallet.connected, PRODUCT_PROGRAM.PRODUCT_PROGRAM._provider.connection]);
 
 	return(
-		<div className="w-full min-h-screen bg-transparent">
-			<Head>
-				<title>Orbit</title>
-				<link rel="icon" href="orbit.png" />
-			</Head>
-			<main className="bg-[#0B090E] overflow-hidden">
-				<HomeHeader />
-				<HomeNewsCarousel />
-				<div className="max-w-6xl align-center mx-auto overflow-hidden">
-					<ProductShowcaseRow title="Find Local Products" prod_type="local" addresses={recentPhysicals} searchable search_placeholder="Search in Local products"/>
-					<ProductShowcaseRow title="Find Shipped Products" prod_type="physical" addresses={recentPhysicals} searchable search_placeholder="Search in Shipped products"/>
-					<ProductShowcaseRow title="Find Digital Products" prod_type="digital" addresses={recentDigitals} searchable search_placeholder="Search in Digital products" />
-					<ProductShowcaseRow title="Book Commissions" prod_type="commission" addresses={recentCommissions} searchable search_placeholder="Search in Commissions" />
-				</div>
-				<MainFooter />
-			</main>
-		</div>
+		<GenericLayout>
+			<HomeNewsCarousel />
+			<div className="max-w-6xl align-center mx-auto overflow-hidden">
+				<ProductShowcaseRow title="Find Local Products" prod_type="local" addresses={recentPhysicals} searchable search_placeholder="Search in Local products"/>
+				<ProductShowcaseRow title="Find Shipped Products" prod_type="physical" addresses={recentPhysicals} searchable search_placeholder="Search in Shipped products"/>
+				<ProductShowcaseRow title="Find Digital Products" prod_type="digital" addresses={recentDigitals} searchable search_placeholder="Search in Digital products" />
+				<ProductShowcaseRow title="Book Commissions" prod_type="commission" addresses={recentCommissions} searchable search_placeholder="Search in Commissions" />
+			</div>
+		</GenericLayout>
 	)
 }

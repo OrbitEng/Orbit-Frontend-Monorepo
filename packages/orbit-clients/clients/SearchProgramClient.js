@@ -903,17 +903,16 @@ export async function FetchKwdsTreeCache (address){
     return accinfo
 }
 
-// todo: append baseword to this
-export async function FetchMultipleKwdsTreeCache(addresses){
+export async function FetchMultipleKwdsTreeCache(addresses, word, bucket_sizes){
     let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.kwdsTreeCache.idlAccount().name);
     return await rpc.getMultipleAccounts(
         SEARCH_PROGRAM.provider.connection,
         addresses
-    ).filter(accinfo => {
+    ).filter((accinfo, accind) => {
         if((accinfo.data.length <= 0) || (accinfo.data.slice(0,8) != disc)){
             return "invalid discriminator"
         }
-        return DeserKwdsCache(accinfo.data)
+        return DeserKwdsCache(accinfo.data, word, bucket_sizes[accind])
     })
 }
 
@@ -945,6 +944,19 @@ export async function FetchBucketCacheRoot (address){
     return accinfo
 }
 
+export async function FetchMultipleBucketCacheRoot (addresses){
+    let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.bucketCacheRoot.idlAccount().name);
+    return await rpc.getMultipleAccounts(
+        SEARCH_PROGRAM.provider.connection,
+        addresses
+    ).filter(accinfo => {
+        if((accinfo.data.length <= 0) || (accinfo.data.slice(0,8) != disc)){
+            return "invalid discriminator"
+        }
+        return DeserBucketCache(accinfo.data)
+    })
+}
+
 export async function FetchBucketDrainVec (address){
     address = typeof address == "string" ? PublicKey(address) : address;
     let disc = await SEARCH_PROGRAM.coder._coder.accountDiscriminator(SEARCH_PROGRAM.account.bucketDrainVec.idlAccount().name);
@@ -958,12 +970,13 @@ export async function FetchBucketDrainVec (address){
 ////////////////////////////////////////////////////////////////////////
 /// OBJECT PARSERS
 
+// todo: dont return fetched prods, only the metadata
 export async function DeserBucketCache(rb, prod_type){
     let page = new anchor.BN(rb.slice(8,10));
     let ar_link = String.fromCharCode(...rb.slice(10, 54));
     let base = 54;
     let timessold = [];
-    let prod_addrs = [];
+    let prods = [];
     
     for(let i = 0; i < 25; i++){
         let sold_amt = rb.slice(base, base+=4);
@@ -974,23 +987,10 @@ export async function DeserBucketCache(rb, prod_type){
         }
         timessold.push(sold_amt)
         let catalog_index_pos = rb.slice(base, base+=2)[0];
-        prod_addrs.push(
+        prods.push(
             GenProductAddress(catalog_index_pos, GenListingsAddress(prod_type, voterid), prod_type)
         )
     };
-
-    let prods = [];
-    switch(prod_type){
-        case "physical":
-            prods = await GetMultipleDigitalProducts(prod_addrs)
-            break
-        case "digital":
-            prods = await GetMultipleDigitalProducts(prod_addrs);
-            break
-        case "commission":
-            prods = await GetMultipleCommissionProducts(prod_addrs)
-            break
-    }
 
     prods.forEach((prod, i) => prod.times_sold = timessold[i]);
 
@@ -1073,12 +1073,13 @@ export async function DeserKwdsNode(rb, base_word, bucket_size){
 //////////////////////////////////////////////////////////////////
 /// SEARCH UTILS
 
+// todo: only set the kwds. because if we dynamic hydrate, the words do more than static prods
 export async function FindByKeywords(keywords, product_type){
     keywords = keywords.map(kw => kw.toLowerCase());
     keywords.sort();
 
     let matches = {
-        sub:[],
+        sub:{},
         exact: undefined,
         sup: {},
     }
@@ -1087,14 +1088,30 @@ export async function FindByKeywords(keywords, product_type){
     let direct_node = await FetchBucketCacheRoot(
         GenProductQueueAddress(keywords, product_type)
     );
-    if(direct_node.data.length != 0){
-        matches.exact = direct_node;
+    if(typeof direct_node != "string"){
+        // matches.exact = DeserBucketCache(direct_node, product_type);
+        let cache_deser = DeserBucketCache(direct_node, product_type);
+        matches.exact = cache_deser;
     }
 
     if(keywords.length > 3){
         for(let i = 3; i < keywords.length; i++){
             let combos = GenerateCombination(keywords, [], i);
-            matches.sub.push(...await FetchMultipleKwdsTreeCache(combos.map(combo => GenProductCacheAddress(combo, product_type))));
+            // array of products
+            matches.sub[i] = (await FetchMultipleBucketCacheRoot(
+                combos.map((combo) => {
+                    return GenProductCacheAddress(combo, product_type)
+                })
+            ))
+            .filter((cr) => {
+                return typeof cr != "string"
+            })
+            .map(async (cr, ci) => {
+                let deserd = await DeserBucketCache(cr, product_type);
+                deserd.words = combos[ci];
+                return deserd
+            })
+            
         }
     }
     
@@ -1104,7 +1121,8 @@ export async function FindByKeywords(keywords, product_type){
                 let base_word = (remaining_kwds = keywords.slice()) && remaining_kwds.splice(word_ind, 1);
                 let retnode = await FetchNode(base_word, bucket_size, keywords, product_type, 0);
                 if(retnode.max > 0){
-                    matches.sup[bucket_size] = retnode.entries
+                    // retnode.max, retnode.entries
+                    matches.sup[bucket_size] = retnode
                 }
             }
         }

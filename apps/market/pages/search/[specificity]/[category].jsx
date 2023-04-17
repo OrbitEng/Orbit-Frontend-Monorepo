@@ -6,7 +6,7 @@ import UserAccountCtx from "@contexts/UserAccountCtx";
 import { SEARCH_PROGRAM } from "orbit-clients";
 import { FindByKeywords } from "orbit-clients/clients/SearchProgramClient";
 import { GenericLayout } from "@layouts/HeaderFooterGenericLayout";
-import { SearchAllCategoriesLayout, SearchSpecificCategoryLayout } from "@layouts/PageLayouts/SearchListingsLayout";
+import { SearchAllCategoriesLayout, SearchSelectedCategoryLayout } from "@layouts/PageLayouts/SearchListingsLayout";
 
 export function SearchResults(props){
     const router = useRouter();
@@ -47,8 +47,11 @@ export function SearchResults(props){
     return (
         <GenericLayout>
             {
-             (query_info.category == "All" && <SearchSpecificCategoryLayout category={query_info.category}  />) ||
-             (query_info.category == "All" && <SearchAllCategoriesLayout physical={matches[0]} digital={matches[1]} commission={matches[2]} />)
+                query_info.specificity == "general" ? (
+                    (query_info.category == "All" && <SearchSelectedCategoryLayout category={query_info.category} matches={matches} />) ||
+                    (query_info.category == "All" && <SearchAllCategoriesLayout physical={matches[0]} digital={matches[1]} commission={matches[2]} />)
+                ) : 
+                (<></>)
             }
         </GenericLayout>
     )

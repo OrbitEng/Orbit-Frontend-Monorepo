@@ -18,7 +18,7 @@ export function HeaderSearchBar(props) {
 	const [ selectedProductSearchCat, setSelectedProductSearchCat ] = useState(searchCategories[0]);
 
 	const sendQuery = useCallback(()=>{
-		router.push(`/search/general/${selectedProductSearchCat.value}/?`)
+		router.push(`/search/general/${selectedProductSearchCat.value}/?kwds=${query.toLowercase().split(" ").join("+")}`)
 	},[query, router, selectedProductSearchCat])
 
 	return(
@@ -39,9 +39,9 @@ export function HeaderSearchBar(props) {
 							<Combobox.Input
 								className="flex w-full bg-transparent text-[#777777] placeholder:text-[#393939] sm:text-lg text-md font-normal focus:outline-none"
 								placeholder="Find everything on Orbit"
-								onChange={async (e) => {
+								onChange={(e) => {
 									if(e.key == "Enter"){
-										await sendQuery()
+										sendQuery()
 									}else{
 										setQuery(e.target.value)
 									}
@@ -84,7 +84,7 @@ export function HeaderSearchBar(props) {
 							</Transition>
 						</Listbox>
 					</div>
-					<div className='mx-auto my-auto' onClick={async ()=>{await sendQuery()}}>
+					<div className='mx-auto my-auto' onClick={async ()=>{sendQuery()}}>
 						<MagnifyingGlassIcon className="h-5 w-5 text-[#878787] stroke-[1px] flex-shrink-0"/>
 					</div>
 				</div>
@@ -99,6 +99,11 @@ export function HeaderSearchBar(props) {
 export const PageSearchBar = React.forwardRef((props, ref) => {
 	const [ selected, setSelected ] = useState({})
 	const [ query, setQuery ] = useState({})
+
+	const router = useRouter();
+	const sendQuery = useCallback(()=>{
+		router.push(`/search/general/${selectedProductSearchCat.value}/?kwds=${query.toLowercase().split(" ").join("+")}`)
+	},[query, router, selectedProductSearchCat])
 
 	return(
 		<Transition
@@ -119,7 +124,14 @@ export const PageSearchBar = React.forwardRef((props, ref) => {
 						<Combobox.Input
 						className="flex w-full bg-transparent text-[#777777] placeholder:text-[#4A4A4A] text-sm md:text-lg md:font-semibold focus:outline-none"
 						placeholder="Search in marketplace"
-						onChange={(e) => setQuery(e.target.value)} />
+						onChange={(e) => {
+							if(e.key == "Enter"){
+								sendQuery()
+							}else{
+								setQuery(e.target.value)
+							}
+						}}
+						/>
 					</Combobox>
 				</div>
 			</div>
